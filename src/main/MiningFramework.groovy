@@ -8,6 +8,7 @@ import java.util.ArrayList;
 class MiningFramework {
 
     private ArrayList<Project> projectList
+    private StatisticsAnalyzer statAnalyzer = new StatisticsAnalyzer()
     private final String LOCAL_PROJECT_PATH = 'localProject'
 
     public MiningFramework(ArrayList<Project> projectList) {
@@ -21,9 +22,17 @@ class MiningFramework {
                 cloneRepository(project)
             
             ArrayList<MergeCommit> mergeCommits = project.getMergeCommits('', '') // Since date and until date as arguments (dd/mm/yyyy).
-
+            for (mergeCommit in mergeCommits) {
+               collectStatistics(project, mergeCommit)
+            }
             endProjectAnalysis()
         }
+    }
+
+    private void collectStatistics(Project project, MergeCommit mergeCommit) {
+        statAnalyzer.setProject(project)
+        statAnalyzer.setMergeCommit(mergeCommit)
+        statAnalyzer.collectStatistics()
     }
 
     private void cloneRepository(Project project) {
@@ -63,7 +72,9 @@ class MiningFramework {
 
     private void endProjectAnalysis() {
         println '\n'
-        delete(new File(LOCAL_PROJECT_PATH))
+        File projectDirectory = new File(LOCAL_PROJECT_PATH)
+        if (projectDirectory.exists())
+            delete(new File(LOCAL_PROJECT_PATH))
     }
 
     static main(args) {

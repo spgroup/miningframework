@@ -16,12 +16,13 @@ class MiningFramework {
 
     public void start() {
         for (project in projectList) {
+            printProjectInformation(project)
             if (project.isRemote())
                 cloneRepository(project)
             
             ArrayList<MergeCommit> mergeCommits = project.getMergeCommits('', '') // Since date and until date as arguments (dd/mm/yyyy).
-            
-            delete(new File(LOCAL_PROJECT_PATH))
+
+            endProjectAnalysis()
         }
     }
 
@@ -36,7 +37,7 @@ class MiningFramework {
 
         Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), LOCAL_PROJECT_PATH).start()
         gitClone.waitFor()
-        
+        project.setPath(LOCAL_PROJECT_PATH)
     }
 
     private delete(File file) {
@@ -54,6 +55,15 @@ class MiningFramework {
                     file.delete()
             }
         }
+    }
+
+    private void printProjectInformation(Project project) {
+        println "PROJECT: ${project.getName()}"
+    }
+
+    private void endProjectAnalysis() {
+        println '\n'
+        delete(new File(LOCAL_PROJECT_PATH))
     }
 
     static main(args) {
@@ -87,7 +97,7 @@ class MiningFramework {
     }
 
     static void printFinishAnalysis() {
-        println "\n#### MINING FINISHED ####"
+        println "#### MINING FINISHED ####"
     }
 
 }

@@ -18,6 +18,10 @@ class MiningFramework {
         for (project in projectList) {
             if (project.isRemote())
                 cloneRepository(project)
+            
+            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits('', '') // Since date and until date as arguments (dd/mm/yyyy).
+            
+            delete(new File(LOCAL_PROJECT_PATH))
         }
     }
 

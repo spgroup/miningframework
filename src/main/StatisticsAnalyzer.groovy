@@ -9,9 +9,13 @@ class StatisticsAnalyzer {
         int numberOfMergeConflicts = getNumberOfMergeConflicts()
         boolean mergeConflictOcurrence = numberOfMergeConflicts > 0
         int numberOfConflictingFiles = getNumberOfConflictingFiles()
+        double numberOfDevelopersMean = getNumberOfDevelopersMean()
+        double numberOfCommitsMean = getNumberOfCommitsMean()
 
         println "Number of merge conflicts: ${numberOfMergeConflicts}"
         println "Number of conflicting files: ${numberOfConflictingFiles}"
+        println "Geometric mean of the number of developers: ${numberOfDevelopersMean}"
+        println "Geometric mean of the number of commits: ${numberOfCommitsMean}"
     }
 
     private int getNumberOfMergeConflicts() {
@@ -56,6 +60,46 @@ class StatisticsAnalyzer {
             numberOfConflictingFiles++
 
         return numberOfConflictingFiles
+    }
+
+    private double getNumberOfDevelopersMean() {
+        String[] parents = mergeCommit.getParentsSHA()
+        int[] numberOfDevelopers = new int[parents.length]
+
+        for (int i = 0; i < parents.length; i++) {
+            Process gitRevList = new ProcessBuilder('git', 'rev-list', mergeCommit.getAncestorSHA(), parents[i], '--header')
+                .directory(new File(project.getPath()))
+                .start()
+
+            gitRevList.getInputStream().eachLine {
+                if (it.contains('author') || it.contains('co-authored-by'))
+                    numberOfDevelopers[i]++ // Devemos filtrar os autores?
+            }
+        }
+        return geometricMean(numberOfDevelopers)
+    }
+
+    private double getNumberOfCommitsMean() {
+        String[] parents = mergeCommit.getParentsSHA()
+        int[] numberOfCommits = new int[parents.length]
+
+        for (int i = 0; i < parents.length; i++) {
+            Process gitRevList = new ProcessBuilder('git', 'rev-list', '--count', mergeCommit.getAncestorSHA(), parents[i])
+                .directory(new File(project.getPath()))
+                .start()
+
+            gitRevList.getInputStream().eachLine {
+                numberOfCommits[i] = Integer.parseInt(it)
+            }
+        }
+        return geometricMean(numberOfCommits)
+    }
+
+    private double geometricMean(int[] array) {
+        double product = 1
+        for (number in array)
+            product *= number
+        return Math.pow(product, 1/array.length)
     }
 
     public Project getProject() {

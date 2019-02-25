@@ -42,4 +42,12 @@ class MergeCommit {
         this.parentsSHA = parentsSHA
     }
 
+    public String getAncestorSHA() {
+        return ancestorSHA
+    }
+
+    public void setAncestorSHA(String ancestorSHA) {
+        this.ancestorSHA = ancestorSHA
+    }
+
 }

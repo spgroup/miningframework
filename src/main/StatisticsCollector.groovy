@@ -1,4 +1,4 @@
-class StatisticsAnalyzer {
+class StatisticsCollector {
 
     private Project project
     private MergeCommit mergeCommit

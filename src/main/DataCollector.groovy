@@ -5,8 +5,13 @@ class DataCollector {
 
     private Project project
     private MergeCommit mergeCommit
+    private File resultsFile
 
     public void collectData() {
+        resultsFile = new File("output/data/results-${project.getName()}.csv")
+        if(resultsFile.exists())
+            resultsFile.delete()
+        resultsFile << 'contribution,class,method,lines\n'
         getMutuallyModifiedMethods()
     }
 
@@ -24,22 +29,18 @@ class DataCollector {
             if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(file, mergeCommit.getAncestorSHA())
                 
-                println "LEFT:"
-                printResults(mutuallyModifiedMethods, leftModifiedMethods, className)
-                println "RIGHT:"
-                printResults(mutuallyModifiedMethods, rightModifiedMethods, className)
+                printResults('LEFT', mutuallyModifiedMethods, leftModifiedMethods, className)
+                printResults('RIGHT', mutuallyModifiedMethods, rightModifiedMethods, className)
             }
         }
     }
 
-    private void printResults(Set<String> intersectionMethods, Set<ModifiedMethod> sideMethods, String className) {
-        println "\t${className}:"
+    private void printResults(String contribution, Set<String> intersectionMethods, Set<ModifiedMethod> sideMethods, String className) {   
         for (method in intersectionMethods) 
             for(sideMethod in sideMethods) {
                 if(sideMethod.getSignature().equals(method))
-                    println "\t\t${sideMethod}"
+                    resultsFile << "${contribution};${className};${method};${sideMethod.getModifiedLines()}\n"
             }
-        println ""
     }
 
     private Set<String> getModifiedFiles(String childSHA, String ancestorSHA) {

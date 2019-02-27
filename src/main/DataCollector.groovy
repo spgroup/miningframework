@@ -19,13 +19,27 @@ class DataCollector {
         for(file in mutuallyModifiedFiles) {
             Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
             Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-            Set<ModifiedMethod> mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
+            Set<String> mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
 
             if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(file, mergeCommit.getAncestorSHA())
-                println className
+                
+                println "LEFT:"
+                printResults(mutuallyModifiedMethods, leftModifiedMethods, className)
+                println "RIGHT:"
+                printResults(mutuallyModifiedMethods, rightModifiedMethods, className)
             }
         }
+    }
+
+    private void printResults(Set<String> intersectionMethods, Set<ModifiedMethod> sideMethods, String className) {
+        println "\t${className}:"
+        for (method in intersectionMethods) 
+            for(sideMethod in sideMethods) {
+                if(sideMethod.getSignature().equals(method))
+                    println "\t\t${sideMethod}"
+            }
+        println ""
     }
 
     private Set<String> getModifiedFiles(String childSHA, String ancestorSHA) {
@@ -109,12 +123,12 @@ class DataCollector {
         return target
     }
 
-    private Set<ModifiedMethod> getMethodsIntersection(Set<ModifiedMethod> leftMethods, Set<ModifiedMethod> rightMethods) {
-        Set<ModifiedMethod> intersection = new HashSet<ModifiedMethod>()
+    private Set<String> getMethodsIntersection(Set<ModifiedMethod> leftMethods, Set<ModifiedMethod> rightMethods) {
+        Set<String> intersection = new HashSet<String>()
         for(leftMethod in leftMethods) {
             for(rightMethod in rightMethods) 
                 if(leftMethod.equals(rightMethod))
-                    intersection.add(leftMethod)
+                    intersection.add(leftMethod.getSignature())
         }
         return intersection
     }
@@ -134,9 +148,8 @@ class DataCollector {
 
         gitCatFile.getInputStream().eachLine {
             String lineNoWhitespace = it.replaceAll("\\s", "")
-            if(lineNoWhitespace.contains('package')) {
-                classPackage = lineNoWhitespace.substring(7, lineNoWhitespace.size() - 1) 
-                return classPackage + '.' + className
+            if(lineNoWhitespace.take(7).equals('package')) {
+                classPackage = lineNoWhitespace.substring(7, lineNoWhitespace.indexOf(';')) 
             }
         }
 

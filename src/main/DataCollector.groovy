@@ -9,10 +9,11 @@ class DataCollector {
 
     public void collectData() {
         resultsFile = new File("output/data/results-${project.getName()}.csv")
-        if(resultsFile.exists())
-            resultsFile.delete()
-        resultsFile << 'contribution,class,method,lines\n'
+        if(!resultsFile.exists())
+            resultsFile << 'contribution,class,method,lines\n'
         getMutuallyModifiedMethods()
+
+        println "Data collection finished!"
     }
 
     private void getMutuallyModifiedMethods() {

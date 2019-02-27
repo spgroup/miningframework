@@ -2,20 +2,21 @@ class StatisticsCollector {
 
     private Project project
     private MergeCommit mergeCommit
+    private resultsFile
 
     public void collectStatistics() {
-        println "Analyzing merge commit ${mergeCommit.getSHA()}"
-
         int numberOfMergeConflicts = getNumberOfMergeConflicts()
         boolean mergeConflictOcurrence = numberOfMergeConflicts > 0
         int numberOfConflictingFiles = getNumberOfConflictingFiles()
         double numberOfDevelopersMean = getNumberOfDevelopersMean()
         double numberOfCommitsMean = getNumberOfCommitsMean()
 
-        println "Number of merge conflicts: ${numberOfMergeConflicts}"
-        println "Number of conflicting files: ${numberOfConflictingFiles}"
-        println "Geometric mean of the number of developers: ${numberOfDevelopersMean}"
-        println "Geometric mean of the number of commits: ${numberOfCommitsMean}"
+        resultsFile = new File("output/statistics/results-${project.getName()}.csv")
+        if(!resultsFile.exists())
+            resultsFile << 'merge commit,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean\n'
+        resultsFile << "${mergeCommit.getSHA()},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean}\n"
+
+        println "Statistics collection finished!"
     }
 
     private int getNumberOfMergeConflicts() {

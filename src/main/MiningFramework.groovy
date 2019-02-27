@@ -26,7 +26,8 @@ class MiningFramework {
             ArrayList<MergeCommit> mergeCommits = project.getMergeCommits("01/12/2018", '') // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
                 if (applyFilter(project, mergeCommit)) {
-             //     collectStatistics(project, mergeCommit)
+                    printMergeCommitInformation(mergeCommit)
+                    collectStatistics(project, mergeCommit)
                     collectData(project, mergeCommit)
                 }
             }
@@ -87,8 +88,11 @@ class MiningFramework {
         println "PROJECT: ${project.getName()}"
     }
 
+    private void printMergeCommitInformation(MergeCommit mergeCommit) {
+        println "Merge commit: ${mergeCommit.getSHA()}"
+    }
+
     private void endProjectAnalysis() {
-        println '\n'
         File projectDirectory = new File(LOCAL_PROJECT_PATH)
         if (projectDirectory.exists())
             delete(new File(LOCAL_PROJECT_PATH))

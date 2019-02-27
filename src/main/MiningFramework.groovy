@@ -10,6 +10,7 @@ class MiningFramework {
     private ArrayList<Project> projectList
     private StatisticsCollector statCollector = new StatisticsCollector()
     private DataCollector dataCollector = new DataCollector()
+    private CommitFilter commitFilter = new CommitFilter()
     private final String LOCAL_PROJECT_PATH = 'localProject'
 
     public MiningFramework(ArrayList<Project> projectList) {
@@ -24,11 +25,19 @@ class MiningFramework {
             
             ArrayList<MergeCommit> mergeCommits = project.getMergeCommits("01/12/2018", '') // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
-             //  collectStatistics(project, mergeCommit)
-               collectData(project, mergeCommit)
+                if (applyFilter(project, mergeCommit)) {
+             //     collectStatistics(project, mergeCommit)
+                    collectData(project, mergeCommit)
+                }
             }
             endProjectAnalysis()
         }
+    }
+
+    private boolean applyFilter(Project project, MergeCommit mergeCommit) {
+        commitFilter.setProject(project)
+        commitFilter.setMergeCommit(mergeCommit)
+        return commitFilter.applyFilter()
     }
 
     private void collectStatistics(Project project, MergeCommit mergeCommit) {

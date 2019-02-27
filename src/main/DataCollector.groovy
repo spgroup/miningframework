@@ -102,8 +102,10 @@ class DataCollector {
         if (commaIndex == -1) 
             modifiedLines.add(Integer.parseInt(lines))
         else {
-            modifiedLines.add(Integer.parseInt(lines.substring(0, commaIndex)))
-            modifiedLines.add(Integer.parseInt(lines.substring(commaIndex + 1)))
+            int start = Integer.parseInt(lines.substring(0, commaIndex))
+            int end = Integer.parseInt(lines.substring(commaIndex + 1))
+            for (int i = start; i <= end; i++)
+                modifiedLines.add(i)
         }
 
         return modifiedLines

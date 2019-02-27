@@ -26,4 +26,8 @@ class ModifiedMethod {
     public String toString() {
         return signature + ' ' + modifiedLines
     }
+
+    public boolean equals(Object o) {
+        return signature.equals(o.signature)
+    }
 }

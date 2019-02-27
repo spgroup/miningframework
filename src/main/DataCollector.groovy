@@ -1,3 +1,6 @@
+import java.util.regex.Pattern
+import java.util.regex.Matcher
+
 class DataCollector {
 
     private Project project
@@ -16,11 +19,11 @@ class DataCollector {
         for(file in mutuallyModifiedFiles) {
             Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
             Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-            Set<ModifiedMethod> mutuallyModifiedMethods = new HashSet<ModifiedMethod>(leftModifiedMethods)
-            mutuallyModifiedMethods.retainAll(rightModifiedMethods)
+            Set<ModifiedMethod> mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
 
             if (mutuallyModifiedMethods.size() > 0) {
-                println mutuallyModifiedMethods
+                String className = getClassName(file, mergeCommit.getAncestorSHA())
+                println className
             }
         }
     }
@@ -56,7 +59,6 @@ class DataCollector {
                 Set<Integer> modifiedLines = getModifiedLines(it.substring(0, it.indexOf(':')))
 
                 ModifiedMethod modifiedMethod = new ModifiedMethod(signature, modifiedLines)
-                println modifiedMethod
                 modifiedMethods.add(modifiedMethod)
             }
         }
@@ -105,6 +107,40 @@ class DataCollector {
         }
        
         return target
+    }
+
+    private Set<ModifiedMethod> getMethodsIntersection(Set<ModifiedMethod> leftMethods, Set<ModifiedMethod> rightMethods) {
+        Set<ModifiedMethod> intersection = new HashSet<ModifiedMethod>()
+        for(leftMethod in leftMethods) {
+            for(rightMethod in rightMethods) 
+                if(leftMethod.equals(rightMethod))
+                    intersection.add(leftMethod)
+        }
+        return intersection
+    }
+
+    private String getClassName(String file, String SHA) {
+        String className
+        String classPackage = ""
+
+        Pattern pattern = Pattern.compile("/?([A-Z][A-Za-z0-9]*?)\\.java")
+        Matcher matcher = pattern.matcher(file)
+        if(matcher.find()) 
+            className = matcher.group(1)
+
+        Process gitCatFile = new ProcessBuilder('git', 'cat-file', '-p', "${SHA}:${file}")
+            .directory(new File(project.getPath()))
+            .start()
+
+        gitCatFile.getInputStream().eachLine {
+            String lineNoWhitespace = it.replaceAll("\\s", "")
+            if(lineNoWhitespace.contains('package')) {
+                classPackage = lineNoWhitespace.substring(7, lineNoWhitespace.size() - 1) 
+                return classPackage + '.' + className
+            }
+        }
+
+        return (classPackage.equals("") ? "" : classPackage + '.') + className
     }
 
     public Project getProject() {

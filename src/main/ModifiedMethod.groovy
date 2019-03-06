@@ -1,8 +1,8 @@
 class ModifiedMethod {
     private String signature
-    private Set<Integer> modifiedLines
+    private Set<ModifiedLine> modifiedLines
 
-    public ModifiedMethod(String signature, Set<Integer> modifiedLines) {
+    public ModifiedMethod(String signature, Set<ModifiedLine> modifiedLines) {
         this.signature = signature
         this.modifiedLines = modifiedLines
     }
@@ -15,11 +15,15 @@ class ModifiedMethod {
         this.signature = signature
     }
 
-    public Set<Integer> getModifiedLines() {
+    public addAll(Set<ModifiedLine> lines) {
+        modifiedLines.addAll(lines)
+    } 
+
+    public Set<ModifiedLine> getModifiedLines() {
         return modifiedLines
     }
 
-    public void setModifiedLines(Set<Integer> modifiedLines) {
+    public void setModifiedLines(Set<ModifiedLine> modifiedLines) {
         this.modifiedLines = modifiedLines
     }
 

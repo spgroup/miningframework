@@ -137,7 +137,7 @@ class DataCollector {
                 String content = line.substring(1)
                 ModifiedLine modifiedLine = new ModifiedLine(content, modifiedLinesNumber[i], type)
                 modifiedLines.add(modifiedLine)
-                if((type == Modification.CHANGED && line.startsWith('>')) || type != Modification.CHANGED)
+                if(line.startsWith('>'))
                     i++
             }
 

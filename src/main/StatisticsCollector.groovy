@@ -2,7 +2,14 @@ class StatisticsCollector {
 
     private Project project
     private MergeCommit mergeCommit
-    private resultsFile
+    private File resultsFile
+
+    public StatisticsCollector() {
+        resultsFile = new File("output/statistics/results.csv")
+        if(resultsFile.exists())
+            resultsFile.delete()
+        resultsFile << 'project,merge commit,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean\n'
+    }
 
     public void collectStatistics() {
         int numberOfMergeConflicts = getNumberOfMergeConflicts()
@@ -11,11 +18,7 @@ class StatisticsCollector {
         double numberOfDevelopersMean = getNumberOfDevelopersMean()
         double numberOfCommitsMean = getNumberOfCommitsMean()
 
-        resultsFile = new File("output/statistics/results-${project.getName()}.csv")
-        if(!resultsFile.exists())
-            resultsFile << 'merge commit,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean\n'
-        resultsFile << "${mergeCommit.getSHA()},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean}\n"
-
+        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean}\n"
         println "Statistics collection finished!"
     }
 

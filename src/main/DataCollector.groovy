@@ -10,12 +10,15 @@ class DataCollector {
 
     public static enum Modification {ADDED, REMOVED, CHANGED}
 
-    public void collectData() {
-        resultsFile = new File("output/data/results-${project.getName()}.csv")
-        if(!resultsFile.exists())
-            resultsFile << 'merge commit;class;method;left modifications;right modifications\n'
-        getMutuallyModifiedMethods()
+    public DataCollector() {
+       resultsFile = new File("output/data/results.csv")
+        if(resultsFile.exists())
+            resultsFile.delete()
+        resultsFile << 'project;merge commit;class;method;left modifications;right modifications\n'
+    }
 
+    public void collectData() {
+        getMutuallyModifiedMethods()
         println "Data collection finished!"
     }
 
@@ -35,7 +38,7 @@ class DataCollector {
                 String className = getClassName(file, mergeCommit.getAncestorSHA())
                 for(method in mergeModifiedMethods) {
                     Set<Integer>[] modifiedLines = analyseModifiedMethods(mutuallyModifiedMethods, method)
-                    printResults(mergeCommit.getSHA(), className, method.getSignature(), modifiedLines[0], modifiedLines[1])
+                    printResults(className, method.getSignature(), modifiedLines[0], modifiedLines[1])
                 }
             }
         }
@@ -65,8 +68,8 @@ class DataCollector {
         return false
     }
 
-    private void printResults(String mergeCommit, String className, String method, Set<Integer> leftModifiedLines, Set<Integer> rightModifiedLines) {   
-        resultsFile << "${mergeCommit};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
+    private void printResults(String className, String method, Set<Integer> leftModifiedLines, Set<Integer> rightModifiedLines) {   
+        resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
     }
 
     private Set<String> getModifiedFiles(String childSHA, String ancestorSHA) {
@@ -186,18 +189,6 @@ class DataCollector {
         return modifiedLines
     }
 
-    // private Set<Integer> getModifiedLines(String lineChanges) {
-    //     for (int i = 0; i < lineChanges.size(); i++) {
-    //         if(lineChanges[i] == 'c' || lineChanges[i] == 'd' || lineChanges[i] == 'a') {
-    //             String ancestorLines = lineChanges.substring(0, i)
-    //             String childLines = lineChanges.substring(i + 1)
-    //             Set<Integer> modifiedLines = parseLines(ancestorLines)
-    //             modifiedLines.addAll(parseLines(childLines))
-    //             return modifiedLines
-    //         }
-    //     }
-    // }
-
     private File copyFile(String path, String SHA) {
         Process gitCatFile = new ProcessBuilder('git', 'cat-file', '-p', "${SHA}:${path}")
             .directory(new File(project.getPath()))
@@ -213,8 +204,6 @@ class DataCollector {
     }
 
     private Map<String, ModifiedMethod[]> getMethodsIntersection(Set<ModifiedMethod> leftMethods, Set<ModifiedMethod> rightMethods) {
-        println "LEFT ${leftMethods}"
-        println "RIGHT ${rightMethods}"
         Map<String, ModifiedMethod[]> intersection = [:]
         for(leftMethod in leftMethods) {
             for(rightMethod in rightMethods) 

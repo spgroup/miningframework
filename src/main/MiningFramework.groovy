@@ -1,5 +1,7 @@
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
+@Grab('com.google.inject:guice:4.2.2')
 import static com.xlson.groovycsv.CsvParser.parseCsv
+import com.google.inject.*
 import java.io.File
 import java.nio.file.Files 
 import java.nio.file.Paths
@@ -8,13 +10,18 @@ import java.util.ArrayList;
 class MiningFramework {
 
     private ArrayList<Project> projectList
-    private StatisticsCollector statCollector = new StatisticsCollector()
-    private DataCollector dataCollector = new DataCollector()
-    private CommitFilter commitFilter = new CommitFilter()
+   
+    private StatisticsCollector statCollector
+    private DataCollector dataCollector
+    private CommitFilter commitFilter
+
     private final String LOCAL_PROJECT_PATH = 'localProject'
 
-    public MiningFramework(ArrayList<Project> projectList) {
-        this.projectList = projectList
+    @Inject
+    public MiningFramework(DataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
+        this.dataCollector = dataCollector
+        this.statCollector = statCollector
+        this.commitFilter = commitFilter
     }
 
     public void start() {
@@ -98,11 +105,17 @@ class MiningFramework {
             delete(new File(LOCAL_PROJECT_PATH))
     }
 
+    public void setProjectList(ArrayList<Project> projectList) {
+        this.projectList = projectList
+    }
+
     static main(args) {
         printStartAnalysis()
 
         ArrayList<Project> projectList = getProjectList()
-        MiningFramework framework = new MiningFramework(projectList)
+        Injector injector = Guice.createInjector(new MiningModule())
+        MiningFramework framework = injector.getInstance(MiningFramework.class)
+        framework.setProjectList(projectList)
         framework.start()
 
         printFinishAnalysis()

@@ -15,8 +15,9 @@ class Project {
 
         sinceDate = (sinceDate.equals('')) ? '' : "--since=\"${sinceDate}\""
         untilDate = (untilDate.equals('')) ? '' : "--until=\"${untilDate}\""
-        Process gitLog = new ProcessBuilder('git', '--no-pager', 'log', '--merges', sinceDate, untilDate)
+        Process gitLog = new ProcessBuilder('git', '--no-pager', 'log', '--merges')
             .directory(new File(path))
+            .redirectErrorStream(true)
             .start()
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))

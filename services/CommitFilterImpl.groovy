@@ -12,11 +12,11 @@ class CommitFilterImpl extends CommitFilter {
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
         for(file in mutuallyModifiedFiles) {
-            Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-            Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-            Set<String> mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
+            Set<String> leftModifiedMethods = getModifiedMethods(file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+            Set<String> rightModifiedMethods = getModifiedMethods(file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+            leftModifiedMethods.retainAll(rightModifiedMethods) // Intersection.
 
-            if(mutuallyModifiedMethods.size() > 0)
+            if(leftModifiedMethods.size() > 0)
                 return true
         }
 
@@ -37,8 +37,8 @@ class CommitFilterImpl extends CommitFilter {
         return modifiedFiles
     }
 
-    private Set<ModifiedMethod> getModifiedMethods(String filePath, String childSHA, String ancestorSHA) {
-        Set<ModifiedMethod> modifiedMethods = new HashSet<ModifiedMethod>()
+    private Set<String> getModifiedMethods(String filePath, String childSHA, String ancestorSHA) {
+        Set<String> modifiedMethods = new HashSet<ModifiedMethod>()
 
         File childFile = copyFile(filePath, childSHA) 
         File ancestorFile = copyFile(filePath, ancestorSHA)
@@ -51,10 +51,7 @@ class CommitFilterImpl extends CommitFilter {
             int inIndex = it.indexOf("in ")
             if(inIndex != -1) {
                 String signature = it.substring(inIndex + 3)
-                Set<Integer> modifiedLines = getModifiedLines(it.substring(0, it.indexOf(':')))
-
-                ModifiedMethod modifiedMethod = new ModifiedMethod(signature, modifiedLines)
-                modifiedMethods.add(modifiedMethod)
+                modifiedMethods.add(signature)
             }
         }
         
@@ -64,39 +61,10 @@ class CommitFilterImpl extends CommitFilter {
         return modifiedMethods
     }
 
-    private Set<Integer> getModifiedLines(String lineChanges) {
-        for (int i = 0; i < lineChanges.size(); i++) {
-            if(lineChanges[i] == 'c' || lineChanges[i] == 'd' || lineChanges[i] == 'a') {
-                String ancestorLines = lineChanges.substring(0, i)
-                String childLines = lineChanges.substring(i + 1)
-                Set<Integer> modifiedLines = parseLines(ancestorLines)
-                modifiedLines.addAll(parseLines(childLines))
-                return modifiedLines
-            }
-        }
-    }
-
-    private Set<Integer> parseLines(String lines) {
-        Set<Integer> modifiedLines = new HashSet<Integer>()
-        
-        int commaIndex = lines.indexOf(',')
-        if (commaIndex == -1) 
-            modifiedLines.add(Integer.parseInt(lines))
-        else {
-            int start = Integer.parseInt(lines.substring(0, commaIndex))
-            int end = Integer.parseInt(lines.substring(commaIndex + 1))
-            for (int i = start; i <= end; i++)
-                modifiedLines.add(i)
-        }
-
-        return modifiedLines
-    }
-
     private File copyFile(String path, String SHA) {
         Process gitCatFile = new ProcessBuilder('git', 'cat-file', '-p', "${SHA}:${path}")
             .directory(new File(project.getPath()))
-            .start()
-    
+            .start()    
         
         File target = new File("${SHA}.java")
         gitCatFile.getInputStream().eachLine {
@@ -104,16 +72,6 @@ class CommitFilterImpl extends CommitFilter {
         }
        
         return target
-    }
-
-    private Set<String> getMethodsIntersection(Set<ModifiedMethod> leftMethods, Set<ModifiedMethod> rightMethods) {
-        Set<String> intersection = new HashSet<String>()
-        for(leftMethod in leftMethods) {
-            for(rightMethod in rightMethods) 
-                if(leftMethod.equals(rightMethod))
-                    intersection.add(leftMethod.getSignature())
-        }
-        return intersection
     }
 
 }

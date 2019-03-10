@@ -3,9 +3,12 @@
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import com.google.inject.*
 import java.io.File
+import java.nio.file.Path
 import java.nio.file.Files 
 import java.nio.file.Paths
 import java.util.ArrayList;
+import static groovy.io.FileType.FILES
+import static groovy.io.FileType.DIRECTORIES
 
 class MiningFramework {
 
@@ -112,9 +115,37 @@ class MiningFramework {
         for (line in iterator) {
             String name = line[0]
             String path = line[1]
-            Project project = new Project(name, path)
 
-            projectList.add(project)
+            boolean relativePath
+            try {
+                relativePath = line[2]
+            } catch(ArrayIndexOutOfBoundsException e) {
+                relativePath = false
+            }
+
+            if(relativePath) 
+                projectList.addAll(getProjects(name, path))
+            else {
+                Project project = new Project(name, path)
+                projectList.add(project)
+            }
+        }
+
+        return projectList
+    }
+
+    static ArrayList<Project> getProjects(String directoryName, String directoryPath) {
+        ArrayList<Project> projectList = new ArrayList<Project>()
+
+        File directory = new File(directoryPath)
+        directory.traverse(type: DIRECTORIES, maxDepth: 0) {
+             
+             // Checking if it's a git project.
+             String filePath = it.toString()
+             if(new File("${filePath}/.git").exists()) {
+                 Project project = new Project("${directoryName}/${it.getName()}", filePath)
+                 projectList.add(project)
+             }
         }
 
         return projectList

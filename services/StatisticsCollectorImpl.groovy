@@ -1,10 +1,13 @@
+import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
+
 class StatisticsCollectorImpl extends StatisticsCollector {
 
     public StatisticsCollectorImpl() {
         resultsFile = new File("output/statistics/results.csv")
         if(resultsFile.exists())
             resultsFile.delete()
-        resultsFile << 'project,merge commit,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,\n'
+        resultsFile << 'project,merge commit,is octopus,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,duration mean,conclusion delay\n'
     }
 
     @Override
@@ -17,8 +20,10 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         double numberOfCommitsMean = getNumberOfCommitsMean()
         double numberOfChangedFilesMean = getNumberOfChangedFilesMean()
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean()
+        double durationMean = getDurationMean()
+        int conclusionDelay = getConclusionDelay()
 
-        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean}\n"
+        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
         println "Statistics collection finished!"
     }
 
@@ -133,6 +138,53 @@ class StatisticsCollectorImpl extends StatisticsCollector {
             }
         }
         return geometricMean(numberOfChangedLines)
+    }
+
+    private double getDurationMean() {
+        String[] parents = mergeCommit.getParentsSHA()
+        int[] numberOfDaysPassed = new int[parents.length]
+        SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')
+
+        for (int i = 0; i < parents.length; i++) {
+            Process gitLog = new ProcessBuilder('git', 'log', '--date=short', '--pretty=\"%H%n%ad\"', parents[i])
+                .directory(new File(project.getPath()))
+                .start()
+
+            numberOfDaysPassed[i] = 0
+            BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))
+            reader.readLine()
+            Date parentDate = formatter.parse(reader.readLine())
+
+            String line
+            while((line = reader.readLine()) != null) {
+                if(line.equals(mergeCommit.getAncestorSHA()))
+                    break
+            }
+
+            Date ancestorDate = formatter.parse(reader.readLine())
+            long diff = parentDate.getTime() - ancestorDate.getTime()
+            numberOfDaysPassed[i] = Math.abs(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
+        }
+        return geometricMean(numberOfDaysPassed)
+    }
+
+    private int getConclusionDelay() {
+        String[] parents = mergeCommit.getParentsSHA()
+        Date[] commitDates = new Date[parents.length]
+        SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')
+
+        // This metric implies two parents only.
+        for (int i = 0; i < 2; i++) {
+            Process gitShow = new ProcessBuilder('git', 'show', '--date=short', '--pretty=\"%ad\"', parents[i])
+                .directory(new File(project.getPath()))
+                .start()
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
+            commitDates[i] = formatter.parse(reader.readLine())
+            reader.close()
+        }
+        long diff = Math.abs(commitDates[1].getTime() - commitDates[0].getTime())
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 
     private double geometricMean(int[] array) {

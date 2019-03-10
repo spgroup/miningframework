@@ -6,8 +6,8 @@ class CommitFilterImpl extends CommitFilter {
 
     private boolean containsMutuallyModifiedMethods() {
 
-        Set<String> leftModifiedFiles = getModifiedFiles(mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-        Set<String> rightModifiedFiles = getModifiedFiles(mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
         Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
@@ -23,25 +23,11 @@ class CommitFilterImpl extends CommitFilter {
         return false
     }
 
-    private Set<String> getModifiedFiles(String childSHA, String ancestorSHA) {
-        Set<String> modifiedFiles = new HashSet<String>()
-        Process gitDiff = new ProcessBuilder('git', 'diff', '--name-only', childSHA, ancestorSHA)
-            .directory(new File(project.getPath()))
-            .start()
-        
-        gitDiff.getInputStream().eachLine {
-            if(it.endsWith('.java'))
-                modifiedFiles.add(it)
-        }
-
-        return modifiedFiles
-    }
-
     private Set<String> getModifiedMethods(String filePath, String childSHA, String ancestorSHA) {
         Set<String> modifiedMethods = new HashSet<ModifiedMethod>()
 
-        File childFile = copyFile(filePath, childSHA) 
-        File ancestorFile = copyFile(filePath, ancestorSHA)
+        File childFile = FileManager.copyFile(project, filePath, childSHA) 
+        File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA)
 
         Process diffJ = new ProcessBuilder('java', '-jar', 'diffj.jar', '--brief', ancestorFile.getAbsolutePath(), childFile.getAbsolutePath())
             .directory(new File('dependencies'))
@@ -55,23 +41,10 @@ class CommitFilterImpl extends CommitFilter {
             }
         }
         
-        childFile.delete()
-        ancestorFile.delete()
+        FileManager.delete(childFile)
+        FileManager.delete(ancestorFile)
 
         return modifiedMethods
-    }
-
-    private File copyFile(String path, String SHA) {
-        Process gitCatFile = new ProcessBuilder('git', 'cat-file', '-p', "${SHA}:${path}")
-            .directory(new File(project.getPath()))
-            .start()    
-        
-        File target = new File("${SHA}.java")
-        gitCatFile.getInputStream().eachLine {
-            target << "${it}\n"
-        }
-       
-        return target
     }
 
 }

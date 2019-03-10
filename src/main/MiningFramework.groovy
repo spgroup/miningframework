@@ -30,7 +30,7 @@ class MiningFramework {
             if (project.isRemote())
                 cloneRepository(project)
             
-            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits('', '') // Since date and until date as arguments (dd/mm/yyyy).
+            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits('01/01/2019', '') // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(mergeCommit)
@@ -66,29 +66,12 @@ class MiningFramework {
 
         if(Files.exists(Paths.get(LOCAL_PROJECT_PATH))) {
             File projectDirectory = new File(LOCAL_PROJECT_PATH)
-            delete(projectDirectory)
+            FileManager.delete(projectDirectory)
         }
 
         Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), LOCAL_PROJECT_PATH).start()
         gitClone.waitFor()
         project.setPath(LOCAL_PROJECT_PATH)
-    }
-
-    private delete(File file) {
-        if (!file.isDirectory())
-            file.delete()
-        else {
-            if (file.list().length == 0) 
-                file.delete()
-            else {
-                String[] files = file.list()
-                for (temp in files) {
-                    delete(new File(file, temp))
-                }
-                if (file.list().length == 0) 
-                    file.delete()
-            }
-        }
     }
 
     private void printProjectInformation(Project project) {
@@ -102,7 +85,7 @@ class MiningFramework {
     private void endProjectAnalysis() {
         File projectDirectory = new File(LOCAL_PROJECT_PATH)
         if (projectDirectory.exists())
-            delete(new File(LOCAL_PROJECT_PATH))
+            FileManager.delete(new File(LOCAL_PROJECT_PATH))
     }
 
     public void setProjectList(ArrayList<Project> projectList) {

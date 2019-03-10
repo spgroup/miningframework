@@ -20,8 +20,8 @@ class DataCollectorImpl extends DataCollector {
     }
 
     private void getMutuallyModifiedMethods() {
-        Set<String> leftModifiedFiles = getModifiedFiles(mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-        Set<String> rightModifiedFiles = getModifiedFiles(mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
         Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
@@ -67,25 +67,11 @@ class DataCollectorImpl extends DataCollector {
         resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
     }
 
-    private Set<String> getModifiedFiles(String childSHA, String ancestorSHA) {
-        Set<String> modifiedFiles = new HashSet<String>()
-        Process gitDiff = new ProcessBuilder('git', 'diff', '--name-only', childSHA, ancestorSHA)
-            .directory(new File(project.getPath()))
-            .start()
-        
-        gitDiff.getInputStream().eachLine {
-            if(it.endsWith('.java'))
-                modifiedFiles.add(it)
-        }
-
-        return modifiedFiles
-    }
-
-    private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String mergeCommitSHA) {
+    private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String commitSHA) {
         Set<ModifiedMethod> modifiedMethods = new HashSet<ModifiedMethod>()
 
-        File ancestorFile = copyFile(filePath, ancestorSHA) 
-        File mergeFile = copyFile(filePath, mergeCommitSHA)
+        File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA) 
+        File mergeFile = FileManager.copyFile(project, filePath, commitSHA)
 
         Process diffJ = new ProcessBuilder('java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
             .directory(new File('dependencies'))
@@ -115,8 +101,8 @@ class DataCollectorImpl extends DataCollector {
         if(signature != null)
             insertMethod(modifiedMethods, signature, modifiedLines)
 
-        ancestorFile.delete()
-        mergeFile.delete()
+        FileManager.delete(ancestorFile)
+        FileManager.delete(mergeFile)
         return modifiedMethods
     }
 
@@ -211,20 +197,6 @@ class DataCollectorImpl extends DataCollector {
         }
 
         return modifiedLines
-    }
-
-    private File copyFile(String path, String SHA) {
-        Process gitCatFile = new ProcessBuilder('git', 'cat-file', '-p', "${SHA}:${path}")
-            .directory(new File(project.getPath()))
-            .start()
-    
-        
-        File target = new File("${SHA}.java")
-        gitCatFile.getInputStream().eachLine {
-            target << "${it}\n"
-        }
-       
-        return target
     }
 
     private Map<String, ModifiedMethod[]> getMethodsIntersection(Set<ModifiedMethod> leftMethods, Set<ModifiedMethod> rightMethods) {

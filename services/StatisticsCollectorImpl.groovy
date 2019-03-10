@@ -76,14 +76,16 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         int[] numberOfDevelopers = new int[parents.length]
 
         for (int i = 0; i < parents.length; i++) {
-            Process gitRevList = new ProcessBuilder('git', 'rev-list', mergeCommit.getAncestorSHA(), parents[i], '--header')
+            Process gitRevList = new ProcessBuilder('git', 'rev-list', mergeCommit.getAncestorSHA(), parents[i], '--pretty=%an')
                 .directory(new File(project.getPath()))
                 .start()
 
+            Set<String> developers = new HashSet<String>()
             gitRevList.getInputStream().eachLine {
-                if (it.contains('author') || it.contains('co-authored-by'))
-                    numberOfDevelopers[i]++ // Devemos filtrar os autores?
+                if (!it.startsWith('commit'))
+                    developers.add(it)
             }
+            numberOfDevelopers[i] = developers.size()
         }
         return geometricMean(numberOfDevelopers)
     }

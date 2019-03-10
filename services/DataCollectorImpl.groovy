@@ -120,27 +120,54 @@ class DataCollectorImpl extends DataCollector {
         return modifiedMethods
     }
 
+    /*
+        DiffJ's output for methods' modification is the following:
+        <rangei>,<rangef>: code (changed | added | removed) in <methodname>
+
+        - rangei is a range of lines affected from the 'initial' file.
+        - rangef is a range of lines affected from the 'final' file.
+        - changed is reported when a removal and addition happen to the same line.
+        
+        After that, Diffj outputs three formats of line:
+        < content 
+        < content1 } removed lines (size of rangei).
+        < ...     
+        --- -> separator
+        > content 
+        > content1 } added lines (size of rangef).
+        > ...  
+        
+        This algorithm detects such lines, associating them with their correspondent modifications.
+        Also, it counts the rangef to check lines number.
+    */
     private Set<ModifiedLine> getLines(Modification type, BufferedReader reader, modifiedLinesNumber) {
         Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
 
         String line = reader.readLine()
         int i = 0
         while(line.startsWith('<') || line.startsWith('---') || line.startsWith('>')) {
-            if((type == Modification.ADDED && line.startsWith('>')) 
-            || (type == Modification.REMOVED && line.startsWith('<')) 
-            || (type == Modification.CHANGED && (line.startsWith('<') || line.startsWith('>')))) {
+
+            if(lineCorrespondsToModification(type, line)) {
                 
-                String content = line.substring(1)
+                // Desconsidering CHANGED modification, to uniformize further comparisons.
                 Modification lineType = line.startsWith('>') ? Modification.ADDED : Modification.REMOVED
+
+                String content = line.substring(1)
                 ModifiedLine modifiedLine = new ModifiedLine(content, modifiedLinesNumber[i], lineType)
                 modifiedLines.add(modifiedLine)
-                if(line.startsWith('>'))
+                if(line.startsWith('>')) // iterating on rangef.
                     i++
             }
 
             line = reader.readLine()
         }
         return modifiedLines
+    }
+
+    private boolean lineCorrespondsToModification(Modification type, String line) {
+        return ((type == Modification.ADDED && line.startsWith('>'))
+            || (type == Modification.REMOVED && line.startsWith('<')) 
+            || (type == Modification.CHANGED && (line.startsWith('<') || line.startsWith('>'))))
     }
 
     private void insertMethod(Set<ModifiedMethod> modifiedMethods, String signature, Set<ModifiedLine> modifiedLines) {

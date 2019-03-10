@@ -4,18 +4,21 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         resultsFile = new File("output/statistics/results.csv")
         if(resultsFile.exists())
             resultsFile.delete()
-        resultsFile << 'project,merge commit,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean\n'
+        resultsFile << 'project,merge commit,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,\n'
     }
 
     @Override
     public void collectStatistics() {
+        boolean isOctopus = mergeCommit.isOctopus()
         int numberOfMergeConflicts = getNumberOfMergeConflicts()
         boolean mergeConflictOcurrence = numberOfMergeConflicts > 0
         int numberOfConflictingFiles = getNumberOfConflictingFiles()
         double numberOfDevelopersMean = getNumberOfDevelopersMean()
         double numberOfCommitsMean = getNumberOfCommitsMean()
+        double numberOfChangedFilesMean = getNumberOfChangedFilesMean()
+        double numberOfChangedLinesMean = getNumberOfChangedLinesMean()
 
-        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean}\n"
+        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean}\n"
         println "Statistics collection finished!"
     }
 
@@ -94,6 +97,42 @@ class StatisticsCollectorImpl extends StatisticsCollector {
             }
         }
         return geometricMean(numberOfCommits)
+    }
+
+    private double getNumberOfChangedFilesMean() {
+        String[] parents = mergeCommit.getParentsSHA()
+        int[] numberOfChangedFiles = new int[parents.length]
+
+        for (int i = 0; i < parents.length; i++) {
+            Process gitRevList = new ProcessBuilder('git', 'diff', '--name-only', parents[i], mergeCommit.getAncestorSHA())
+                .directory(new File(project.getPath()))
+                .start()
+
+            numberOfChangedFiles[i] = 0
+            gitRevList.getInputStream().eachLine {
+                numberOfChangedFiles[i]++
+            }
+        }
+        return geometricMean(numberOfChangedFiles)
+    }
+
+    private double getNumberOfChangedLinesMean() {
+        String[] parents = mergeCommit.getParentsSHA()
+        int[] numberOfChangedLines = new int[parents.length]
+
+        for (int i = 0; i < parents.length; i++) {
+            Process gitRevList = new ProcessBuilder('git', 'diff', parents[i], mergeCommit.getAncestorSHA())
+                .directory(new File(project.getPath()))
+                .start()
+
+            numberOfChangedLines[i] = 0
+            gitRevList.getInputStream().eachLine {
+                if(it.startsWith('+ ') || it.startsWith('- ')) {
+                    numberOfChangedLines[i]++
+                }
+            }
+        }
+        return geometricMean(numberOfChangedLines)
     }
 
     private double geometricMean(int[] array) {

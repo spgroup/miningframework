@@ -10,6 +10,10 @@ class MergeCommit {
         this.ancestorSHA = ancestorSHA
     }
 
+    public boolean isOctopus() {
+        return parentsSHA.length > 2
+    }
+
     public String getSHA() {
         return sha
     }

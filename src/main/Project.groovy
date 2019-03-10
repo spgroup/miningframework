@@ -13,9 +13,7 @@ class Project {
     public ArrayList<MergeCommit> getMergeCommits(String sinceDate, String untilDate) {
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
 
-        sinceDate = (sinceDate.equals('')) ? '' : "--since=\"${sinceDate}\""
-        untilDate = (untilDate.equals('')) ? '' : "--until=\"${untilDate}\""
-        Process gitLog = new ProcessBuilder('git', '--no-pager', 'log', '--merges')
+        Process gitLog = getProcessBuilder(sinceDate, untilDate)
             .directory(new File(path))
             .redirectErrorStream(true)
             .start()
@@ -37,7 +35,9 @@ class Project {
                 mergeCommits.add(mergeCommit)
             }
         }
-
+        
+        if(mergeCommits.isEmpty())
+            println "No merge commits."
         return mergeCommits
     }
 
@@ -52,6 +52,17 @@ class Project {
         gitMergeBase.getInputStream().eachLine {
             return it
         }
+    }
+
+    private ProcessBuilder getProcessBuilder(String sinceDate, String untilDate) {
+        if(!sinceDate.equals('') && !untilDate.equals(''))
+            return new ProcessBuilder('git', '--no-pager', 'log', '--merges', "--since=\"${sinceDate}\"", "--until=\"${untilDate}\"")
+        else if(!sinceDate.equals(''))
+            return new ProcessBuilder('git', '--no-pager', 'log', '--merges', "--since=\"${sinceDate}\"")
+        else if(!untilDate.equals(''))
+            return new ProcessBuilder('git', '--no-pager', 'log', '--merges', "--until=\"${untilDate}\"")
+        else
+            return new ProcessBuilder('git', '--no-pager', 'log', '--merges')
     }
 
     public String getName() {

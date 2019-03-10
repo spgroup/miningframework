@@ -1,3 +1,7 @@
+import java.nio.file.Files 
+import java.nio.file.Paths
+import java.nio.file.Path
+
 final class FileManager {
 
     public static Set<String> getModifiedFiles(Project project, String childSHA, String ancestorSHA) {
@@ -26,6 +30,14 @@ final class FileManager {
         }
        
         return target
+    }
+
+    public static File copyAndMoveFile(Project project, String file, String sha, String target) {
+        Path targetPath = Paths.get(target)
+        if(!Files.exists(targetPath)) {
+            File targetFile = copyFile(project, file, sha)
+            Files.move(Paths.get(targetFile.getPath()), targetPath)
+        }
     }
 
     public static delete(File file) {

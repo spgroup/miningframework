@@ -35,8 +35,22 @@ class DataCollectorImpl extends DataCollector {
                 String className = getClassName(file, mergeCommit.getAncestorSHA())
                 for(method in mergeModifiedMethods) 
                     analyseModifiedMethods(className, mutuallyModifiedMethods, method)
+
+                assembleResults(file)
             }
         }
+    }
+
+    private void assembleResults(String file) {
+        String path = "output/files/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
+        File results = new File(path)
+        if(!results.exists())
+            results.mkdirs()
+
+        File leftFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getLeftSHA(), "${path}/left.java")
+        File rightFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getRightSHA(), "${path}/right.java")
+        File ancestorFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getAncestorSHA(), "${path}/base.java")
+        File mergeFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
     private void analyseModifiedMethods(String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod) {

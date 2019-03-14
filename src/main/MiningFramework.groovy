@@ -19,7 +19,7 @@ class MiningFramework {
     private CommitFilter commitFilter
 
     private final String LOCAL_PROJECT_PATH = 'localProject'
-
+    
     @Inject
     public MiningFramework(DataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
         this.dataCollector = dataCollector
@@ -36,7 +36,7 @@ class MiningFramework {
             if (project.isRemote())
                 cloneRepository(project)
             
-            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits('', '') // Since date and until date as arguments (dd/mm/yyyy).
+            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(argsManager.getSinceDate(), argsManager.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(mergeCommit)
@@ -70,10 +70,11 @@ class MiningFramework {
 
         println "Cloning repository ${project.getName()} into ${LOCAL_PROJECT_PATH}"
 
-        if(Files.exists(Paths.get(LOCAL_PROJECT_PATH))) {
-            File projectDirectory = new File(LOCAL_PROJECT_PATH)
+        File projectDirectory = new File(LOCAL_PROJECT_PATH)
+        if(projectDirectory.exists()) {
             FileManager.delete(projectDirectory)
         }
+        projectDirectory.mkdirs()
 
         Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), LOCAL_PROJECT_PATH).start()
         gitClone.waitFor()
@@ -106,12 +107,16 @@ class MiningFramework {
             argsManager.usageDescription()
             return
         }
+
         FileManager.createOutputFiles(argsManager.getOutputPath())
         
         printStartAnalysis()
-
+     
         ArrayList<Project> projectList = getProjectList()
-        Injector injector = Guice.createInjector(new MiningModule())
+        
+        Class injectorClass = argsManager.getInjector()
+
+        Injector injector = Guice.createInjector(injectorClass.newInstance())
         MiningFramework framework = injector.getInstance(MiningFramework.class)
 
         framework.setProjectList(projectList)

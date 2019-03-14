@@ -12,6 +12,7 @@ class ArgsManager {
     private  String outputPath
     private  String sinceDate
     private String untilDate
+    private Class injector
     ArgsManager() {
         this.cli = new CliBuilder(usage: "miningframework [options] [input] [output]",
                 header: "the Mining Framework take an input csv file and a name for the output dir (default: output) \n Options: ")
@@ -21,6 +22,7 @@ class ArgsManager {
         this.sinceDate = ''
         this.untilDate = ''
         this.outputPath = 'output'
+        this.injector = MiningModule
     }
 
     private defParameters() {
@@ -28,7 +30,9 @@ class ArgsManager {
         this.cli.s(longOpt: 'since', args: 1,
                 argName:'date', 'Use commits more recent than a specific date (format DD/MM/YYY.')
         this.cli.u(longOpt: 'until', args: 1,
-                argName:'date', 'Use commits older than a specific date (format DD/MM/YYYY).')
+                argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY).')
+        this.cli.i(longOpt: 'injector', args: 1,
+                argName:'class', 'Specify the class name of the dependency injector(it has to be in the classpath). default: MiningModule')
     }
 
 
@@ -51,6 +55,19 @@ class ArgsManager {
 
         if (this.options.until)
             this.untilDate = this.options.until
+        
+        if (this.options.injector) {
+            this.injector = parseInjector()
+        }
+    }
+
+    Class parseInjector() {
+        try {
+            return Class.forName(this.options.injector);
+        } catch (Exception e) {
+            println e
+            throw new InvalidArgsException()
+        }
     }
 
     boolean validArgs() {
@@ -79,6 +96,7 @@ class ArgsManager {
         }
     }
 
+
     void usageDescription() {
         this.cli.usage()
     }
@@ -99,4 +117,7 @@ class ArgsManager {
         return untilDate
     }
 
+    Class getInjector() {
+        return injector
+    }
 }

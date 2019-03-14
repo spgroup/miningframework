@@ -1,6 +1,7 @@
 import java.nio.file.Files 
 import java.nio.file.Paths
 import java.nio.file.Path
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 final class FileManager {
 
@@ -31,15 +32,9 @@ final class FileManager {
         return target
     }
 
-    public static File copyAndMoveFile(Project project, String file, String sha, String target) {
-        Path targetPath = Paths.get(target)
-        if(!Files.exists(targetPath)) {
-            File targetFile = copyFile(project, file, sha)
-            println targetPath.toFile()
-            targetFile.renameTo(targetPath.toFile())
-            return targetFile
-        }
-
+    public static void copyAndMoveFile(Project project, String file, String sha, String target) {
+        File targetFile = copyFile(project, file, sha)
+        Files.move(targetFile.toPath(), Paths.get(target), REPLACE_EXISTING)
     }
 
     public static File createOutputFiles(String outputPath) {

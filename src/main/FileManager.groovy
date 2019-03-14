@@ -28,7 +28,6 @@ final class FileManager {
         gitCatFile.getInputStream().eachLine {
             target << "${it}\n"
         }
-       
         return target
     }
 
@@ -36,39 +35,48 @@ final class FileManager {
         Path targetPath = Paths.get(target)
         if(!Files.exists(targetPath)) {
             File targetFile = copyFile(project, file, sha)
-            Files.move(Paths.get(targetFile.getPath()), targetPath)
+            println targetPath.toFile()
+            targetFile.renameTo(targetPath.toFile())
+            return targetFile
         }
 
     }
 
-    public static File createOutputDirs(String outputPath) {
+    public static File createOutputFiles(String outputPath) {
         File outputDir = new File(outputPath)
-
         if (!outputDir.exists())
             outputDir.mkdirs()
         
+        createStatisticsFiles(outputPath)
+        createDataFiles(outputPath)
+
+        return outputDir
+    }
+
+    private static File createStatisticsFiles(String outputPath) {
         File statisticsDir = new File(outputPath + '/statistics')
         if (!statisticsDir.exists())
             statisticsDir.mkdirs()
 
-        File dataDir = new File(outputPath + '/data')
-        if (!dataDir.exists())
-            dataDir.mkdirs()
-        
         File statisticsResultsFile = new File(outputPath + "/statistics/results.csv")
         if (statisticsResultsFile.exists())
             statisticsResultsFile.delete()
-        
 
         statisticsResultsFile << 'project,merge commit,is octopus,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,duration mean,conclusion delay\n'
+
+        return statisticsResultsFile
+    }
+
+    private static File createDataFiles(String outputPath) {
+        File dataDir = new File(outputPath + '/data')
+        if (!dataDir.exists())
+            dataDir.mkdirs()        
 
         File dataResultsFile = new File(outputPath + '/data/results.csv')
         if(dataResultsFile.exists())
             dataResultsFile.delete()
 
         dataResultsFile << 'project;merge commit;class;method;left modifications;right modifications\n'
-
-        return outputDir
     }
 
     public static delete(File file) {

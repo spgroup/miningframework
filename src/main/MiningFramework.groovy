@@ -11,6 +11,7 @@ import static groovy.io.FileType.DIRECTORIES
 
 class MiningFramework {
 
+    static private ArgsManager argsManager
     private ArrayList<Project> projectList
    
     private StatisticsCollector statCollector
@@ -27,6 +28,9 @@ class MiningFramework {
     }
 
     public void start() {
+        dataCollector.setOutputPath(argsManager.getOutputPath())
+        statCollector.setOutputPath(argsManager.getOutputPath())
+
         for (project in projectList) {
             printProjectInformation(project)
             if (project.isRemote())
@@ -95,11 +99,22 @@ class MiningFramework {
     }
 
     static main(args) {
+        argsManager = new ArgsManager()
+        try {
+            argsManager.parse(args)
+        } catch (Exception e) {
+            argsManager.usageDescription()
+            return
+        }
+
+        FileManager.createOutputDirs(argsManager.getOutputPath())
+        
         printStartAnalysis()
 
         ArrayList<Project> projectList = getProjectList()
         Injector injector = Guice.createInjector(new MiningModule())
         MiningFramework framework = injector.getInstance(MiningFramework.class)
+
         framework.setProjectList(projectList)
         framework.start()
 
@@ -109,7 +124,7 @@ class MiningFramework {
     static ArrayList<Project> getProjectList() {
         ArrayList<Project> projectList = new ArrayList<Project>()
 
-        String projectsFile = new File('projects.csv').getText()
+        String projectsFile = new File(argsManager.getInputPath()).getText()
         def iterator = parseCsv(projectsFile)
         for (line in iterator) {
             String name = line[0]

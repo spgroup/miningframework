@@ -3,6 +3,7 @@ public abstract class DataCollector {
     private Project project
     private MergeCommit mergeCommit
     private File resultsFile
+    private static String outputPath
 
     public abstract void collectData()
 
@@ -28,5 +29,13 @@ public abstract class DataCollector {
 
     public setResultsFile(File resultsFile) {
         this.resultsFile = resultsFile
+    }
+
+    public setOutputPath(String outputPath) {
+        this.outputPath = outputPath
+    }
+
+    public String getOutputPath() {
+        return this.outputPath
     }
 }

@@ -34,15 +34,15 @@ class ArgsManager {
         }
 
         this.inputPath = this.options.arguments()[0]
-        this.outputPath = this.options.arguments()[1]
-
+        String dir = this.options.arguments()[1]
+        this.outputPath = dir.endsWith("/") ? dir.substring(0,dir.lastIndexOf("/")) : dir;
     }
 
     boolean validArgs() {
         if (this.options.arguments().size() >= 2) {
             String inputFile = this.options.arguments()[0]
-            String outputFile = this.options.arguments()[1]
-            return inputFile.endsWith('.csv') && outputFile.length() > 0
+            String outputDir = this.options.arguments()[1]
+            return inputFile.endsWith('.csv') && outputDir.length() > 0
         }
         return false
     }

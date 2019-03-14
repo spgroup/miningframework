@@ -38,6 +38,37 @@ final class FileManager {
             File targetFile = copyFile(project, file, sha)
             Files.move(Paths.get(targetFile.getPath()), targetPath)
         }
+
+    }
+
+    public static File createOutputDirs(String outputPath) {
+        File outputDir = new File(outputPath)
+
+        if (!outputDir.exists())
+            outputDir.mkdirs()
+        
+        File statisticsDir = new File(outputPath + '/statistics')
+        if (!statisticsDir.exists())
+            statisticsDir.mkdirs()
+
+        File dataDir = new File(outputPath + '/data')
+        if (!dataDir.exists())
+            dataDir.mkdirs()
+        
+        File statisticsResultsFile = new File(outputPath + "/statistics/results.csv")
+        if (statisticsResultsFile.exists())
+            statisticsResultsFile.delete()
+        
+
+        statisticsResultsFile << 'project,merge commit,is octopus,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,duration mean,conclusion delay\n'
+
+        File dataResultsFile = new File(outputPath + '/data/results.csv')
+        if(dataResultsFile.exists())
+            dataResultsFile.delete()
+
+        dataResultsFile << 'project;merge commit;class;method;left modifications;right modifications\n'
+
+        return outputDir
     }
 
     public static delete(File file) {

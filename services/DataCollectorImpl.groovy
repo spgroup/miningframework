@@ -47,10 +47,10 @@ class DataCollectorImpl extends DataCollector {
         if(!results.exists())
             results.mkdirs()
 
-        File leftFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getLeftSHA(), "${path}/left.java")
-        File rightFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getRightSHA(), "${path}/right.java")
-        File ancestorFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getAncestorSHA(), "${path}/base.java")
-        File mergeFile = FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
+        FileManager.copyAndMoveFile(project, file, mergeCommit.getLeftSHA(), "${path}/left.java")
+        FileManager.copyAndMoveFile(project, file, mergeCommit.getRightSHA(), "${path}/right.java")
+        FileManager.copyAndMoveFile(project, file, mergeCommit.getAncestorSHA(), "${path}/base.java")
+        FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
     private void analyseModifiedMethods(String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod) {

@@ -1,5 +1,5 @@
 public class InvalidArgsException extends Exception {
-    public InvalidArgsException() {
-        super('Invalid args')
+    public InvalidArgsException(String message) {
+        super(message)
     }
 }

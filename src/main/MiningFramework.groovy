@@ -103,26 +103,30 @@ class MiningFramework {
         argsManager = new ArgsManager()
         try {
             argsManager.parse(args)
+            
+            if (argsManager.isHelp())
+                return
+    
+            FileManager.createOutputFiles(argsManager.getOutputPath())
+        
+            printStartAnalysis()
+     
+            ArrayList<Project> projectList = getProjectList()
+        
+            Class injectorClass = argsManager.getInjector()
+
+            Injector injector = Guice.createInjector(injectorClass.newInstance())
+            MiningFramework framework = injector.getInstance(MiningFramework.class)
+
+            framework.setProjectList(projectList)
+            framework.start()
+
+            printFinishAnalysis()
         } catch (InvalidArgsException e) {
-            argsManager.usageDescription()
+            println e.message
+            println 'Run the miningframework with --help to see the possible arguments'
             return
         }
-
-        FileManager.createOutputFiles(argsManager.getOutputPath())
-        
-        printStartAnalysis()
-     
-        ArrayList<Project> projectList = getProjectList()
-        
-        Class injectorClass = argsManager.getInjector()
-
-        Injector injector = Guice.createInjector(injectorClass.newInstance())
-        MiningFramework framework = injector.getInstance(MiningFramework.class)
-
-        framework.setProjectList(projectList)
-        framework.start()
-
-        printFinishAnalysis()
     }
 
     static ArrayList<Project> getProjectList() {

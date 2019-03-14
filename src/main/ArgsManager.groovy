@@ -8,17 +8,20 @@ class ArgsManager {
     private  CliBuilder cli
     private  OptionAccessor options
 
-    private  String inputPath
-    private  String outputPath
-    private  String sinceDate
+    private String inputPath
+    private String outputPath
+    private String sinceDate
     private String untilDate
     private Class injector
+    private boolean isHelp
+
     ArgsManager() {
         this.cli = new CliBuilder(usage: "miningframework [options] [input] [output]",
                 header: "the Mining Framework take an input csv file and a name for the output dir (default: output) \n Options: ")
 
         defParameters()
         // set default values
+        this.isHelp = false
         this.sinceDate = ''
         this.untilDate = ''
         this.outputPath = 'output'
@@ -39,10 +42,16 @@ class ArgsManager {
     private void parse(args) {
         this.options = this.cli.parse(args)
         
-        if (!validArgs() || this.options.h) {
-            throw new InvalidArgsException()
+        if (this.options.arguments().size() == 0 || this.options.h) {
+            isHelp = true
+            this.cli.usage()
+            return
         }
-        
+
+        String message = validateArgs()
+        if (message != 'OK')
+            throw new InvalidArgsException(message)
+    
         this.inputPath = this.options.arguments()[0]
         
         if (this.options.arguments().size() > 1) {
@@ -70,21 +79,21 @@ class ArgsManager {
         }
     }
 
-    boolean validArgs() {
-        if (this.options.arguments().size() < 1 || this.options.arguments().size() > 2)
-            return false
-        
+    String validateArgs() {      
+        if (this.options.arguments().size() > 2)
+            return 'Too many arguments passed'
+
         String inputFile = this.options.arguments()[0]
         if (!inputFile.endsWith('.csv'))
-            return false
+            return 'The input must be a csv file'
 
         if (this.options.since && !validDate(this.options.since))
-            return false
+            return 'Invalid since date. You must specify it with the format DD/MM/YYYY'
 
         if (this.options.until && !validDate(this.options.until))
-            return false
-    
-        return true
+            return 'Invalid until date.  You must specify it with the format DD/MM/YYYY'
+
+        return 'OK'
     }
 
     private boolean validDate(String value) {
@@ -119,5 +128,9 @@ class ArgsManager {
 
     Class getInjector() {
         return injector
+    }
+
+    boolean isHelp() {
+        return isHelp
     }
 }

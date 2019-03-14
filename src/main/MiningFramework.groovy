@@ -106,8 +106,7 @@ class MiningFramework {
             argsManager.usageDescription()
             return
         }
-
-        FileManager.createOutputDirs(argsManager.getOutputPath())
+        FileManager.createOutputFiles(argsManager.getOutputPath())
         
         printStartAnalysis()
 

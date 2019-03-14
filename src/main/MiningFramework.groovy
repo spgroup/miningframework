@@ -102,7 +102,7 @@ class MiningFramework {
         argsManager = new ArgsManager()
         try {
             argsManager.parse(args)
-        } catch (Exception e) {
+        } catch (InvalidArgsException e) {
             argsManager.usageDescription()
             return
         }

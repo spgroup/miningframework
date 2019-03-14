@@ -30,7 +30,7 @@ class ArgsManager {
         this.options = this.cli.parse(args)
 
         if (!validArgs() || this.options.h) {
-            throw new Exception('Invalid input')
+            throw new InvalidArgsException()
         }
 
         this.inputPath = this.options.arguments()[0]

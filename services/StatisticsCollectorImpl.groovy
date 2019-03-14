@@ -148,7 +148,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')
 
         for (int i = 0; i < parents.length; i++) {
-            Process gitLog = new ProcessBuilder('git', 'log', '--date=short', '--pretty=\"%H%n%ad\"', parents[i])
+            Process gitLog = new ProcessBuilder('git', 'log', '--date=short', '--pretty=%H%n%ad', parents[i])
                 .directory(new File(project.getPath()))
                 .start()
 
@@ -177,7 +177,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
 
         // This metric implies two parents only.
         for (int i = 0; i < 2; i++) {
-            Process gitShow = new ProcessBuilder('git', 'show', '--date=short', '--pretty=\"%ad\"', parents[i])
+            Process gitShow = new ProcessBuilder('git', 'show', '--date=short', '--pretty=%ad', parents[i])
                 .directory(new File(project.getPath()))
                 .start()
 

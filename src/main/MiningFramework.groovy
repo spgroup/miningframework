@@ -11,13 +11,12 @@ import static groovy.io.FileType.DIRECTORIES
 
 class MiningFramework {
 
-    static private ArgsManager argsManager
     private ArrayList<Project> projectList
    
     private StatisticsCollector statCollector
     private DataCollector dataCollector
     private CommitFilter commitFilter
-
+    static private Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
     
     @Inject
@@ -28,15 +27,15 @@ class MiningFramework {
     }
 
     public void start() {
-        dataCollector.setOutputPath(argsManager.getOutputPath())
-        statCollector.setOutputPath(argsManager.getOutputPath())
+        dataCollector.setOutputPath(arguments.getOutputPath())
+        statCollector.setOutputPath(arguments.getOutputPath())
 
         for (project in projectList) {
             printProjectInformation(project)
             if (project.isRemote())
                 cloneRepository(project)
             
-            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(argsManager.getSinceDate(), argsManager.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
+            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(mergeCommit)
@@ -100,28 +99,28 @@ class MiningFramework {
     }
 
     static main(args) {
-        argsManager = new ArgsManager()
+        ArgsParser argsParser = new ArgsParser()
         try {
-            argsManager.parse(args)
+            Arguments appArguments = argsParser.parse(args)
             
-            if (argsManager.isHelp())
-                return
+            if (!appArguments.isHelp()) {
+                Class injectorClass = appArguments.getInjector()
+                Injector injector = Guice.createInjector(injectorClass.newInstance())
+                MiningFramework framework = injector.getInstance(MiningFramework.class)
+
+                FileManager.createOutputFiles(appArguments.getOutputPath())
+            
+                printStartAnalysis()
+
+                framework.setArguments(appArguments)
+                
+                ArrayList<Project> projectList = getProjectList()
+                framework.setProjectList(projectList)
+                framework.start()
+
+                printFinishAnalysis()
+            }
     
-            FileManager.createOutputFiles(argsManager.getOutputPath())
-        
-            printStartAnalysis()
-     
-            ArrayList<Project> projectList = getProjectList()
-        
-            Class injectorClass = argsManager.getInjector()
-
-            Injector injector = Guice.createInjector(injectorClass.newInstance())
-            MiningFramework framework = injector.getInstance(MiningFramework.class)
-
-            framework.setProjectList(projectList)
-            framework.start()
-
-            printFinishAnalysis()
         } catch (InvalidArgsException e) {
             println e.message
             println 'Run the miningframework with --help to see the possible arguments'
@@ -132,7 +131,7 @@ class MiningFramework {
     static ArrayList<Project> getProjectList() {
         ArrayList<Project> projectList = new ArrayList<Project>()
 
-        String projectsFile = new File(argsManager.getInputPath()).getText()
+        String projectsFile = new File(arguments.getInputPath()).getText()
         def iterator = parseCsv(projectsFile)
         for (line in iterator) {
             String name = line[0]
@@ -171,6 +170,10 @@ class MiningFramework {
         }
 
         return projectList
+    }
+
+    void setArguments(Arguments arguments) {
+        this.arguments = arguments
     }
 
     static void printStartAnalysis() {

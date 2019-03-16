@@ -49,6 +49,9 @@ class ArgsParser {
         if (!inputFile.endsWith('.csv'))
             throw new InvalidArgsException('The input must be a csv file')
         
+        if (!new File(inputFile).exists())
+            throw new InvalidArgsException("Could not find input file: ${inputFile}")
+
         args.setInputPath(inputFile)
             
         if (this.options.arguments().size() > 1) {

@@ -8,7 +8,7 @@ class DataCollectorImpl extends DataCollector {
 
     @Override
     public void collectData() {
-        resultsFile = new File(outputPath + '/data/results.csv')
+        resultsFile = new File("${outputPath}/data/results.csv")
 
         getMutuallyModifiedMethods()
         println "Data collection finished!"
@@ -37,7 +37,7 @@ class DataCollectorImpl extends DataCollector {
     }
 
     private void assembleResults(String file) {
-        String path = this.outputPath + "/files/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
+        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
         File results = new File(path)
         if(!results.exists())
             results.mkdirs()

@@ -5,7 +5,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
 
     @Override
     public void collectStatistics() {
-        resultsFile = new File(outputPath + '/statistics/results.csv')
+        resultsFile = new File("${outputPath}/statistics/results.csv")
 
         boolean isOctopus = mergeCommit.isOctopus()
         int numberOfMergeConflicts = getNumberOfMergeConflicts()

@@ -18,7 +18,7 @@ class ArgsParser {
     private defParameters() {
         this.cli.h(longOpt: 'help', 'Show help for executing commands.')
         this.cli.s(longOpt: 'since', args: 1,
-                argName:'date', 'Use commits more recent than a specific date (format DD/MM/YYY.')
+                argName:'date', 'Use commits more recent than a specific date (format DD/MM/YYY).')
         this.cli.u(longOpt: 'until', args: 1,
                 argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY).')
         this.cli.i(longOpt: 'injector', args: 1,

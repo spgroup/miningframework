@@ -34,7 +34,7 @@ class DataCollectorImpl extends DataCollector {
             if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(file, mergeCommit.getAncestorSHA())
                 for(method in mergeModifiedMethods) 
-                    analyseModifiedMethods(className, mutuallyModifiedMethods, method)
+                    analyseModifiedMethods(className, mutuallyModifiedMethods, method, file)
 
                 assembleResults(file)
             }
@@ -53,7 +53,7 @@ class DataCollectorImpl extends DataCollector {
         FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
-    private void analyseModifiedMethods(String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod) {
+    private void analyseModifiedMethods(String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
 
         ModifiedMethod[] mutuallyModifiedMethods = parentsModifiedMethods[mergeModifiedMethod.getSignature()]
         if (mutuallyModifiedMethods != null) {
@@ -66,7 +66,7 @@ class DataCollectorImpl extends DataCollector {
                 if(containsLine(mutuallyModifiedMethods[1], line))
                     rightModifiedLines.add(line.getNumber())
             }
-            printResults(className, mergeModifiedMethod.getSignature(), leftModifiedLines, rightModifiedLines)
+            printResults(className, mergeModifiedMethod.getSignature(), leftModifiedLines, rightModifiedLines, file)
         }
     }
 
@@ -77,8 +77,21 @@ class DataCollectorImpl extends DataCollector {
         return false
     }
 
-    private void printResults(String className, String method, Set<Integer> leftModifiedLines, Set<Integer> rightModifiedLines) {   
-        resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
+    private void printResults(String className, String method, Set<Integer> leftModifiedLines, Set<Integer> rightModifiedLines, String file) {   
+
+        if(MiningFramework.isTest) {
+            String mfTestLink = "https://github.com/spgroup/miningframework/src/test/output"
+            String projectCell = generateLink("${mfTestLink}/${project.getName()}", project.getName())
+            String commitSHACell = generateLink("${mfTestLink}/${project.getName()}/${mergeCommit.getSHA()}", mergeCommit.getSHA())
+            String classCell = generateLink("${mfTestLink}/${project.getName()}/${file}", className)
+            resultsFile << "${projectCell};${commitSHACell};${classCell};${method};${leftModifiedLines};${rightModifiedLines}\n"
+        } else {
+            resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
+        }
+    }
+
+    private String generateLink(String link, String name) {
+        return "\"=HYPERLINK(\"${link}\";\"${name}\")\""
     }
 
     private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String commitSHA) {

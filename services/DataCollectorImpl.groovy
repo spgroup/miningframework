@@ -10,7 +10,7 @@ class DataCollectorImpl extends DataCollector {
        resultsFile = new File("output/data/results.csv")
         if(resultsFile.exists())
             resultsFile.delete()
-        resultsFile << 'project;merge commit;class;method;left modifications;right modifications\n'
+        resultsFile << 'project&merge commit&class&method&left modifications&right modifications\n'
     }
 
     @Override
@@ -36,13 +36,14 @@ class DataCollectorImpl extends DataCollector {
                 for(method in mergeModifiedMethods) 
                     analyseModifiedMethods(className, mutuallyModifiedMethods, method, file)
 
-                assembleResults(file)
+                if(MiningFramework.isTest)
+                    assembleResults(file)
             }
         }
     }
 
     private void assembleResults(String file) {
-        String path = "output/files/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
+        String path = "src/test/results/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
         File results = new File(path)
         if(!results.exists())
             results.mkdirs()
@@ -80,18 +81,18 @@ class DataCollectorImpl extends DataCollector {
     private void printResults(String className, String method, Set<Integer> leftModifiedLines, Set<Integer> rightModifiedLines, String file) {   
 
         if(MiningFramework.isTest) {
-            String mfTestLink = "https://github.com/spgroup/miningframework/src/test/output"
+            String mfTestLink = "https://github.com/spgroup/miningframework/src/test/results"
             String projectCell = generateLink("${mfTestLink}/${project.getName()}", project.getName())
             String commitSHACell = generateLink("${mfTestLink}/${project.getName()}/${mergeCommit.getSHA()}", mergeCommit.getSHA())
-            String classCell = generateLink("${mfTestLink}/${project.getName()}/${file}", className)
-            resultsFile << "${projectCell};${commitSHACell};${classCell};${method};${leftModifiedLines};${rightModifiedLines}\n"
+            String classCell = generateLink("${mfTestLink}/${project.getName()}/${mergeCommit.getSHA()}/${file}", className)
+            resultsFile << "${projectCell}&${commitSHACell}&${classCell}&${method}&${leftModifiedLines}&${rightModifiedLines}\n"
         } else {
             resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
         }
     }
 
     private String generateLink(String link, String name) {
-        return "\"=HYPERLINK(\"${link}\";\"${name}\")\""
+        return "=HYPERLINK(\"${link}\";\"${name}\")"
     }
 
     private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String commitSHA) {

@@ -117,7 +117,7 @@ class MiningFramework {
 
             boolean relativePath
             try {
-                relativePath = line[2]
+                relativePath = line[2].equals("true")
             } catch(ArrayIndexOutOfBoundsException e) {
                 relativePath = false
             }

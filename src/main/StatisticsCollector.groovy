@@ -3,6 +3,7 @@ public abstract class StatisticsCollector {
     private Project project
     private MergeCommit mergeCommit
     private File resultsFile
+    private String outputPath
     
     public abstract void collectStatistics()
 
@@ -28,5 +29,13 @@ public abstract class StatisticsCollector {
 
     public setResultsFile(File resultsFile) {
         this.resultsFile = resultsFile
+    }
+
+    public setOutputPath(String outputPath) {
+        this.outputPath = outputPath
+    }
+
+    public getOutputPath() {
+        return outputPath
     }
 }

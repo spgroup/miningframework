@@ -22,6 +22,10 @@ public class ModifiedLine {
         return number;
     }
 
+    public getType() {
+        return type;
+    }
+
     public String toString() {
         return Integer.toString(number) + " " + content + " " + type
     }

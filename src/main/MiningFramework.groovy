@@ -16,9 +16,9 @@ class MiningFramework {
     private StatisticsCollector statCollector
     private DataCollector dataCollector
     private CommitFilter commitFilter
-
+    static private Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
-
+    
     @Inject
     public MiningFramework(DataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
         this.dataCollector = dataCollector
@@ -27,12 +27,15 @@ class MiningFramework {
     }
 
     public void start() {
+        dataCollector.setOutputPath(arguments.getOutputPath())
+        statCollector.setOutputPath(arguments.getOutputPath())
+
         for (project in projectList) {
             printProjectInformation(project)
             if (project.isRemote())
                 cloneRepository(project)
             
-            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits('', '') // Since date and until date as arguments (dd/mm/yyyy).
+            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(mergeCommit)
@@ -66,10 +69,11 @@ class MiningFramework {
 
         println "Cloning repository ${project.getName()} into ${LOCAL_PROJECT_PATH}"
 
-        if(Files.exists(Paths.get(LOCAL_PROJECT_PATH))) {
-            File projectDirectory = new File(LOCAL_PROJECT_PATH)
+        File projectDirectory = new File(LOCAL_PROJECT_PATH)
+        if(projectDirectory.exists()) {
             FileManager.delete(projectDirectory)
         }
+        projectDirectory.mkdirs()
 
         Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), LOCAL_PROJECT_PATH).start()
         gitClone.waitFor()
@@ -95,21 +99,39 @@ class MiningFramework {
     }
 
     static main(args) {
-        printStartAnalysis()
+        ArgsParser argsParser = new ArgsParser()
+        try {
+            Arguments appArguments = argsParser.parse(args)
+            
+            if (!appArguments.isHelp()) {
+                Class injectorClass = appArguments.getInjector()
+                Injector injector = Guice.createInjector(injectorClass.newInstance())
+                MiningFramework framework = injector.getInstance(MiningFramework.class)
 
-        ArrayList<Project> projectList = getProjectList()
-        Injector injector = Guice.createInjector(new MiningModule())
-        MiningFramework framework = injector.getInstance(MiningFramework.class)
-        framework.setProjectList(projectList)
-        framework.start()
+                FileManager.createOutputFiles(appArguments.getOutputPath())
+            
+                printStartAnalysis()
 
-        printFinishAnalysis()
+                framework.setArguments(appArguments)
+                
+                ArrayList<Project> projectList = getProjectList()
+                framework.setProjectList(projectList)
+                framework.start()
+
+                printFinishAnalysis()
+            }
+    
+        } catch (InvalidArgsException e) {
+            println e.message
+            println 'Run the miningframework with --help to see the possible arguments'
+            return
+        }
     }
 
     static ArrayList<Project> getProjectList() {
         ArrayList<Project> projectList = new ArrayList<Project>()
 
-        String projectsFile = new File('projects.csv').getText()
+        String projectsFile = new File(arguments.getInputPath()).getText()
         def iterator = parseCsv(projectsFile)
         for (line in iterator) {
             String name = line[0]
@@ -148,6 +170,10 @@ class MiningFramework {
         }
 
         return projectList
+    }
+
+    void setArguments(Arguments arguments) {
+        this.arguments = arguments
     }
 
     static void printStartAnalysis() {

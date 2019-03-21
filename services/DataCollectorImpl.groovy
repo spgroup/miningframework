@@ -6,15 +6,10 @@ class DataCollectorImpl extends DataCollector {
 
     public static enum Modification {ADDED, REMOVED, CHANGED}
 
-    public DataCollectorImpl() {
-       resultsFile = new File("output/data/results.csv")
-        if(resultsFile.exists())
-            resultsFile.delete()
-        resultsFile << 'project&merge commit&class&method&left modifications&right modifications\n'
-    }
-
     @Override
     public void collectData() {
+        resultsFile = new File("${outputPath}/data/results.csv")
+
         getMutuallyModifiedMethods()
         println "Data collection finished!"
     }
@@ -43,7 +38,7 @@ class DataCollectorImpl extends DataCollector {
     }
 
     private void assembleResults(String file) {
-        String path = "src/test/results/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
+        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
         File results = new File(path)
         if(!results.exists())
             results.mkdirs()

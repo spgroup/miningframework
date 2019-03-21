@@ -3,15 +3,10 @@ import java.util.concurrent.TimeUnit
 
 class StatisticsCollectorImpl extends StatisticsCollector {
 
-    public StatisticsCollectorImpl() {
-        resultsFile = new File("output/statistics/results.csv")
-        if(resultsFile.exists())
-            resultsFile.delete()
-        resultsFile << 'project,merge commit,is octopus,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,duration mean,conclusion delay\n'
-    }
-
     @Override
     public void collectStatistics() {
+        resultsFile = new File("${outputPath}/statistics/results.csv")
+
         boolean isOctopus = mergeCommit.isOctopus()
         int numberOfMergeConflicts = getNumberOfMergeConflicts()
         boolean mergeConflictOcurrence = numberOfMergeConflicts > 0

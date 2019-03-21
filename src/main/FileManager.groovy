@@ -71,7 +71,7 @@ final class FileManager {
         if(dataResultsFile.exists())
             dataResultsFile.delete()
 
-        dataResultsFile << 'project;merge commit;class;method;left modifications;right modifications\n'
+        dataResultsFile << 'project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n'
         return dataResultsFile
     }
 

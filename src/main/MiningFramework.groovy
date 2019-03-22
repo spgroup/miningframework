@@ -74,10 +74,10 @@ class MiningFramework {
         Project resultsRepository = new Project('resultsRepository', remoteRepositoryURL)
         printPushInformation(remoteRepositoryURL)
         File targetPath = new File("${LOCAL_RESULTS_REPOSITORY_PATH}/${resultsRepository.getName()}")
-        cloneRepository(resultsRepository, targetPath)
+        cloneRepository(resultsRepository, targetPath.getPath())
 
         // Copy output files, commit and then push.
-        FileManager.copyDirectory(arguments.getOutputPath(), targetPath.getPath())
+        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath.getPath()}/output-${project.getName()}")
         Process gitCommit = new ProcessBuilder('git', 'commit', '-a', '-m', "Analysed project ${project.getName()}")
             .directory(targetPath)
             .redirectErrorStream(true)

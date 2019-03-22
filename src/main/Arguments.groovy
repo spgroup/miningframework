@@ -6,6 +6,7 @@ class Arguments {
     private String untilDate
     private Class injector
     private boolean isHelp
+    private String resultsRemoteRepository
 
     Arguments() {
         isHelp = false
@@ -13,6 +14,7 @@ class Arguments {
         untilDate = ''
         outputPath = 'output'
         injector = MiningModule
+        resultsRemoteRepository = ''
     }
 
     void setInputPath(String inputPath) {
@@ -33,6 +35,10 @@ class Arguments {
 
     Class setInjector(Class injector) {
         this.injector = injector
+    }
+
+    void setResultsRemoteRepository(String resultsRemoteRepository) {
+        this.resultsRemoteRepository = resultsRemoteRepository
     }
 
     boolean setHelp() {
@@ -61,5 +67,9 @@ class Arguments {
 
     boolean isHelp() {
         return isHelp
+    }
+
+    String getResultsRemoteRepository() {
+        return resultsRemoteRepository
     }
 }

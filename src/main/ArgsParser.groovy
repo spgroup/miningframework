@@ -23,6 +23,7 @@ class ArgsParser {
                 argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY).')
         this.cli.i(longOpt: 'injector', args: 1,
                 argName:'class', 'Specify the class name of the dependency injector(it has to be in the classpath). default: MiningModule')
+        this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a link to a remote git repository of your own to push the files analysed.')
     }
 
 
@@ -82,6 +83,24 @@ class ArgsParser {
             } catch (Exception e) {
                 throw new InvalidArgsException('Invalid injector class. be sure it is in your classpath')
             }
+        }
+
+        if (this.options.push) {
+            if(!repositoryExists(this.options.push))
+                throw new InvalidArgsException('Inexistent remote git repository.')
+
+            args.setResultsRemoteRepository(this.options.push)
+        }
+    }
+
+    private boolean repositoryExists(String url) {
+        try {
+            final URL url = new URL(this.options.push)
+            HttpURLConnection huc = (HttpURLConnection) url.openConnection()
+            huc.setRequestMethod("HEAD")
+            return huc.getResponseCode() == 200
+        } catch (MalformedURLException e) {
+                throw new InvalidArgsException('Invalid url.')
         }
     }
 

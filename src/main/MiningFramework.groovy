@@ -18,6 +18,7 @@ class MiningFramework {
     private CommitFilter commitFilter
     static private Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
+    private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
     public MiningFramework(DataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
@@ -33,7 +34,7 @@ class MiningFramework {
         for (project in projectList) {
             printProjectInformation(project)
             if (project.isRemote())
-                cloneRepository(project)
+                cloneRepository(project, LOCAL_PROJECT_PATH)
             
             ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
@@ -43,6 +44,10 @@ class MiningFramework {
                     collectData(project, mergeCommit)
                 }
             }
+
+            if(!arguments.getResultsRemoteRepository().equals(''))
+                pushResults(project, arguments.getResultsRemoteRepository())
+
             endProjectAnalysis()
         }
     }
@@ -65,11 +70,30 @@ class MiningFramework {
         dataCollector.collectData()
     }
 
-    private void cloneRepository(Project project) {
+    private void pushResults(Project project, String remoteRepositoryURL) {
+        Project resultsRepository = new Project('resultsRepository', remoteRepositoryURL)
+        printPushInformation(remoteRepositoryURL)
+        File targetPath = new File("${LOCAL_RESULTS_REPOSITORY_PATH}/${resultsRepository.getName()}")
+        cloneRepository(resultsRepository, targetPath)
 
-        println "Cloning repository ${project.getName()} into ${LOCAL_PROJECT_PATH}"
+        // Copy output files, commit and then push.
+        FileManager.copyDirectory(arguments.getOutputPath(), targetPath.getPath())
+        Process gitCommit = new ProcessBuilder('git', 'commit', '-a', '-m', "Analysed project ${project.getName()}")
+            .directory(targetPath)
+            .redirectErrorStream(true)
+            .start()
+        Process gitPush = new ProcessBuilder('git', 'push', '--force-with-lease')
+            .directory(targetPath)
+            .redirectErrorStream(true)
+            .start()
+        FileManager.delete(targetPath)
+    }
 
-        File projectDirectory = new File(LOCAL_PROJECT_PATH)
+    private void cloneRepository(Project project, String target) {
+
+        println "Cloning repository ${project.getName()} into ${target}"
+
+        File projectDirectory = new File(target)
         if(projectDirectory.exists()) {
             FileManager.delete(projectDirectory)
         }
@@ -86,6 +110,10 @@ class MiningFramework {
 
     private void printMergeCommitInformation(MergeCommit mergeCommit) {
         println "Merge commit: ${mergeCommit.getSHA()}"
+    }
+
+    private void printPushInformation(String url) {
+        println "Proceeding to push output files to ${url}."
     }
 
     private void endProjectAnalysis() {

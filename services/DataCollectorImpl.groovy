@@ -31,13 +31,13 @@ class DataCollectorImpl extends DataCollector {
                 for(method in mergeModifiedMethods) 
                     analyseModifiedMethods(className, mutuallyModifiedMethods, method, file)
 
-                assembleResults(file)
+                assembleResults(className.replaceAll('\\.', '\\/'), file)
             }
         }
     }
 
-    private void assembleResults(String file) {
-        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${file}/"
+    private void assembleResults(String classPath, String file) {
+        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classPath}/"
         File results = new File(path)
         if(!results.exists())
             results.mkdirs()

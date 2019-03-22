@@ -1,7 +1,9 @@
+@Grab(group='commons-io', module='commons-io', version='2.6')
 import java.nio.file.Files 
 import java.nio.file.Paths
 import java.nio.file.Path
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import org.apache.commons.io.FileUtils 
 
 final class FileManager {
 
@@ -35,6 +37,10 @@ final class FileManager {
     public static void copyAndMoveFile(Project project, String file, String sha, String target) {
         File targetFile = copyFile(project, file, sha)
         Files.move(targetFile.toPath(), Paths.get(target), REPLACE_EXISTING)
+    }
+
+    public static void copyDirectory(String source, String target) {
+        FileUtils.copyDirectory(new File(source), new File(target))
     }
 
     public static File createOutputFiles(String outputPath) {

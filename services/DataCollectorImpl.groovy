@@ -56,19 +56,24 @@ class DataCollectorImpl extends DataCollector {
 
         ModifiedMethod[] mutuallyModifiedMethods = parentsModifiedMethods[mergeModifiedMethod.getSignature()]
         if (mutuallyModifiedMethods != null) {
-            Set<Integer> leftModifiedLines = new HashSet<Integer>()
-            Set<Integer> rightModifiedLines = new HashSet<Integer>()
+            Set<Integer> leftAddedLines = new HashSet<Integer>()
+            Set<Integer> leftDeletedLines = new HashSet<Integer>()
+            Set<Integer> rightAddedLines = new HashSet<Integer>()
+            Set<Integer> rightDeletedLines = new HashSet<Integer>()
 
+            // mutuallyModifiedMethods[0] = left's methods; mutuallyModifiedMethods[1] = right's methods;
             for(line in mergeModifiedMethod.getModifiedLines()) {
                 if(containsLine(mutuallyModifiedMethods[0], line))
-                    leftModifiedLines.add(line.getNumber())
-                if(containsLine(mutuallyModifiedMethods[1], line))
-                    rightModifiedLines.add(line.getNumber())
+                    checkAndAddLine(line, leftAddedLines, leftDeletedLines)
+
+                if(containsLine(mutuallyModifiedMethods[1], line)) 
+                    checkAndAddLine(line, rightAddedLines, rightDeletedLines)
+                    
             }
-            printResults(className, mergeModifiedMethod.getSignature(), leftModifiedLines, rightModifiedLines, file)
+            printResults(className, mergeModifiedMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
         }
     }
-
+  
     private boolean containsLine(ModifiedMethod method, ModifiedLine line) {
         for(lineit in method.getModifiedLines())
             if(lineit.equals(line))
@@ -76,21 +81,29 @@ class DataCollectorImpl extends DataCollector {
         return false
     }
 
-    private void printResults(String className, String method, Set<Integer> leftModifiedLines, Set<Integer> rightModifiedLines, String file) {   
-        resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
-
+    private void printResults(String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
+        resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
+    
         // Add links.
         String remoteRepositoryURL = MiningFramework.getArguments().getResultsRemoteRepository()
         if(!remoteRepositoryURL.equals('')) {
             String projectLink = addLink(remoteRepositoryURL, project.getName())
             String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
             String classNameLink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}/${className.replaceAll('\\.', '\\/')}")
-            resultsFileLinks << "${projectLink}&${mergeCommitSHALink}&${classNameLink}&${method}&${leftModifiedLines}&${rightModifiedLines}\n"
+            resultsFileLinks << "${projectLink}&${mergeCommitSHALink}&${classNameLink}&${method}&${leftAddedLines}&${leftDeletedLines}&${rightAddedLines}&${rightDeletedLines}\n"
         }
     }
-
+   
     private String addLink(String url, String path) {
         return "=HYPERLINK(${url}/tree/master/output-${path};${path})"
+    }
+  
+    private void checkAndAddLine(ModifiedLine line, Set<Integer> addedLines,  Set<Integer> deletedLines) {
+        if (line.getType() == Modification.ADDED || line.getType() == Modification.CHANGED)
+            addedLines.add(line.getNumber())
+        else 
+            deletedLines.add(line.getNumber())
+
     }
 
     private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String commitSHA) {
@@ -158,12 +171,8 @@ class DataCollectorImpl extends DataCollector {
         while(line.startsWith('<') || line.startsWith('---') || line.startsWith('>')) {
 
             if(lineCorrespondsToModification(type, line)) {
-                
-                // Desconsidering CHANGED modification, to uniformize further comparisons.
-                Modification lineType = line.startsWith('>') ? Modification.ADDED : Modification.REMOVED
-
                 String content = line.substring(1)
-                ModifiedLine modifiedLine = new ModifiedLine(content, modifiedLinesNumber[i], lineType)
+                ModifiedLine modifiedLine = new ModifiedLine(content, modifiedLinesNumber[i], type)
                 modifiedLines.add(modifiedLine)
                 if(line.startsWith('>')) // iterating on rangef.
                     i++

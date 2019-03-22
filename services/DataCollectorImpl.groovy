@@ -82,9 +82,7 @@ class DataCollectorImpl extends DataCollector {
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA) 
         File mergeFile = FileManager.copyFile(project, filePath, commitSHA)
 
-        Process diffJ = new ProcessBuilder('java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
-            .directory(new File('dependencies'))
-            .start()
+        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
         
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream())) 
         String line
@@ -227,10 +225,7 @@ class DataCollectorImpl extends DataCollector {
         if(matcher.find()) 
             className = matcher.group(1)
 
-        Process gitCatFile = new ProcessBuilder('git', 'cat-file', '-p', "${SHA}:${file}")
-            .directory(new File(project.getPath()))
-            .start()
-
+        Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${SHA}:${file}")
         gitCatFile.getInputStream().eachLine {
             String lineNoWhitespace = it.replaceAll("\\s", "")
             if(lineNoWhitespace.take(7).equals('package')) {

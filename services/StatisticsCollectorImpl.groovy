@@ -25,10 +25,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
     private int getNumberOfMergeConflicts() {
         int numberOfMergeConflicts = 0
 
-        Process gitShow = new ProcessBuilder('git', 'show', mergeCommit.getSHA())
-            .directory(new File(project.getPath()))
-            .start()
-
+        Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
         BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
         String line
         while((line = reader.readLine()) != null) {
@@ -42,10 +39,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
     private int getNumberOfConflictingFiles() {
         int numberOfConflictingFiles = 0
 
-        Process gitShow = new ProcessBuilder('git', 'show', mergeCommit.getSHA())
-            .directory(new File(project.getPath()))
-            .start()
-
+        Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
         BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
         String line
         boolean fileHasConflict = false
@@ -71,9 +65,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         int[] numberOfDevelopers = new int[parents.length]
 
         for (int i = 0; i < parents.length; i++) {
-            Process gitRevList = new ProcessBuilder('git', 'rev-list', mergeCommit.getAncestorSHA(), parents[i], '--pretty=%an')
-                .directory(new File(project.getPath()))
-                .start()
+            Process gitRevList = ProcessRunner.runProcess(project.getPath(), 'git', 'rev-list', mergeCommit.getAncestorSHA(), parents[i], '--pretty=%an')
 
             Set<String> developers = new HashSet<String>()
             gitRevList.getInputStream().eachLine {
@@ -90,9 +82,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         int[] numberOfCommits = new int[parents.length]
 
         for (int i = 0; i < parents.length; i++) {
-            Process gitRevList = new ProcessBuilder('git', 'rev-list', '--count', mergeCommit.getAncestorSHA(), parents[i])
-                .directory(new File(project.getPath()))
-                .start()
+            Process gitRevList = ProcessRunner.runProcess(project.getPath(), 'git', 'rev-list', '--count', mergeCommit.getAncestorSHA(), parents[i])
 
             gitRevList.getInputStream().eachLine {
                 numberOfCommits[i] = Integer.parseInt(it)
@@ -106,9 +96,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         int[] numberOfChangedFiles = new int[parents.length]
 
         for (int i = 0; i < parents.length; i++) {
-            Process gitRevList = new ProcessBuilder('git', 'diff', '--name-only', parents[i], mergeCommit.getAncestorSHA())
-                .directory(new File(project.getPath()))
-                .start()
+            Process gitRevList = ProcessRunner.runProcess(project.getPath(), 'git', 'diff', '--name-only', parents[i], mergeCommit.getAncestorSHA())
 
             numberOfChangedFiles[i] = 0
             gitRevList.getInputStream().eachLine {
@@ -123,9 +111,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         int[] numberOfChangedLines = new int[parents.length]
 
         for (int i = 0; i < parents.length; i++) {
-            Process gitRevList = new ProcessBuilder('git', 'diff', parents[i], mergeCommit.getAncestorSHA())
-                .directory(new File(project.getPath()))
-                .start()
+            Process gitRevList = ProcessRunner.runProcess(project.getPath(), 'git', 'diff', parents[i], mergeCommit.getAncestorSHA())
 
             numberOfChangedLines[i] = 0
             gitRevList.getInputStream().eachLine {
@@ -143,9 +129,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')
 
         for (int i = 0; i < parents.length; i++) {
-            Process gitLog = new ProcessBuilder('git', 'log', '--date=short', '--pretty=%H%n%ad', parents[i])
-                .directory(new File(project.getPath()))
-                .start()
+            Process gitLog = ProcessRunner.runProcess(project.getPath(), 'git', 'log', '--date=short', '--pretty=%H%n%ad', parents[i])
 
             numberOfDaysPassed[i] = 0
             BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))
@@ -172,9 +156,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
 
         // This metric implies two parents only.
         for (int i = 0; i < 2; i++) {
-            Process gitShow = new ProcessBuilder('git', 'show', '--date=short', '--pretty=%ad', parents[i])
-                .directory(new File(project.getPath()))
-                .start()
+            Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', '--date=short', '--pretty=%ad', parents[i])
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
             commitDates[i] = formatter.parse(reader.readLine())

@@ -93,9 +93,9 @@ class ArgsParser {
         }
     }
 
-    private boolean repositoryExists(String url) {
+    private boolean repositoryExists(String repositoryURL) {
         try {
-            final URL url = new URL(this.options.push)
+            final URL url = new URL(repositoryURL)
             HttpURLConnection huc = (HttpURLConnection) url.openConnection()
             huc.setRequestMethod("HEAD")
             return huc.getResponseCode() == 200

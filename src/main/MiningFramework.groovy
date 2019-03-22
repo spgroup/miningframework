@@ -16,7 +16,7 @@ class MiningFramework {
     private StatisticsCollector statCollector
     private DataCollector dataCollector
     private CommitFilter commitFilter
-    static private Arguments arguments
+    static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
@@ -45,7 +45,7 @@ class MiningFramework {
                 }
             }
 
-            if(!arguments.getResultsRemoteRepository().equals(''))
+            if(!arguments.getResultsRemoteRepository().equals('')) // Will push.
                 pushResults(project, arguments.getResultsRemoteRepository())
 
             endProjectAnalysis()
@@ -71,22 +71,29 @@ class MiningFramework {
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {
-        Project resultsRepository = new Project('resultsRepository', remoteRepositoryURL)
+        Project resultsRepository = new Project('', remoteRepositoryURL)
         printPushInformation(remoteRepositoryURL)
-        File targetPath = new File("${LOCAL_RESULTS_REPOSITORY_PATH}/${resultsRepository.getName()}")
-        cloneRepository(resultsRepository, targetPath.getPath())
+        String targetPath = "${LOCAL_RESULTS_REPOSITORY_PATH}/resultsRepository"
+        cloneRepository(resultsRepository, targetPath)
 
-        // Copy output files, commit and then push.
-        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath.getPath()}/output-${project.getName()}")
-        Process gitCommit = new ProcessBuilder('git', 'commit', '-a', '-m', "Analysed project ${project.getName()}")
-            .directory(targetPath)
-            .redirectErrorStream(true)
-            .start()
-        Process gitPush = new ProcessBuilder('git', 'push', '--force-with-lease')
-            .directory(targetPath)
-            .redirectErrorStream(true)
-            .start()
-        FileManager.delete(targetPath)
+        // Copy output files, add, commit and then push.
+        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath}/output-${project.getName()}")
+        Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
+        gitAdd.waitFor()
+        
+        Process gitCommit = ProcessRunner.runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()}")
+        gitCommit.waitFor()
+        gitCommit.getInputStream().eachLine {
+            println it
+        }
+
+        Process gitPush = ProcessRunner.runProcess(targetPath, 'git', 'push', '--force-with-lease')
+        gitPush.waitFor()
+        gitPush.getInputStream().eachLine {
+            println it
+        }
+
+        FileManager.delete(new File(targetPath))
     }
 
     private void cloneRepository(Project project, String target) {
@@ -99,9 +106,9 @@ class MiningFramework {
         }
         projectDirectory.mkdirs()
 
-        Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), LOCAL_PROJECT_PATH).start()
+        Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), target).start()
         gitClone.waitFor()
-        project.setPath(LOCAL_PROJECT_PATH)
+        project.setPath(target)
     }
 
     private void printProjectInformation(Project project) {
@@ -136,11 +143,11 @@ class MiningFramework {
                 Injector injector = Guice.createInjector(injectorClass.newInstance())
                 MiningFramework framework = injector.getInstance(MiningFramework.class)
 
-                FileManager.createOutputFiles(appArguments.getOutputPath())
-            
-                printStartAnalysis()
-
                 framework.setArguments(appArguments)
+
+                FileManager.createOutputFiles(appArguments.getOutputPath(), !appArguments.getResultsRemoteRepository().equals(''))
+            
+                printStartAnalysis()                
                 
                 ArrayList<Project> projectList = getProjectList()
                 framework.setProjectList(projectList)
@@ -202,6 +209,10 @@ class MiningFramework {
 
     void setArguments(Arguments arguments) {
         this.arguments = arguments
+    }
+
+    static Arguments getArguments() {
+        return arguments
     }
 
     static void printStartAnalysis() {

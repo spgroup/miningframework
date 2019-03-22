@@ -12,7 +12,6 @@ import static groovy.io.FileType.DIRECTORIES
 class MiningFramework {
 
     private ArrayList<Project> projectList
-    public static final boolean isTest = true
    
     private StatisticsCollector statCollector
     private DataCollector dataCollector

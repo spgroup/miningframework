@@ -31,8 +31,7 @@ class DataCollectorImpl extends DataCollector {
                 for(method in mergeModifiedMethods) 
                     analyseModifiedMethods(className, mutuallyModifiedMethods, method, file)
 
-                if(MiningFramework.isTest)
-                    assembleResults(file)
+                assembleResults(file)
             }
         }
     }
@@ -74,20 +73,7 @@ class DataCollectorImpl extends DataCollector {
     }
 
     private void printResults(String className, String method, Set<Integer> leftModifiedLines, Set<Integer> rightModifiedLines, String file) {   
-
-        if(MiningFramework.isTest) {
-            String mfTestLink = "https://github.com/spgroup/miningframework/src/test/results"
-            String projectCell = generateLink("${mfTestLink}/${project.getName()}", project.getName())
-            String commitSHACell = generateLink("${mfTestLink}/${project.getName()}/${mergeCommit.getSHA()}", mergeCommit.getSHA())
-            String classCell = generateLink("${mfTestLink}/${project.getName()}/${mergeCommit.getSHA()}/${file}", className)
-            resultsFile << "${projectCell}&${commitSHACell}&${classCell}&${method}&${leftModifiedLines}&${rightModifiedLines}\n"
-        } else {
-            resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
-        }
-    }
-
-    private String generateLink(String link, String name) {
-        return "=HYPERLINK(\"${link}\";\"${name}\")"
+        resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftModifiedLines};${rightModifiedLines}\n"
     }
 
     private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String commitSHA) {

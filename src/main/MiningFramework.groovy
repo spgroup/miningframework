@@ -6,7 +6,7 @@ import java.io.File
 import java.nio.file.Path
 import java.nio.file.Files 
 import java.nio.file.Paths
-import java.util.ArrayList;
+import java.util.ArrayList
 import static groovy.io.FileType.DIRECTORIES
 
 class MiningFramework {
@@ -16,8 +16,9 @@ class MiningFramework {
     private StatisticsCollector statCollector
     private DataCollector dataCollector
     private CommitFilter commitFilter
-    static private Arguments arguments
+    static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
+    private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
     public MiningFramework(DataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
@@ -33,7 +34,7 @@ class MiningFramework {
         for (project in projectList) {
             printProjectInformation(project)
             if (project.isRemote())
-                cloneRepository(project)
+                cloneRepository(project, LOCAL_PROJECT_PATH)
             
             ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
@@ -43,6 +44,10 @@ class MiningFramework {
                     collectData(project, mergeCommit)
                 }
             }
+
+            if(!arguments.getResultsRemoteRepository().equals('')) // Will push.
+                pushResults(project, arguments.getResultsRemoteRepository())
+
             endProjectAnalysis()
         }
     }
@@ -65,19 +70,45 @@ class MiningFramework {
         dataCollector.collectData()
     }
 
-    private void cloneRepository(Project project) {
+    private void pushResults(Project project, String remoteRepositoryURL) {
+        Project resultsRepository = new Project('', remoteRepositoryURL)
+        printPushInformation(remoteRepositoryURL)
+        String targetPath = "${LOCAL_RESULTS_REPOSITORY_PATH}/resultsRepository"
+        cloneRepository(resultsRepository, targetPath)
 
-        println "Cloning repository ${project.getName()} into ${LOCAL_PROJECT_PATH}"
+        // Copy output files, add, commit and then push.
+        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath}/output-${project.getName()}")
+        Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
+        gitAdd.waitFor()
+        
+        Process gitCommit = ProcessRunner.runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()}")
+        gitCommit.waitFor()
+        gitCommit.getInputStream().eachLine {
+            println it
+        }
 
-        File projectDirectory = new File(LOCAL_PROJECT_PATH)
+        Process gitPush = ProcessRunner.runProcess(targetPath, 'git', 'push', '--force-with-lease')
+        gitPush.waitFor()
+        gitPush.getInputStream().eachLine {
+            println it
+        }
+
+        FileManager.delete(new File(targetPath))
+    }
+
+    private void cloneRepository(Project project, String target) {
+
+        println "Cloning repository ${project.getName()} into ${target}"
+
+        File projectDirectory = new File(target)
         if(projectDirectory.exists()) {
             FileManager.delete(projectDirectory)
         }
         projectDirectory.mkdirs()
 
-        Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), LOCAL_PROJECT_PATH).start()
+        Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), target).start()
         gitClone.waitFor()
-        project.setPath(LOCAL_PROJECT_PATH)
+        project.setPath(target)
     }
 
     private void printProjectInformation(Project project) {
@@ -86,6 +117,10 @@ class MiningFramework {
 
     private void printMergeCommitInformation(MergeCommit mergeCommit) {
         println "Merge commit: ${mergeCommit.getSHA()}"
+    }
+
+    private void printPushInformation(String url) {
+        println "Proceeding to push output files to ${url}."
     }
 
     private void endProjectAnalysis() {
@@ -108,11 +143,11 @@ class MiningFramework {
                 Injector injector = Guice.createInjector(injectorClass.newInstance())
                 MiningFramework framework = injector.getInstance(MiningFramework.class)
 
-                FileManager.createOutputFiles(appArguments.getOutputPath())
-            
-                printStartAnalysis()
-
                 framework.setArguments(appArguments)
+
+                FileManager.createOutputFiles(appArguments.getOutputPath(), !appArguments.getResultsRemoteRepository().equals(''))
+            
+                printStartAnalysis()                
                 
                 ArrayList<Project> projectList = getProjectList()
                 framework.setProjectList(projectList)
@@ -139,7 +174,7 @@ class MiningFramework {
 
             boolean relativePath
             try {
-                relativePath = line[2]
+                relativePath = line[2].equals("true")
             } catch(ArrayIndexOutOfBoundsException e) {
                 relativePath = false
             }
@@ -174,6 +209,10 @@ class MiningFramework {
 
     void setArguments(Arguments arguments) {
         this.arguments = arguments
+    }
+
+    static Arguments getArguments() {
+        return arguments
     }
 
     static void printStartAnalysis() {

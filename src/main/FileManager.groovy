@@ -1,7 +1,9 @@
+@Grab(group='commons-io', module='commons-io', version='2.6')
 import java.nio.file.Files 
 import java.nio.file.Paths
 import java.nio.file.Path
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import org.apache.commons.io.FileUtils 
 
 final class FileManager {
 
@@ -37,13 +39,19 @@ final class FileManager {
         Files.move(targetFile.toPath(), Paths.get(target), REPLACE_EXISTING)
     }
 
-    public static File createOutputFiles(String outputPath) {
+    public static void copyDirectory(String source, String target) {
+        FileUtils.copyDirectory(new File(source), new File(target))
+    }
+
+    public static File createOutputFiles(String outputPath, boolean createLinksFile) {
         File outputDir = new File(outputPath)
         if (!outputDir.exists())
             outputDir.mkdirs()
         
         createStatisticsFiles(outputPath)
-        createDataFiles(outputPath)
+        createDataFiles(outputPath, false)
+        if(createLinksFile)
+            createDataFiles(outputPath, true)
 
         return outputDir
     }
@@ -62,12 +70,12 @@ final class FileManager {
         return statisticsResultsFile
     }
 
-    private static File createDataFiles(String outputPath) {
+    private static File createDataFiles(String outputPath, boolean containsLinks) {
         File dataDir = new File(outputPath + '/data')
         if (!dataDir.exists())
             dataDir.mkdirs()        
 
-        File dataResultsFile = new File(outputPath + '/data/results.csv')
+        File dataResultsFile = new File(outputPath + '/data/results' + ((containsLinks) ? '-links' : '') + '.csv')
         if(dataResultsFile.exists())
             dataResultsFile.delete()
 

@@ -29,10 +29,7 @@ class CommitFilterImpl extends CommitFilter {
         File childFile = FileManager.copyFile(project, filePath, childSHA) 
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA)
 
-        Process diffJ = new ProcessBuilder('java', '-jar', 'diffj.jar', '--brief', ancestorFile.getAbsolutePath(), childFile.getAbsolutePath())
-            .directory(new File('dependencies'))
-            .start()
-
+        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', '--brief', ancestorFile.getAbsolutePath(), childFile.getAbsolutePath())
         diffJ.getInputStream().eachLine {
             int inIndex = it.indexOf("in ")
             if(inIndex != -1) {

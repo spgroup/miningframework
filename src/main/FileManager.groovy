@@ -9,10 +9,8 @@ final class FileManager {
 
     public static Set<String> getModifiedFiles(Project project, String childSHA, String ancestorSHA) {
         Set<String> modifiedFiles = new HashSet<String>()
-        Process gitDiff = new ProcessBuilder('git', 'diff', '--name-only', childSHA, ancestorSHA)
-            .directory(new File(project.getPath()))
-            .start()
         
+        Process gitDiff = ProcessRunner.runProcess(project.getPath(), 'git', 'diff', '--name-only', childSHA, ancestorSHA)
         gitDiff.getInputStream().eachLine {
             if(it.endsWith('.java'))
                 modifiedFiles.add(it)
@@ -22,10 +20,7 @@ final class FileManager {
     }
 
     public static File copyFile(Project project, String path, String SHA) {
-        Process gitCatFile = new ProcessBuilder('git', 'cat-file', '-p', "${SHA}:${path}")
-            .directory(new File(project.getPath()))
-            .start()
-    
+        Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${SHA}:${path}")    
         
         File target = new File("${SHA}.java")
         gitCatFile.getInputStream().eachLine {

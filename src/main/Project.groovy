@@ -14,28 +14,36 @@ class Project {
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
 
         Process gitLog = constructAndRunGitLog(sinceDate, untilDate)
-
         String line
         BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))
         while((line = reader.readLine()) != null) {
+
             if (line.startsWith('commit')) {
-                String SHA = line.split(' ')[1]
-
-                String[] parents = reader.readLine().split(' ')
-                String[] parentsSHA = Arrays.copyOfRange(parents, 1, parents.length)
-
-                reader.readLine() // Author
-                reader.readLine() // Date
-
+                String SHA = getSHA(line)
+                String[] parentsSHA = getParentsSHA(reader.readLine())
                 String ancestorSHA = getCommonAncestor(SHA, parentsSHA)
+                
                 MergeCommit mergeCommit = new MergeCommit(SHA, parentsSHA, ancestorSHA)
                 mergeCommits.add(mergeCommit)
+            
+                // Forwarding two lines from the output because they are not necessary.
+                reader.readLine() // Author
+                reader.readLine() // Date
             }
         }
         
         if(mergeCommits.isEmpty())
             println "No merge commits."
         return mergeCommits
+    }
+
+    private String getSHA(String line) {
+        return line.split(' ')[1]
+    } 
+
+    private String[] getParentsSHA(String line) {
+        String[] parents = reader.readLine().split(' ')
+        return Arrays.copyOfRange(parents, 1, parents.length)
     }
 
     private String getCommonAncestor(mergeCommitSHA, parentsSHA) {

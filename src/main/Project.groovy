@@ -17,7 +17,7 @@ class Project {
         gitLog.getInputStream().eachLine {
 
             // Each line contains the hash of the commit followed by the hashes of the parents.
-            String[] informations = it.split(' ')
+            String[] informations = it.split('-')
             String SHA = getSHA(informations)
             String[] parentsSHA = getParentsSHA(informations)
             String ancestorSHA = getCommonAncestor(SHA, parentsSHA)
@@ -37,18 +37,18 @@ class Project {
     } 
 
     private String[] getParentsSHA(String[] informations) {
-        return Arrays.copyOfRange(informations, 1, informations.length)
+        return informations[1].split(' ')
     }
 
     private String getCommonAncestor(mergeCommitSHA, parentsSHA) {
-        Process gitMergeBaseBuilder = constructAndRunGitMergeBase(mergeCommitSHA, parentsSHA)
+        Process gitMergeBase = constructAndRunGitMergeBase(mergeCommitSHA, parentsSHA)
         gitMergeBase.getInputStream().eachLine {
             return it
         }
     }
 
-    private Process constructAndRunGitMergeBase(String mergeCommitSHA, String parentsSHA) {
-        ProcessRunner.buildProcess(path, 'git', 'merge-base')
+    private Process constructAndRunGitMergeBase(String mergeCommitSHA, String[] parentsSHA) {
+        ProcessBuilder gitMergeBaseBuilder = ProcessRunner.buildProcess(path, 'git', 'merge-base')
         if (parentsSHA.length > 2)
             ProcessRunner.addCommand(gitMergeBaseBuilder, '--octopus')
         for (parent in parentsSHA)
@@ -57,7 +57,7 @@ class Project {
     }
 
     private Process constructAndRunGitLog(String sinceDate, String untilDate) {
-       ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=\"%H %P\"')
+        ProcessBuilder gitLogBuilder = ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=%H-%p')
         if(!sinceDate.equals(''))
             ProcessRunner.addCommand(gitLogBuilder, "--since=\"${sinceDate}\"")
         if(!untilDate.equals(''))

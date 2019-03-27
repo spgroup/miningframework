@@ -5,7 +5,7 @@ final class ProcessRunner {
     }
 
     public static ProcessBuilder buildProcess(String directory, String... initialCommand) {
-        return new ProcessBuilder(command)
+        return new ProcessBuilder(initialCommand)
                 .directory(new File(directory))
                 .redirectErrorStream(true)
     }

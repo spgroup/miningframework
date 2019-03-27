@@ -106,8 +106,9 @@ class MiningFramework {
         }
         projectDirectory.mkdirs()
 
-        Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), target).start()
+        Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', project.getPath(), target)
         gitClone.waitFor()
+        
         project.setPath(target)
     }
 

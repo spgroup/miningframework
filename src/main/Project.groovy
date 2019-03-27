@@ -13,13 +13,10 @@ class Project {
     public ArrayList<MergeCommit> getMergeCommits(String sinceDate, String untilDate) {
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
 
-        Process gitLog = getProcessBuilder(sinceDate, untilDate)
-            .directory(new File(path))
-            .redirectErrorStream(true)
-            .start()
+        Process gitLog = constructAndRunGitLog(sinceDate, untilDate)
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))
         String line
+        BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))
         while((line = reader.readLine()) != null) {
             if (line.startsWith('commit')) {
                 String SHA = line.split(' ')[1]
@@ -42,27 +39,28 @@ class Project {
     }
 
     private String getCommonAncestor(mergeCommitSHA, parentsSHA) {
-        ProcessBuilder builder = new ProcessBuilder('git', 'merge-base').directory(new File(path))
-        if (parentsSHA.length > 2)
-            builder.command().add('--octopus')
-        for (parent in parentsSHA)
-            builder.command().add(parent)
-
-        Process gitMergeBase = builder.start()
+        Process gitMergeBaseBuilder = constructAndRunGitMergeBase(mergeCommitSHA, parentsSHA)
         gitMergeBase.getInputStream().eachLine {
             return it
         }
     }
 
-    private ProcessBuilder getProcessBuilder(String sinceDate, String untilDate) {
-        if(!sinceDate.equals('') && !untilDate.equals(''))
-            return new ProcessBuilder('git', '--no-pager', 'log', '--merges', "--since=\"${sinceDate}\"", "--until=\"${untilDate}\"")
-        else if(!sinceDate.equals(''))
-            return new ProcessBuilder('git', '--no-pager', 'log', '--merges', "--since=\"${sinceDate}\"")
-        else if(!untilDate.equals(''))
-            return new ProcessBuilder('git', '--no-pager', 'log', '--merges', "--until=\"${untilDate}\"")
-        else
-            return new ProcessBuilder('git', '--no-pager', 'log', '--merges')
+    private Process constructAndRunGitMergeBase(String mergeCommitSHA, String parentsSHA) {
+        ProcessRunner.buildProcess(path, 'git', 'merge-base')
+        if (parentsSHA.length > 2)
+            ProcessRunner.addCommand(gitMergeBaseBuilder, '--octopus')
+        for (parent in parentsSHA)
+            ProcessRunner.addCommand(gitMergeBaseBuilder, parent)
+        return ProcessRunner.startProcess(gitMergeBaseBuilder)
+    }
+
+    private Process constructAndRunGitLog(String sinceDate, String untilDate) {
+       ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges')
+        if(!sinceDate.equals(''))
+            ProcessRunner.addCommand(gitLogBuilder, "--since=\"${sinceDate}\"")
+        if(!untilDate.equals(''))
+            ProcessRunner.addCommand(gitLogBuilder, "--until=\"${untilDate}\"")
+        return ProcessRunner.startProcess(gitLogBuilder)
     }
 
     public String getName() {

@@ -14,22 +14,17 @@ class Project {
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
 
         Process gitLog = constructAndRunGitLog(sinceDate, untilDate)
-        String line
-        BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))
-        while((line = reader.readLine()) != null) {
+        gitLog.getInputStream().eachLine {
 
-            if (line.startsWith('commit')) {
-                String SHA = getSHA(line)
-                String[] parentsSHA = getParentsSHA(reader.readLine())
-                String ancestorSHA = getCommonAncestor(SHA, parentsSHA)
-                
-                MergeCommit mergeCommit = new MergeCommit(SHA, parentsSHA, ancestorSHA)
-                mergeCommits.add(mergeCommit)
-            
-                // Forwarding two lines from the output because they are not necessary.
-                reader.readLine() // Author
-                reader.readLine() // Date
-            }
+            // Each line contains the hash of the commit followed by the hashes of the parents.
+            String[] informations = it.split(' ')
+            String SHA = getSHA(informations)
+            String[] parentsSHA = getParentsSHA(informations)
+            String ancestorSHA = getCommonAncestor(SHA, parentsSHA)
+
+            MergeCommit mergeCommit = new MergeCommit(SHA, parentsSHA, ancestorSHA)
+            mergeCommits.add(mergeCommit)
+
         }
         
         if(mergeCommits.isEmpty())
@@ -37,13 +32,12 @@ class Project {
         return mergeCommits
     }
 
-    private String getSHA(String line) {
-        return line.split(' ')[1]
+    private String getSHA(String[] informations) {
+        return informations[0]
     } 
 
-    private String[] getParentsSHA(String line) {
-        String[] parents = reader.readLine().split(' ')
-        return Arrays.copyOfRange(parents, 1, parents.length)
+    private String[] getParentsSHA(String[] informations) {
+        return Arrays.copyOfRange(informations, 1, informations.length)
     }
 
     private String getCommonAncestor(mergeCommitSHA, parentsSHA) {
@@ -63,7 +57,7 @@ class Project {
     }
 
     private Process constructAndRunGitLog(String sinceDate, String untilDate) {
-       ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges')
+       ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=\"%H %P\"')
         if(!sinceDate.equals(''))
             ProcessRunner.addCommand(gitLogBuilder, "--since=\"${sinceDate}\"")
         if(!untilDate.equals(''))

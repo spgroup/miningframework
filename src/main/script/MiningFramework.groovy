@@ -53,8 +53,8 @@ class MiningFramework {
                 }
             }
 
-            if(!arguments.getResultsRemoteRepository().equals('')) // Will push.
-                pushResults(project, arguments.getResultsRemoteRepository())
+            if(arguments.isPushCommandActive()) // Will push.
+                pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
             endProjectAnalysis()
         }
@@ -154,7 +154,7 @@ class MiningFramework {
 
                 framework.setArguments(appArguments)
 
-                FileManager.createOutputFiles(appArguments.getOutputPath(), !appArguments.getResultsRemoteRepository().equals(''))
+                FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
             
                 printStartAnalysis()                
                 

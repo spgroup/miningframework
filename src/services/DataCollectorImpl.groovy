@@ -4,7 +4,7 @@ import main.interfaces.DataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-import main.script.MiningFramework
+import static main.script.MiningFramework.arguments
 import main.util.*
 
 class DataCollectorImpl extends DataCollector {
@@ -15,7 +15,7 @@ class DataCollectorImpl extends DataCollector {
     @Override
     public void collectData() {
         resultsFile = new File("${outputPath}/data/results.csv")
-        if(!MiningFramework.getArguments().getResultsRemoteRepository().equals('')) {
+        if(arguments.isPushCommandActive()) {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
         }
 
@@ -90,13 +90,16 @@ class DataCollectorImpl extends DataCollector {
         resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
     
         // Add links.
-        String remoteRepositoryURL = MiningFramework.getArguments().getResultsRemoteRepository()
-        if(!remoteRepositoryURL.equals('')) {
-            String projectLink = addLink(remoteRepositoryURL, project.getName())
-            String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
-            String classNameLink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}/${className.replaceAll('\\.', '\\/')}")
-            resultsFileLinks << "${projectLink}&${mergeCommitSHALink}&${classNameLink}&${method}&${leftAddedLines}&${leftDeletedLines}&${rightAddedLines}&${rightDeletedLines}\n"
-        }
+        if(arguments.isPushCommandActive())
+            addLinks(arguments.getRemoteRepositoryURL())
+    }
+
+    private void addLinks(String remoteRepositoryURL) {
+        String projectLink = addLink(remoteRepositoryURL, project.getName())
+        String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
+        String classNameLink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}/${className.replaceAll('\\.', '\\/')}")
+        
+        resultsFileLinks << "${projectLink}&${mergeCommitSHALink}&${classNameLink}&${method}&${leftAddedLines}&${leftDeletedLines}&${rightAddedLines}&${rightDeletedLines}\n"
     }
    
     private String addLink(String url, String path) {

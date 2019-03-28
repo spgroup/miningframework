@@ -121,26 +121,29 @@ class DataCollectorImpl extends DataCollector {
         File mergeFile = FileManager.copyFile(project, filePath, commitSHA)
 
         Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))) {
+            String line
+            String signature
+            Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
+            while((line = reader.readLine()) != null) {
+
+                if(line.matches(".+ code (changed|added|removed) in .+")) {
+                    if(modifiedLines.size() > 0) {
+                        insertMethod(modifiedMethods, signature, modifiedLines)
+                        modifiedLines = new HashSet<ModifiedLine>()
+                    }
         
-        BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream())) 
-        String line
-        String signature
-        Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
-        while((line = reader.readLine()) != null) {
+                    int codeTokenIndex = line.indexOf("code")
+                    ArrayList<Integer> modifiedLinesNumber = getLineNumbers(line.substring(0, codeTokenIndex - 1))
+                    Modification modificationType = getModificationType(line.substring(codeTokenIndex + 2))
+                    signature = line.substring(line.indexOf(" in ") + 4)
 
-            if(line.matches(".+ code (changed|added|removed) in .+")) {
-                if(modifiedLines.size() > 0) {
-                    insertMethod(modifiedMethods, signature, modifiedLines)
-                    modifiedLines = new HashSet<ModifiedLine>()
+                    modifiedLines.addAll(getLines(modificationType, reader, modifiedLinesNumber))
                 }
-    
-                int codeTokenIndex = line.indexOf("code")
-                ArrayList<Integer> modifiedLinesNumber = getLineNumbers(line.substring(0, codeTokenIndex - 1))
-                Modification modificationType = getModificationType(line.substring(codeTokenIndex + 2))
-                signature = line.substring(line.indexOf(" in ") + 4)
-
-                modifiedLines.addAll(getLines(modificationType, reader, modifiedLinesNumber))
             }
+        } catch(IOException e) {
+            e.printStackTrace()
         }
 
         if(signature != null)

@@ -31,12 +31,17 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         int numberOfMergeConflicts = 0
 
         Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
-        BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
-        String line
-        while((line = reader.readLine()) != null) {
-            if(line.endsWith("======="))
-                numberOfMergeConflicts++
-        }
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))) {
+            
+            String line
+            while((line = reader.readLine()) != null) {
+                if(line.endsWith("======="))
+                    numberOfMergeConflicts++
+            }
+
+        } catch(IOException e) {
+            e.printStackTrace()
+        }        
 
         return numberOfMergeConflicts
     }
@@ -45,22 +50,27 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         int numberOfConflictingFiles = 0
 
         Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
-        BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
-        String line
-        boolean fileHasConflict = false
-        while((line = reader.readLine()) != null) {
-            if(line.startsWith('diff --cc') && fileHasConflict)
-                numberOfConflictingFiles++
-            else if(line.startsWith('diff --cc')) {
-                fileHasConflict = false
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))) {
+            
+            String line
+            boolean fileHasConflict = false
+            while((line = reader.readLine()) != null) {
+                if(line.startsWith('diff --cc') && fileHasConflict)
+                    numberOfConflictingFiles++
+                else if(line.startsWith('diff --cc')) {
+                    fileHasConflict = false
+                }
+
+                if(line.endsWith("======="))
+                    fileHasConflict = true
             }
 
-            if(line.endsWith("======="))
-                fileHasConflict = true
-        }
+            if(fileHasConflict)
+                numberOfConflictingFiles++
 
-        if(fileHasConflict)
-            numberOfConflictingFiles++
+        } catch(IOException e) {
+            e.printStackTrace()
+        }        
 
         return numberOfConflictingFiles
     }
@@ -137,19 +147,23 @@ class StatisticsCollectorImpl extends StatisticsCollector {
             Process gitLog = ProcessRunner.runProcess(project.getPath(), 'git', 'log', '--date=short', '--pretty=%H%n%ad', parents[i])
 
             numberOfDaysPassed[i] = 0
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))
-            reader.readLine()
-            Date parentDate = formatter.parse(reader.readLine())
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(gitLog.getInputStream()))) {
+                reader.readLine()
+                Date parentDate = formatter.parse(reader.readLine())
 
-            String line
-            while((line = reader.readLine()) != null) {
-                if(line.equals(mergeCommit.getAncestorSHA()))
-                    break
+                String line
+                while((line = reader.readLine()) != null) {
+                    if(line.equals(mergeCommit.getAncestorSHA()))
+                        break
+                }
+
+                Date ancestorDate = formatter.parse(reader.readLine())
+                long diff = parentDate.getTime() - ancestorDate.getTime()
+                numberOfDaysPassed[i] = Math.abs(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
+            
+            } catch(IOException e) {
+                e.printStackTrace()
             }
-
-            Date ancestorDate = formatter.parse(reader.readLine())
-            long diff = parentDate.getTime() - ancestorDate.getTime()
-            numberOfDaysPassed[i] = Math.abs(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
         }
         return geometricMean(numberOfDaysPassed)
     }
@@ -163,10 +177,13 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         for (int i = 0; i < 2; i++) {
             Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', '--date=short', '--pretty=%ad', parents[i])
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
-            commitDates[i] = formatter.parse(reader.readLine())
-            reader.close()
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))) {
+                commitDates[i] = formatter.parse(reader.readLine())
+            } catch(IOException | ParseException e) {
+                e.printStackTrace()
+            }
         }
+        
         long diff = Math.abs(commitDates[1].getTime() - commitDates[0].getTime())
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }

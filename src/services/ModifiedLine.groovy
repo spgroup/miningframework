@@ -1,3 +1,5 @@
+package services
+
 public class ModifiedLine {
 
     public static enum CONTRIBUTION {Left, Right}

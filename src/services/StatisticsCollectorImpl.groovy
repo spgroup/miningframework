@@ -1,5 +1,10 @@
+package services
+import main.interfaces.StatisticsCollector
+
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
+
+import main.util.*
 
 class StatisticsCollectorImpl extends StatisticsCollector {
 

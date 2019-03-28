@@ -1,3 +1,5 @@
+package main.script
+
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
 @Grab('com.google.inject:guice:4.2.2')
 import static com.xlson.groovycsv.CsvParser.parseCsv
@@ -8,6 +10,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.ArrayList
 import static groovy.io.FileType.DIRECTORIES
+
+import main.arguments.*
+import main.project.*
+import main.interfaces.*
+import main.exception.InvalidArgsException
+import main.util.*
 
 class MiningFramework {
 

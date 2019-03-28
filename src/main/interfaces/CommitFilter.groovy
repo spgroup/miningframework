@@ -1,3 +1,7 @@
+package main.interfaces
+
+import main.project.*
+
 public abstract class CommitFilter {
     
     private Project project

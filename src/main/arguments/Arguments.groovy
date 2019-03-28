@@ -1,3 +1,7 @@
+package main.arguments
+
+import services.MiningModule
+
 class Arguments {
     
     private String inputPath

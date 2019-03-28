@@ -1,6 +1,11 @@
+package services
+import main.interfaces.DataCollector
+
 import java.util.regex.Pattern
 import java.util.regex.Matcher
-import ModifiedLine
+
+import main.script.MiningFramework
+import main.util.*
 
 class DataCollectorImpl extends DataCollector {
 

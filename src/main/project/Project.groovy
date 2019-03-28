@@ -21,7 +21,7 @@ class Project {
         gitLog.getInputStream().eachLine {
 
             // Each line contains the hash of the commit followed by the hashes of the parents.
-            String[] informations = it.split('-')
+            String[] informations = it.split('-') // <commit hash>-<parents hash>
             String SHA = getSHA(informations)
             String[] parentsSHA = getParentsSHA(informations)
             String ancestorSHA = getCommonAncestor(SHA, parentsSHA)

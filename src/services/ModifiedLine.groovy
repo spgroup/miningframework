@@ -2,13 +2,10 @@ package services
 
 public class ModifiedLine {
 
-    public static enum CONTRIBUTION {Left, Right}
-
     private String content;
     private int number;
     private String method;
     private DataCollectorImpl$Modification type;
-    private CONTRIBUTION contribution;
 
     public ModifiedLine(String content, int number, DataCollectorImpl$Modification type) {
         this.content = content;

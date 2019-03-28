@@ -122,11 +122,14 @@ class DataCollectorImpl extends DataCollector {
 
         Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
 
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))) {
-            String line
+        try {
+            
+            BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
+            ArrayList<String> output = reader.readLines()
+
             String signature
             Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
-            while((line = reader.readLine()) != null) {
+            for(line in output) {
 
                 if(line.matches(".+ code (changed|added|removed) in .+")) {
                     if(modifiedLines.size() > 0) {

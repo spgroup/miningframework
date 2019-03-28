@@ -1,3 +1,7 @@
+package main.project
+
+import main.util.ProcessRunner
+
 class Project {
     
     private String name

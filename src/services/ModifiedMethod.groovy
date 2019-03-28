@@ -1,3 +1,5 @@
+package services
+
 class ModifiedMethod {
     private String signature
     private Set<ModifiedLine> modifiedLines

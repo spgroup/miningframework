@@ -2,14 +2,14 @@ package main.interfaces
 
 import main.project.*
 
-public abstract class DataCollector {
+public abstract class ExperimentalDataCollector {
 
     private Project project
     private MergeCommit mergeCommit
     private File resultsFile
     private static String outputPath
 
-    public abstract void collectData()
+    public abstract void collectExperimentalData()
 
     public Project getProject() {
         return project

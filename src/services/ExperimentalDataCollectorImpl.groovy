@@ -1,19 +1,19 @@
 package services
-import main.interfaces.DataCollector
 
+import main.interfaces.ExperimentalDataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
 import static main.script.MiningFramework.arguments
 import main.util.*
 
-class DataCollectorImpl extends DataCollector {
+class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
 
     public static enum Modification {ADDED, REMOVED, CHANGED}
     private File resultsFileLinks
 
     @Override
-    public void collectData() {
+    public void collectExperimentalData() {
         resultsFile = new File("${outputPath}/data/results.csv")
         if(arguments.isPushCommandActive()) {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")

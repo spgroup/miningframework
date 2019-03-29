@@ -5,9 +5,9 @@ public class ModifiedLine {
     private String content;
     private int number;
     private String method;
-    private DataCollectorImpl$Modification type;
+    private ExperimentalDataCollectorImpl$Modification type;
 
-    public ModifiedLine(String content, int number, DataCollectorImpl$Modification type) {
+    public ModifiedLine(String content, int number, ExperimentalDataCollectorImpl$Modification type) {
         this.content = content;
         this.number = number;
         this.type = type;

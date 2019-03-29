@@ -91,10 +91,10 @@ class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
     
         // Add links.
         if(arguments.isPushCommandActive())
-            addLinks(arguments.getRemoteRepositoryURL())
+            addLinks(className, method, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines, arguments.getResultsRemoteRepositoryURL())
     }
 
-    private void addLinks(String remoteRepositoryURL) {
+    private void addLinks(String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines, String remoteRepositoryURL) {
         String projectLink = addLink(remoteRepositoryURL, project.getName())
         String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
         String classNameLink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}/${className.replaceAll('\\.', '\\/')}")

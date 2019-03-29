@@ -6,46 +6,51 @@ import java.util.regex.Matcher
 
 import static main.script.MiningFramework.arguments
 import main.util.*
+import main.project.*
+import main.script.MiningFramework
 
-class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
+class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
 
     public static enum Modification {ADDED, REMOVED, CHANGED}
     private File resultsFileLinks
 
-    @Override
-    public void collectExperimentalData() {
-        resultsFile = new File("${outputPath}/data/results.csv")
+    public void collectExperimentalData(Project project, MergeCommit mergeCommit) {
+        String outputPath = MiningFramework.getOutputPath()
+
+        File resultsFile = new File("${outputPath}/data/results.csv")
         if(arguments.isPushCommandActive()) {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
         }
 
-        getMutuallyModifiedMethods()
+        getMutuallyModifiedMethods(project, mergeCommit)
         println "Data collection finished!"
     }
 
-    private void getMutuallyModifiedMethods() {
+    private void getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
         Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
         for(file in mutuallyModifiedFiles) {
-            Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
-            Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
+            Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+            Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
             def mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
-            Set<ModifiedMethod> mergeModifiedMethods = getModifiedMethods(file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            Set<ModifiedMethod> mergeModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
             
             if (mutuallyModifiedMethods.size() > 0) {
-                String className = getClassName(file, mergeCommit.getAncestorSHA())
+                String className = getClassName(project, file, mergeCommit.getAncestorSHA())
                 for(method in mergeModifiedMethods) 
-                    analyseModifiedMethods(className, mutuallyModifiedMethods, method, file)
+                    analyseModifiedMethods(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
 
-                assembleResults(className.replaceAll('\\.', '\\/'), file)
+                assembleResults(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
             }
         }
     }
 
-    private void assembleResults(String classPath, String file) {
+    private void assembleResults(Project project, MergeCommit mergeCommit, String classPath, String file) {
+        String outputPath = MiningFramework.getOutputPath()
+
         String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classPath}/"
         File results = new File(path)
         if(!results.exists())
@@ -57,7 +62,7 @@ class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
         FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
-    private void analyseModifiedMethods(String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
+    private void analyseModifiedMethods(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
 
         ModifiedMethod[] mutuallyModifiedMethods = parentsModifiedMethods[mergeModifiedMethod.getSignature()]
         if (mutuallyModifiedMethods != null) {
@@ -75,7 +80,7 @@ class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
                     checkAndAddLine(line, rightAddedLines, rightDeletedLines)
                     
             }
-            printResults(className, mergeModifiedMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
+            printResults(project.getName(), mergeCommit.getSHA(), className, mergeModifiedMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
         }
     }
   
@@ -86,18 +91,21 @@ class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
         return false
     }
 
-    private void printResults(String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
-        resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
+    private void printResults(String projectName, String mergeCommitSHA,  String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
+        File resultsFile = new File("${MiningFramework.getOutputPath()}/data/results.csv")
+        resultsFile << "${projectName};${mergeCommitSHA};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
     
         // Add links.
         if(arguments.isPushCommandActive())
-            addLinks(className, method, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines, arguments.getResultsRemoteRepositoryURL())
+            addLinks(projectName, mergeCommitSHA, className, method, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines, arguments.getResultsRemoteRepositoryURL())
     }
 
-    private void addLinks(String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines, String remoteRepositoryURL) {
-        String projectLink = addLink(remoteRepositoryURL, project.getName())
-        String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
-        String classNameLink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}/${className.replaceAll('\\.', '\\/')}")
+    private void addLinks(String projectName, String mergeCommitSHA, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines, String remoteRepositoryURL) {
+        File resultsFile = new File(MiningFramework.getOutputPath())
+
+        String projectLink = addLink(remoteRepositoryURL, projectName)
+        String mergeCommitSHALink = addLink(remoteRepositoryURL, "${projectName}/files/${projectName}/${mergeCommitSHA}")
+        String classNameLink = addLink(remoteRepositoryURL, "${projectName}/files/${projectName}/${mergeCommitSHA}/${className.replaceAll('\\.', '\\/')}")
         
         resultsFileLinks << "${projectLink}&${mergeCommitSHALink}&${classNameLink}&${method}&${leftAddedLines}&${leftDeletedLines}&${rightAddedLines}&${rightDeletedLines}\n"
     }
@@ -114,7 +122,7 @@ class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
 
     }
 
-    private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String commitSHA) {
+    private Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String commitSHA) {
         Set<ModifiedMethod> modifiedMethods = new HashSet<ModifiedMethod>()
 
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA) 
@@ -250,7 +258,7 @@ class ExperimentalDataCollectorImpl extends ExperimentalDataCollector {
         return intersection
     }
 
-    private String getClassName(String file, String SHA) {
+    private String getClassName(Project project, String file, String SHA) {
         String className
         String classPackage = ""
 

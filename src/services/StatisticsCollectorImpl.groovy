@@ -157,18 +157,18 @@ class StatisticsCollectorImpl extends StatisticsCollector {
     
                 Date parentDate = formatter.parse(output[1])
 
-                int iterator;
-                for(iterator = 2; i < output.length; i++) {
-                    if(line.equals(mergeCommit.getAncestorSHA()))
+                int j;
+                for(j = 2; j < output.size(); j++) {
+                    if(output[j].equals(mergeCommit.getAncestorSHA()))
                         break
                 }
 
-                Date ancestorDate = formatter.parse(output[i])
+                Date ancestorDate = formatter.parse(output[j + 1])
                 long diff = parentDate.getTime() - ancestorDate.getTime()
                 numberOfDaysPassed[i] = Math.abs(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
             
-            } catch(IOException e) {
-                e.printStackTrace()
+            } catch(IOException | ParseException e) {
+                println e
             }
         }
         return geometricMean(numberOfDaysPassed)

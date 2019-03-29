@@ -125,11 +125,10 @@ class DataCollectorImpl extends DataCollector {
         try {
             
             BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
-            ArrayList<String> output = reader.readLines()
 
-            String signature
+            String line, signature
             Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
-            for(line in output) {
+            while((line = reader.readLine()) != null) {
 
                 if(line.matches(".+ code (changed|added|removed) in .+")) {
                     if(modifiedLines.size() > 0) {
@@ -145,12 +144,13 @@ class DataCollectorImpl extends DataCollector {
                     modifiedLines.addAll(getLines(modificationType, reader, modifiedLinesNumber))
                 }
             }
+        
+            if(signature != null)
+                insertMethod(modifiedMethods, signature, modifiedLines)
+
         } catch(IOException e) {
             e.printStackTrace()
         }
-
-        if(signature != null)
-            insertMethod(modifiedMethods, signature, modifiedLines)
 
         FileManager.delete(ancestorFile)
         FileManager.delete(mergeFile)

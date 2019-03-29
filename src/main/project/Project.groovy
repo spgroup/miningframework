@@ -53,7 +53,7 @@ class Project {
 
     private String getCommonAncestor(mergeCommitSHA, parentsSHA) {
         Process gitMergeBase = constructAndRunGitMergeBase(mergeCommitSHA, parentsSHA)
-        def expectedOutput = ~/[0-9a-z]X{7,}/
+        def expectedOutput = ~/[0-9a-z]{7,}/
         gitMergeBase.getInputStream().eachLine {
             if (it ==~ expectedOutput)
                 return it

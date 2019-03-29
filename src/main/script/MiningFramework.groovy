@@ -226,6 +226,14 @@ class MiningFramework {
         return arguments.getInputPath()
     }
 
+    static String isPushCommandActive() {
+        return arguments.isPushCommandActive()
+    }
+
+    static String getResultsRemoteRepositoryURL() {
+        return arguments.getResultsRemoteRepositoryURL()
+    }
+
     static void printStartAnalysis() {
         println "#### MINING STARTED ####\n"
     }

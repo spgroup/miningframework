@@ -101,8 +101,6 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
     }
 
     private void addLinks(String projectName, String mergeCommitSHA, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines, String remoteRepositoryURL) {
-        File resultsFile = new File(MiningFramework.getOutputPath())
-
         String projectLink = addLink(remoteRepositoryURL, projectName)
         String mergeCommitSHALink = addLink(remoteRepositoryURL, "${projectName}/files/${projectName}/${mergeCommitSHA}")
         String classNameLink = addLink(remoteRepositoryURL, "${projectName}/files/${projectName}/${mergeCommitSHA}/${className.replaceAll('\\.', '\\/')}")

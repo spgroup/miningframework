@@ -7,13 +7,15 @@ import java.util.concurrent.TimeUnit
 import main.util.*
 import main.project.*
 import main.script.MiningFramework
-
+import java.util.regex.Pattern
+import java.util.regex.Matcher
 
 class StatisticsCollectorImpl implements StatisticsCollector {
 
     @Override
     public void collectStatistics(Project project, MergeCommit mergeCommit) {
-        File resultsFile = new File("${MiningFramework.getOutputPath()}/statistics/results.csv")
+        String outputPath = MiningFramework.getOutputPath()
+        File resultsFile = new File("${outputPath}/statistics/results.csv")
 
         boolean isOctopus = mergeCommit.isOctopus()
         int numberOfMergeConflicts = getNumberOfMergeConflicts(project, mergeCommit)
@@ -26,8 +28,22 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         double durationMean = getDurationMean(project, mergeCommit)
         int conclusionDelay = getConclusionDelay(project, mergeCommit)
 
+        String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
+        if(MiningFramework.isPushCommandActive()) {
+            File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
+            String projectLink = addLink(remoteRepositoryURL, project.getName())
+            String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
+
+            resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        } 
         resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+
+
         println "Statistics collection finished!"
+    }
+    
+    private String addLink(String url, String path) {
+        return "=HYPERLINK(${url}/tree/master/output-${path};${path})"
     }
 
     private int getNumberOfMergeConflicts(Project project, MergeCommit mergeCommit) {

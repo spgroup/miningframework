@@ -6,6 +6,7 @@ import static com.xlson.groovycsv.CsvParser.parseCsv
 import com.google.inject.*
 import java.io.File
 import java.util.ArrayList
+import java.text.SimpleDateFormat
 import static groovy.io.FileType.DIRECTORIES
 
 import main.arguments.*
@@ -117,8 +118,11 @@ class MiningFramework {
         FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath}/output-${project.getName()}")
         Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
         gitAdd.waitFor()
-        
-        Process gitCommit = ProcessRunner.runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()}")
+
+        def nowDate = new Date()
+        def sdf = new SimpleDateFormat("dd/MM/yyyy")
+        Process gitCommit = ProcessRunner
+            .runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()} - ${sdf.format(nowDate)}")
         gitCommit.waitFor()
         gitCommit.getInputStream().eachLine {
             println it

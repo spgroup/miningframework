@@ -95,7 +95,8 @@ class ArgsParser {
             if(!repositoryExists(this.options.push))
                 throw new InvalidArgsException('Inexistent remote git repository.')
 
-            args.setResultsRemoteRepository(this.options.push)
+            println this.options.push
+            args.setResultsRemoteRepositoryURL(this.options.push)
         }
     }
 

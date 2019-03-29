@@ -2,14 +2,16 @@ package services
 import main.interfaces.CommitFilter
 
 import main.util.*
+import main.project.*
 
-class CommitFilterImpl extends CommitFilter {
 
-    public boolean applyFilter() {
-        return containsMutuallyModifiedMethods()
+class CommitFilterImpl implements CommitFilter {
+
+    public boolean applyFilter(Project project, MergeCommit mergeCommit) {
+        return containsMutuallyModifiedMethods(project, mergeCommit)
     }
 
-    private boolean containsMutuallyModifiedMethods() {
+    private boolean containsMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {
 
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
@@ -17,8 +19,8 @@ class CommitFilterImpl extends CommitFilter {
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
         for(file in mutuallyModifiedFiles) {
-            Set<String> leftModifiedMethods = getModifiedMethods(file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-            Set<String> rightModifiedMethods = getModifiedMethods(file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+            Set<String> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+            Set<String> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
             leftModifiedMethods.retainAll(rightModifiedMethods) // Intersection.
 
             if(leftModifiedMethods.size() > 0)
@@ -28,7 +30,7 @@ class CommitFilterImpl extends CommitFilter {
         return false
     }
 
-    private Set<String> getModifiedMethods(String filePath, String childSHA, String ancestorSHA) {
+    private Set<String> getModifiedMethods(Project project, String filePath, String childSHA, String ancestorSHA) {
         Set<String> modifiedMethods = new HashSet<ModifiedMethod>()
 
         File childFile = FileManager.copyFile(project, filePath, childSHA) 

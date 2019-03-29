@@ -36,13 +36,16 @@ class ArgsParser {
         
         if (this.options.arguments().size() == 0 || this.options.h) {
             resultArgs.setHelp()
-            this.cli.usage()
         } else {
             parseInputs(resultArgs)
             parseOptions(resultArgs)
         }
 
         return resultArgs
+    }
+
+    private void printHelp() {
+        this.cli.usage()
     }
 
     private void parseInputs(Arguments args) {

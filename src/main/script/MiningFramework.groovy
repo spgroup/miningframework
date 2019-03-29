@@ -144,7 +144,9 @@ class MiningFramework {
         try {
             Arguments appArguments = argsParser.parse(args)
             
-            if (!appArguments.isHelp()) {
+            if (appArguments.isHelp()) {
+                argsParser.printHelp()
+            } else {
                 Class injectorClass = appArguments.getInjector()
                 Injector injector = Guice.createInjector(injectorClass.newInstance())
                 MiningFramework framework = injector.getInstance(MiningFramework.class)

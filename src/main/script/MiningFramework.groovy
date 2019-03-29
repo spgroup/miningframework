@@ -71,7 +71,7 @@ class MiningFramework {
             if (project.isRemote())
                 cloneRepository(project, LOCAL_PROJECT_PATH)
             
-            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
+            List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(mergeCommit)

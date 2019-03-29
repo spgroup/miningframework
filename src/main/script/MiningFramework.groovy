@@ -91,9 +91,7 @@ class MiningFramework {
     }
 
     private boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        commitFilter.setProject(project)
-        commitFilter.setMergeCommit(mergeCommit)
-        return commitFilter.applyFilter()
+        return commitFilter.applyFilter(project, mergeCommit)
     }
 
     private void collectStatistics(Project project, MergeCommit mergeCommit) {

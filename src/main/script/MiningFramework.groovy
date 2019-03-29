@@ -66,8 +66,7 @@ class MiningFramework {
     }
 
     public void start() {
-        dataCollector.setOutputPath(arguments.getOutputPath())
-        statCollector.setOutputPath(arguments.getOutputPath())
+        statCollector.setOutputPath(getOutputPath())
 
         for (project in projectList) {
             printProjectInformation(project)
@@ -101,9 +100,7 @@ class MiningFramework {
     }
 
     private void collectExperimentalData(Project project, MergeCommit mergeCommit) {
-        dataCollector.setProject(project)
-        dataCollector.setMergeCommit(mergeCommit)
-        dataCollector.collectExperimentalData()
+        dataCollector.collectExperimentalData(project, mergeCommit)
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {
@@ -113,7 +110,7 @@ class MiningFramework {
         cloneRepository(resultsRepository, targetPath)
 
         // Copy output files, add, commit and then push.
-        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath}/output-${project.getName()}")
+        FileManager.copyDirectory(getOutputPath(), "${targetPath}/output-${project.getName()}")
         Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
         gitAdd.waitFor()
 
@@ -176,7 +173,7 @@ class MiningFramework {
     static ArrayList<Project> getProjectList() {
         ArrayList<Project> projectList = new ArrayList<Project>()
 
-        String projectsFile = new File(arguments.getInputPath()).getText()
+        String projectsFile = new File(getInputPath()).getText()
         def iterator = parseCsv(projectsFile)
         for (line in iterator) {
             String name = line[0]
@@ -223,6 +220,14 @@ class MiningFramework {
 
     static Arguments getArguments() {
         return arguments
+    }
+
+    static String getOutputPath() {
+        return arguments.getOutputPath()
+    }
+
+    static String getInputPath() {
+        return arguments.getInputPath()
     }
 
     static void printStartAnalysis() {

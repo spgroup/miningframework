@@ -5,9 +5,6 @@ package main.script
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import com.google.inject.*
 import java.io.File
-import java.nio.file.Path
-import java.nio.file.Files 
-import java.nio.file.Paths
 import java.util.ArrayList
 import static groovy.io.FileType.DIRECTORIES
 
@@ -22,14 +19,14 @@ class MiningFramework {
     private ArrayList<Project> projectList
    
     private StatisticsCollector statCollector
-    private DataCollector dataCollector
+    private ExperimentalDataCollector dataCollector
     private CommitFilter commitFilter
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
-    public MiningFramework(DataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
+    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
         this.dataCollector = dataCollector
         this.statCollector = statCollector
         this.commitFilter = commitFilter
@@ -49,7 +46,7 @@ class MiningFramework {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(mergeCommit)
                     collectStatistics(project, mergeCommit)
-                    collectData(project, mergeCommit)
+                    collectExperimentalData(project, mergeCommit)
                 }
             }
 
@@ -72,10 +69,10 @@ class MiningFramework {
         statCollector.collectStatistics()
     }
 
-    private void collectData(Project project, MergeCommit mergeCommit) {
+    private void collectExperimentalData(Project project, MergeCommit mergeCommit) {
         dataCollector.setProject(project)
         dataCollector.setMergeCommit(mergeCommit)
-        dataCollector.collectData()
+        dataCollector.collectExperimentalData()
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {

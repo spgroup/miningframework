@@ -48,9 +48,9 @@ final class FileManager {
             outputDir.mkdirs()
         
         createStatisticsFiles(outputPath)
-        createDataFiles(outputPath, false)
+        createExperimentalDataFiles(outputPath, false)
         if(createLinksFile)
-            createDataFiles(outputPath, true)
+            createExperimentalDataFiles(outputPath, true)
 
         return outputDir
     }
@@ -69,7 +69,7 @@ final class FileManager {
         return statisticsResultsFile
     }
 
-    private static File createDataFiles(String outputPath, boolean containsLinks) {
+    private static File createExperimentalDataFiles(String outputPath, boolean containsLinks) {
         File dataDir = new File(outputPath + '/data')
         if (!dataDir.exists())
             dataDir.mkdirs()        

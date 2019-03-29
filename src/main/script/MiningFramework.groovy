@@ -66,8 +66,6 @@ class MiningFramework {
     }
 
     public void start() {
-        statCollector.setOutputPath(getOutputPath())
-
         for (project in projectList) {
             printProjectInformation(project)
             if (project.isRemote())
@@ -94,9 +92,7 @@ class MiningFramework {
     }
 
     private void collectStatistics(Project project, MergeCommit mergeCommit) {
-        statCollector.setProject(project)
-        statCollector.setMergeCommit(mergeCommit)
-        statCollector.collectStatistics()
+        statCollector.collectStatistics(project, mergeCommit)
     }
 
     private void collectExperimentalData(Project project, MergeCommit mergeCommit) {

@@ -123,29 +123,30 @@ class DataCollectorImpl extends DataCollector {
         Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
 
         try {
-            
             BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
-
             String line, signature
             Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
+
+            def methodModificationHeader = ~/.+ code (changed|added|removed) in .+/
             while((line = reader.readLine()) != null) {
 
-                if(line.matches(".+ code (changed|added|removed) in .+")) {
-                    if(modifiedLines.size() > 0) {
+                // This algorithm scans all of the lines from the output. It "resets" every time it encounters a method modification.
+                if(line ==~ methodModificationHeader) {
+                    if(modifiedLines.size() > 0) { // Adding found lines from previous method analysis.
                         insertMethod(modifiedMethods, signature, modifiedLines)
                         modifiedLines = new HashSet<ModifiedLine>()
                     }
         
-                    int codeTokenIndex = line.indexOf("code")
-                    ArrayList<Integer> modifiedLinesNumber = getLineNumbers(line.substring(0, codeTokenIndex - 1))
-                    Modification modificationType = getModificationType(line.substring(codeTokenIndex + 2))
-                    signature = line.substring(line.indexOf(" in ") + 4)
+                    // Parsing some data from this current method analysis.
+                    ArrayList<Integer> modifiedLinesNumber = getLineNumbers(line) 
+                    Modification modificationType = getModificationType(line)
+                    signature = getSignature(line)
 
                     modifiedLines.addAll(getLines(modificationType, reader, modifiedLinesNumber))
                 }
             }
         
-            if(signature != null)
+            if(signature != null) // The last method analysis is ignored by this algorithm (since there's no other method to reset), so we treat it here.
                 insertMethod(modifiedMethods, signature, modifiedLines)
 
         } catch(IOException e) {
@@ -214,7 +215,13 @@ class DataCollectorImpl extends DataCollector {
         modifiedMethods.add(modifiedMethod)
     }
 
-    private Modification getModificationType(String modification) {
+    private String getSignature(String line) {
+        return line.substring(line.indexOf(" in ") + 4)
+    }
+
+    private Modification getModificationType(String line) {
+        int codeTokenIndex = line.indexOf("code")
+        String modification = line.substring(0, codeTokenIndex - 1)
         if(modification.contains('changed'))
             return Modification.CHANGED
         else if(modification.contains('added'))
@@ -223,7 +230,9 @@ class DataCollectorImpl extends DataCollector {
             return Modification.REMOVED 
     }
 
-    private ArrayList<Integer> getLineNumbers(String lineChanges) {
+    private ArrayList<Integer> getLineNumbers(String line) {
+        int codeTokenIndex = line.indexOf("code")
+        String lineChanges = line.substring(0, codeTokenIndex - 1)
         for (int i = 0; i < lineChanges.size(); i++) {
             if(lineChanges[i] == 'c' || lineChanges[i] == 'd' || lineChanges[i] == 'a')
                 return parseLines(lineChanges.substring(i + 1))

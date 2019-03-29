@@ -9,7 +9,7 @@ public abstract class DataCollector {
     private File resultsFile
     private static String outputPath
 
-    public abstract void collectData()
+    public abstract void collectData(Project project, MergeCommit mergeCommit)
 
     public Project getProject() {
         return project

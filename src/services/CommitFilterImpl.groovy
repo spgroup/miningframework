@@ -1,3 +1,8 @@
+package services
+import main.interfaces.CommitFilter
+
+import main.util.*
+
 class CommitFilterImpl extends CommitFilter {
 
     public boolean applyFilter() {

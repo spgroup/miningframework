@@ -1,3 +1,7 @@
+package main.arguments
+
+import services.MiningModule
+
 class Arguments {
     
     private String inputPath
@@ -6,7 +10,7 @@ class Arguments {
     private String untilDate
     private Class injector
     private boolean isHelp
-    private String resultsRemoteRepository
+    private String resultsRemoteRepositoryURL
 
     Arguments() {
         isHelp = false
@@ -14,7 +18,7 @@ class Arguments {
         untilDate = ''
         outputPath = 'output'
         injector = MiningModule
-        resultsRemoteRepository = ''
+        resultsRemoteRepositoryURL = ''
     }
 
     void setInputPath(String inputPath) {
@@ -37,8 +41,8 @@ class Arguments {
         this.injector = injector
     }
 
-    void setResultsRemoteRepository(String resultsRemoteRepository) {
-        this.resultsRemoteRepository = resultsRemoteRepository
+    void setResultsRemoteRepositoryURL(String resultsRemoteRepositoryURL) {
+        this.resultsRemoteRepositoryURL = resultsRemoteRepositoryURL
     }
 
     boolean setHelp() {
@@ -69,7 +73,11 @@ class Arguments {
         return isHelp
     }
 
-    String getResultsRemoteRepository() {
-        return resultsRemoteRepository
+    String getResultsRemoteRepositoryURL() {
+        return resultsRemoteRepositoryURL
+    }
+
+    boolean isPushCommandActive() {
+        return !resultsRemoteRepositoryURL.equals('')
     }
 }

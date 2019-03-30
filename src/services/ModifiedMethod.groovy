@@ -1,3 +1,5 @@
+package services
+
 class ModifiedMethod {
     private String signature
     private Set<ModifiedLine> modifiedLines
@@ -15,7 +17,7 @@ class ModifiedMethod {
         this.signature = signature
     }
 
-    public addAll(Set<ModifiedLine> lines) {
+    public addAllLines(Set<ModifiedLine> lines) {
         modifiedLines.addAll(lines)
     } 
 

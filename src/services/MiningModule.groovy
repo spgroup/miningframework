@@ -1,3 +1,9 @@
+package services
+
+import main.interfaces.DataCollector
+import main.interfaces.StatisticsCollector
+import main.interfaces.CommitFilter
+
 @Grab('com.google.inject:guice:4.2.2')
 import com.google.inject.*
 

@@ -1,16 +1,22 @@
-public class ModifiedLine {
+package services
 
-    public static enum CONTRIBUTION {Left, Right}
+public class ModifiedLine {
 
     private String content;
     private int number;
     private String method;
+    private Tuple2 deletedNumbers;
     private DataCollectorImpl$Modification type;
-    private CONTRIBUTION contribution;
 
     public ModifiedLine(String content, int number, DataCollectorImpl$Modification type) {
         this.content = content;
         this.number = number;
+        this.type = type;
+    }
+
+    public ModifiedLine(String content, Tuple2 numbers, DataCollectorImpl$Modification type) {
+        this.content = content;
+        this.deletedNumbers = numbers;
         this.type = type;
     }
 
@@ -20,6 +26,10 @@ public class ModifiedLine {
 
     public getNumber() {
         return number;
+    }
+
+    public getDeletedLineNumbersTuple() {
+        return deletedNumbers;
     }
 
     public getType() {

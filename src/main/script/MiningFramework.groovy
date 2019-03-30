@@ -1,3 +1,5 @@
+package main.script
+
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
 @Grab('com.google.inject:guice:4.2.2')
 import static com.xlson.groovycsv.CsvParser.parseCsv
@@ -8,6 +10,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.ArrayList
 import static groovy.io.FileType.DIRECTORIES
+
+import main.arguments.*
+import main.project.*
+import main.interfaces.*
+import main.exception.InvalidArgsException
+import main.util.*
 
 class MiningFramework {
 
@@ -45,8 +53,8 @@ class MiningFramework {
                 }
             }
 
-            if(!arguments.getResultsRemoteRepository().equals('')) // Will push.
-                pushResults(project, arguments.getResultsRemoteRepository())
+            if(arguments.isPushCommandActive()) // Will push.
+                pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
             endProjectAnalysis()
         }
@@ -65,9 +73,7 @@ class MiningFramework {
     }
 
     private void collectData(Project project, MergeCommit mergeCommit) {
-        dataCollector.setProject(project)
-        dataCollector.setMergeCommit(mergeCommit)
-        dataCollector.collectData()
+        dataCollector.collectData(project, mergeCommit)
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {
@@ -106,8 +112,9 @@ class MiningFramework {
         }
         projectDirectory.mkdirs()
 
-        Process gitClone = new ProcessBuilder('git', 'clone', project.getPath(), target).start()
+        Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', project.getPath(), target)
         gitClone.waitFor()
+        
         project.setPath(target)
     }
 
@@ -145,7 +152,7 @@ class MiningFramework {
 
                 framework.setArguments(appArguments)
 
-                FileManager.createOutputFiles(appArguments.getOutputPath(), !appArguments.getResultsRemoteRepository().equals(''))
+                FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
             
                 printStartAnalysis()                
                 

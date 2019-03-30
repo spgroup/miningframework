@@ -1,11 +1,15 @@
-public abstract class StatisticsCollector {
-    
+package main.interfaces
+
+import main.project.*
+
+public abstract class DataCollector {
+
     private Project project
     private MergeCommit mergeCommit
     private File resultsFile
-    private String outputPath
-    
-    public abstract void collectStatistics()
+    private static String outputPath
+
+    public abstract void collectData(Project project, MergeCommit mergeCommit)
 
     public Project getProject() {
         return project
@@ -35,7 +39,7 @@ public abstract class StatisticsCollector {
         this.outputPath = outputPath
     }
 
-    public getOutputPath() {
-        return outputPath
+    public String getOutputPath() {
+        return this.outputPath
     }
 }

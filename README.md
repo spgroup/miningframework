@@ -4,6 +4,9 @@ Framework for mining git projects.
 ## Getting Started
 This project uses [Apache Groovy](http://groovy-lang.org/). Install it to execute the program. This is the only requisite.
 
+* If you want to run the tests, you must use the command to clone the repository:
+ ``` git clone --recursive https://github.com/spgroup/miningframework ```
+
 ## Dependency Injection
 This framework uses [Google Guice](https://github.com/google/guice) to deal with dependency injection.
 
@@ -32,5 +35,14 @@ This can be done by configuring an IDE or executing the following command in a t
 * Linux/Mac: `groovy -cp src src/main/script/MiningFramework.groovy [options] [input] [output]` 
 
 `[input]` is a mandatory argument and refers to the path of the projects list's file. It's useful to type `--help` in the `[options]` field to see more details, including information about parameterization of the input files.
+
+## Testing
+One can the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
+
+This can be done by configuring an IDE or executing the following command in a terminal:
+* Windows: `groovy -cp src src/test/TestSuite.groovy`
+* Linux/Mac: `groovy -cp src src/test/TestSuite.groovy` 
+
+To create new tests, you have to create a git repository with a merge scenario simulating, add it to the `test_repositories` directory and add it to `src/test/input.csv` like a project and then create the Test class.
 
 

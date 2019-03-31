@@ -19,7 +19,7 @@ import services.MiningModule
 import test.*
 
 @RunWith(Suite.class)
-@SuiteClasses([DeletionTest.class])
+@SuiteClasses([DeletionTest.class, SameLineTest.class])
 public class TestSuite {
     public static Map<String, String> modifiedLines;
 

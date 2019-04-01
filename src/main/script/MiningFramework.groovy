@@ -73,9 +73,7 @@ class MiningFramework {
     }
 
     private void collectData(Project project, MergeCommit mergeCommit) {
-        dataCollector.setProject(project)
-        dataCollector.setMergeCommit(mergeCommit)
-        dataCollector.collectData()
+        dataCollector.collectData(project, mergeCommit)
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {

@@ -6,6 +6,7 @@ import java.util.regex.Matcher
 
 import static main.script.MiningFramework.arguments
 import main.util.*
+import main.project.*
 
 class DataCollectorImpl extends DataCollector {
 
@@ -13,39 +14,39 @@ class DataCollectorImpl extends DataCollector {
     private File resultsFileLinks
 
     @Override
-    public void collectData() {
+    public void collectData(Project project, MergeCommit mergeCommit) {
         resultsFile = new File("${outputPath}/data/results.csv")
         if(arguments.isPushCommandActive()) {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
         }
 
-        getMutuallyModifiedMethods()
+        getMutuallyModifiedMethods(project, mergeCommit)
         println "Data collection finished!"
     }
 
-    private void getMutuallyModifiedMethods() {
+    private void getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
         Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
         for(file in mutuallyModifiedFiles) {
-            Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
-            Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
+            Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+            Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
             def mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
-            Set<ModifiedMethod> mergeModifiedMethods = getModifiedMethods(file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            Set<ModifiedMethod> mergeModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
             
             if (mutuallyModifiedMethods.size() > 0) {
-                String className = getClassName(file, mergeCommit.getAncestorSHA())
+                String className = getClassName(project, file, mergeCommit.getAncestorSHA())
                 for(method in mergeModifiedMethods) 
-                    analyseModifiedMethods(className, mutuallyModifiedMethods, method, file)
+                    analyseModifiedMethods(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
 
-                assembleResults(className.replaceAll('\\.', '\\/'), file)
+                assembleResults(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
             }
         }
     }
 
-    private void assembleResults(String classPath, String file) {
+    private void assembleResults(Project project, MergeCommit mergeCommit, String classPath, String file) {
         String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classPath}/"
         File results = new File(path)
         if(!results.exists())
@@ -57,14 +58,14 @@ class DataCollectorImpl extends DataCollector {
         FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
-    private void analyseModifiedMethods(String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
+    private void analyseModifiedMethods(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
 
         ModifiedMethod[] mutuallyModifiedMethods = parentsModifiedMethods[mergeModifiedMethod.getSignature()]
         if (mutuallyModifiedMethods != null) {
             Set<Integer> leftAddedLines = new HashSet<Integer>()
-            Set<Integer> leftDeletedLines = new HashSet<Integer>()
+            Set<Tuple2> leftDeletedLines = new HashSet<Tuple2>()
             Set<Integer> rightAddedLines = new HashSet<Integer>()
-            Set<Integer> rightDeletedLines = new HashSet<Integer>()
+            Set<Tuple2> rightDeletedLines = new HashSet<Tuple2>()
 
             // mutuallyModifiedMethods[0] = left's methods; mutuallyModifiedMethods[1] = right's methods;
             for(line in mergeModifiedMethod.getModifiedLines()) {
@@ -75,7 +76,7 @@ class DataCollectorImpl extends DataCollector {
                     checkAndAddLine(line, rightAddedLines, rightDeletedLines)
                     
             }
-            printResults(className, mergeModifiedMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
+            printResults(project, mergeCommit, className, mergeModifiedMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
         }
     }
   
@@ -86,7 +87,7 @@ class DataCollectorImpl extends DataCollector {
         return false
     }
 
-    private void printResults(String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
+    private void printResults(Project project, MergeCommit mergeCommit, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
         resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
     
         // Add links.
@@ -106,56 +107,11 @@ class DataCollectorImpl extends DataCollector {
         return "=HYPERLINK(${url}/tree/master/output-${path};${path})"
     }
   
-    private void checkAndAddLine(ModifiedLine line, Set<Integer> addedLines,  Set<Integer> deletedLines) {
+    private void checkAndAddLine(ModifiedLine line, Set<Integer> addedLines,  Set<Tuple2> deletedLines) {
         if (line.getType() == Modification.ADDED || line.getType() == Modification.CHANGED)
             addedLines.add(line.getNumber())
         else 
-            deletedLines.add(line.getNumber())
-
-    }
-
-    private Set<ModifiedMethod> getModifiedMethods(String filePath, String ancestorSHA, String commitSHA) {
-        Set<ModifiedMethod> modifiedMethods = new HashSet<ModifiedMethod>()
-
-        File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA) 
-        File mergeFile = FileManager.copyFile(project, filePath, commitSHA)
-
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
-
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
-            String line, signature
-            Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
-
-            def methodModificationHeader = ~/.+ code (changed|added|removed) in .+/
-            while((line = reader.readLine()) != null) {
-
-                // This algorithm scans all of the lines from the output. It "resets" every time it encounters a method modification.
-                if(line ==~ methodModificationHeader) {
-                    if(modifiedLines.size() > 0) { // Adding found lines from previous method analysis.
-                        insertMethod(modifiedMethods, signature, modifiedLines)
-                        modifiedLines = new HashSet<ModifiedLine>()
-                    }
-        
-                    // Parsing some data from this current method analysis.
-                    ArrayList<Integer> modifiedLinesNumber = getLineNumbers(line) 
-                    Modification modificationType = getModificationType(line)
-                    signature = getSignature(line)
-
-                    modifiedLines.addAll(getLines(modificationType, reader, modifiedLinesNumber))
-                }
-            }
-        
-            if(signature != null) // The last method analysis is ignored by this algorithm (since there's no other method to reset), so we treat it here.
-                insertMethod(modifiedMethods, signature, modifiedLines)
-
-        } catch(IOException e) {
-            e.printStackTrace()
-        }
-
-        FileManager.delete(ancestorFile)
-        FileManager.delete(mergeFile)
-        return modifiedMethods
+            deletedLines.add(line.getDeletedLineNumbersTuple())
     }
 
     /*
@@ -178,68 +134,118 @@ class DataCollectorImpl extends DataCollector {
         This algorithm detects such lines, associating them with their correspondent modifications.
         Also, it counts the rangef to check lines number.
     */
-    private Set<ModifiedLine> getLines(Modification type, BufferedReader reader, modifiedLinesNumber) {
-        Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
+    private Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String commitSHA) {
+        Set<ModifiedMethod> modifiedMethods = new HashSet<ModifiedMethod>()
+        File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA) 
+        File mergeFile = FileManager.copyFile(project, filePath, commitSHA)
 
-        String line = reader.readLine()
-        int i = 0
-        while(line.startsWith('<') || line.startsWith('---') || line.startsWith('>')) {
+        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), mergeFile.getAbsolutePath())
+        BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
+        String[] output = reader.readLines() 
 
-            if(lineCorrespondsToModification(type, line)) {
-                String content = line.substring(1)
-                ModifiedLine modifiedLine = new ModifiedLine(content, modifiedLinesNumber[i], type)
-                modifiedLines.add(modifiedLine)
-                if(line.startsWith('>')) // iterating on rangef.
-                    i++
+        def methodAnalysisExpression = ~/.+ code (changed|added|removed) in .+/
+        for(int i = 0; i < output.length; i++) {
+            String line = output[i]
+
+            if(line ==~ methodAnalysisExpression) {
+                String signature = getSignature(line)
+                
+                String lineNumbers = line.substring(0, line.indexOf('code') - 1)
+                List<Integer> removedLineNumbers = getRemovedLineNumbers(lineNumbers)
+                List<Integer> addedLineNumbers = getAddedLineNumbers(lineNumbers)
+
+                Modification modificationType = getModificationType(line) // Changed, added or removed.
+              
+                insertMethod(modifiedMethods, signature, getModifiedLines(removedLineNumbers, addedLineNumbers, modificationType, output, i + 1))
             }
-
-            line = reader.readLine()
+                
         }
-        return modifiedLines
-    }
 
-    private boolean lineCorrespondsToModification(Modification type, String line) {
-        return ((type == Modification.ADDED && line.startsWith('>'))
-            || (type == Modification.REMOVED && line.startsWith('<')) 
-            || (type == Modification.CHANGED && (line.startsWith('<') || line.startsWith('>'))))
-    }
-
-    private void insertMethod(Set<ModifiedMethod> modifiedMethods, String signature, Set<ModifiedLine> modifiedLines) {
-        for(method in modifiedMethods) 
-            if(method.getSignature().equals(signature)) {
-                method.addAll(modifiedLines)
-                return
-            }
-        
-        ModifiedMethod modifiedMethod = new ModifiedMethod(signature, modifiedLines)
-        modifiedMethods.add(modifiedMethod)
+        FileManager.delete(ancestorFile)
+        FileManager.delete(mergeFile)
+        return modifiedMethods
+    
     }
 
     private String getSignature(String line) {
         return line.substring(line.indexOf(" in ") + 4)
     }
 
-    private Modification getModificationType(String line) {
-        int codeTokenIndex = line.indexOf("code")
-        String modification = line.substring(0, codeTokenIndex - 1)
-        if(modification.contains('changed'))
-            return Modification.CHANGED
-        else if(modification.contains('added'))
-            return Modification.ADDED
-        else
-            return Modification.REMOVED 
-    }
-
-    private ArrayList<Integer> getLineNumbers(String line) {
-        int codeTokenIndex = line.indexOf("code")
-        String lineChanges = line.substring(0, codeTokenIndex - 1)
-        for (int i = 0; i < lineChanges.size(); i++) {
-            if(lineChanges[i] == 'c' || lineChanges[i] == 'd' || lineChanges[i] == 'a')
-                return parseLines(lineChanges.substring(i + 1))
+    private List<Integer> getRemovedLineNumbers(String lineNumbers) {
+        for (int i = 0; i < lineNumbers.size(); i++) {
+            if(lineNumbers[i] == 'c' || lineNumbers[i] == 'd' || lineNumbers[i] == 'a')
+                return parseLines(lineNumbers.substring(0, i))
         }
     }
 
-      private ArrayList<Integer> parseLines(String lines) {
+    private List<Integer> getAddedLineNumbers(String lineNumbers) {
+        for (int i = 0; i < lineNumbers.size(); i++) {
+            if(lineNumbers[i] == 'c' || lineNumbers[i] == 'd' || lineNumbers[i] == 'a')
+                return parseLines(lineNumbers.substring(i + 1))
+        }
+    }
+
+    private Modification getModificationType(String line) {
+        if(line.contains('changed'))
+            return Modification.CHANGED
+        else if(line.contains('added'))
+            return Modification.ADDED
+        else
+            return Modification.REMOVED
+    }
+
+    private Set<ModifiedLine> getModifiedLines(List<Integer> removedLineNumbers, List<Integer> addedLineNumbers, Modification type, String[] outputLines, int start) {
+        if(type == Modification.REMOVED)
+            return getDeletedLinesTuple(removedLineNumbers, addedLineNumbers, type, outputLines, start)
+        else if(type == Modification.ADDED)
+            return getAddedLines(addedLineNumbers, type, outputLines, start)
+        else 
+            return getChangedLines(addedLineNumbers, type, outputLines, start)
+    }
+
+    private Set<ModifiedLine> getDeletedLinesTuple(List<Integer> removedLineNumbers, List<Integer> addedLineNumbers, Modification type, String[] outputLines, int iterator) {
+        Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
+        for(int i = 0; outputLines[iterator].startsWith('<'); i++) {
+            String content = outputLines[iterator].substring(1)
+            ModifiedLine modifiedLine = new ModifiedLine(content, new Tuple2(removedLineNumbers[i], addedLineNumbers[0]), type)
+            modifiedLines.add(modifiedLine)
+            iterator++
+        }
+        return modifiedLines
+    }
+
+    private Set<ModifiedLine> getAddedLines(List<Integer> addedLineNumbers, Modification type, String[] outputLines, int iterator) {
+        Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
+        for(int i = 0; isLineModification(outputLines, iterator); iterator++) {
+            if(outputLines[iterator].startsWith('>')) {
+                String content = outputLines[iterator].substring(1)
+                ModifiedLine modifiedLine = new ModifiedLine(content, addedLineNumbers[i], type)
+                modifiedLines.add(modifiedLine)
+                i++
+            }
+        }
+        return modifiedLines
+    }
+
+    private Set<ModifiedLine> getChangedLines(List<Integer> addedLineNumbers, Modification type, String[] outputLines, int iterator) {
+        Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
+        for(int i = 0; isLineModification(outputLines, iterator); iterator++) {
+            if(!outputLines[i].startsWith('---')) {
+                String content = outputLines[iterator].substring(1)
+                ModifiedLine modifiedLine = new ModifiedLine(content, addedLineNumbers[i], type)
+                modifiedLines.add(modifiedLine)
+                if(outputLines[i].startsWith('>'))
+                    i++
+            }
+        }
+        return modifiedLines
+    }
+
+    private boolean isLineModification(String[] outputLines, int i) {
+        return outputLines[i].startsWith('<') || outputLines[i].startsWith('---') || outputLines[i].startsWith('>')
+    }
+
+    private ArrayList<Integer> parseLines(String lines) {
         List<Integer> modifiedLines = new ArrayList<Integer>()
         
         int commaIndex = lines.indexOf(',')
@@ -265,7 +271,17 @@ class DataCollectorImpl extends DataCollector {
         return intersection
     }
 
-    private String getClassName(String file, String SHA) {
+    private void insertMethod(Set<ModifiedMethod> methods, String signature, Set<ModifiedLine> modifiedLines) {
+        for (method in methods) {
+            if(method.getSignature().equals(signature)) {
+                method.addAllLines(modifiedLines)
+                return
+            }
+        }
+        methods.add(new ModifiedMethod(signature, modifiedLines))
+    }
+
+    private String getClassName(Project project, String file, String SHA) {
         String className
         String classPackage = ""
 

@@ -1,6 +1,6 @@
 package services
-import main.interfaces.DataCollector
 
+import main.interfaces.ExperimentalDataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -8,14 +8,18 @@ import static main.script.MiningFramework.arguments
 import main.util.*
 import main.project.*
 
-class DataCollectorImpl extends DataCollector {
+
+class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
 
     public static enum Modification {ADDED, REMOVED, CHANGED}
     private File resultsFileLinks
 
     @Override
-    public void collectData(Project project, MergeCommit mergeCommit) {
-        resultsFile = new File("${outputPath}/data/results.csv")
+    public void collectExperimentalData(Project project, MergeCommit mergeCommit) {
+        String outputPath = arguments.getOutputPath()
+
+        File resultsFile = new File("${outputPath}/data/results.csv")
+
         if(arguments.isPushCommandActive()) {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
         }
@@ -47,6 +51,8 @@ class DataCollectorImpl extends DataCollector {
     }
 
     private void assembleResults(Project project, MergeCommit mergeCommit, String classPath, String file) {
+        String outputPath = arguments.getOutputPath()
+
         String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classPath}/"
         File results = new File(path)
         if(!results.exists())
@@ -88,17 +94,19 @@ class DataCollectorImpl extends DataCollector {
     }
 
     private void printResults(Project project, MergeCommit mergeCommit, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
+        File resultsFile = new File("${arguments.getOutputPath()}/data/results.csv")
+        
         resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
     
         // Add links.
         if(arguments.isPushCommandActive())
-            addLinks(arguments.getRemoteRepositoryURL())
+            addLinks(projectName, mergeCommitSHA, className, method, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines, arguments.getResultsRemoteRepositoryURL())
     }
 
-    private void addLinks(String remoteRepositoryURL) {
-        String projectLink = addLink(remoteRepositoryURL, project.getName())
-        String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
-        String classNameLink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}/${className.replaceAll('\\.', '\\/')}")
+    private void addLinks(String projectName, String mergeCommitSHA, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines, String remoteRepositoryURL) {
+        String projectLink = addLink(remoteRepositoryURL, projectName)
+        String mergeCommitSHALink = addLink(remoteRepositoryURL, "${projectName}/files/${projectName}/${mergeCommitSHA}")
+        String classNameLink = addLink(remoteRepositoryURL, "${projectName}/files/${projectName}/${mergeCommitSHA}/${className.replaceAll('\\.', '\\/')}")
         
         resultsFileLinks << "${projectLink}&${mergeCommitSHALink}&${classNameLink}&${method}&${leftAddedLines}&${leftDeletedLines}&${rightAddedLines}&${rightDeletedLines}\n"
     }
@@ -113,7 +121,6 @@ class DataCollectorImpl extends DataCollector {
         else 
             deletedLines.add(line.getDeletedLineNumbersTuple())
     }
-
     /*
         DiffJ's output for methods' modification is the following:
         <rangei>,<rangef>: code (changed | added | removed) in <methodname>
@@ -271,6 +278,7 @@ class DataCollectorImpl extends DataCollector {
         return intersection
     }
 
+
     private void insertMethod(Set<ModifiedMethod> methods, String signature, Set<ModifiedLine> modifiedLines) {
         for (method in methods) {
             if(method.getSignature().equals(signature)) {
@@ -280,6 +288,7 @@ class DataCollectorImpl extends DataCollector {
         }
         methods.add(new ModifiedMethod(signature, modifiedLines))
     }
+
 
     private String getClassName(Project project, String file, String SHA) {
         String className

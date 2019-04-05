@@ -6,29 +6,48 @@ import java.util.concurrent.TimeUnit
 import java.text.ParseException 
 
 import main.util.*
+import main.project.*
+import main.script.MiningFramework
+import java.util.regex.Pattern
+import java.util.regex.Matcher
 
-class StatisticsCollectorImpl extends StatisticsCollector {
+class StatisticsCollectorImpl implements StatisticsCollector {
 
     @Override
-    public void collectStatistics() {
-        resultsFile = new File("${outputPath}/statistics/results.csv")
+    public void collectStatistics(Project project, MergeCommit mergeCommit) {
+        String outputPath = MiningFramework.getOutputPath()
+        File resultsFile = new File("${outputPath}/statistics/results.csv")
 
         boolean isOctopus = mergeCommit.isOctopus()
-        int numberOfMergeConflicts = getNumberOfMergeConflicts()
+        int numberOfMergeConflicts = getNumberOfMergeConflicts(project, mergeCommit)
         boolean mergeConflictOcurrence = numberOfMergeConflicts > 0
-        int numberOfConflictingFiles = getNumberOfConflictingFiles()
-        double numberOfDevelopersMean = getNumberOfDevelopersMean()
-        double numberOfCommitsMean = getNumberOfCommitsMean()
-        double numberOfChangedFilesMean = getNumberOfChangedFilesMean()
-        double numberOfChangedLinesMean = getNumberOfChangedLinesMean()
-        double durationMean = getDurationMean()
-        int conclusionDelay = getConclusionDelay()
+        int numberOfConflictingFiles = getNumberOfConflictingFiles(project, mergeCommit)
+        double numberOfDevelopersMean = getNumberOfDevelopersMean(project, mergeCommit)
+        double numberOfCommitsMean = getNumberOfCommitsMean(project, mergeCommit)
+        double numberOfChangedFilesMean = getNumberOfChangedFilesMean(project, mergeCommit)
+        double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
+        double durationMean = getDurationMean(project, mergeCommit)
+        int conclusionDelay = getConclusionDelay(project, mergeCommit)
 
+        String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
+        if(MiningFramework.isPushCommandActive()) {
+            File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
+            String projectLink = addLink(remoteRepositoryURL, project.getName())
+            String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
+
+            resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        } 
         resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+
+
         println "Statistics collection finished!"
     }
+    
+    private String addLink(String url, String path) {
+        return "=HYPERLINK(${url}/tree/master/output-${path};${path})"
+    }
 
-    private int getNumberOfMergeConflicts() {
+    private int getNumberOfMergeConflicts(Project project, MergeCommit mergeCommit) {
         int numberOfMergeConflicts = 0
 
         Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
@@ -48,7 +67,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         return numberOfMergeConflicts
     }
 
-    private int getNumberOfConflictingFiles() {
+    private int getNumberOfConflictingFiles(Project project, MergeCommit mergeCommit) {
         int numberOfConflictingFiles = 0
 
         Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
@@ -79,7 +98,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         return numberOfConflictingFiles
     }
 
-    private double getNumberOfDevelopersMean() {
+    private double getNumberOfDevelopersMean(Project project, MergeCommit mergeCommit) {
         String[] parents = mergeCommit.getParentsSHA()
         int[] numberOfDevelopers = new int[parents.length]
 
@@ -96,7 +115,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         return geometricMean(numberOfDevelopers)
     }
 
-    private double getNumberOfCommitsMean() {
+    private double getNumberOfCommitsMean(Project project, MergeCommit mergeCommit) {
         String[] parents = mergeCommit.getParentsSHA()
         int[] numberOfCommits = new int[parents.length]
 
@@ -110,7 +129,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         return geometricMean(numberOfCommits)
     }
 
-    private double getNumberOfChangedFilesMean() {
+    private double getNumberOfChangedFilesMean(Project project, MergeCommit mergeCommit) {
         String[] parents = mergeCommit.getParentsSHA()
         int[] numberOfChangedFiles = new int[parents.length]
 
@@ -125,7 +144,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         return geometricMean(numberOfChangedFiles)
     }
 
-    private double getNumberOfChangedLinesMean() {
+    private double getNumberOfChangedLinesMean(Project project, MergeCommit mergeCommit) {
         String[] parents = mergeCommit.getParentsSHA()
         int[] numberOfChangedLines = new int[parents.length]
 
@@ -142,7 +161,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         return geometricMean(numberOfChangedLines)
     }
 
-    private double getDurationMean() {
+    private double getDurationMean(Project project, MergeCommit mergeCommit) {
         String[] parents = mergeCommit.getParentsSHA()
         int[] numberOfDaysPassed = new int[parents.length]
         SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')
@@ -174,7 +193,7 @@ class StatisticsCollectorImpl extends StatisticsCollector {
         return geometricMean(numberOfDaysPassed)
     }
 
-    private int getConclusionDelay() {
+    private int getConclusionDelay(Project project, MergeCommit mergeCommit) {
         String[] parents = mergeCommit.getParentsSHA()
         Date[] commitDates = new Date[parents.length]
         SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')

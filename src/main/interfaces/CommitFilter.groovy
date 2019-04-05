@@ -2,26 +2,8 @@ package main.interfaces
 
 import main.project.*
 
-public abstract class CommitFilter {
-    
-    private Project project
-    private MergeCommit mergeCommit
+public interface CommitFilter {
 
-    public abstract boolean applyFilter()
+    public boolean applyFilter(Project project, MergeCommit mergeCommit)
 
-    public Project getProject() {
-        return project
-    }
-
-    public setProject(Project project) {
-        this.project = project
-    }
-
-    public MergeCommit getMergeCommit() {
-        return mergeCommit
-    }
-
-    public setMergeCommit(MergeCommit mergeCommit) {
-        this.mergeCommit = mergeCommit
-    }
 }

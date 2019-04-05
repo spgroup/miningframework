@@ -34,9 +34,8 @@ class ArgsParser {
         this.options = this.cli.parse(args)
         Arguments resultArgs = new Arguments()
         
-        if (this.options.arguments().size() == 0 || this.options.h) {
+        if (this.getArgumentQuantity() == 0 || this.options.h) {
             resultArgs.setHelp()
-            this.cli.usage()
         } else {
             parseInputs(resultArgs)
             parseOptions(resultArgs)
@@ -45,8 +44,12 @@ class ArgsParser {
         return resultArgs
     }
 
+    private void printHelp() {
+        this.cli.usage()
+    }
+
     private void parseInputs(Arguments args) {
-        if (this.options.arguments().size() > 2)
+        if (this.getArgumentQuantity() > 2)
             throw new InvalidArgsException('Too many arguments passed')    
 
         String inputFile = this.options.arguments()[0]
@@ -58,7 +61,7 @@ class ArgsParser {
 
         args.setInputPath(inputFile)
             
-        if (this.options.arguments().size() > 1) {
+        if (this.getArgumentQuantity() > 1) {
             String outputPath = this.options.arguments()[1]
             String parsedOutputPath = outputPath.endsWith("/") ? outputPath.substring(0,dir.lastIndexOf("/")) : outputPath;
             args.setOutputPath(parsedOutputPath)
@@ -92,7 +95,8 @@ class ArgsParser {
             if(!repositoryExists(this.options.push))
                 throw new InvalidArgsException('Inexistent remote git repository.')
 
-            args.setResultsRemoteRepository(this.options.push)
+            println this.options.push
+            args.setResultsRemoteRepositoryURL(this.options.push)
         }
     }
 
@@ -122,5 +126,9 @@ class ArgsParser {
         } catch (ParseException e) {
             return false;
         }
+    }
+
+    private int getArgumentQuantity() {
+        return this.options.arguments().size()
     }
 }

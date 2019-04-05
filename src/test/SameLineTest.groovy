@@ -16,7 +16,7 @@ public class SameLineTest {
 
     @Test
     public void removeSameLineTest() {
-        assert TestSuite.getModifiedLines('removeSameLine()') == '[] [9] [] [9]'
+        assert TestSuite.getModifiedLines('removeSameLine()') == '[] [[8, 9]] [] [[8, 9]]'
     }
     
 }

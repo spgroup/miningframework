@@ -27,7 +27,12 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         double numberOfChangedFilesMean = getNumberOfChangedFilesMean(project, mergeCommit)
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
         double durationMean = getDurationMean(project, mergeCommit)
-        int conclusionDelay = getConclusionDelay(project, mergeCommit)
+        int conclusionDelay = -1
+        if(!isOctopus) {
+            conclusionDelay = getConclusionDelay(project, mergeCommit)
+        } else {
+            println "Conclusion delay is not supported for octopus merge commits, delay was set to -1"
+        }
 
         String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
         if(MiningFramework.isPushCommandActive()) {

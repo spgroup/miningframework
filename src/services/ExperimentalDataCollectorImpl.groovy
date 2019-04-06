@@ -43,14 +43,14 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
             if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(project, file, mergeCommit.getAncestorSHA())
                 for(method in mergeModifiedMethods) 
-                    analyseModifiedMethods(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
+                    saveModifiedLines(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
 
-                assembleResults(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
+                saveMergeFiles(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
             }
         }
     }
 
-    private void assembleResults(Project project, MergeCommit mergeCommit, String classPath, String file) {
+    private void saveMergeFiles(Project project, MergeCommit mergeCommit, String classPath, String file) {
         String outputPath = arguments.getOutputPath()
 
         String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classPath}/"
@@ -64,7 +64,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
-    private void analyseModifiedMethods(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
+    private void saveModifiedLines(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
 
         ModifiedMethod[] mutuallyModifiedMethods = parentsModifiedMethods[mergeModifiedMethod.getSignature()]
         if (mutuallyModifiedMethods != null) {

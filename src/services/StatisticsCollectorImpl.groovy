@@ -28,6 +28,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
         double durationMean = getDurationMean(project, mergeCommit)
         int conclusionDelay = -1
+
         if(!isOctopus) {
             conclusionDelay = getConclusionDelay(project, mergeCommit)
         } else {

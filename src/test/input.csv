@@ -1,3 +1,4 @@
-name,path,relative
-deletions,./test_repositories/deletions
-sameline,./test_repositories/sameline
+name,path,relative,
+deletions,./test_repositories/deletions,
+sameline,./test_repositories/sameline,
+mergeconflict,./test_repositories/mergeconflict

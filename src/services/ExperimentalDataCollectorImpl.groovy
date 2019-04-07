@@ -24,21 +24,15 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
         }
 
-        getMutuallyModifiedMethods(project, mergeCommit)
+        saveMutuallyModifiedMethodsData(project, mergeCommit)
         println "Data collection finished!"
     }
 
-    private void getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {
-        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
-        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
+    private void saveMutuallyModifiedMethodsData(Project project, MergeCommit mergeCommit) {
+        Set<String> mutuallyModifiedFiles = getMutuallyModifiedFiles(project, mergeCommit)
 
         for(file in mutuallyModifiedFiles) {
-            Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
-            Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
-            def mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
-            Set<ModifiedMethod> mergeModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            Set<ModifiedMethod> mergeModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, file)
             
             if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(project, file, mergeCommit.getAncestorSHA())
@@ -84,6 +78,23 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
             }
             printResults(project, mergeCommit, className, mergeModifiedMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
         }
+    }
+
+    private Set<String> getMutuallyModifiedFiles(Project project, MergeCommit mergeCommit) {
+        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
+        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
+
+        return mutuallyModifiedFiles
+    }
+
+    private Set<ModifiedMethod> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, File file) {
+        Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+        Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
+        def mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
+       
+        return getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())     
     }
   
     private boolean containsLine(ModifiedMethod method, ModifiedLine line) {

@@ -5,10 +5,8 @@ package main.script
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import com.google.inject.*
 import java.io.File
-import java.nio.file.Path
-import java.nio.file.Files 
-import java.nio.file.Paths
 import java.util.ArrayList
+import java.text.SimpleDateFormat
 import static groovy.io.FileType.DIRECTORIES
 
 import main.arguments.*
@@ -22,34 +20,63 @@ class MiningFramework {
     private ArrayList<Project> projectList
    
     private StatisticsCollector statCollector
-    private DataCollector dataCollector
+    private ExperimentalDataCollector dataCollector
     private CommitFilter commitFilter
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
-    public MiningFramework(DataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
+    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
         this.dataCollector = dataCollector
         this.statCollector = statCollector
         this.commitFilter = commitFilter
     }
 
-    public void start() {
-        dataCollector.setOutputPath(arguments.getOutputPath())
-        statCollector.setOutputPath(arguments.getOutputPath())
+    static main(args) {
+        ArgsParser argsParser = new ArgsParser()
+        try {
+            Arguments appArguments = argsParser.parse(args)
+            
+            if (appArguments.isHelp()) {
+                argsParser.printHelp()
+            } else {
+                Class injectorClass = appArguments.getInjector()
+                Injector injector = Guice.createInjector(injectorClass.newInstance())
+                MiningFramework framework = injector.getInstance(MiningFramework.class)
 
+                framework.setArguments(appArguments)
+
+                FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
+            
+                printStartAnalysis()                
+                
+                ArrayList<Project> projectList = getProjectList()
+                framework.setProjectList(projectList)
+                framework.start()
+
+                printFinishAnalysis()
+            }
+    
+        } catch (InvalidArgsException e) {
+            println e.message
+            println 'Run the miningframework with --help to see the possible arguments'
+            return
+        }
+    }
+
+    public void start() {
         for (project in projectList) {
             printProjectInformation(project)
             if (project.isRemote())
                 cloneRepository(project, LOCAL_PROJECT_PATH)
             
-            ArrayList<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
+            List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(mergeCommit)
                     collectStatistics(project, mergeCommit)
-                    collectData(project, mergeCommit)
+                    collectExperimentalData(project, mergeCommit)
                 }
             }
 
@@ -61,21 +88,15 @@ class MiningFramework {
     }
 
     private boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        commitFilter.setProject(project)
-        commitFilter.setMergeCommit(mergeCommit)
-        return commitFilter.applyFilter()
+        return commitFilter.applyFilter(project, mergeCommit)
     }
 
     private void collectStatistics(Project project, MergeCommit mergeCommit) {
-        statCollector.setProject(project)
-        statCollector.setMergeCommit(mergeCommit)
-        statCollector.collectStatistics()
+        statCollector.collectStatistics(project, mergeCommit)
     }
 
-    private void collectData(Project project, MergeCommit mergeCommit) {
-        dataCollector.setProject(project)
-        dataCollector.setMergeCommit(mergeCommit)
-        dataCollector.collectData()
+    private void collectExperimentalData(Project project, MergeCommit mergeCommit) {
+        dataCollector.collectExperimentalData(project, mergeCommit)
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {
@@ -85,11 +106,14 @@ class MiningFramework {
         cloneRepository(resultsRepository, targetPath)
 
         // Copy output files, add, commit and then push.
-        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath}/output-${project.getName()}")
+        FileManager.copyDirectory(getOutputPath(), "${targetPath}/output-${project.getName()}")
         Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
         gitAdd.waitFor()
-        
-        Process gitCommit = ProcessRunner.runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()}")
+
+        def nowDate = new Date()
+        def sdf = new SimpleDateFormat("dd/MM/yyyy")
+        Process gitCommit = ProcessRunner
+            .runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()} - ${sdf.format(nowDate)}")
         gitCommit.waitFor()
         gitCommit.getInputStream().eachLine {
             println it
@@ -142,40 +166,10 @@ class MiningFramework {
         this.projectList = projectList
     }
 
-    static main(args) {
-        ArgsParser argsParser = new ArgsParser()
-        try {
-            Arguments appArguments = argsParser.parse(args)
-            
-            if (!appArguments.isHelp()) {
-                Class injectorClass = appArguments.getInjector()
-                Injector injector = Guice.createInjector(injectorClass.newInstance())
-                MiningFramework framework = injector.getInstance(MiningFramework.class)
-
-                framework.setArguments(appArguments)
-
-                FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
-            
-                printStartAnalysis()                
-                
-                ArrayList<Project> projectList = getProjectList()
-                framework.setProjectList(projectList)
-                framework.start()
-
-                printFinishAnalysis()
-            }
-    
-        } catch (InvalidArgsException e) {
-            println e.message
-            println 'Run the miningframework with --help to see the possible arguments'
-            return
-        }
-    }
-
     static ArrayList<Project> getProjectList() {
         ArrayList<Project> projectList = new ArrayList<Project>()
 
-        String projectsFile = new File(arguments.getInputPath()).getText()
+        String projectsFile = new File(getInputPath()).getText()
         def iterator = parseCsv(projectsFile)
         for (line in iterator) {
             String name = line[0]
@@ -222,6 +216,22 @@ class MiningFramework {
 
     static Arguments getArguments() {
         return arguments
+    }
+
+    static String getOutputPath() {
+        return arguments.getOutputPath()
+    }
+
+    static String getInputPath() {
+        return arguments.getInputPath()
+    }
+
+    static String isPushCommandActive() {
+        return arguments.isPushCommandActive()
+    }
+
+    static String getResultsRemoteRepositoryURL() {
+        return arguments.getResultsRemoteRepositoryURL()
     }
 
     static void printStartAnalysis() {

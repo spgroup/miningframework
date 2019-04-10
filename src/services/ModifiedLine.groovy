@@ -1,15 +1,23 @@
 package services
 
+
 public class ModifiedLine {
 
     private String content;
     private int number;
     private String method;
-    private DataCollectorImpl$Modification type;
+    private Tuple2 deletedNumbers;
+    private ExperimentalDataCollectorImpl$Modification type;
 
-    public ModifiedLine(String content, int number, DataCollectorImpl$Modification type) {
+    public ModifiedLine(String content, int number, ExperimentalDataCollectorImpl$Modification type) {
         this.content = content;
         this.number = number;
+        this.type = type;
+    }
+
+    public ModifiedLine(String content, Tuple2 numbers, ExperimentalDataCollectorImpl$Modification type) {
+        this.content = content;
+        this.deletedNumbers = numbers;
         this.type = type;
     }
 
@@ -19,6 +27,10 @@ public class ModifiedLine {
 
     public getNumber() {
         return number;
+    }
+
+    public getDeletedLineNumbersTuple() {
+        return deletedNumbers;
     }
 
     public getType() {

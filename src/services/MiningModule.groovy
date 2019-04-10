@@ -1,6 +1,6 @@
 package services
 
-import main.interfaces.DataCollector
+import main.interfaces.ExperimentalDataCollector
 import main.interfaces.StatisticsCollector
 import main.interfaces.CommitFilter
 
@@ -11,7 +11,7 @@ public class MiningModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(DataCollector.class).to(DataCollectorImpl.class)
+        bind(ExperimentalDataCollector.class).to(ExperimentalDataCollectorImpl.class)
         bind(StatisticsCollector.class).to(StatisticsCollectorImpl.class)
         bind(CommitFilter.class).to(CommitFilterImpl.class)
     }

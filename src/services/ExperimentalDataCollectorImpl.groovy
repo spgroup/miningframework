@@ -30,9 +30,10 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
 
     private void saveMutuallyModifiedMethodsData(Project project, MergeCommit mergeCommit) {
         Set<String> mutuallyModifiedFiles = getMutuallyModifiedFiles(project, mergeCommit)
-
+        
         for(file in mutuallyModifiedFiles) {
-            Set<ModifiedMethod> mergeModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, file)
+            Set<ModifiedMethod> mergeModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            def mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, file)
             
             if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(project, file, mergeCommit.getAncestorSHA())
@@ -89,12 +90,12 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         return mutuallyModifiedFiles
     }
 
-    private Set<ModifiedMethod> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, File file) {
+    private Map<String, ModifiedMethod[]> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String file) {
         Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
         Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         def mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
        
-        return getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())     
+        return mutuallyModifiedMethods;
     }
   
     private boolean containsLine(ModifiedMethod method, ModifiedLine line) {

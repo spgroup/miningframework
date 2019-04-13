@@ -35,14 +35,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         double numberOfChangedFilesMean = getNumberOfChangedFilesMean(project, mergeCommit)
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
         double durationMean = getDurationMean(project, mergeCommit)
-        int conclusionDelay = -1
-
-        if(!isOctopus) {
-            conclusionDelay = getConclusionDelay(project, mergeCommit)
-        } else {
-            println "Conclusion delay is not supported for octopus merge commits, delay was set to -1"
-        }
-
+        int conclusionDelay = getConclusionDelay(project, mergeCommit)
         String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
         if(MiningFramework.isPushCommandActive()) {
             File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
@@ -210,6 +203,10 @@ class StatisticsCollectorImpl implements StatisticsCollector {
     }
 
     private int getConclusionDelay(Project project, MergeCommit mergeCommit) {
+        if (mergeCommit.isOctopus()) {
+            println "Conclusion delay is not supported for octopus merge commits, delay was set to -1"
+            return -1;
+        }
         String[] parents = mergeCommit.getParentsSHA()
         Date[] commitDates = new Date[parents.length]
         SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')

@@ -56,7 +56,6 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
     private int getNumberOfMergeConflicts(Project project, MergeCommit mergeCommit) {
         int numberOfMergeConflicts = 0
-        println "simulate merge scenario"
         Process mergeSimulation = simulateMergeScenario(project, mergeCommit)
         mergeSimulation.waitFor()
         

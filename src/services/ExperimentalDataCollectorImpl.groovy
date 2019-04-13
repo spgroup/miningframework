@@ -40,12 +40,12 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
                 for(method in mergeModifiedMethods) 
                     saveModifiedLines(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
 
-                saveMergeFiles(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
+                saveMergeScenarioFiles(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
             }
         }
     }
 
-    private void saveMergeFiles(Project project, MergeCommit mergeCommit, String classPath, String file) {
+    private void saveMergeScenarioFiles(Project project, MergeCommit mergeCommit, String classPath, String file) {
         String outputPath = arguments.getOutputPath()
 
         String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classPath}/"

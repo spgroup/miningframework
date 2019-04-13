@@ -13,6 +13,7 @@ import main.arguments.*
 import main.project.*
 import main.interfaces.*
 import main.exception.InvalidArgsException
+import main.exception.UnstagedChangesException
 import main.util.*
 
 class MiningFramework {
@@ -61,15 +62,20 @@ class MiningFramework {
         } catch (InvalidArgsException e) {
             println e.message
             println 'Run the miningframework with --help to see the possible arguments'
-            return
+        } catch (UnstagedChangesException e) {
+            println e.message
         }
     }
 
     public void start() {
         for (project in projectList) {
             printProjectInformation(project)
-            if (project.isRemote())
+            
+            if (project.isRemote()) {
                 cloneRepository(project, LOCAL_PROJECT_PATH)
+            } else {
+                checkForUnstagedChanges(project);
+            }
             
             List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
             for (mergeCommit in mergeCommits) {
@@ -84,6 +90,14 @@ class MiningFramework {
                 pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
             endProjectAnalysis()
+        }
+    }
+
+    private void checkForUnstagedChanges(Project project) {
+        String gitDiffOutput = ProcessRunner.runProcess(project.getPath(), "git", "diff").getText()
+
+        if (gitDiffOutput.length() != 0) {
+            throw new UnstagedChangesException(project.getName())
         }
     }
 

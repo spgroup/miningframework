@@ -56,9 +56,10 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
     private int getNumberOfMergeConflicts(Project project, MergeCommit mergeCommit) {
         int numberOfMergeConflicts = 0
-
-        simulateMergeScenario(project, mergeCommit)
-
+        println "simulate merge scenario"
+        Process mergeSimulation = simulateMergeScenario(project, mergeCommit)
+        mergeSimulation.waitFor()
+        
         String mergeFiles = ProcessRunner.runProcess(project.getPath(), 'git', 'diff').getText()
         List<String> list = new ArrayList<String>()
         Pattern pattern = Pattern.compile(CONFLICT_MARKER)
@@ -68,8 +69,9 @@ class StatisticsCollectorImpl implements StatisticsCollector {
             numberOfMergeConflicts++
         }
 
-        returnToMaster(project)
-
+        Process returnToMaster = returnToMaster(project)
+        returnToMaster.waitFor()
+    
         return numberOfMergeConflicts
     }
 
@@ -98,12 +100,11 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'merge', mergeCommit.getRightSHA())   
     }
 
-    private void returnToMaster(Project project) {
+    private Process returnToMaster(Project project) {
         Process resetChanges = ProcessRunner.runProcess(project.getPath(), 'git', 'reset', '--hard')
         resetChanges.waitFor()
 
-        Process goToMaster = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
-        goToMaster.waitFor()
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
     }
 
 

@@ -11,6 +11,7 @@ class Arguments {
     private Class injector
     private boolean isHelp
     private String resultsRemoteRepositoryURL
+    private String postScript
 
     Arguments() {
         isHelp = false
@@ -19,6 +20,7 @@ class Arguments {
         outputPath = 'output'
         injector = MiningModule
         resultsRemoteRepositoryURL = ''
+        postScript = ''
     }
 
     void setInputPath(String inputPath) {
@@ -46,7 +48,11 @@ class Arguments {
     }
 
     boolean setHelp() {
-        isHelp = true
+        this.isHelp = true
+    }
+
+    void setPostScript(String script) {
+        this.postScript = script
     }
 
     String getInputPath() {
@@ -75,6 +81,10 @@ class Arguments {
 
     String getResultsRemoteRepositoryURL() {
         return resultsRemoteRepositoryURL
+    }
+
+    String getPostScript () {
+        return postScript
     }
 
     boolean isPushCommandActive() {

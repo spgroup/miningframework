@@ -57,6 +57,12 @@ class MiningFramework {
                 framework.start()
 
                 printFinishAnalysis()
+
+                String postScript = arguments.getPostScript()
+                if (postScript.length() > 0) {
+                    String scriptOutput = ProcessRunner.runProcess(".", postScript.split(' ')).getText()
+                    println scriptOutput
+                }
             }
     
         } catch (InvalidArgsException e) {
@@ -88,7 +94,7 @@ class MiningFramework {
 
             if(arguments.isPushCommandActive()) // Will push.
                 pushResults(project, arguments.getResultsRemoteRepositoryURL())
-
+            
             endProjectAnalysis()
         }
     }

@@ -2,7 +2,8 @@
 Framework for mining git projects.
 
 ## Getting Started
-This project uses [Apache Groovy](http://groovy-lang.org/). Install it to execute the program. This is the only requisite.
+* This project uses [Apache Groovy](http://groovy-lang.org/). Install it to execute the program
+* It also uses a [Python](https://www.python.org/) script to convert the output to a SOOT compatible format. Install the version 3.7.x or newer to run with the SOOT output. 
 
 * If you want to run the tests, you must use the command to clone the repository:
  ``` git clone --recursive https://github.com/spgroup/miningframework ```
@@ -35,6 +36,10 @@ This can be done by configuring an IDE or executing the following command in a t
 * Linux/Mac: `groovy -cp src src/main/script/MiningFramework.groovy [options] [input] [output]` 
 
 `[input]` is a mandatory argument and refers to the path of the projects list's file. It's useful to type `--help` in the `[options]` field to see more details, including information about parameterization of the input files.
+
+To get the SOOT framework output format you can run with the following command:
+* Windows `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] "[input] [output]`
+* Linux/Mac: `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] "[input] [output]`
 
 ## Testing
 One can the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`

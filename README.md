@@ -32,21 +32,18 @@ Where:
 One can run the framework by including `src` in the classpath and executing `src/main/script/MiningFramework.groovy`.
 
 This can be done by configuring an IDE or executing the following command in a terminal:
-* Windows: `groovy -cp src src/main/script/MiningFramework.groovy [options] [input] [output]`
-* Linux/Mac: `groovy -cp src src/main/script/MiningFramework.groovy [options] [input] [output]` 
+* Windows/Linux/Mac: `groovy -cp src src/main/script/MiningFramework.groovy [options] [input] [output]`
 
 `[input]` is a mandatory argument and refers to the path of the projects list's file. It's useful to type `--help` in the `[options]` field to see more details, including information about parameterization of the input files.
 
 To get the SOOT framework output format execute the following command:
-* Windows `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] "[input] [output]`
-* Linux/Mac: `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] "[input] [output]`
+* Windows/Linux/Mac `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] "[input] [output]`
 
 ## Testing
 One can the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
 
 This can be done by configuring an IDE or executing the following command in a terminal:
-* Windows: `groovy -cp src src/test/TestSuite.groovy`
-* Linux/Mac: `groovy -cp src src/test/TestSuite.groovy` 
+* Windows/Linux/Mac: `groovy -cp src src/test/TestSuite.groovy`
 
 To create new tests, you have to create a git repository with a merge scenario simulating, add it to the `test_repositories` directory and add it to `src/test/input.csv` like a project and then create the Test class.
 

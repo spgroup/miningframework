@@ -1,4 +1,4 @@
-package main.script
+package main.app
 
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
 @Grab('com.google.inject:guice:4.2.2')

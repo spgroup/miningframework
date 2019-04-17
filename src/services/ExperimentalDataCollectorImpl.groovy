@@ -4,7 +4,7 @@ import main.interfaces.ExperimentalDataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-import static main.script.MiningFramework.arguments
+import static main.app.MiningFramework.arguments
 import main.util.*
 import main.project.*
 

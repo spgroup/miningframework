@@ -7,7 +7,7 @@ import java.text.ParseException
 
 import main.util.*
 import main.project.*
-import main.script.MiningFramework
+import main.app.MiningFramework
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 

@@ -19,19 +19,19 @@ class CommitFilterImpl implements CommitFilter {
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
         for(file in mutuallyModifiedFiles) {
-            Set<String> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-            Set<String> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-            leftModifiedMethods.retainAll(rightModifiedMethods) // Intersection.
+            Set<String> leftModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+            Set<String> rightModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+            leftModifiedAttributesAndMethods.retainAll(rightModifiedAttributesAndMethods) // Intersection.
 
-            if(leftModifiedMethods.size() > 0)
+            if(leftModifiedAttributesAndMethods.size() > 0)
                 return true
         }
 
         return false
     }
 
-    private Set<String> getModifiedMethods(Project project, String filePath, String childSHA, String ancestorSHA) {
-        Set<String> modifiedMethods = new HashSet<ModifiedMethod>()
+    private Set<String> getModifiedAttributesAndMethods(Project project, String filePath, String childSHA, String ancestorSHA) {
+        Set<String> modifiedDeclarations = new HashSet<ModifiedDeclaration>()
 
         File childFile = FileManager.copyFile(project, filePath, childSHA) 
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA)
@@ -41,14 +41,14 @@ class CommitFilterImpl implements CommitFilter {
             int inIndex = it.indexOf("in ")
             if(inIndex != -1) {
                 String signature = it.substring(inIndex + 3)
-                modifiedMethods.add(signature)
+                modifiedDeclarations.add(signature)
             }
         }
         
         FileManager.delete(childFile)
         FileManager.delete(ancestorFile)
 
-        return modifiedMethods
+        return modifiedDeclarations
     }
 
 }

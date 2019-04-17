@@ -24,21 +24,22 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
         }
 
-        saveMutuallyModifiedMethodsData(project, mergeCommit)
+        getMutuallyModifiedAttributesAndMethods(project, mergeCommit)
         println "Data collection finished!"
     }
 
-    private void saveMutuallyModifiedMethodsData(Project project, MergeCommit mergeCommit) {
+    private void getMutuallyModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit) {
         Set<String> mutuallyModifiedFiles = getMutuallyModifiedFiles(project, mergeCommit)
         
         for(file in mutuallyModifiedFiles) {
-            Set<ModifiedMethod> mergeModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
-            def mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, file)
+            def mergeModifiedMethods = getModifiedMethodsAndAttributes(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            def mutuallyModifiedMethods = getMutuallyModifiedMethodsAndAttributes(project, mergeCommit, file)
             
             if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(project, file, mergeCommit.getAncestorSHA())
-                for(method in mergeModifiedMethods) 
-                    saveModifiedLines(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
+                for(method in mergeModifiedMethods) {
+                    saveModifiedAttributesAndMethods(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
+                }
 
                 saveMergeScenarioFiles(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
             }
@@ -59,25 +60,24 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
-    private void saveModifiedLines(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedMethod[]> parentsModifiedMethods, ModifiedMethod mergeModifiedMethod, String file) {
-
-        ModifiedMethod[] mutuallyModifiedMethods = parentsModifiedMethods[mergeModifiedMethod.getSignature()]
-        if (mutuallyModifiedMethods != null) {
+    private void saveModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedDeclaration[]> parentsModifiedDeclarations, ModifiedDeclaration mergeModifiedDeclaration, String file) {
+        ModifiedDeclaration[] mutuallyModifiedDeclarations = parentsModifiedDeclarations[mergeModifiedDeclaration.getSignature()]
+        if (mutuallyModifiedDeclarations != null) {
             Set<Integer> leftAddedLines = new HashSet<Integer>()
             Set<Tuple2> leftDeletedLines = new HashSet<Tuple2>()
             Set<Integer> rightAddedLines = new HashSet<Integer>()
             Set<Tuple2> rightDeletedLines = new HashSet<Tuple2>()
 
-            // mutuallyModifiedMethods[0] = left's methods; mutuallyModifiedMethods[1] = right's methods;
-            for(line in mergeModifiedMethod.getModifiedLines()) {
-                if(containsLine(mutuallyModifiedMethods[0], line))
+            // mutuallyModifiedDeclarations[0] = left's methods; mutuallyModifiedDeclarations[1] = right's methods;
+            for(line in mergeModifiedDeclaration.getModifiedLines()) {
+                if(containsLine(mutuallyModifiedDeclarations[0], line))
                     checkAndAddLine(line, leftAddedLines, leftDeletedLines)
 
-                if(containsLine(mutuallyModifiedMethods[1], line)) 
+                if(containsLine(mutuallyModifiedDeclarations[1], line)) 
                     checkAndAddLine(line, rightAddedLines, rightDeletedLines)
                     
             }
-            printResults(project, mergeCommit, className, mergeModifiedMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
+            printResults(project, mergeCommit, className, mergeModifiedDeclaration.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
         }
     }
 
@@ -90,15 +90,15 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         return mutuallyModifiedFiles
     }
 
-    private Map<String, ModifiedMethod[]> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String file) {
-        Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
-        Set<ModifiedMethod> rightModifiedMethods = getModifiedMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
+    private Map<String, ModifiedDeclaration[]> getMutuallyModifiedMethodsAndAttributes(Project project, MergeCommit mergeCommit, String file) {
+        Set<ModifiedLine> leftModifiedMethods = getModifiedMethodsAndAttributes(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+        Set<ModifiedLine> rightModifiedMethods = getModifiedMethodsAndAttributes(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         def mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
        
         return mutuallyModifiedMethods;
     }
   
-    private boolean containsLine(ModifiedMethod method, ModifiedLine line) {
+    private boolean containsLine(ModifiedDeclaration method, ModifiedLine line) {
         for(lineit in method.getModifiedLines())
             if(lineit.equals(line))
                 return true
@@ -153,8 +153,8 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         This algorithm detects such lines, associating them with their correspondent modifications.
         Also, it counts the rangef to check lines number.
     */
-    private Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String commitSHA) {
-        Set<ModifiedMethod> modifiedMethods = new HashSet<ModifiedMethod>()
+    private Set<ModifiedDeclaration> getModifiedMethodsAndAttributes(Project project, String filePath, String ancestorSHA, String commitSHA) {
+        Set<ModifiedDeclaration> modifiedDeclarations = new HashSet<ModifiedDeclaration>()
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA) 
         File mergeFile = FileManager.copyFile(project, filePath, commitSHA)
 
@@ -175,14 +175,14 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
 
                 Modification modificationType = getModificationType(line) // Changed, added or removed.
               
-                insertMethod(modifiedMethods, signature, getModifiedLines(removedLineNumbers, addedLineNumbers, modificationType, output, i + 1))
+                insertMethod(modifiedDeclarations, signature, getModifiedLines(removedLineNumbers, addedLineNumbers, modificationType, output, i + 1))
             }
                 
         }
 
         FileManager.delete(ancestorFile)
         FileManager.delete(mergeFile)
-        return modifiedMethods
+        return modifiedDeclarations
     
     }
 
@@ -280,8 +280,8 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         return modifiedLines
     }
 
-    private Map<String, ModifiedMethod[]> getMethodsIntersection(Set<ModifiedMethod> leftMethods, Set<ModifiedMethod> rightMethods) {
-        Map<String, ModifiedMethod[]> intersection = [:]
+    private Map<String, ModifiedDeclaration[]> getMethodsIntersection(Set<ModifiedDeclaration> leftMethods, Set<ModifiedDeclaration> rightMethods) {
+        Map<String, ModifiedDeclaration[]> intersection = [:]
         for(leftMethod in leftMethods) {
             for(rightMethod in rightMethods) 
                 if(leftMethod.equals(rightMethod))
@@ -291,14 +291,14 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
     }
 
 
-    private void insertMethod(Set<ModifiedMethod> methods, String signature, Set<ModifiedLine> modifiedLines) {
+    private void insertMethod(Set<ModifiedDeclaration> methods, String signature, Set<ModifiedLine> modifiedLines) {
         for (method in methods) {
             if(method.getSignature().equals(signature)) {
                 method.addAllLines(modifiedLines)
                 return
             }
         }
-        methods.add(new ModifiedMethod(signature, modifiedLines))
+        methods.add(new ModifiedDeclaration(signature, modifiedLines))
     }
 
 

@@ -13,22 +13,29 @@ import java.util.regex.Matcher
 
 class StatisticsCollectorImpl implements StatisticsCollector {
 
+    // Looks for conflict markers in files
+    private static String CONFLICT_MARKER = "(<<<<<<<)([\\s\\S]*?)(>>>>>>>)"  
+    // Looks for both english and portuguese system for merge messages
+    private static String CONFLICT_INDICATOR = "(CONFLICT)|(CONFLITO)"
+
     @Override
     public void collectStatistics(Project project, MergeCommit mergeCommit) {
         String outputPath = MiningFramework.getOutputPath()
         File resultsFile = new File("${outputPath}/statistics/results.csv")
 
         boolean isOctopus = mergeCommit.isOctopus()
+
+        String mergeMessage = simulateMergeScenario(project, mergeCommit)
         int numberOfMergeConflicts = getNumberOfMergeConflicts(project, mergeCommit)
         boolean mergeConflictOcurrence = numberOfMergeConflicts > 0
         int numberOfConflictingFiles = getNumberOfConflictingFiles(project, mergeCommit)
+
         double numberOfDevelopersMean = getNumberOfDevelopersMean(project, mergeCommit)
         double numberOfCommitsMean = getNumberOfCommitsMean(project, mergeCommit)
         double numberOfChangedFilesMean = getNumberOfChangedFilesMean(project, mergeCommit)
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
         double durationMean = getDurationMean(project, mergeCommit)
         int conclusionDelay = getConclusionDelay(project, mergeCommit)
-
         String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
         if(MiningFramework.isPushCommandActive()) {
             File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
@@ -49,54 +56,56 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
     private int getNumberOfMergeConflicts(Project project, MergeCommit mergeCommit) {
         int numberOfMergeConflicts = 0
+        Process mergeSimulation = simulateMergeScenario(project, mergeCommit)
+        mergeSimulation.waitFor()
+        
+        String mergeFiles = ProcessRunner.runProcess(project.getPath(), 'git', 'diff').getText()
+        List<String> list = new ArrayList<String>()
+        Pattern pattern = Pattern.compile(CONFLICT_MARKER)
+        Matcher m = pattern.matcher(mergeFiles)
+       
+        while (m.find()) {
+            numberOfMergeConflicts++
+        }
 
-        Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
-            ArrayList<String> output = reader.readLines()
-
-            for(line in output) {
-                if(line.endsWith("======="))
-                    numberOfMergeConflicts++
-            }
-
-        } catch(IOException e) {
-            e.printStackTrace()
-        }        
-
+        Process returnToMaster = returnToMaster(project)
+        returnToMaster.waitFor()
+    
         return numberOfMergeConflicts
     }
 
     private int getNumberOfConflictingFiles(Project project, MergeCommit mergeCommit) {
-        int numberOfConflictingFiles = 0
+        Set<String> conflictingFiles = new HashSet<String>()
 
-        Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
-            ArrayList<String> output = reader.readLines()
+        String mergeOutput = simulateMergeScenario(project, mergeCommit).getText()
 
-            boolean fileHasConflict = false
-            for(line in output) {
-                
-                if(line.startsWith('diff --cc') && fileHasConflict) {
-                    numberOfConflictingFiles++
-                } else if(line.startsWith('diff --cc')) {
-                    fileHasConflict = false
-                }
+        def lines = mergeOutput.split("\n")
+        Pattern pattern = Pattern.compile(CONFLICT_INDICATOR)
 
-                if(line.endsWith("======="))
-                    fileHasConflict = true
-            }
+        for (line in lines) {
+            Matcher m = pattern.matcher(line)
+            if (m.find())
+                conflictingFiles.add(line)
+        }
 
-            if(fileHasConflict)
-                numberOfConflictingFiles++
-
-        } catch(IOException e) {
-            e.printStackTrace()
-        }        
-
-        return numberOfConflictingFiles
+        returnToMaster(project)
+        return conflictingFiles.size()
     }
+    
+    private Process simulateMergeScenario(Project project, MergeCommit mergeCommit) {
+        Process checkoutLeft = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', mergeCommit.getLeftSHA())
+        checkoutLeft.waitFor()
+
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'merge', mergeCommit.getRightSHA())   
+    }
+
+    private Process returnToMaster(Project project) {
+        Process resetChanges = ProcessRunner.runProcess(project.getPath(), 'git', 'reset', '--hard')
+        resetChanges.waitFor()
+
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
+    }
+
 
     private double getNumberOfDevelopersMean(Project project, MergeCommit mergeCommit) {
         String[] parents = mergeCommit.getParentsSHA()
@@ -194,6 +203,10 @@ class StatisticsCollectorImpl implements StatisticsCollector {
     }
 
     private int getConclusionDelay(Project project, MergeCommit mergeCommit) {
+        if (mergeCommit.isOctopus()) {
+            println "Conclusion delay is not supported for octopus merge commits, delay was set to -1"
+            return -1;
+        }
         String[] parents = mergeCommit.getParentsSHA()
         Date[] commitDates = new Date[parents.length]
         SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')

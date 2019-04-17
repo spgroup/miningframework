@@ -1,10 +1,10 @@
 package services
 
-class ModifiedMethod {
+class ModifiedDeclaration {
     private String signature
     private Set<ModifiedLine> modifiedLines
 
-    public ModifiedMethod(String signature, Set<ModifiedLine> modifiedLines) {
+    public ModifiedDeclaration(String signature, Set<ModifiedLine> modifiedLines) {
         this.signature = signature
         this.modifiedLines = modifiedLines
     }

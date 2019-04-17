@@ -37,7 +37,7 @@ This can be done by configuring an IDE or executing the following command in a t
 `[input]` is a mandatory argument and refers to the path of the projects list's file. It's useful to type `--help` in the `[options]` field to see more details, including information about parameterization of the input files.
 
 To get the SOOT framework output format execute the following command:
-* Windows/Linux/Mac `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] "[input] [output]`
+* Windows/Linux/Mac `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] " [options] [input] [output]`
 
 ## Testing
 One can the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`

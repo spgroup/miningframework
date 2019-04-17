@@ -14,6 +14,7 @@ import main.project.*
 import main.interfaces.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
+import main.exception.UnexpectedPostScriptException
 import main.util.*
 
 class MiningFramework {
@@ -66,6 +67,8 @@ class MiningFramework {
             println 'Run the miningframework with --help to see the possible arguments'
         } catch (UnstagedChangesException e) {
             println e.message
+        } catch (UnexpectedPostScriptException e) {
+            println e.message
         }
     }
 
@@ -95,11 +98,16 @@ class MiningFramework {
         }
     }
 
-    private void runPostScript() {
+    static private void runPostScript() {
         String postScript = arguments.getPostScript()
         if (postScript.length() > 0) {
-            String scriptOutput = ProcessRunner.runProcess(".", postScript.split(' ')).getText()
-            println scriptOutput
+            println "Executing post script..."
+            try {
+                String scriptOutput = ProcessRunner.runProcess(".", postScript.split(' ')).getText()
+                println scriptOutput
+            } catch (IOException e) {
+                throw new UnexpectedPostScriptException(e.message)
+            }
         }
     }
 

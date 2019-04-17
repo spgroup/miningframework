@@ -107,6 +107,8 @@ class MiningFramework {
                 println scriptOutput
             } catch (IOException e) {
                 throw new UnexpectedPostScriptException(e.message)
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new UnexpectedPostScriptException(e.message)
             }
         }
     }

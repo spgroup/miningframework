@@ -1,4 +1,4 @@
-package main.script
+package main.app
 
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
 @Grab('com.google.inject:guice:4.2.2')
@@ -14,6 +14,7 @@ import main.project.*
 import main.interfaces.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
+import main.exception.UnexpectedPostScriptException
 import main.util.*
 
 class MiningFramework {
@@ -57,12 +58,16 @@ class MiningFramework {
                 framework.start()
 
                 printFinishAnalysis()
+
+                runPostScript()
             }
     
         } catch (InvalidArgsException e) {
             println e.message
             println 'Run the miningframework with --help to see the possible arguments'
         } catch (UnstagedChangesException e) {
+            println e.message
+        } catch (UnexpectedPostScriptException e) {
             println e.message
         }
     }
@@ -88,8 +93,23 @@ class MiningFramework {
 
             if(arguments.isPushCommandActive()) // Will push.
                 pushResults(project, arguments.getResultsRemoteRepositoryURL())
-
+            
             endProjectAnalysis()
+        }
+    }
+
+    static private void runPostScript() {
+        String postScript = arguments.getPostScript()
+        if (postScript.length() > 0) {
+            println "Executing post script..."
+            try {
+                String scriptOutput = ProcessRunner.runProcess(".", postScript.split(' ')).getText()
+                println scriptOutput
+            } catch (IOException e) {
+                throw new UnexpectedPostScriptException(e.message)
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new UnexpectedPostScriptException(e.message)
+            }
         }
     }
 

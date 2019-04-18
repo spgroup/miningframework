@@ -27,6 +27,7 @@ class ArgsParser {
         this.cli.i(longOpt: 'injector', args: 1,
                 argName:'class', 'Specify the class name of the dependency injector(it has to be in the classpath). default: MiningModule')
         this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a link to a remote git repository of your own to push the files analysed.')
+        this.cli.p(longOpt: 'post-script', args:1, argName: 'post script', 'Specify a bash script to be run after output is ready')
     }
 
 
@@ -97,6 +98,10 @@ class ArgsParser {
 
             println this.options.push
             args.setResultsRemoteRepositoryURL(this.options.push)
+        }
+
+        if (this.options.p) {
+            args.setPostScript(this.options.p)
         }
     }
 

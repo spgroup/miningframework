@@ -7,7 +7,7 @@ import java.text.ParseException
 
 import main.util.*
 import main.project.*
-import main.script.MiningFramework
+import main.app.MiningFramework
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -25,7 +25,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
         boolean isOctopus = mergeCommit.isOctopus()
 
-        String mergeMessage = simulateMergeScenario(project, mergeCommit)
+        String mergeMessage = replayMergeScenario(project, mergeCommit)
         int numberOfMergeConflicts = getNumberOfMergeConflicts(project, mergeCommit)
         boolean mergeConflictOcurrence = numberOfMergeConflicts > 0
         int numberOfConflictingFiles = getNumberOfConflictingFiles(project, mergeCommit)
@@ -56,7 +56,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
     private int getNumberOfMergeConflicts(Project project, MergeCommit mergeCommit) {
         int numberOfMergeConflicts = 0
-        Process mergeSimulation = simulateMergeScenario(project, mergeCommit)
+        Process mergeSimulation = replayMergeScenario(project, mergeCommit)
         mergeSimulation.waitFor()
         
         String mergeFiles = ProcessRunner.runProcess(project.getPath(), 'git', 'diff').getText()
@@ -77,7 +77,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
     private int getNumberOfConflictingFiles(Project project, MergeCommit mergeCommit) {
         Set<String> conflictingFiles = new HashSet<String>()
 
-        String mergeOutput = simulateMergeScenario(project, mergeCommit).getText()
+        String mergeOutput = replayMergeScenario(project, mergeCommit).getText()
 
         def lines = mergeOutput.split("\n")
         Pattern pattern = Pattern.compile(CONFLICT_INDICATOR)
@@ -92,7 +92,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         return conflictingFiles.size()
     }
     
-    private Process simulateMergeScenario(Project project, MergeCommit mergeCommit) {
+    private Process replayMergeScenario(Project project, MergeCommit mergeCommit) {
         Process checkoutLeft = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', mergeCommit.getLeftSHA())
         checkoutLeft.waitFor()
 

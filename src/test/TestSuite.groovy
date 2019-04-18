@@ -10,7 +10,7 @@ import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 import org.junit.BeforeClass
 
-import main.script.MiningFramework
+import main.app.MiningFramework
 import main.project.*
 import main.arguments.Arguments
 import main.util.FileManager

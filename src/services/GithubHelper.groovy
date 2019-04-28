@@ -1,31 +1,26 @@
 package services
 
 import main.project.Project
-import java.net.URL
-import java.net.UnknownHostException
+
 import java.net.HttpURLConnection
-import groovy.json.*
-import java.util.Base64
+import main.util.HttpHelper
 
 
 class GithubHelper {
 
     private final String API_URL = "https://api.github.com"
     private final String RAW_CONTENT_URL = "https://raw.githubusercontent.com"
-    private final String COMMIT_MESSAGE = "Update .travis.yml to save builds in github releases"
     private String accessKey;
-    private JsonSlurper jsonSlurper;
-
+    
     public GithubHelper (String accessKey) {
         this.accessKey = accessKey
-        this.jsonSlurper = new JsonSlurper()
     }
 
     public getUser() {
         String url = "${API_URL}/user"
-        HttpURLConnection connection = requestToApi(url, "GET")
+        HttpURLConnection connection = HttpHelper.requestToApi(url, "GET", this.accessKey)
         
-        def resBody = responseToJSON(connection.getInputStream())
+        def resBody = HttpHelper.responseToJSON(connection.getInputStream())
         if (connection.getResponseMessage() != "OK") {
             throw new GithubHelperException("Http request returned an error ${responseMessage}")
         }
@@ -40,7 +35,7 @@ class GithubHelper {
                 String projectName = projectNameAndOwner[1]
 
                 String url = "${API_URL}/repos/${projectOwner}/${projectName}/forks"
-                String responseMessage = requestToApi(url, "POST").getResponseMessage();
+                String responseMessage = HttpHelper.requestToApi(url, "POST", this.accessKey).getResponseMessage();
                 if (responseMessage != "Accepted") {
                     throw new GithubHelperException("Http request returned an error ${responseMessage}")
                 }
@@ -53,38 +48,33 @@ class GithubHelper {
 
     public getFile (String projectOwner, String projectName, String path) {
         String url = getContentApiUrl(projectOwner, projectName, path)
-        HttpURLConnection response = requestToApi(url, "GET")
+        HttpURLConnection response = HttpHelper.requestToApi(url, "GET", this.accessKey)
         String responseMessage = response.getResponseMessage()
         if (responseMessage != "OK") {
             throw new GithubHelperException("Http request returned an error ${responseMessage}")
         }
         
-        def result = responseToJSON(response.getInputStream())
-        result.content = convertToUTF8(result.content)
+        def result = HttpHelper.responseToJSON(response.getInputStream())
+        result.content = HttpHelper.convertToUTF8(result.content)
 
         return result
     }
 
-    private responseToJSON(InputStream resInputStream) {
-        def br = new BufferedReader(new InputStreamReader(resInputStream));
-        return jsonSlurper.parseText(br.getText())
-    }
-
-    private String convertToUTF8(String string) {
-        return new String(Base64.getMimeDecoder().decode(string))
-    }
-
-    public updateFile(String projectOwner, String projectName, String path, String fileSha, String content) {
+    public updateFile(String projectOwner, String projectName, String path, String fileSha, String content, String commitMessage) {
         String url = getContentApiUrl(projectOwner, projectName, path)
-        HttpURLConnection connection = requestToApi(url, "PUT")
+        HttpURLConnection connection = HttpHelper.requestToApi(url, "PUT", this.accessKey)
         connection.setRequestProperty("Content-type", "application/json");
         connection.setDoOutput(true);
                 
-        def message = [message: COMMIT_MESSAGE, content: convertToBase64(content), sha: fileSha]
+        def message = [
+            message: commitMessage, 
+            content: HttpHelper.convertToBase64(content), 
+            sha: fileSha
+        ]
 
             
         PrintStream printStream = new PrintStream(connection.getOutputStream());
-        printStream.println(JsonOutput.toJson(message));
+        printStream.println(HttpHelper.jsonToString(message));
 
         String responseMessage = connection.getResponseMessage()
 
@@ -94,31 +84,8 @@ class GithubHelper {
         return responseMessage
     }
 
-    private String convertToBase64(String string) {
-        return new String(Base64.getMimeEncoder().encode(string.getBytes("UTF-8")))
-    }
-
     private getContentApiUrl(String projectOwner, String projectName, String path) {
         return "${API_URL}/repos/${projectOwner}/${projectName}/contents/${path}"
-    }
-
-    private HttpURLConnection requestToApi(String url, String method) {
-        try {
-            def request = new URL(url).openConnection();
-            if (this.accessKey.length() > 0) {
-                request.setRequestProperty("Authorization", getAuthorizationHeader())
-            }
-            request.setRequestMethod(method)
-            return request
-        } catch (IOException e) {
-            throw new GithubHelperException("Error sending the HTTP request")
-        } catch (UnknownHostException e) {
-            throw new GithubHelperException("Unable to find request Host")
-        }
-    }
-    
-    private String getAuthorizationHeader() {
-        return "token ${accessKey}"
     }
 
 }

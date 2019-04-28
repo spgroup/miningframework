@@ -15,6 +15,7 @@ import main.interfaces.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
 import main.exception.UnexpectedPostScriptException
+import main.exception.NoAccessKeyException
 import main.util.*
 
 class MiningFramework {
@@ -54,6 +55,16 @@ class MiningFramework {
                 printStartAnalysis()                
                 
                 ArrayList<Project> projectList = getProjectList()
+
+                if (appArguments.useForks()) {
+                    if (appArguments.getAccessKey().length() > 0) {
+                        GithubHelper githubHelper = new GithubHelper(appArguments.getAccessKey())
+                        projectList = createForksAndProjectList(githubHelper, projectList)
+                    } else {
+                        throw new NoAccessKeyException()
+                    }
+                }
+
                 framework.setProjectList(projectList)
                 framework.start()
 
@@ -68,6 +79,8 @@ class MiningFramework {
         } catch (UnstagedChangesException e) {
             println e.message
         } catch (UnexpectedPostScriptException e) {
+            println e.message
+        } catch (NoAccessKeyException e) {
             println e.message
         }
     }
@@ -225,6 +238,30 @@ class MiningFramework {
         }
 
         return projectList
+    }
+
+    static ArrayList<Project> createForksAndProjectList(GithubHelper githubHelper, ArrayList<Project> projectList) {
+        Map user = githubHelper.getUser()
+
+        String userHandle = user.login
+        
+        ArrayList<Project> projectForkList = new ArrayList<Project>()
+
+        for (project in projectList) {
+            if (project.isRemote()) {
+                githubHelper.fork(project)
+                String[] ownerAndName = project.getOwnerAndName()
+
+                String path = "${githubHelper.URL}/${userHandle}/${ownerAndName[1]}"
+                Project projectFork = new Project(project.getName(), path)
+                projectForkList.add(projectFork)
+            } else {
+                println "${project.getName()} is not remote and cant be forked"
+                projectForkList.add(project)
+            }
+        }
+
+        return projectForkList
     }
 
     static ArrayList<Project> getProjects(String directoryName, String directoryPath) {

@@ -2,6 +2,7 @@ package main.util
 
 import main.project.*
 import java.net.HttpURLConnection
+import main.exception.TravisHelperException
 
 class TravisHelper {
 

@@ -2,11 +2,13 @@ package main.util
 
 import java.net.HttpURLConnection
 import main.project.Project
+import main.exception.*
 
 class GithubHelper {
 
-    private final String API_URL = "https://api.github.com"
-    private final String RAW_CONTENT_URL = "https://raw.githubusercontent.com"
+    public final String URL = "https://github.com"
+    public final String API_URL = "https://api.github.com"
+    public final String RAW_CONTENT_URL = "https://raw.githubusercontent.com"
     private String accessKey;
     
     public GithubHelper (String accessKey) {
@@ -18,6 +20,7 @@ class GithubHelper {
         HttpURLConnection connection = HttpHelper.requestToApi(url, "GET", this.accessKey)
         
         def resBody = HttpHelper.responseToJSON(connection.getInputStream())
+
         if (connection.getResponseMessage() != "OK") {
             throw new GithubHelperException("Http request returned an error ${responseMessage}")
         }

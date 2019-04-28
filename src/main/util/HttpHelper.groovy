@@ -26,7 +26,7 @@ class HttpHelper {
         return JsonOutput.toJson(json)
     }
 
-    public void static sendJsonBody(HttpURLConnection request, Map body) {
+    public static void sendJsonBody(HttpURLConnection request, Map body) {
         request.setRequestProperty("Content-type", "application/json")
         request.setDoOutput(true)
 

@@ -26,6 +26,14 @@ class HttpHelper {
         return JsonOutput.toJson(json)
     }
 
+    public void static sendJsonBody(HttpURLConnection request, Map body) {
+        request.setRequestProperty("Content-type", "application/json")
+        request.setDoOutput(true)
+
+        PrintStream printStream = new PrintStream(request.getOutputStream())
+        printStream.println(jsonToString(body))
+    }
+
     public static HttpURLConnection requestToApi(String url, String method, String token) {
         try {
             def request = new URL(url).openConnection();

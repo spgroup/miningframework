@@ -13,11 +13,8 @@ class TravisHelper {
         String url = "${API_URL}/auth/github"
         HttpURLConnection request = HttpHelper.requestToApi(url, "POST")
         def body = [github_token: accessKey]
-        request.setRequestProperty("Content-type", "application/json")
-        request.setDoOutput(true)
-
-        PrintStream printStream = new PrintStream(request.getOutputStream())
-        printStream.println(HttpHelper.jsonToString(body))
+        
+        HttpHelper.sendJsonBody(request, body)
 
         String responseMessage = request.getResponseMessage()
 
@@ -45,11 +42,9 @@ class TravisHelper {
         String url = "${API_URL}/hooks"
         HttpURLConnection request = HttpHelper.requestToApi(url, "PUT", this.token)
         def body = [hook: [ id: travisRepoId, active: true ]]
-        request.setRequestProperty("Content-type", "application/json")
-        request.setDoOutput(true)
 
-        PrintStream printStream = new PrintStream(request.getOutputStream())
-        printStream.println(HttpHelper.jsonToString(body))
+        HttpHelper.sendJsonBody(request, body)
+
         String requestMessage = request.getResponseMessage()
         if (requestMessage != 'Ok') {
             throw new TravisHelperException("An error ocurred trying to enable travis a project")

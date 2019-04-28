@@ -63,19 +63,13 @@ class GithubHelper {
     public updateFile(String projectOwner, String projectName, String path, String fileSha, String content, String commitMessage) {
         String url = getContentApiUrl(projectOwner, projectName, path)
         HttpURLConnection connection = HttpHelper.requestToApi(url, "PUT", this.accessKey)
-        connection.setRequestProperty("Content-type", "application/json");
-        connection.setDoOutput(true);
-                
         def message = [
             message: commitMessage, 
             content: HttpHelper.convertToBase64(content), 
             sha: fileSha
         ]
-
-            
-        PrintStream printStream = new PrintStream(connection.getOutputStream());
-        printStream.println(HttpHelper.jsonToString(message));
-
+        
+        HttpHelper.sendJsonBody(connection, message)
         String responseMessage = connection.getResponseMessage()
 
         if (responseMessage != "OK") {

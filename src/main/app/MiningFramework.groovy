@@ -46,7 +46,7 @@ class MiningFramework {
                 Class injectorClass = appArguments.getInjector()
                 Injector injector = Guice.createInjector(injectorClass.newInstance())
                 MiningFramework framework = injector.getInstance(MiningFramework.class)
-
+                
                 framework.setArguments(appArguments)
 
                 FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())

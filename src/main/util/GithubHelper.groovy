@@ -1,10 +1,7 @@
-package services
-
-import main.project.Project
+package main.util
 
 import java.net.HttpURLConnection
-import main.util.HttpHelper
-
+import main.project.Project
 
 class GithubHelper {
 

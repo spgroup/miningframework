@@ -1,6 +1,5 @@
-package services
+package main.util
 
-import main.util.HttpHelper
 import main.project.*
 import java.net.HttpURLConnection
 

@@ -26,7 +26,8 @@ class BuildCollector {
 
         File travisFile = new File("${PROJECT_PATH}/.travis.yml")
         if (travisFile.delete()) {
-            travisFile << getnewTravisFile(mergeCommit.getSHA())
+            
+            travisFile << getNewTravisFile(mergeCommit.getSHA(), projectOwner, projectName)
             commitChanges("'Trigger build #${mergeCommit.getSHA()}'").waitFor()
             pushBranch(branchName).waitFor()
         }
@@ -60,7 +61,12 @@ class BuildCollector {
         .runProcess(PROJECT_PATH, "git", "commit", "-a", "-m", "${message}")
     }
 
-    private getNewTravisFile(String commitSha) {
+    private String getRemoteUrl() {
+        return ProcessRunner.
+            runProcess(PROJECT_PATH, "git", "config", "--get", "remote.origin.url").getText()
+    }
+
+    private getNewTravisFile(String commitSha, String owner, String projectName) {
         return """
 sudo: required
 language: java
@@ -72,18 +78,20 @@ script:
   - mvn package
 
 before_deploy:
-    - tar -zcvf result.tar.gz -C /home/travis/build/rafaelmotaalves/jsoup/target
+    - cd /home/travis/build/${owner}/${projectName}/target
+    - tar -zcvf result.tar.gz -*
 
 deploy:
   provider: releases
   api_key:
-    secure: $GITHUB_TOKENw
+    secure: \$GITHUB_TOKEN
   file: result.tar.gz
   name: ${commitSha}
   file_glob: true
   overwrite: true
   skip_cleanup: true
   on:
+    tags: true
     all_branches: true
             """
     }

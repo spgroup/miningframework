@@ -32,7 +32,7 @@ class TravisHelper {
         String responseMessage = request.getResponseMessage()
 
         if (responseMessage != 'OK') {
-            throw new TravisHelperException("An error ocurred trying to get ${project.getName()} project in travis")
+            throw new TravisHelperException("An error ocurred trying to get ${projectName} project in travis")
         }
 
         return HttpHelper.responseToJSON(request.getInputStream())
@@ -46,7 +46,8 @@ class TravisHelper {
         HttpHelper.sendJsonBody(request, body)
 
         String requestMessage = request.getResponseMessage()
-        if (requestMessage != 'Ok') {
+        if (requestMessage != 'OK') {
+            println requestMessage
             throw new TravisHelperException("An error ocurred trying to enable travis a project")
         }
     }

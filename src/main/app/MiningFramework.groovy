@@ -90,7 +90,11 @@ class MiningFramework {
             printProjectInformation(project)
             
             if (project.isRemote()) {
-                cloneRepository(project, LOCAL_PROJECT_PATH)
+                if (arguments.getAccessKey().length() > 0) {
+                    cloneRepositoryWithToken(project, LOCAL_PROJECT_PATH, arguments.getAccessKey())
+                } else {
+                    cloneRepository(project, LOCAL_PROJECT_PATH)
+                }
             } else {
                 checkForUnstagedChanges(project);
             }
@@ -184,8 +188,26 @@ class MiningFramework {
             FileManager.delete(projectDirectory)
         }
         projectDirectory.mkdirs()
-
         Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', project.getPath(), target)
+        gitClone.waitFor()
+        
+        project.setPath(target)
+    }
+
+    private void cloneRepositoryWithToken(Project project, String target, String token) {
+        println "Cloning repository ${project.getName()} into ${target}"
+
+        File projectDirectory = new File(target)
+        if(projectDirectory.exists()) {
+            FileManager.delete(projectDirectory)
+        }
+        projectDirectory.mkdirs()
+
+        String[] projectOwnerAndName = project.getOwnerAndName()
+
+        String url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
+
+        Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', url, target)
         gitClone.waitFor()
         
         project.setPath(target)
@@ -241,18 +263,13 @@ class MiningFramework {
     }
 
     static ArrayList<Project> createForksAndProjectList(GithubHelper githubHelper, ArrayList<Project> projectList) {
-        Map user = githubHelper.getUser()
-
-        String userHandle = user.login
-        
         ArrayList<Project> projectForkList = new ArrayList<Project>()
 
         for (project in projectList) {
             if (project.isRemote()) {
-                githubHelper.fork(project)
-                String[] ownerAndName = project.getOwnerAndName()
+                def forkedProject = githubHelper.fork(project)
 
-                String path = "${githubHelper.URL}/${userHandle}/${ownerAndName[1]}"
+                String path = "${githubHelper.URL}/${forkedProject.full_name}"
                 Project projectFork = new Project(project.getName(), path)
                 projectForkList.add(projectFork)
             } else {
@@ -284,7 +301,7 @@ class MiningFramework {
     void setArguments(Arguments arguments) {
         this.arguments = arguments
     }
-
+    
     static Arguments getArguments() {
         return arguments
     }
@@ -304,6 +321,7 @@ class MiningFramework {
     static String getResultsRemoteRepositoryURL() {
         return arguments.getResultsRemoteRepositoryURL()
     }
+
 
     static void printStartAnalysis() {
         println "#### MINING STARTED ####\n"

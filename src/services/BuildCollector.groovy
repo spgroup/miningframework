@@ -11,13 +11,6 @@ class BuildCollector {
 
     private final FILE_NAME = '.travis.yml'
     private final PROJECT_PATH = 'localProject'
-    private TravisHelper travisHelper;
-    private GithubHelper githubHelper;
-
-    BuildCollector(String accessKey) {
-        this.githubHelper = new GithubHelper(accessKey)
-        this.travisHelper = new TravisHelper(accessKey)
-    }
 
     public void collectBuild(Project project, MergeCommit mergeCommit) {
         String branchName = mergeCommit.getSHA().take(5) + '_build_branch'

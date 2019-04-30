@@ -47,7 +47,6 @@ class TravisHelper {
 
         String requestMessage = request.getResponseMessage()
         if (requestMessage != 'OK') {
-            println requestMessage
             throw new TravisHelperException("An error ocurred trying to enable travis a project")
         }
     }

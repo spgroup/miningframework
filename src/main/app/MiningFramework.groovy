@@ -59,15 +59,6 @@ class MiningFramework {
                 
                 ArrayList<Project> projectList = getProjectList()
 
-                if (appArguments.useForks()) {
-                    if (appArguments.getAccessKey().length() > 0) {
-                        GithubHelper githubHelper = new GithubHelper(appArguments.getAccessKey())
-                        projectList = createForksAndProjectList(githubHelper, projectList)
-                    } else {
-                        throw new NoAccessKeyException()
-                    }
-                }
-
                 framework.setProjectList(projectList)
                 framework.start()
 
@@ -269,25 +260,6 @@ class MiningFramework {
         }
 
         return projectList
-    }
-
-    static ArrayList<Project> createForksAndProjectList(GithubHelper githubHelper, ArrayList<Project> projectList) {
-        ArrayList<Project> projectForkList = new ArrayList<Project>()
-
-        for (project in projectList) {
-            if (project.isRemote()) {
-                def forkedProject = githubHelper.fork(project)
-
-                String path = "${githubHelper.URL}/${forkedProject.full_name}"
-                Project projectFork = new Project(project.getName(), path)
-                projectForkList.add(projectFork)
-            } else {
-                println "${project.getName()} is not remote and cant be forked"
-                projectForkList.add(project)
-            }
-        }
-
-        return projectForkList
     }
 
     static ArrayList<Project> getProjects(String directoryName, String directoryPath) {

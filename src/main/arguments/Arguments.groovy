@@ -24,7 +24,6 @@ class Arguments {
         resultsRemoteRepositoryURL = ''
         postScript = ''
         accessKey = ''
-        useForks = false
     }
 
     void setInputPath(String inputPath) {
@@ -63,10 +62,6 @@ class Arguments {
         this.accessKey = accessKey
     }
 
-    void setUseForks(boolean useForks) {
-        this.useForks = useForks
-    }
-
     String getInputPath() {
         return inputPath
     }
@@ -89,10 +84,6 @@ class Arguments {
 
     boolean isHelp() {
         return isHelp
-    }
-
-    boolean useForks() {
-        return useForks
     }
 
     String getResultsRemoteRepositoryURL() {

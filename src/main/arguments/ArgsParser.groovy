@@ -29,7 +29,6 @@ class ArgsParser {
         this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a link to a remote git repository of your own to push the files analysed.')
         this.cli.p(longOpt: 'post-script', args:1, argName: 'post script', 'Specify a bash script to be run after output is ready')
         this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account used')
-        this.cli.f(longOpt: 'use-forks', 'Use forks to perfom the project analysis (To use this option you must specify an acess key)')
     }
 
 
@@ -108,10 +107,6 @@ class ArgsParser {
 
         if (this.options.a) {
             args.setAccessKey(this.options.a)
-        }
-
-        if (this.options.f) {
-            args.setUseForks(true)
         }
     }
 

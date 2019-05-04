@@ -69,14 +69,14 @@ script:
   - mvn package
 
 before_deploy:
-    - cd /home/travis/build/${owner}//target
+    - cd /home/travis/build/${owner}/${trimmedProjectName}/target
     - tar -zcvf result.tar.gz *
 deploy:
   provider: releases
   api_key:
     secure: \$GITHUB_TOKEN
   file: result.tar.gz
-  name: ${commitSha}
+  name: fetchjar-${commitSha}
   file_glob: true
   overwrite: true
   skip_cleanup: true

@@ -96,7 +96,6 @@ class TravisHelper {
         HttpHelper.sendJsonBody(request, body)
 
         String requestMessage = request.getResponseMessage()
-        println url
         if (requestMessage != 'OK') {
             throw new TravisHelperException("An error ocurred trying to enable travis a project")
         }

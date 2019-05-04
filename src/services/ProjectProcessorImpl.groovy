@@ -15,26 +15,29 @@ class ProjectProcessorImpl implements ProjectProcessor {
     private TravisHelper travisHelper
 
     public ArrayList<Project> processProjects(ArrayList<Project> projects) {
-        githubHelper = new GithubHelper(arguments.getAccessKey())
-        travisHelper = new TravisHelper(arguments.getAccessKey())
-        println "Processing projects"
+        if (arguments.getAccessKey().length() > 0) {
+            githubHelper = new GithubHelper(arguments.getAccessKey())
+            travisHelper = new TravisHelper(arguments.getAccessKey())
+            println "Processing projects"
 
-        ArrayList<Project> projectsForks = new ArrayList<Project>()
-        for (project in projects) {
-            if (project.isRemote()) {
-                def forkedProject = githubHelper.fork(project)
-                String path = "${githubHelper.URL}/${forkedProject.full_name}"
-                Project projectFork = new Project(project.getName(), path)
+            ArrayList<Project> projectsForks = new ArrayList<Project>()
+            for (project in projects) {
+                if (project.isRemote()) {
+                    def forkedProject = githubHelper.fork(project)
+                    String path = "${githubHelper.URL}/${forkedProject.full_name}"
+                    Project projectFork = new Project(project.getName(), path)
 
-                projectsForks.add(projectFork)
-            } else {
-                println "${project.getName()} is not remote and cant be forked"
+                    projectsForks.add(projectFork)
+                } else {
+                    println "${project.getName()} is not remote and cant be forked"
+                }
             }
-        }
 
-        keepTryingToEnableTravisProjects(projectsForks)
+            keepTryingToEnableTravisProjects(projectsForks)
 
-        return projectsForks
+            return projectsForks
+        } 
+        return projects
     }
 
     private void keepTryingToEnableTravisProjects (ArrayList<Project> projects) {

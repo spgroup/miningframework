@@ -14,51 +14,49 @@ class BuildCollector {
     static public void collectBuild(Project project, MergeCommit mergeCommit) {
         String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
         
-        checkoutCommitAndCreateBranch(branchName, mergeCommit.getSHA()).waitFor()
+        checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
 
         File travisFile = new File("${project.getPath()}/.travis.yml")
         if (travisFile.delete()) {
-            
-            travisFile << getNewTravisFile(mergeCommit.getSHA(), projectOwner, projectName)
-            commitChanges("'Trigger build #${mergeCommit.getSHA()}'").waitFor()
-            pushBranch(branchName).waitFor()
+            String[] ownerAndName = getRemoteProjectOwnerAndName(project)
+            travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1])
+            commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
+            pushBranch(project, branchName).waitFor()
         }
         
-        goBackToMaster().waitFor()
+        goBackToMaster(project).waitFor()
     }
 
-    private Process checkoutCommitAndCreateBranch(String branchName, String commitSha) {
+    static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
         return ProcessRunner
-            .runProcess(PROJECT_PATH, 'git', 'checkout', '-b', branchName, commitSha)
+            .runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha)
     }
 
-    private String getTravisFileContent() {
-        Process cat = ProcessRunner.runProcess(project.getPath(), 'cat', FILE_NAME)
-        if (cat.waitFor() == 0) {
-            return cat.getInputStream().getText()
-        }
-        throw TravisHelperException(".travis.yml file does not exist in this commit")
+    static private String[] getRemoteProjectOwnerAndName(Project project) {
+        String remoteUrl = ProcessRunner
+            .runProcess(project.getPath(), 'git', 'config', '--get', 'remote.origin.url').getText()
+        String[] splitedValues = remoteUrl.split('/')
+        return [splitedValues[splitedValues.size() - 2], splitedValues[splitedValues.size() - 1]]
     }
 
-    private Process goBackToMaster() {
+    static private Process goBackToMaster(Project project) {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
     }
 
-    private Process pushBranch(String branchName) {
+    static private Process pushBranch(Project project, String branchName) {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'push','-u', 'origin', branchName)
     }
 
-    private Process commitChanges(String message) {
-        return ProcessRunner
-        .runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
+    static private Process commitChanges(Project project, String message) {
+        return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
-    private String getRemoteUrl() {
+    static private String getRemoteUrl(Project project) {
         return ProcessRunner.
             runProcess(project.getPath(), "git", "config", "--get", "remote.origin.url").getText()
     }
 
-    private getNewTravisFile(String commitSha, String owner, String projectName) {
+    static private getNewTravisFile(String commitSha, String owner, String projectName) {
         return """
 sudo: required
 language: java

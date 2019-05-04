@@ -38,6 +38,43 @@ class TravisHelper {
         return HttpHelper.responseToJSON(request.getInputStream())
     }
 
+    private Map getUser() {
+        String url = "${API_URL}/users"
+        HttpURLConnection request = HttpHelper.requestToApi(url, "GET", this.token)
+        String responseMessage = request.getResponseMessage()
+
+        if (responseMessage != 'OK') {
+            throw new TravisHelperException("An error ocurred trying to get ${projectName} project in travis")
+        }
+
+        return HttpHelper.responseToJSON(request.getInputStream())
+    }
+
+    public void sync() {
+        println "Trying to sync travis account..."
+        String url = "${API_URL}/users/sync"
+        HttpURLConnection request = HttpHelper.requestToApi(url, "POST", this.token)
+        String responseMessage = request.getResponseMessage()
+
+        if (responseMessage != 'OK' && responseMessage != "Conflict") {
+            throw new TravisHelperException("An error ocurred trying to sync: ${responseMessage}")
+        }
+    }
+
+    public void syncAndWait() {
+        sync()
+        waitSync()
+    }
+
+    private void waitSync() {
+        boolean isSyncing = true
+        while (isSyncing) {
+            Map user = getUser()
+            isSyncing = user.is_syncing
+            sleep(5000)
+        }
+    }
+
     public void enableTravis(Integer travisRepoId)  {
         String url = "${API_URL}/hooks"
         HttpURLConnection request = HttpHelper.requestToApi(url, "PUT", this.token)

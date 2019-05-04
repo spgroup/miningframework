@@ -9,15 +9,14 @@ import main.util.FileManager
 
 class BuildCollector {
 
-    private final FILE_NAME = '.travis.yml'
-    private final PROJECT_PATH = 'localProject'
+    static private final FILE_NAME = '.travis.yml'
 
-    public void collectBuild(Project project, MergeCommit mergeCommit) {
+    static public void collectBuild(Project project, MergeCommit mergeCommit) {
         String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
         
         checkoutCommitAndCreateBranch(branchName, mergeCommit.getSHA()).waitFor()
 
-        File travisFile = new File("${PROJECT_PATH}/.travis.yml")
+        File travisFile = new File("${project.getPath()}/.travis.yml")
         if (travisFile.delete()) {
             
             travisFile << getNewTravisFile(mergeCommit.getSHA(), projectOwner, projectName)
@@ -34,7 +33,7 @@ class BuildCollector {
     }
 
     private String getTravisFileContent() {
-        Process cat = ProcessRunner.runProcess(PROJECT_PATH, 'cat', FILE_NAME)
+        Process cat = ProcessRunner.runProcess(project.getPath(), 'cat', FILE_NAME)
         if (cat.waitFor() == 0) {
             return cat.getInputStream().getText()
         }
@@ -42,21 +41,21 @@ class BuildCollector {
     }
 
     private Process goBackToMaster() {
-        return ProcessRunner.runProcess(PROJECT_PATH, 'git', 'checkout', 'master')
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
     }
 
     private Process pushBranch(String branchName) {
-        return ProcessRunner.runProcess(PROJECT_PATH, 'git', 'push','-u', 'origin', branchName)
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'push','-u', 'origin', branchName)
     }
 
     private Process commitChanges(String message) {
         return ProcessRunner
-        .runProcess(PROJECT_PATH, "git", "commit", "-a", "-m", "${message}")
+        .runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
     private String getRemoteUrl() {
         return ProcessRunner.
-            runProcess(PROJECT_PATH, "git", "config", "--get", "remote.origin.url").getText()
+            runProcess(project.getPath(), "git", "config", "--get", "remote.origin.url").getText()
     }
 
     private getNewTravisFile(String commitSha, String owner, String projectName) {

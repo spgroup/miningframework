@@ -57,6 +57,7 @@ class BuildCollector {
     }
 
     static private getNewTravisFile(String commitSha, String owner, String projectName) {
+        String trimmedProjectName = projectName.replace('\n', '')
         return """
 sudo: required
 language: java
@@ -68,9 +69,8 @@ script:
   - mvn package
 
 before_deploy:
-    - cd /home/travis/build/${owner}/${projectName}/target
-    - tar -zcvf result.tar.gz -*
-
+    - cd /home/travis/build/${owner}//target
+    - tar -zcvf result.tar.gz *
 deploy:
   provider: releases
   api_key:
@@ -81,7 +81,6 @@ deploy:
   overwrite: true
   skip_cleanup: true
   on:
-    tags: true
     all_branches: true
             """
     }

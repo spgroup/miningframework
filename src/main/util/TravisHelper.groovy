@@ -88,4 +88,18 @@ class TravisHelper {
         }
     }
 
+    public void addEnvironmentVarible(Integer travisRepoId, String key, String value) {
+        String url = "${API_URL}/settings/env_vars?repository_id=${travisRepoId}"
+        HttpURLConnection request = HttpHelper.requestToApi(url, "POST", this.token)
+        def body = [env_var: [ name: key, value: value, public: false ]]
+
+        HttpHelper.sendJsonBody(request, body)
+
+        String requestMessage = request.getResponseMessage()
+        println url
+        if (requestMessage != 'OK') {
+            throw new TravisHelperException("An error ocurred trying to enable travis a project")
+        }
+    }
+
 }

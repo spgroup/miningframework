@@ -41,9 +41,13 @@ class ProjectProcessorImpl implements ProjectProcessor {
     }
 
     private void keepTryingToEnableTravisProjects (ArrayList<Project> projects) {
+        /* This is a workaround to a limitation in travis api
+        * You have to wait and sync multiple times to a project         
+        * become available 
+        */ 
         try {
             for (project in projects) {
-                enableTravisProject(project)
+                configureTravisProject(project)
             }
         } catch (TravisHelperException e) {
             travisHelper.syncAndWait()        
@@ -51,10 +55,11 @@ class ProjectProcessorImpl implements ProjectProcessor {
         }
     } 
 
-    private void enableTravisProject (Project project) {
+    private void configureTravisProject (Project project) {
         String[] ownerAndName = project.getOwnerAndName()
         Map travisProject = travisHelper.getProject(ownerAndName[0], ownerAndName[1])
         travisHelper.enableTravis(travisProject.id)
+        travisHelper.addEnvironmentVarible(travisProject.id, "GITHUB_TOKEN", arguments.getAccessKey())
     }
 }
  

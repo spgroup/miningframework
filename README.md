@@ -41,7 +41,7 @@ To get the SOOT framework output format execute the following command:
 
 To get the build files in the output pass a github token to execution:
 * Windows/Linux/Mac `groovy -cp src src/main/script/MiningFramework.groovy --access-key "github-token" [options] [input] [output]`
-> Obs: The Github account must be registered in (Travis)[https://travis-ci.org/] also. Forks will be created for each project, the builds will be generated via travis, and deployed to the forks github releases
+> Obs: The Github account must be registered in [Travis](https://travis-ci.org/) also. Forks will be created for each project, the builds will be generated via travis, and deployed to the forks github releases
 
 To automatically download the build files, wait for the builds succeced in travis then run the script:
 * Windows/Linux/Mac `python scripts/fetch_jars.py <input file> <output path> <github token>`

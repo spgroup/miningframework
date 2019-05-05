@@ -63,7 +63,7 @@ sudo: required
 language: java
 
 jdk:
-    - openjdk7
+    - openjdk11
 
 script:
   - mvn package

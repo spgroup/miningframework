@@ -70,11 +70,7 @@ class MiningFramework {
         } catch (InvalidArgsException e) {
             println e.message
             println 'Run the miningframework with --help to see the possible arguments'
-        } catch (UnstagedChangesException e) {
-            println e.message
-        } catch (UnexpectedPostScriptException e) {
-            println e.message
-        } catch (NoAccessKeyException e) {
+        } catch (UnstagedChangesException | UnexpectedPostScriptException | NoAccessKeyException e) {
             println e.message
         }
     }

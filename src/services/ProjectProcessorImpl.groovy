@@ -33,14 +33,14 @@ class ProjectProcessorImpl implements ProjectProcessor {
                 }
             }
 
-            keepTryingToEnableTravisProjects(projectsForks)
+            keepTryingToEnableTravisProjects(projectsForks, 10)
 
             return projectsForks
         } 
         return projects
     }
 
-    private void keepTryingToEnableTravisProjects (ArrayList<Project> projects) {
+    private void keepTryingToEnableTravisProjects (ArrayList<Project> projects, int maxNumberOfTries) {
         /* This is a workaround to a limitation in travis api
         * You have to wait and sync multiple times to a project         
         * become available 
@@ -50,8 +50,12 @@ class ProjectProcessorImpl implements ProjectProcessor {
                 configureTravisProject(project)
             }
         } catch (TravisHelperException e) {
-            travisHelper.syncAndWait()        
-            keepTryingToEnableTravisProjects(projects)
+            travisHelper.syncAndWait()
+            if (maxNumberOfTries > 0) {
+                keepTryingToEnableTravisProjects(projects, maxNumberOfTries - 1)
+            } else {
+                throw new TravisHelperException("Number of sync tries exceeded")
+            }
         }
     } 
 
@@ -59,7 +63,7 @@ class ProjectProcessorImpl implements ProjectProcessor {
         String[] ownerAndName = project.getOwnerAndName()
         Map travisProject = travisHelper.getProject(ownerAndName[0], ownerAndName[1])
         travisHelper.enableTravis(travisProject.id)
-        travisHelper.addEnvironmentVarible(travisProject.id, "GITHUB_TOKEN", arguments.getAccessKey())
+        travisHelper.addEnvironmentVariable(travisProject.id, "GITHUB_TOKEN", arguments.getAccessKey())
     }
 }
  

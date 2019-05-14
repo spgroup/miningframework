@@ -88,7 +88,7 @@ class TravisHelper {
         }
     }
 
-    public void addEnvironmentVarible(Integer travisRepoId, String key, String value) {
+    public void addEnvironmentVariable(Integer travisRepoId, String key, String value) {
         String url = "${API_URL}/settings/env_vars?repository_id=${travisRepoId}"
         HttpURLConnection request = HttpHelper.requestToApi(url, "POST", this.token)
         def body = [env_var: [ name: key, value: value, public: false ]]

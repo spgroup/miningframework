@@ -82,11 +82,7 @@ class MiningFramework {
             printProjectInformation(project)
             
             if (project.isRemote()) {
-                if (arguments.getAccessKey().length() > 0) {
-                    cloneRepositoryWithToken(project, LOCAL_PROJECT_PATH, arguments.getAccessKey())
-                } else {
-                    cloneRepository(project, LOCAL_PROJECT_PATH)
-                }
+                cloneRepository(project, LOCAL_PROJECT_PATH)
             } else {
                 checkForUnstagedChanges(project);
             }
@@ -176,21 +172,7 @@ class MiningFramework {
     }
 
     private void cloneRepository(Project project, String target) {
-
-        println "Cloning repository ${project.getName()} into ${target}"
-
-        File projectDirectory = new File(target)
-        if(projectDirectory.exists()) {
-            FileManager.delete(projectDirectory)
-        }
-        projectDirectory.mkdirs()
-        Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', project.getPath(), target)
-        gitClone.waitFor()
         
-        project.setPath(target)
-    }
-
-    private void cloneRepositoryWithToken(Project project, String target, String token) {
         println "Cloning repository ${project.getName()} into ${target}"
 
         File projectDirectory = new File(target)
@@ -198,10 +180,13 @@ class MiningFramework {
             FileManager.delete(projectDirectory)
         }
         projectDirectory.mkdirs()
-
-        String[] projectOwnerAndName = project.getOwnerAndName()
-
-        String url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
+        
+        String url = project.getPath()
+        String token = arguments.getAccessKey();
+        if (token.length() > 0) {
+            String[] projectOwnerAndName = project.getOwnerAndName()
+            url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
+        }
 
         Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', url, target)
         gitClone.waitFor()

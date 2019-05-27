@@ -27,7 +27,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         getMutuallyModifiedAttributesAndMethods(project, mergeCommit)
 
         if (arguments.getAccessKey().length() > 0) {
-            BuildCollector.collectBuild(project, mergeCommit)
+            BuildRequester.collectBuild(project, mergeCommit)
         }
 
         println "Data collection finished!"

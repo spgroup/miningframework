@@ -7,7 +7,7 @@ import main.util.ProcessRunner
 import main.exception.TravisHelperException
 import main.util.FileManager
 
-class BuildCollector {
+class BuildRequester {
 
     static private final FILE_NAME = '.travis.yml'
 

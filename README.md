@@ -11,10 +11,11 @@ Framework for mining git projects.
 ## Dependency Injection
 This framework uses [Google Guice](https://github.com/google/guice) to deal with dependency injection.
 
-It's necessary to extend three abstract classes:
+It's necessary to implement three interfaces:
 * **Commit Filter** defines conditions (filter) to analyze a commit.
 * **Statistics Collector** retrieves commits' metrics for statistical analysis.
 * **Data Collector** retrieves the data one wants to study from the commits.
+* **Project Processor** does some pre processing in the projects list
 
 The [services/](https://github.com/spgroup/miningframework/tree/master/src/services/) directory contains models for these dependencies. Also, the [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy) class acts as the dependency injector.
 

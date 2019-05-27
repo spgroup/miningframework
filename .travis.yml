@@ -4,4 +4,4 @@ script:
   - TERM=dumb groovy -cp "src" src/test/TestSuite.groovy
 
 jdk:
-  - oraclejdk8
+  - openjdk11

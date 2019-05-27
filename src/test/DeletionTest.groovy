@@ -7,7 +7,7 @@ public class DeletionTest {
 
     @Test
     public void multipleCommitsTest() {
-        assertEquals(TestSuite.getModifiedLines('multipleCommits()'), "[34, 35] [] [32] []")
+        assertEquals(TestSuite.getModifiedLines('multipleCommits()'), "[34, 35]  [32] []")
     }
 
     @Test

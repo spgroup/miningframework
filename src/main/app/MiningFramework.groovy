@@ -24,15 +24,18 @@ class MiningFramework {
     private StatisticsCollector statCollector
     private ExperimentalDataCollector dataCollector
     private CommitFilter commitFilter
+    private ProjectProcessor projectProcessor
+
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
-    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter) {
+    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter, ProjectProcessor projectProcessor) {
         this.dataCollector = dataCollector
         this.statCollector = statCollector
         this.commitFilter = commitFilter
+        this.projectProcessor = projectProcessor
     }
 
     static main(args) {
@@ -73,6 +76,8 @@ class MiningFramework {
     }
 
     public void start() {
+        projectList = processProjects(projectList)
+
         for (project in projectList) {
             printProjectInformation(project)
             
@@ -131,6 +136,10 @@ class MiningFramework {
 
     private void collectExperimentalData(Project project, MergeCommit mergeCommit) {
         dataCollector.collectExperimentalData(project, mergeCommit)
+    }
+
+    private ArrayList<Project> processProjects(ArrayList<Project> projects) {
+        return projectProcessor.processProjects(projects)
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {

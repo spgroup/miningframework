@@ -12,10 +12,10 @@ class BuildRequester {
     static private final FILE_NAME = '.travis.yml'
 
     static public void collectBuild(Project project, MergeCommit mergeCommit) {
+        
         String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
         
         checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
-
         File travisFile = new File("${project.getPath()}/.travis.yml")
         if (travisFile.delete()) {
             String[] ownerAndName = getRemoteProjectOwnerAndName(project)
@@ -62,9 +62,6 @@ class BuildRequester {
 sudo: required
 language: java
 
-jdk:
-    - openjdk11
-
 script:
   - mvn package
 
@@ -81,7 +78,7 @@ deploy:
   overwrite: true
   skip_cleanup: true
   on:
-    all_branches: true
+    all_branches: true 
             """
     }
 

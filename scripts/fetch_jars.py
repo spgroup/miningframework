@@ -40,8 +40,7 @@ def fetchJars(inputPath, outputPath, token):
         projectName = splitedProjectPath[len(splitedProjectPath) - 1]
         githubProject = tokenUser + '/' + projectName
 
-        builds = get_travis_project_builds(githubProject)      
-        builds = filter (lambda x: x["state"] == "finished" and not x["branch"].startswith("untagged"), builds)
+        builds = get_builds_and_wait(githubProject)
 
         for build in builds:
             buildMessage = build["message"].strip("'")
@@ -73,9 +72,6 @@ def fetchJars(inputPath, outputPath, token):
     with open(outputPath + "/data/results.csv", 'w') as outputFile:
         outputFile.write("\n".join(newResultsFile))
         outputFile.close()
-
-
-
 
 def read_output(outputPath):
     fo = open(outputPath + "/data/results.csv")
@@ -129,6 +125,22 @@ def untar_and_remove_file(downloadPath):
     subprocess.call(['mkdir', downloadDir + 'build'])
     subprocess.call(['tar', '-xf', downloadPath, '-C', downloadDir + '/build', ])
     subprocess.call(['rm', downloadPath])
+
+def get_builds_and_wait(project):
+    has_pendent = True
+    filtered_builds = []
+    while (has_pendent):
+        builds = get_travis_project_builds(project)
+        filtered_builds = filter (lambda x: not x["branch"].startswith("untagged"), builds)
+        
+        has_pendent = False
+        for build in filtered_builds:
+            has_pendent = has_pendent or (build["state"] != "finished")
+        print ("wait builds")
+        print (filtered_builds)
+        time.sleep(10)
+    return filtered_builds
+
 
 def get_travis_project_builds(project):
     return requests.get(TRAVIS_API + '/repos/' + project + '/builds').json()

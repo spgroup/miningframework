@@ -16,6 +16,7 @@ It's necessary to implement three interfaces:
 * **Statistics Collector** retrieves commits' metrics for statistical analysis.
 * **Data Collector** retrieves the data one wants to study from the commits.
 * **Project Processor** does some pre processing in the projects list
+* **Output Processor** runs at the finish of the analysis, intended to add extra steps to the analisys
 
 The [services/](https://github.com/spgroup/miningframework/tree/master/src/services/) directory contains models for these dependencies. Also, the [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy) class acts as the dependency injector.
 

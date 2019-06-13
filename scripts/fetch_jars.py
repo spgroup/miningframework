@@ -64,7 +64,7 @@ def fetchJars(inputPath, outputPath, token):
                 downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
                 download_file(downloadUrl, downloadPath)
                 untar_and_remove_file(downloadPath)
-                print downloadPath + 'is ready'
+                print downloadPath + ' is ready'
     
     for key in parsedOutput:
         newResultsFile.append(parsedOutput[key] + ";NOT_FOUND")
@@ -135,10 +135,13 @@ def get_builds_and_wait(project):
         
         has_pendent = False
         for build in filtered_builds:
+            print build["state"]
             has_pendent = has_pendent or (build["state"] != "finished")
-        print ("wait builds")
-        print (filtered_builds)
-        time.sleep(10)
+    
+        if (has_pendent):
+            print "Waiting 60 seconds"
+            time.sleep(60)
+
     return filtered_builds
 
 

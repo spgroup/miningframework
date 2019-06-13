@@ -14,8 +14,6 @@ import main.app.MiningFramework
 import main.project.*
 import main.arguments.Arguments
 import main.util.FileManager
-import services.MiningModule
-
 import test.*
 
 @RunWith(Suite.class)
@@ -31,7 +29,7 @@ public class TestSuite {
         args.setInputPath('src/test/input.csv')
         args.setOutputPath('src/test/output')
 
-        Injector injector = Guice.createInjector(new MiningModule())
+        Injector injector = Guice.createInjector(new TestModule())
         MiningFramework framework = injector.getInstance(MiningFramework.class)
 
         framework.setArguments(args)

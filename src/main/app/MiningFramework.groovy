@@ -26,17 +26,19 @@ class MiningFramework {
     private ExperimentalDataCollector dataCollector
     private CommitFilter commitFilter
     private ProjectProcessor projectProcessor
+    private OutputProcessor outputProcessor
 
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
-    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter, ProjectProcessor projectProcessor) {
+    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
         this.dataCollector = dataCollector
         this.statCollector = statCollector
         this.commitFilter = commitFilter
         this.projectProcessor = projectProcessor
+        this.outputProcessor = outputProcessor
     }
 
     static main(args) {
@@ -101,6 +103,8 @@ class MiningFramework {
             
             endProjectAnalysis()
         }
+
+        processOutput()
     }
 
     static private void runPostScript() {
@@ -140,6 +144,10 @@ class MiningFramework {
 
     private ArrayList<Project> processProjects(ArrayList<Project> projects) {
         return projectProcessor.processProjects(projects)
+    }
+
+    private void processOutput() {
+        outputProcessor.processOutput()
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {

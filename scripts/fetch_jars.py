@@ -40,19 +40,8 @@ def fetchJars(inputPath, outputPath, token):
         projectName = splitedProjectPath[len(splitedProjectPath) - 1]
         githubProject = tokenUser + '/' + projectName
 
-        builds = get_builds_and_wait(githubProject)
+        get_builds_and_wait(githubProject)
 
-        for build in builds:
-            buildMessage = build["message"].strip("'")
-            if (buildMessage.startswith(MESSAGE_PREFIX)):
-                commitSHA = buildMessage.replace(MESSAGE_PREFIX, '')
-                if (commitSHA in parsedOutput):
-                    if (build[RESULT] == 0):
-                        newResultsFile.append(parsedOutput[commitSHA] + ";PASSED")
-                    else:
-                        newResultsFile.append(parsedOutput[commitSHA] + ";FAILED")
-                    parsedOutput.pop(commitSHA, None)
-        
         releases = get_github_releases(token, githubProject)
 
         # download the releases for the project moving them to the output directories
@@ -63,13 +52,12 @@ def fetchJars(inputPath, outputPath, token):
                 downloadPath = mount_download_path(outputPath, project, commitSHA)
                 downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
                 download_file(downloadUrl, downloadPath)
-                untar_and_remove_file(downloadPath)
+                if (commitSHA in parsedOutput):
+                    newResultsFile.append(parsedOutput[commitSHA])
+                    untar_and_remove_file(downloadPath)
                 print downloadPath + ' is ready'
     
-    for key in parsedOutput:
-        newResultsFile.append(parsedOutput[key] + ";NOT_FOUND")
-
-    with open(outputPath + "/data/results.csv", 'w') as outputFile:
+    with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
         outputFile.write("\n".join(newResultsFile))
         outputFile.close()
 
@@ -139,8 +127,8 @@ def get_builds_and_wait(project):
             has_pendent = has_pendent or (build["state"] != "finished")
     
         if (has_pendent):
-            print "Waiting 60 seconds"
-            time.sleep(60)
+            print "Waiting 30 seconds"
+            time.sleep(30)
 
     return filtered_builds
 

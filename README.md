@@ -11,7 +11,7 @@ Framework for mining git projects.
 ## Dependency Injection
 This framework uses [Google Guice](https://github.com/google/guice) to deal with dependency injection.
 
-It's necessary to implement three interfaces:
+It's necessary to implement these interfaces:
 * **Commit Filter** defines conditions (filter) to analyze a commit.
 * **Statistics Collector** retrieves commits' metrics for statistical analysis.
 * **Data Collector** retrieves the data one wants to study from the commits.

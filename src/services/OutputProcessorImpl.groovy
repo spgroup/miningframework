@@ -19,11 +19,14 @@ class OutputProcessorImpl implements OutputProcessor {
         String outputPath = arguments.getOutputPath()
         String token = arguments.getAccessKey()
 
+        if (arguments.providedAccessKey()) {
+            ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, SCRIPT_PATH, inputPath, outputPath, token)
+            builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
+    
+            Process process = ProcessRunner.startProcess(builder)
+            process.waitFor()
+        }
         
-        ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, SCRIPT_PATH, inputPath, outputPath, token)
-        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-        Process process = ProcessRunner.startProcess(builder)
-        process.waitFor()
     }
 
 }

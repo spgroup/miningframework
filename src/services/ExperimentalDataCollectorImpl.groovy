@@ -26,7 +26,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
 
         getMutuallyModifiedAttributesAndMethods(project, mergeCommit)
 
-        if (arguments.getAccessKey().length() > 0) {
+        if (arguments.providedAccessKey()) {
             BuildRequester.collectBuild(project, mergeCommit)
         }
 

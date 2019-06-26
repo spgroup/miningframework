@@ -14,7 +14,6 @@ DOWNLOAD_URL='browser_download_url'
 ASSETS="assets"
 MESSAGE_PREFIX="Trigger build #"
 RELEASE_PREFIX= "fetchjar-"
-SLEEP_TIME = 60 * 20
 inputPath = sys.argv[1] # input path passed as cli argument
 outputPath = sys.argv[2] # output path passed as cli argument
 token = sys.argv[3] # token passed as cli argument
@@ -58,6 +57,7 @@ def fetchJars(inputPath, outputPath, token):
                 print downloadPath + ' is ready'
     
     with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
+        outputFile.write("project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n")
         outputFile.write("\n".join(newResultsFile))
         outputFile.close()
 

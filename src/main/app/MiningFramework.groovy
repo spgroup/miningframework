@@ -190,8 +190,9 @@ class MiningFramework {
         projectDirectory.mkdirs()
         
         String url = project.getPath()
-        String token = arguments.getAccessKey();
-        if (token.length() > 0) {
+    
+        if (arguments.providedAccessKey()) {
+            String token = arguments.getAccessKey();
             String[] projectOwnerAndName = project.getOwnerAndName()
             url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
         }

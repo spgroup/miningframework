@@ -15,7 +15,7 @@ class ProjectProcessorImpl implements ProjectProcessor {
     private TravisHelper travisHelper
 
     public ArrayList<Project> processProjects(ArrayList<Project> projects) {
-        if (arguments.getAccessKey().length() > 0) {
+        if (arguments.providedAccessKey()) {
             githubHelper = new GithubHelper(arguments.getAccessKey())
             travisHelper = new TravisHelper(arguments.getAccessKey())
             println "Processing projects"

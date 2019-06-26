@@ -97,6 +97,10 @@ class Arguments {
     String getAccessKey() {
         return accessKey
     }
+
+    boolean providedAccessKey() {
+        return accessKey.length() > 0
+    }
     
     boolean isPushCommandActive() {
         return !resultsRemoteRepositoryURL.equals('')

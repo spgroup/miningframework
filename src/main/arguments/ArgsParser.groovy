@@ -28,6 +28,7 @@ class ArgsParser {
                 argName:'class', 'Specify the class name of the dependency injector(it has to be in the classpath). default: MiningModule')
         this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a link to a remote git repository of your own to push the files analysed.')
         this.cli.p(longOpt: 'post-script', args:1, argName: 'post script', 'Specify a bash script to be run after output is ready')
+        this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account used')
     }
 
 
@@ -102,6 +103,10 @@ class ArgsParser {
 
         if (this.options.p) {
             args.setPostScript(this.options.p)
+        }
+
+        if (this.options.a) {
+            args.setAccessKey(this.options.a)
         }
     }
 

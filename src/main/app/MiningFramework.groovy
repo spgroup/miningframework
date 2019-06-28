@@ -15,6 +15,7 @@ import main.interfaces.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
 import main.exception.UnexpectedPostScriptException
+import main.exception.NoAccessKeyException
 import main.util.*
 
 class MiningFramework {
@@ -25,17 +26,19 @@ class MiningFramework {
     private ExperimentalDataCollector dataCollector
     private CommitFilter commitFilter
     private ProjectProcessor projectProcessor
+    private OutputProcessor outputProcessor
 
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'localProject'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
-    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter, ProjectProcessor projectProcessor) {
+    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
         this.dataCollector = dataCollector
         this.statCollector = statCollector
         this.commitFilter = commitFilter
         this.projectProcessor = projectProcessor
+        this.outputProcessor = outputProcessor
     }
 
     static main(args) {
@@ -57,6 +60,7 @@ class MiningFramework {
                 printStartAnalysis()                
                 
                 ArrayList<Project> projectList = getProjectList()
+
                 framework.setProjectList(projectList)
                 framework.start()
 
@@ -68,9 +72,7 @@ class MiningFramework {
         } catch (InvalidArgsException e) {
             println e.message
             println 'Run the miningframework with --help to see the possible arguments'
-        } catch (UnstagedChangesException e) {
-            println e.message
-        } catch (UnexpectedPostScriptException e) {
+        } catch (UnstagedChangesException | UnexpectedPostScriptException | NoAccessKeyException e) {
             println e.message
         }
     }
@@ -101,6 +103,8 @@ class MiningFramework {
             
             endProjectAnalysis()
         }
+
+        processOutput()
     }
 
     static private void runPostScript() {
@@ -142,6 +146,10 @@ class MiningFramework {
         return projectProcessor.processProjects(projects)
     }
 
+    private void processOutput() {
+        outputProcessor.processOutput()
+    }
+
     private void pushResults(Project project, String remoteRepositoryURL) {
         Project resultsRepository = new Project('', remoteRepositoryURL)
         printPushInformation(remoteRepositoryURL)
@@ -172,7 +180,7 @@ class MiningFramework {
     }
 
     private void cloneRepository(Project project, String target) {
-
+        
         println "Cloning repository ${project.getName()} into ${target}"
 
         File projectDirectory = new File(target)
@@ -180,10 +188,21 @@ class MiningFramework {
             FileManager.delete(projectDirectory)
         }
         projectDirectory.mkdirs()
-
-        Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', project.getPath(), target)
-        gitClone.waitFor()
         
+        String url = project.getPath()
+
+        if (arguments.providedAccessKey()) {
+            String token = arguments.getAccessKey();
+            String[] projectOwnerAndName = project.getOwnerAndName()
+            url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
+        }
+
+        ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
+        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
+    
+        Process process = ProcessRunner.startProcess(builder)
+        process.waitFor()
+  
         project.setPath(target)
     }
 
@@ -256,7 +275,7 @@ class MiningFramework {
     void setArguments(Arguments arguments) {
         this.arguments = arguments
     }
-
+    
     static Arguments getArguments() {
         return arguments
     }
@@ -276,6 +295,7 @@ class MiningFramework {
     static String getResultsRemoteRepositoryURL() {
         return arguments.getResultsRemoteRepositoryURL()
     }
+
 
     static void printStartAnalysis() {
         println "#### MINING STARTED ####\n"

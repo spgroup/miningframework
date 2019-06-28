@@ -16,8 +16,6 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
 
     @Override
     public void collectExperimentalData(Project project, MergeCommit mergeCommit) {
-
-        // BuildCollector buildCollector = new BuildCollector()
         String outputPath = arguments.getOutputPath()
 
         File resultsFile = new File("${outputPath}/data/results.csv")
@@ -28,7 +26,9 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
 
         getMutuallyModifiedAttributesAndMethods(project, mergeCommit)
 
-        // buildCollector.collectBuild(project, mergeCommit)
+        if (arguments.providedAccessKey()) {
+            BuildRequester.collectBuild(project, mergeCommit)
+        }
 
         println "Data collection finished!"
     }

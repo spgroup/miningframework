@@ -12,6 +12,8 @@ class Arguments {
     private boolean isHelp
     private String resultsRemoteRepositoryURL
     private String postScript
+    private String accessKey
+    private boolean useForks
 
     Arguments() {
         isHelp = false
@@ -21,6 +23,7 @@ class Arguments {
         injector = MiningModule
         resultsRemoteRepositoryURL = ''
         postScript = ''
+        accessKey = ''
     }
 
     void setInputPath(String inputPath) {
@@ -55,6 +58,10 @@ class Arguments {
         this.postScript = script
     }
 
+    void setAccessKey(String accessKey) {
+        this.accessKey = accessKey
+    }
+
     String getInputPath() {
         return inputPath
     }
@@ -87,7 +94,16 @@ class Arguments {
         return postScript
     }
 
+    String getAccessKey() {
+        return accessKey
+    }
+
+    boolean providedAccessKey() {
+        return accessKey.length() > 0
+    }
+    
     boolean isPushCommandActive() {
         return !resultsRemoteRepositoryURL.equals('')
     }
+
 }

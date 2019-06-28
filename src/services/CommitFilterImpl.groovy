@@ -1,5 +1,6 @@
 package services
 import main.interfaces.CommitFilter
+import static com.xlson.groovycsv.CsvParser.parseCsv
 
 import main.util.*
 import main.project.*
@@ -8,7 +9,37 @@ import main.project.*
 class CommitFilterImpl implements CommitFilter {
 
     public boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return containsMutuallyModifiedMethods(project, mergeCommit)
+        File commitsFile = new File("./commits.csv")
+
+        boolean containsMutuallyModified = containsMutuallyModifiedMethods(project, mergeCommit);
+        if (commitsFile.exists()) {
+            List commitList = parseCommitList(commitsFile)
+            
+            return isInCommitList(commitList, mergeCommit) && containsMutuallyModified
+        } else {
+            return containsMutuallyModified
+        }
+
+    }
+
+    private List parseCommitList (File commitsFile) {
+        ArrayList<String> commitList = new ArrayList<String>()
+        def iterator = parseCsv(commitsFile.getText())
+            
+        for (line in iterator) {
+            commitList.add(line["commitSHA"])
+        }
+
+        return commitList
+    }
+
+    private boolean isInCommitList (List commitList, MergeCommit mergeCommit) {
+        for (commit in commitList) {
+            if (mergeCommit.getSHA() == commit) {
+                return true;
+            } 
+        }
+        return false;
     }
 
     private boolean containsMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {

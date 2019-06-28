@@ -190,16 +190,19 @@ class MiningFramework {
         projectDirectory.mkdirs()
         
         String url = project.getPath()
-    
+
         if (arguments.providedAccessKey()) {
             String token = arguments.getAccessKey();
             String[] projectOwnerAndName = project.getOwnerAndName()
             url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
         }
 
-        Process gitClone = ProcessRunner.runProcess('./', 'git', 'clone', url, target)
-        gitClone.waitFor()
-        
+        ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
+        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
+    
+        Process process = ProcessRunner.startProcess(builder)
+        process.waitFor()
+  
         project.setPath(target)
     }
 

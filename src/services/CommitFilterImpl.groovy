@@ -43,6 +43,13 @@ class CommitFilterImpl implements CommitFilter {
     }
 
     private boolean containsMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {
+        if (mergeCommit.getAncestorSHA() == null) {
+            /**
+            * Some merge scenarios dont return an valid ancestor SHA this check prevents
+            * unexpected crashes
+            */
+            return false;
+        } 
 
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())

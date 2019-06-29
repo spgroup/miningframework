@@ -63,7 +63,7 @@ sudo: required
 language: java
 
 script:
-  - mvn package
+  - mvn package -DskipTests
 
 before_deploy:
     - cd /home/travis/build/${owner}/${trimmedProjectName}/target

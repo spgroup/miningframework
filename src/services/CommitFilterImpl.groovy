@@ -11,13 +11,12 @@ class CommitFilterImpl implements CommitFilter {
     public boolean applyFilter(Project project, MergeCommit mergeCommit) {
         File commitsFile = new File("./commits.csv")
 
-        boolean containsMutuallyModified = containsMutuallyModifiedMethods(project, mergeCommit);
         if (commitsFile.exists()) {
             List commitList = parseCommitList(commitsFile)
             
-            return isInCommitList(commitList, mergeCommit) && containsMutuallyModified
+            return isInCommitList(commitList, mergeCommit) && containsMutuallyModifiedMethods(project, mergeCommit)
         } else {
-            return containsMutuallyModified
+            return containsMutuallyModifiedMethods(project, mergeCommit)
         }
 
     }
@@ -59,6 +58,7 @@ class CommitFilterImpl implements CommitFilter {
         for(file in mutuallyModifiedFiles) {
             Set<String> leftModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
             Set<String> rightModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+
             leftModifiedAttributesAndMethods.retainAll(rightModifiedAttributesAndMethods) // Intersection.
 
             if(leftModifiedAttributesAndMethods.size() > 0)

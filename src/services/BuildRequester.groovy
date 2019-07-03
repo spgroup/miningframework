@@ -66,7 +66,9 @@ script:
   - mvn package -DskipTests
 
 before_deploy:
-    - cd /home/travis/build/${owner}/${trimmedProjectName}/target
+    - mkdir build
+    - find . -name '*.jar' -exec cp {} ./build \\;
+    - cd /home/travis/build/${owner}/${trimmedProjectName}/build
     - tar -zcvf result.tar.gz *
 deploy:
   provider: releases

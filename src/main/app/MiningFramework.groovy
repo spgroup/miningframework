@@ -114,10 +114,6 @@ class MiningFramework {
         outputProcessor.processOutput()
     }
 
-    private void printPushInformation(String url) {
-        println "Proceeding to push output files to ${url}."
-    }
-
     public void setProjectList(ArrayList<Project> projectList) {
         this.projectList = projectList
     }
@@ -125,27 +121,6 @@ class MiningFramework {
     void setArguments(Arguments arguments) {
         this.arguments = arguments
     }
-    
-    static Arguments getArguments() {
-        return arguments
-    }
-
-    static String getOutputPath() {
-        return arguments.getOutputPath()
-    }
-
-    static String getInputPath() {
-        return arguments.getInputPath()
-    }
-
-    static String isPushCommandActive() {
-        return arguments.isPushCommandActive()
-    }
-
-    static String getResultsRemoteRepositoryURL() {
-        return arguments.getResultsRemoteRepositoryURL()
-    }
-
 
     static void printStartAnalysis() {
         println "#### MINING STARTED ####\n"

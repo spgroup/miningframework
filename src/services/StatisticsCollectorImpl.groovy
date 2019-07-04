@@ -4,10 +4,11 @@ import main.interfaces.StatisticsCollector
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 import java.text.ParseException 
+import static main.app.MiningFramework.arguments
+
 
 import main.util.*
 import main.project.*
-import main.app.MiningFramework
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -20,7 +21,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
     @Override
     public void collectStatistics(Project project, MergeCommit mergeCommit) {
-        String outputPath = MiningFramework.getOutputPath()
+        String outputPath = arguments.getOutputPath()
         File resultsFile = new File("${outputPath}/statistics/results.csv")
 
         boolean isOctopus = mergeCommit.isOctopus()
@@ -36,8 +37,8 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
         double durationMean = getDurationMean(project, mergeCommit)
         int conclusionDelay = getConclusionDelay(project, mergeCommit)
-        String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
-        if(MiningFramework.isPushCommandActive()) {
+        String remoteRepositoryURL = arguments.getResultsRemoteRepositoryURL()
+        if(arguments.isPushCommandActive()) {
             File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
             String projectLink = addLink(remoteRepositoryURL, project.getName())
             String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")

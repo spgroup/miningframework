@@ -26,10 +26,16 @@ final class FileManager {
     public static File copyFile(Project project, String path, String SHA) {
         Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${SHA}:${path}")    
         
+        StringBuilder sb = new StringBuilder();
         File target = new File("${SHA}.java")
+
         gitCatFile.getInputStream().eachLine {
-            target << "${it}\n"
+            sb.append(it)
+            sb.append("\n")
         }
+
+        target << sb.toString()
+
         return target
     }
 

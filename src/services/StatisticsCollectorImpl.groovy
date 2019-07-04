@@ -47,7 +47,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
 
 
-        println "Statistics collection finished!"
+        println "${project.getName()} - Statistics collection finished!"
     }
     
     private String addLink(String url, String path) {

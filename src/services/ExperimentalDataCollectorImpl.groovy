@@ -4,6 +4,7 @@ import main.interfaces.ExperimentalDataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
+
 import static main.app.MiningFramework.arguments
 import main.util.*
 import main.project.*
@@ -30,7 +31,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
             BuildRequester.collectBuild(project, mergeCommit)
         }
 
-        println "Data collection finished!"
+        println "${project.getName()} - Data collection finished!"
     }
 
     private void getMutuallyModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit) {

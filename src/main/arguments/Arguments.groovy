@@ -14,6 +14,7 @@ class Arguments {
     private String postScript
     private String accessKey
     private boolean useForks
+    private int numOfCores
 
     Arguments() {
         isHelp = false
@@ -24,6 +25,11 @@ class Arguments {
         resultsRemoteRepositoryURL = ''
         postScript = ''
         accessKey = ''
+        numOfCores = 1
+    }
+
+    void setNumOfCores (String numOfCores) {
+        this.numOfCores = numOfCores
     }
 
     void setInputPath(String inputPath) {
@@ -62,6 +68,10 @@ class Arguments {
         this.accessKey = accessKey
     }
 
+    int getNumOfCores() {
+        return this.numOfCores
+    }
+    
     String getInputPath() {
         return inputPath
     }

@@ -85,7 +85,7 @@ class MiningFramework {
             projectQueue.add(project)
         }
 
-        int numOfCores = 2
+        int numOfCores = arguments.getNumOfCores()
         Thread [] workers = new Thread[numOfCores]
 
         for (int i = 0; i < numOfCores; i++) {

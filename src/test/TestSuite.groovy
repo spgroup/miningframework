@@ -36,7 +36,7 @@ public class TestSuite {
 
         FileManager.createOutputFiles(args.getOutputPath(), false)
 
-        ArrayList<Project> projectList = MiningFramework.getProjectList()
+        ArrayList<Project> projectList = Project.getProjectList()
         
         framework.setProjectList(projectList)
         framework.start()

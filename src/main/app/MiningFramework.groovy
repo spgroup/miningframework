@@ -79,7 +79,6 @@ class MiningFramework {
     public void start() {
         projectList = processProjects(projectList)
 
-        // TODO: Change logic to move projects to BlockingQueue
         BlockingQueue<Project> projectQueue = new LinkedBlockingQueue<Project>()
         for (Project project : projectList ) {    
             projectQueue.add(project)

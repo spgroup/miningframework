@@ -28,7 +28,7 @@ class Arguments {
         numOfCores = 1
     }
 
-    void setNumOfCores (String numOfCores) {
+    void setNumOfCores (int numOfCores) {
         this.numOfCores = numOfCores
     }
 

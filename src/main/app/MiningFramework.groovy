@@ -85,8 +85,9 @@ class MiningFramework {
         }
 
         int numOfCores = arguments.getNumOfCores()
+        
         Thread [] workers = new Thread[numOfCores]
-
+        
         for (int i = 0; i < numOfCores; i++) {
             String workerPath = "${LOCAL_PROJECT_PATH}/worker${i}" 
             Runnable worker = new MiningWorker(dataCollector, statCollector, commitFilter, projectQueue, workerPath);
@@ -131,6 +132,7 @@ class MiningFramework {
     void setArguments(Arguments arguments) {
         this.arguments = arguments
     }
+
 
     static void printStartAnalysis() {
         println "#### MINING STARTED ####\n"

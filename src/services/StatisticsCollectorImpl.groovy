@@ -38,15 +38,17 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         double durationMean = getDurationMean(project, mergeCommit)
         int conclusionDelay = getConclusionDelay(project, mergeCommit)
         String remoteRepositoryURL = arguments.getResultsRemoteRepositoryURL()
-        if(arguments.isPushCommandActive()) {
-            File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
-            String projectLink = addLink(remoteRepositoryURL, project.getName())
-            String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
 
-            resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
-        } 
-        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        synchronized (this) {
+            if(arguments.isPushCommandActive()) {
+                File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
+                String projectLink = addLink(remoteRepositoryURL, project.getName())
+                String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
 
+                resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+            } 
+            resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        }
 
         println "${project.getName()} - Statistics collection finished!"
     }

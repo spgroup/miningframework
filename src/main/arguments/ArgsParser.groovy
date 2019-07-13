@@ -111,7 +111,7 @@ class ArgsParser {
         }
 
         if (this.options.c) {
-            args.setNumOfCores(this.options.c)
+            args.setNumOfCores(this.options.c.toInteger())
         }
     }
 

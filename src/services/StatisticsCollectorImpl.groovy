@@ -16,7 +16,7 @@ class StatisticsCollectorImpl implements StatisticsCollector {
     @Override
     public void collectStatistics(Project project, MergeCommit mergeCommit) {
         String outputPath = MiningFramework.getOutputPath()
-        File resultsFile = new File("${outputPath}/statistics/results.csv")
+        File resultsFile = createFilesIfTheyDontExist(outputPath)
 
         boolean isOctopus = mergeCommit.isOctopus()
 
@@ -38,6 +38,20 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
 
         println "Statistics collection finished!"
+    }
+
+    private createFilesIfTheyDontExist (String outputPath) {
+        File statisticsDir = new File(outputPath + '/statistics')
+        if (!statisticsDir.exists()) {
+            statisticsDir.mkdirs()
+        }
+
+        File statisticsResultsFile = new File(outputPath + "/statistics/results.csv")
+        if (!statisticsResultsFile.exists()) {
+            statisticsResultsFile << 'project,merge commit,is octopus,number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,duration mean,conclusion delay\n'
+        }
+        
+        return statisticsResultsFile
     }
     
     private String addLink(String url, String path) {

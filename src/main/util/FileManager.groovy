@@ -50,43 +50,14 @@ final class FileManager {
 
     public static File createOutputFiles(String outputPath, boolean createLinksFile) {
         File outputDir = new File(outputPath)
-        if (!outputDir.exists())
-            outputDir.mkdirs()
-        
-        createStatisticsFiles(outputPath)
-        createExperimentalDataFiles(outputPath, false)
-        if(createLinksFile)
-            createExperimentalDataFiles(outputPath, true)
+        if (outputDir.exists())
+            outputDir.delete()
+
+        outputDir.mkdirs()
 
         return outputDir
     }
 
-    private static File createStatisticsFiles(String outputPath) {
-        File statisticsDir = new File(outputPath + '/statistics')
-        if (!statisticsDir.exists())
-            statisticsDir.mkdirs()
-
-        File statisticsResultsFile = new File(outputPath + "/statistics/results.csv")
-        if (statisticsResultsFile.exists())
-            statisticsResultsFile.delete()
-
-        statisticsResultsFile << 'project,merge commit,is octopus,number of merge conflicts,merge conflict ocurrence,number of conflicting files, number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,duration mean,conclusion delay\n'
-
-        return statisticsResultsFile
-    }
-
-    private static File createExperimentalDataFiles(String outputPath, boolean containsLinks) {
-        File dataDir = new File(outputPath + '/data')
-        if (!dataDir.exists())
-            dataDir.mkdirs()        
-
-        File dataResultsFile = new File(outputPath + '/data/results' + ((containsLinks) ? '-links' : '') + '.csv')
-        if(dataResultsFile.exists())
-            dataResultsFile.delete()
-
-        dataResultsFile << 'project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n'
-        return dataResultsFile
-    }
 
     public static delete(File file) {
         if (!file.isDirectory())

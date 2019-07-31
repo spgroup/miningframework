@@ -16,16 +16,6 @@ public class DeletionTest {
     }
 
     @Test
-    public void deletionBothAndAdditionBothTest() {
-        assertEquals(TestSuite.getModifiedLines('deletionBothAndAdditionBoth()'), '[17] [] [20] []')
-    }
-
-    @Test
-    public void deletionAndAdditionBothTest() {
-        assertEquals(TestSuite.getModifiedLines('deletionAndAdditionBoth()'), '[25] [] [27] []')
-    }
-
-    @Test
     public void deletionSingleAndAdditionTest() {
         assertEquals(TestSuite.getModifiedLines('deletionSingleAndAddition()'),'[] [[5, 5]] [6] []')
     }

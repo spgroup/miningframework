@@ -18,7 +18,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
     public void collectExperimentalData(Project project, MergeCommit mergeCommit) {
         String outputPath = arguments.getOutputPath()
 
-        File resultsFile = new File("${outputPath}/data/results.csv")
+        File resultsFile = createFilesIfTheyDontExist(outputPath)
 
         if(arguments.isPushCommandActive()) {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
@@ -31,6 +31,21 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         }
 
         println "Data collection finished!"
+    }
+
+
+    private createFilesIfTheyDontExist (String outputPath) {
+        File experimentalDataDir = new File(outputPath + '/data')
+        if (!experimentalDataDir.exists()) {
+            experimentalDataDir.mkdirs()
+        }
+
+        File experimentalDataFile = new File(outputPath + "/data/results.csv")
+        if (!experimentalDataFile.exists()) {
+            experimentalDataFile << 'project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n'
+        }
+    
+        return experimentalDataFile
     }
 
     private void getMutuallyModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit) {

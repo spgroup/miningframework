@@ -12,7 +12,7 @@ import org.junit.BeforeClass
 
 import main.app.MiningFramework
 import main.project.*
-import main.arguments.Arguments
+import main.arguments.*
 import main.util.FileManager
 import test.*
 
@@ -36,7 +36,7 @@ public class TestSuite {
 
         FileManager.createOutputFiles(args.getOutputPath(), false)
 
-        ArrayList<Project> projectList = Project.getProjectList()
+        ArrayList<Project> projectList = InputParser.getProjectList(args.getInputPath())
         
         framework.setProjectList(projectList)
         framework.start()

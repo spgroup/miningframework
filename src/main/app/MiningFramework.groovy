@@ -10,12 +10,11 @@ import java.util.concurrent.LinkedBlockingQueue
 import main.arguments.*
 import main.project.*
 import main.interfaces.*
+import main.util.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
 import main.exception.UnexpectedPostScriptException
 import main.exception.NoAccessKeyException
-import main.util.*
-
 
 class MiningFramework {
 
@@ -57,8 +56,10 @@ class MiningFramework {
                 FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
             
                 printStartAnalysis()                
+
+                String inputPath = arguments.getInputPath()
                 
-                ArrayList<Project> projectList = Project.getProjectList()
+                ArrayList<Project> projectList = InputParser.getProjectList(inputPath)
 
                 framework.setProjectList(projectList)
                 framework.start()

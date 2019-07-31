@@ -79,11 +79,26 @@ class MiningFramework {
     public void start() {
         projectList = processProjects(projectList)
 
+        BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
+        
+        Thread [] workers = createAndStartMiningWorkers (projectQueue)
+
+        waitForMiningWorkers(workers)
+
+        processOutput()
+    }
+
+    BlockingQueue<Project> populateProjectsQueue(List<Project> projectList) {
         BlockingQueue<Project> projectQueue = new LinkedBlockingQueue<Project>()
+        
         for (Project project : projectList ) {    
             projectQueue.add(project)
         }
+        
+        return projectQueue
+    }
 
+    Thread [] createAndStartMiningWorkers (BlockingQueue<Project> projectQueue) {
         int numOfThreads = arguments.getNumOfThreads()
         
         Thread [] workers = new Thread[numOfThreads]
@@ -95,11 +110,13 @@ class MiningFramework {
             workers[i].start();
         }
 
-        for (int i = 0; i< numOfThreads; i++) {
+        return workers
+    }
+
+    void waitForMiningWorkers (Thread[] workers) {
+        for (int i = 0; i < workers.length ; i++) {
             workers[i].join();
         }
-
-        processOutput()
     }
 
     static private void runPostScript() {

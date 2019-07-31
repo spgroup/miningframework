@@ -122,8 +122,6 @@ class MiningWorker implements Runnable {
 
     private void endProjectAnalysis(Project project) {
         File projectDirectory = new File(project.getPath())
-        if (projectDirectory.exists())
-            FileManager.delete(projectDirectory)
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {

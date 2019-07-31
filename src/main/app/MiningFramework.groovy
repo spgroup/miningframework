@@ -84,18 +84,18 @@ class MiningFramework {
             projectQueue.add(project)
         }
 
-        int numOfCores = arguments.getNumOfCores()
+        int numOfThreads = arguments.getNumOfThreads()
         
-        Thread [] workers = new Thread[numOfCores]
+        Thread [] workers = new Thread[numOfThreads]
         
-        for (int i = 0; i < numOfCores; i++) {
+        for (int i = 0; i < numOfThreads; i++) {
             String workerPath = "${LOCAL_PROJECT_PATH}/worker${i}" 
             Runnable worker = new MiningWorker(dataCollector, statCollector, commitFilter, projectQueue, workerPath);
             workers[i] = new Thread(worker)
             workers[i].start();
         }
 
-        for (int i = 0; i< numOfCores; i++) {
+        for (int i = 0; i< numOfThreads; i++) {
             workers[i].join();
         }
 

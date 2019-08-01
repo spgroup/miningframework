@@ -1,3 +1,5 @@
+dist: trusty
+
 language: groovy
 
 before_script:

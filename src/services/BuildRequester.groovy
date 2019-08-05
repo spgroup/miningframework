@@ -1,30 +1,36 @@
 package services
 
+import main.interfaces.DataCollector
 import main.project.*
 import main.util.TravisHelper
 import main.util.GithubHelper
 import main.util.ProcessRunner
 import main.exception.TravisHelperException
 import main.util.FileManager
+import static main.app.MiningFramework.arguments
 
-class BuildRequester {
+class BuildRequester implements DataCollector {
 
     static private final FILE_NAME = '.travis.yml'
 
-    static public void collectBuild(Project project, MergeCommit mergeCommit) {
-        
-        String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
-        
-        checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
-        File travisFile = new File("${project.getPath()}/.travis.yml")
-        if (travisFile.delete()) {
-            String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-            travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1])
-            commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
-            pushBranch(project, branchName).waitFor()
+    public void collectData(Project project, MergeCommit mergeCommit) {
+        if (arguments.providedAccessKey()) {
+            String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
+            
+            checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
+            File travisFile = new File("${project.getPath()}/.travis.yml")
+            if (travisFile.delete()) {
+                String[] ownerAndName = getRemoteProjectOwnerAndName(project)
+                travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1])
+                commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
+                pushBranch(project, branchName).waitFor()
+            }
+            
+            goBackToMaster(project).waitFor()
+            println "${project.getName()} - Build requesting finished!"
+
         }
         
-        goBackToMaster(project).waitFor()
     }
 
     static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {

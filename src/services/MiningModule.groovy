@@ -13,10 +13,11 @@ public class MiningModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class);
+        Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
-        dataCollectorBinder.addBinding().to(ExperimentalDataCollectorImpl.class);
-        dataCollectorBinder.addBinding().to(StatisticsCollectorImpl.class);
+        dataCollectorBinder.addBinding().to(ExperimentalDataCollectorImpl.class)
+        dataCollectorBinder.addBinding().to(StatisticsCollectorImpl.class)
+        dataCollectorBinder.addBinding().to(BuildRequester.class)
 
         bind(CommitFilter.class).to(CommitFilterImpl.class)
         bind(ProjectProcessor.class).to(ProjectProcessorImpl.class)

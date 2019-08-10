@@ -8,7 +8,7 @@ Framework for mining git projects.
 * If you want to run the tests, you must use the command to clone the repository:
  ``` git clone --recursive https://github.com/spgroup/miningframework ```
 
-## Dependency Injection
+## Develop
 This framework uses [Google Guice](https://github.com/google/guice) to deal with dependency injection.
 
 It's necessary to implement these interfaces:
@@ -18,6 +18,8 @@ It's necessary to implement these interfaces:
 * **Output Processor** runs at the finish of the analysis, intended to add extra steps to the analisys
 
 The [services/](https://github.com/spgroup/miningframework/tree/master/src/services/) directory contains models for these dependencies. Also, the [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy) class acts as the dependency injector.
+
+> Obs: If you intend to use the framework multithreading option, be aware of the necessity to synchronize the access to the output files. 
 
 ## Projects List
 Another input file is a `.csv` file, that must contain information about the projects to be analyzed. Its lines should have the following structure (similar to the [projects](https://github.com/spgroup/miningframework/blob/master/projects.csv) file):

@@ -14,6 +14,7 @@ class Arguments {
     private String postScript
     private String accessKey
     private boolean useForks
+    private int numOfThreads
 
     Arguments() {
         isHelp = false
@@ -24,6 +25,11 @@ class Arguments {
         resultsRemoteRepositoryURL = ''
         postScript = ''
         accessKey = ''
+        numOfThreads = 1
+    }
+
+    void setNumOfThreads (int numOfThreads) {
+        this.numOfThreads = numOfThreads
     }
 
     void setInputPath(String inputPath) {
@@ -62,6 +68,10 @@ class Arguments {
         this.accessKey = accessKey
     }
 
+    int getNumOfThreads() {
+        return this.numOfThreads
+    }
+    
     String getInputPath() {
         return inputPath
     }

@@ -1,22 +1,20 @@
 package main.app
 
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
 @Grab('com.google.inject:guice:4.2.2')
-import static com.xlson.groovycsv.CsvParser.parseCsv
 import com.google.inject.*
 import java.io.File
 import java.util.ArrayList
-import java.text.SimpleDateFormat
-import static groovy.io.FileType.DIRECTORIES
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.LinkedBlockingQueue
 
 import main.arguments.*
 import main.project.*
 import main.interfaces.*
+import main.util.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
 import main.exception.UnexpectedPostScriptException
 import main.exception.NoAccessKeyException
-import main.util.*
 
 class MiningFramework {
 
@@ -58,8 +56,10 @@ class MiningFramework {
                 FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
             
                 printStartAnalysis()                
+
+                String inputPath = arguments.getInputPath()
                 
-                ArrayList<Project> projectList = getProjectList()
+                ArrayList<Project> projectList = InputParser.getProjectList(inputPath)
 
                 framework.setProjectList(projectList)
                 framework.start()
@@ -80,31 +80,44 @@ class MiningFramework {
     public void start() {
         projectList = processProjects(projectList)
 
-        for (project in projectList) {
-            printProjectInformation(project)
-            
-            if (project.isRemote()) {
-                cloneRepository(project, LOCAL_PROJECT_PATH)
-            } else {
-                checkForUnstagedChanges(project);
-            }
-            
-            List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) // Since date and until date as arguments (dd/mm/yyyy).
-            for (mergeCommit in mergeCommits) {
-                if (applyFilter(project, mergeCommit)) {
-                    printMergeCommitInformation(mergeCommit)
-                    collectStatistics(project, mergeCommit)
-                    collectExperimentalData(project, mergeCommit)
-                }
-            }
+        BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
+        
+        Thread [] workers = createAndStartMiningWorkers (projectQueue)
 
-            if(arguments.isPushCommandActive()) // Will push.
-                pushResults(project, arguments.getResultsRemoteRepositoryURL())
-            
-            endProjectAnalysis()
-        }
+        waitForMiningWorkers(workers)
 
         processOutput()
+    }
+
+    BlockingQueue<Project> populateProjectsQueue(List<Project> projectList) {
+        BlockingQueue<Project> projectQueue = new LinkedBlockingQueue<Project>()
+        
+        for (Project project : projectList ) {    
+            projectQueue.add(project)
+        }
+        
+        return projectQueue
+    }
+
+    Thread [] createAndStartMiningWorkers (BlockingQueue<Project> projectQueue) {
+        int numOfThreads = arguments.getNumOfThreads()
+        
+        Thread [] workers = new Thread[numOfThreads]
+        
+        for (int i = 0; i < numOfThreads; i++) {
+            String workerPath = "${LOCAL_PROJECT_PATH}/worker${i}" 
+            Runnable worker = new MiningWorker(dataCollector, statCollector, commitFilter, projectQueue, workerPath);
+            workers[i] = new Thread(worker)
+            workers[i].start();
+        }
+
+        return workers
+    }
+
+    void waitForMiningWorkers (Thread[] workers) {
+        for (int i = 0; i < workers.length ; i++) {
+            workers[i].join();
+        }
     }
 
     static private void runPostScript() {
@@ -122,26 +135,6 @@ class MiningFramework {
         }
     }
 
-    private void checkForUnstagedChanges(Project project) {
-        String gitDiffOutput = ProcessRunner.runProcess(project.getPath(), "git", "diff").getText()
-
-        if (gitDiffOutput.length() != 0) {
-            throw new UnstagedChangesException(project.getName())
-        }
-    }
-
-    private boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return commitFilter.applyFilter(project, mergeCommit)
-    }
-
-    private void collectStatistics(Project project, MergeCommit mergeCommit) {
-        statCollector.collectStatistics(project, mergeCommit)
-    }
-
-    private void collectExperimentalData(Project project, MergeCommit mergeCommit) {
-        dataCollector.collectExperimentalData(project, mergeCommit)
-    }
-
     private ArrayList<Project> processProjects(ArrayList<Project> projects) {
         return projectProcessor.processProjects(projects)
     }
@@ -150,150 +143,12 @@ class MiningFramework {
         outputProcessor.processOutput()
     }
 
-    private void pushResults(Project project, String remoteRepositoryURL) {
-        Project resultsRepository = new Project('', remoteRepositoryURL)
-        printPushInformation(remoteRepositoryURL)
-        String targetPath = "${LOCAL_RESULTS_REPOSITORY_PATH}/resultsRepository"
-        cloneRepository(resultsRepository, targetPath)
-
-        // Copy output files, add, commit and then push.
-        FileManager.copyDirectory(getOutputPath(), "${targetPath}/output-${project.getName()}")
-        Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
-        gitAdd.waitFor()
-
-        def nowDate = new Date()
-        def sdf = new SimpleDateFormat("dd/MM/yyyy")
-        Process gitCommit = ProcessRunner
-            .runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()} - ${sdf.format(nowDate)}")
-        gitCommit.waitFor()
-        gitCommit.getInputStream().eachLine {
-            println it
-        }
-
-        Process gitPush = ProcessRunner.runProcess(targetPath, 'git', 'push', '--force-with-lease')
-        gitPush.waitFor()
-        gitPush.getInputStream().eachLine {
-            println it
-        }
-
-        FileManager.delete(new File(targetPath))
-    }
-
-    private void cloneRepository(Project project, String target) {
-        
-        println "Cloning repository ${project.getName()} into ${target}"
-
-        File projectDirectory = new File(target)
-        if(projectDirectory.exists()) {
-            FileManager.delete(projectDirectory)
-        }
-        projectDirectory.mkdirs()
-        
-        String url = project.getPath()
-
-        if (arguments.providedAccessKey()) {
-            String token = arguments.getAccessKey();
-            String[] projectOwnerAndName = project.getOwnerAndName()
-            url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
-        }
-
-        ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
-        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-    
-        Process process = ProcessRunner.startProcess(builder)
-        process.waitFor()
-  
-        project.setPath(target)
-    }
-
-    private void printProjectInformation(Project project) {
-        println "PROJECT: ${project.getName()}"
-    }
-
-    private void printMergeCommitInformation(MergeCommit mergeCommit) {
-        println "Merge commit: ${mergeCommit.getSHA()}"
-    }
-
-    private void printPushInformation(String url) {
-        println "Proceeding to push output files to ${url}."
-    }
-
-    private void endProjectAnalysis() {
-        File projectDirectory = new File(LOCAL_PROJECT_PATH)
-        if (projectDirectory.exists())
-            FileManager.delete(new File(LOCAL_PROJECT_PATH))
-    }
-
     public void setProjectList(ArrayList<Project> projectList) {
         this.projectList = projectList
     }
 
-    static ArrayList<Project> getProjectList() {
-        ArrayList<Project> projectList = new ArrayList<Project>()
-
-        String projectsFile = new File(getInputPath()).getText()
-        def iterator = parseCsv(projectsFile)
-        for (line in iterator) {
-            String name = line[0]
-            String path = line[1]
-
-            boolean relativePath
-            try {
-                relativePath = line[2].equals("true")
-            } catch(ArrayIndexOutOfBoundsException e) {
-                relativePath = false
-            }
-
-            if(relativePath) 
-                projectList.addAll(getProjects(name, path))
-            else {
-                Project project = new Project(name, path)
-                projectList.add(project)
-            }
-        }
-
-        return projectList
-    }
-
-    static ArrayList<Project> getProjects(String directoryName, String directoryPath) {
-        ArrayList<Project> projectList = new ArrayList<Project>()
-
-        File directory = new File(directoryPath)
-        directory.traverse(type: DIRECTORIES, maxDepth: 0) {
-             
-             // Checking if it's a git project.
-             String filePath = it.toString()
-             if(new File("${filePath}/.git").exists()) {
-                 Project project = new Project("${directoryName}/${it.getName()}", filePath)
-                 projectList.add(project)
-             }
-        }
-
-        return projectList
-    }
-
     void setArguments(Arguments arguments) {
         this.arguments = arguments
-    }
-    
-    static Arguments getArguments() {
-        return arguments
-    }
-
-    static String getOutputPath() {
-        return arguments.getOutputPath()
-    }
-
-    static String getInputPath() {
-        return arguments.getInputPath()
-    }
-
-    static String isPushCommandActive() {
-        return arguments.isPushCommandActive()
-    }
-
-    static String getResultsRemoteRepositoryURL() {
-        return arguments.getResultsRemoteRepositoryURL()
     }
 
 

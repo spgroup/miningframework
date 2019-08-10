@@ -4,6 +4,7 @@ import main.interfaces.ExperimentalDataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
+
 import static main.app.MiningFramework.arguments
 import main.util.*
 import main.project.*
@@ -30,7 +31,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
             BuildRequester.collectBuild(project, mergeCommit)
         }
 
-        println "Data collection finished!"
+        println "${project.getName()} - Data collection finished!"
     }
 
 
@@ -125,7 +126,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         return false
     }
 
-    private void printResults(Project project, MergeCommit mergeCommit, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
+    private synchronized void printResults(Project project, MergeCommit mergeCommit, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
         File resultsFile = new File("${arguments.getOutputPath()}/data/results.csv")
         
         resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"

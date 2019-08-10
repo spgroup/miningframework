@@ -4,10 +4,11 @@ import main.interfaces.StatisticsCollector
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 import java.text.ParseException 
+import static main.app.MiningFramework.arguments
+
 
 import main.util.*
 import main.project.*
-import main.app.MiningFramework
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -15,9 +16,9 @@ class StatisticsCollectorImpl implements StatisticsCollector {
 
     @Override
     public void collectStatistics(Project project, MergeCommit mergeCommit) {
-        String outputPath = MiningFramework.getOutputPath()
-        File resultsFile = createFilesIfTheyDontExist(outputPath)
-
+        String outputPath = arguments.getOutputPath()
+        File resultsFile = new File("${outputPath}/statistics/results.csv")
+      
         boolean isOctopus = mergeCommit.isOctopus()
 
         double numberOfDevelopersMean = getNumberOfDevelopersMean(project, mergeCommit)
@@ -26,18 +27,19 @@ class StatisticsCollectorImpl implements StatisticsCollector {
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
         double durationMean = getDurationMean(project, mergeCommit)
         int conclusionDelay = getConclusionDelay(project, mergeCommit)
-        String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
-        if(MiningFramework.isPushCommandActive()) {
-            File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
-            String projectLink = addLink(remoteRepositoryURL, project.getName())
-            String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
+        String remoteRepositoryURL = arguments.getResultsRemoteRepositoryURL()
 
-            resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
-        } 
-        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        synchronized (this) {
+            if(arguments.isPushCommandActive()) {
+                File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
+                String projectLink = addLink(remoteRepositoryURL, project.getName())
+                String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
+                resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+             } 
+             resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        }
 
-
-        println "Statistics collection finished!"
+        println "${project.getName()} - Statistics collection finished!"
     }
 
     private createFilesIfTheyDontExist (String outputPath) {

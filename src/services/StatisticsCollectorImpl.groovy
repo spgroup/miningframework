@@ -1,5 +1,5 @@
 package services
-import main.interfaces.StatisticsCollector
+import main.interfaces.DataCollector
 
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
@@ -12,10 +12,10 @@ import main.project.*
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-class StatisticsCollectorImpl implements StatisticsCollector {
+class StatisticsCollectorImpl implements DataCollector {
 
     @Override
-    public void collectStatistics(Project project, MergeCommit mergeCommit) {
+    public void collectData(Project project, MergeCommit mergeCommit) {
         String outputPath = arguments.getOutputPath()
         File resultsFile = new File("${outputPath}/statistics/results.csv")
       

@@ -1,6 +1,6 @@
 package services
 
-import main.interfaces.ExperimentalDataCollector
+import main.interfaces.DataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -10,13 +10,13 @@ import main.util.*
 import main.project.*
 
 
-class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
+class ExperimentalDataCollectorImpl implements DataCollector {
 
     public static enum Modification {ADDED, REMOVED, CHANGED}
     private File resultsFileLinks
 
     @Override
-    public void collectExperimentalData(Project project, MergeCommit mergeCommit) {
+    public void collectData(Project project, MergeCommit mergeCommit) {
         String outputPath = arguments.getOutputPath()
 
         File resultsFile = createFilesIfTheyDontExist(outputPath)
@@ -26,10 +26,6 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         }
 
         getMutuallyModifiedAttributesAndMethods(project, mergeCommit)
-
-        if (arguments.providedAccessKey()) {
-            BuildRequester.collectBuild(project, mergeCommit)
-        }
 
         println "${project.getName()} - Data collection finished!"
     }

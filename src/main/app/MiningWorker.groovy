@@ -19,15 +19,13 @@ import main.util.*
 
 class MiningWorker implements Runnable {
 
-    private ExperimentalDataCollector dataCollector;
-    private StatisticsCollector statCollector;
-    private CommitFilter commitFilter;
-    private BlockingQueue<Project> projectList;
-    private String baseDir;
+    private Set<DataCollector> dataCollectors
+    private CommitFilter commitFilter
+    private BlockingQueue<Project> projectList
+    private String baseDir
 
-    public MiningWorker(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
-        this.dataCollector = dataCollector
-        this.statCollector = statCollector
+    public MiningWorker(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
+        this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectList = projectList
         this.baseDir = baseDir
@@ -54,8 +52,7 @@ class MiningWorker implements Runnable {
                 if (applyFilter(project, mergeCommit)) {
                     printMergeCommitInformation(project, mergeCommit)
 
-                    collectStatistics(project, mergeCommit)
-                    collectExperimentalData(project, mergeCommit)
+                    runDataCollectors(project, mergeCommit)
                 }
             }
 
@@ -65,6 +62,12 @@ class MiningWorker implements Runnable {
             endProjectAnalysis (project)
         }
     } 
+
+    private void runDataCollectors(Project project, MergeCommit mergeCommit) {
+        for (dataCollector in dataCollectors) {
+            dataCollector.collectData(project, mergeCommit)
+        }
+    }
 
     private void checkForUnstagedChanges(Project project) {
         String gitDiffOutput = ProcessRunner.runProcess(project.getPath(), "git", "diff").getText()
@@ -102,14 +105,6 @@ class MiningWorker implements Runnable {
 
     private boolean applyFilter(Project project, MergeCommit mergeCommit) {
         return commitFilter.applyFilter(project, mergeCommit)
-    }
-
-    private void collectStatistics(Project project, MergeCommit mergeCommit) {
-        statCollector.collectStatistics(project, mergeCommit)
-    }
-
-    private void collectExperimentalData(Project project, MergeCommit mergeCommit) {
-        dataCollector.collectExperimentalData(project, mergeCommit)
     }
 
     private void printProjectInformation(Project project) {

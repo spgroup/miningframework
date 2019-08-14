@@ -20,8 +20,7 @@ class MiningFramework {
 
     private ArrayList<Project> projectList
    
-    private StatisticsCollector statCollector
-    private ExperimentalDataCollector dataCollector
+    private Set<DataCollector> dataCollectors
     private CommitFilter commitFilter
     private ProjectProcessor projectProcessor
     private OutputProcessor outputProcessor
@@ -31,9 +30,8 @@ class MiningFramework {
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
-    public MiningFramework(ExperimentalDataCollector dataCollector, StatisticsCollector statCollector, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
-        this.dataCollector = dataCollector
-        this.statCollector = statCollector
+    public MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
+        this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectProcessor = projectProcessor
         this.outputProcessor = outputProcessor
@@ -106,7 +104,7 @@ class MiningFramework {
         
         for (int i = 0; i < numOfThreads; i++) {
             String workerPath = "${LOCAL_PROJECT_PATH}/worker${i}" 
-            Runnable worker = new MiningWorker(dataCollector, statCollector, commitFilter, projectQueue, workerPath);
+            Runnable worker = new MiningWorker(dataCollectors, commitFilter, projectQueue, workerPath);
             workers[i] = new Thread(worker)
             workers[i].start();
         }

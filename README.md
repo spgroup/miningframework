@@ -13,8 +13,7 @@ This framework uses [Google Guice](https://github.com/google/guice) to deal with
 
 It's necessary to implement these interfaces:
 * **Commit Filter** defines conditions (filter) to analyze a commit.
-* **Statistics Collector** retrieves commits' metrics for statistical analysis.
-* **Data Collector** retrieves the data one wants to study from the commits.
+* **Data Collector** retrieves data about each analyzed merge commit (you can add multiple implementations).
 * **Project Processor** does some pre processing in the projects list
 * **Output Processor** runs at the finish of the analysis, intended to add extra steps to the analisys
 

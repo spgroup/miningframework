@@ -1,7 +1,6 @@
 package test
 
-import main.interfaces.ExperimentalDataCollector
-import main.interfaces.StatisticsCollector
+import main.interfaces.DataCollector
 import main.interfaces.CommitFilter
 import main.interfaces.ProjectProcessor
 import main.interfaces.OutputProcessor
@@ -11,13 +10,16 @@ import services.*
 
 @Grab('com.google.inject:guice:4.2.2')
 import com.google.inject.*
+import com.google.inject.multibindings.Multibinder
 
 public class TestModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(ExperimentalDataCollector.class).to(ExperimentalDataCollectorImpl.class)
-        bind(StatisticsCollector.class).to(StatisticsCollectorImpl.class)
+        Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class);
+
+        dataCollectorBinder.addBinding().to(ExperimentalDataCollectorImpl.class);
+        dataCollectorBinder.addBinding().to(StatisticsCollectorImpl.class);
         bind(CommitFilter.class).to(CommitFilterImpl.class)
         bind(ProjectProcessor.class).to(EmptyProjectProcessor.class)
         bind(OutputProcessor.class).to(EmptyOutputProcessor.class)

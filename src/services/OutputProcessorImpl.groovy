@@ -10,7 +10,7 @@ import main.exception.*
 
 class OutputProcessorImpl implements OutputProcessor {
     
-    private final String SCRIPT_RUNNER = "python"
+    private final String SCRIPT_RUNNER = "python3"
     private final String SCRIPT_PATH = "./scripts/fetch_jars.py"
 
     public void processOutput() {

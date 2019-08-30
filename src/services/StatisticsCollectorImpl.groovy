@@ -17,6 +17,9 @@ class StatisticsCollectorImpl implements DataCollector {
     @Override
     public void collectData(Project project, MergeCommit mergeCommit) {
         String outputPath = arguments.getOutputPath()
+    
+        new File ("${outputPath}/statistics").mkdirs()
+
         File resultsFile = new File("${outputPath}/statistics/results.csv")
       
         boolean isOctopus = mergeCommit.isOctopus()

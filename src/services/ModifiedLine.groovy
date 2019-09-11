@@ -1,21 +1,21 @@
 package services
 
-
+import static services.ExperimentalDataCollectorImpl.ModificationType;
 public class ModifiedLine {
 
     private String content;
     private int number;
     private String method;
     private Tuple2 deletedNumbers;
-    private ExperimentalDataCollectorImpl$Modification type;
+    private ModificationType type;
 
-    public ModifiedLine(String content, int number, ExperimentalDataCollectorImpl$Modification type) {
+    public ModifiedLine(String content, int number, ModificationType type) {
         this.content = content;
         this.number = number;
         this.type = type;
     }
 
-    public ModifiedLine(String content, Tuple2 numbers, ExperimentalDataCollectorImpl$Modification type) {
+    public ModifiedLine(String content, Tuple2 numbers, ModificationType type) {
         this.content = content;
         this.deletedNumbers = numbers;
         this.type = type;

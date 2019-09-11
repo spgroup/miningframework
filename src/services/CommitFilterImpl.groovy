@@ -1,5 +1,6 @@
 package services
 import main.interfaces.CommitFilter
+import static com.xlson.groovycsv.CsvParser.parseCsv
 
 import main.util.*
 import main.project.*
@@ -8,10 +9,48 @@ import main.project.*
 class CommitFilterImpl implements CommitFilter {
 
     public boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return containsMutuallyModifiedMethods(project, mergeCommit)
+        File commitsFile = new File("./commits.csv")
+
+        boolean hasMergeConflict = MergeHelper.hasMergeConflict(project, mergeCommit)
+
+        if (commitsFile.exists()) {
+            List commitList = parseCommitList(commitsFile)
+            
+            return isInCommitList(commitList, mergeCommit) && !hasMergeConflict && containsMutuallyModifiedMethods(project, mergeCommit)
+        } else {
+            return !hasMergeConflict && containsMutuallyModifiedMethods(project, mergeCommit)
+        }
+
+    }
+
+    private List parseCommitList (File commitsFile) {
+        ArrayList<String> commitList = new ArrayList<String>()
+        def iterator = parseCsv(commitsFile.getText())
+            
+        for (line in iterator) {
+            commitList.add(line["commitSHA"])
+        }
+
+        return commitList
+    }
+
+    private boolean isInCommitList (List commitList, MergeCommit mergeCommit) {
+        for (commit in commitList) {
+            if (mergeCommit.getSHA() == commit) {
+                return true;
+            } 
+        }
+        return false;
     }
 
     private boolean containsMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {
+        if (mergeCommit.getAncestorSHA() == null) {
+            /**
+            * Some merge scenarios dont return an valid ancestor SHA this check prevents
+            * unexpected crashes
+            */
+            return false;
+        } 
 
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
@@ -21,6 +60,7 @@ class CommitFilterImpl implements CommitFilter {
         for(file in mutuallyModifiedFiles) {
             Set<String> leftModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
             Set<String> rightModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+
             leftModifiedAttributesAndMethods.retainAll(rightModifiedAttributesAndMethods) // Intersection.
 
             if(leftModifiedAttributesAndMethods.size() > 0)

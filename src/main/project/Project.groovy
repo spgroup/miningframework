@@ -103,4 +103,15 @@ class Project {
     public void setRemote(boolean remote) {
         this.remote = remote
     }
+
+    public String[] getOwnerAndName() {
+        if (remote) {
+            String[] splitedPath = this.path.split("/");
+            String projectOwner = splitedPath[splitedPath.length - 2]
+            String projectName = splitedPath[splitedPath.length - 1]
+            return [projectOwner, projectName]
+        }
+        return []
+    }
+
 }

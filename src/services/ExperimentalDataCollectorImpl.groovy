@@ -1,56 +1,69 @@
 package services
 
-import main.interfaces.ExperimentalDataCollector
+import main.interfaces.DataCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-import static main.script.MiningFramework.arguments
+
+import static main.app.MiningFramework.arguments
 import main.util.*
 import main.project.*
 
 
-class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
+class ExperimentalDataCollectorImpl implements DataCollector {
 
     public static enum Modification {ADDED, REMOVED, CHANGED}
     private File resultsFileLinks
 
     @Override
-    public void collectExperimentalData(Project project, MergeCommit mergeCommit) {
+    public void collectData(Project project, MergeCommit mergeCommit) {
         String outputPath = arguments.getOutputPath()
 
-        File resultsFile = new File("${outputPath}/data/results.csv")
+        File resultsFile = createFilesIfTheyDontExist(outputPath)
 
         if(arguments.isPushCommandActive()) {
             resultsFileLinks = new File("${outputPath}/data/results-links.csv")
         }
 
         getMutuallyModifiedAttributesAndMethods(project, mergeCommit)
-        println "Data collection finished!"
+
+        println "${project.getName()} - Data collection finished!"
+    }
+
+
+    private createFilesIfTheyDontExist (String outputPath) {
+        File experimentalDataDir = new File(outputPath + '/data')
+        if (!experimentalDataDir.exists()) {
+            experimentalDataDir.mkdirs()
+        }
+
+        File experimentalDataFile = new File(outputPath + "/data/results.csv")
+        if (!experimentalDataFile.exists()) {
+            experimentalDataFile << 'project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n'
+        }
+    
+        return experimentalDataFile
     }
 
     private void getMutuallyModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit) {
-        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
-        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
-
+        Set<String> mutuallyModifiedFiles = getMutuallyModifiedFiles(project, mergeCommit)
+        
         for(file in mutuallyModifiedFiles) {
-            Set<ModifiedDeclaration> leftModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
-            Set<ModifiedDeclaration> rightModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
-            def mutuallyModifiedAttributesAndMethods = getMethodsIntersection(leftModifiedAttributesAndMethods, rightModifiedAttributesAndMethods)
-            Set<ModifiedDeclaration> mergeModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            def mergeModifiedMethods = getModifiedMethodsAndAttributes(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            def mutuallyModifiedMethods = getMutuallyModifiedMethodsAndAttributes(project, mergeCommit, file)
             
-            if (mutuallyModifiedAttributesAndMethods.size() > 0) {
+            if (mutuallyModifiedMethods.size() > 0) {
                 String className = getClassName(project, file, mergeCommit.getAncestorSHA())
-                for(method in mergeModifiedAttributesAndMethods) 
-                    analyseModifiedAttributesAndMethods(project, mergeCommit, className, mutuallyModifiedAttributesAndMethods, method, file)
+                for(method in mergeModifiedMethods) {
+                    saveModifiedAttributesAndMethods(project, mergeCommit, className, mutuallyModifiedMethods, method, file)
+                }
 
-                assembleResults(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
+                saveMergeScenarioFiles(project, mergeCommit, className.replaceAll('\\.', '\\/'), file)
             }
         }
     }
 
-    private void assembleResults(Project project, MergeCommit mergeCommit, String classPath, String file) {
+    private void saveMergeScenarioFiles(Project project, MergeCommit mergeCommit, String classPath, String file) {
         String outputPath = arguments.getOutputPath()
 
         String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classPath}/"
@@ -64,8 +77,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         FileManager.copyAndMoveFile(project, file, mergeCommit.getSHA(), "${path}/merge.java")
     }
     
-    private void analyseModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedDeclaration[]> parentsModifiedDeclarations, ModifiedDeclaration mergeModifiedDeclaration, String file) {
-
+    private void saveModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit, String className, Map<String, ModifiedDeclaration[]> parentsModifiedDeclarations, ModifiedDeclaration mergeModifiedDeclaration, String file) {
         ModifiedDeclaration[] mutuallyModifiedDeclarations = parentsModifiedDeclarations[mergeModifiedDeclaration.getSignature()]
         if (mutuallyModifiedDeclarations != null) {
             Set<Integer> leftAddedLines = new HashSet<Integer>()
@@ -85,6 +97,23 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
             printResults(project, mergeCommit, className, mergeModifiedDeclaration.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
         }
     }
+
+    private Set<String> getMutuallyModifiedFiles(Project project, MergeCommit mergeCommit) {
+        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
+        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
+
+        return mutuallyModifiedFiles
+    }
+
+    private Map<String, ModifiedDeclaration[]> getMutuallyModifiedMethodsAndAttributes(Project project, MergeCommit mergeCommit, String file) {
+        Set<ModifiedLine> leftModifiedMethods = getModifiedMethodsAndAttributes(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+        Set<ModifiedLine> rightModifiedMethods = getModifiedMethodsAndAttributes(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
+        def mutuallyModifiedMethods = getMethodsIntersection(leftModifiedMethods, rightModifiedMethods)
+       
+        return mutuallyModifiedMethods;
+    }
   
     private boolean containsLine(ModifiedDeclaration method, ModifiedLine line) {
         for(lineit in method.getModifiedLines())
@@ -93,7 +122,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         return false
     }
 
-    private void printResults(Project project, MergeCommit mergeCommit, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
+    private synchronized void printResults(Project project, MergeCommit mergeCommit, String className, String method, Set<Integer> leftAddedLines, Set<Integer> leftDeletedLines, Set<Integer> rightAddedLines, Set<Integer> rightDeletedLines) {
         File resultsFile = new File("${arguments.getOutputPath()}/data/results.csv")
         
         resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${method};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
@@ -141,7 +170,7 @@ class ExperimentalDataCollectorImpl implements ExperimentalDataCollector {
         This algorithm detects such lines, associating them with their correspondent modifications.
         Also, it counts the rangef to check lines number.
     */
-    private Set<ModifiedDeclaration> getModifiedAttributesAndMethods(Project project, String filePath, String ancestorSHA, String commitSHA) {
+    private Set<ModifiedDeclaration> getModifiedMethodsAndAttributes(Project project, String filePath, String ancestorSHA, String commitSHA) {
         Set<ModifiedDeclaration> modifiedDeclarations = new HashSet<ModifiedDeclaration>()
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA) 
         File mergeFile = FileManager.copyFile(project, filePath, commitSHA)

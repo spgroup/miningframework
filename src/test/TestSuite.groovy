@@ -10,16 +10,14 @@ import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 import org.junit.BeforeClass
 
-import main.script.MiningFramework
+import main.app.MiningFramework
 import main.project.*
-import main.arguments.Arguments
+import main.arguments.*
 import main.util.FileManager
-import services.MiningModule
-
 import test.*
 
 @RunWith(Suite.class)
-@SuiteClasses([DeletionTest.class, SameLineTest.class])
+@SuiteClasses([DeletionTest.class, SameLineTest.class, MergeConflictFilterTest.class])
 public class TestSuite {
     public static Map<String, String> modifiedLines;
 
@@ -31,14 +29,14 @@ public class TestSuite {
         args.setInputPath('src/test/input.csv')
         args.setOutputPath('src/test/output')
 
-        Injector injector = Guice.createInjector(new MiningModule())
+        Injector injector = Guice.createInjector(new TestModule())
         MiningFramework framework = injector.getInstance(MiningFramework.class)
 
         framework.setArguments(args)
 
         FileManager.createOutputFiles(args.getOutputPath(), false)
 
-        ArrayList<Project> projectList = MiningFramework.getProjectList()
+        ArrayList<Project> projectList = InputParser.getProjectList(args.getInputPath())
         
         framework.setProjectList(projectList)
         framework.start()

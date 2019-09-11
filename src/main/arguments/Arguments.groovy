@@ -11,6 +11,10 @@ class Arguments {
     private Class injector
     private boolean isHelp
     private String resultsRemoteRepositoryURL
+    private String postScript
+    private String accessKey
+    private boolean useForks
+    private int numOfThreads
 
     Arguments() {
         isHelp = false
@@ -19,6 +23,13 @@ class Arguments {
         outputPath = 'output'
         injector = MiningModule
         resultsRemoteRepositoryURL = ''
+        postScript = ''
+        accessKey = ''
+        numOfThreads = 1
+    }
+
+    void setNumOfThreads (int numOfThreads) {
+        this.numOfThreads = numOfThreads
     }
 
     void setInputPath(String inputPath) {
@@ -46,9 +57,21 @@ class Arguments {
     }
 
     boolean setHelp() {
-        isHelp = true
+        this.isHelp = true
     }
 
+    void setPostScript(String script) {
+        this.postScript = script
+    }
+
+    void setAccessKey(String accessKey) {
+        this.accessKey = accessKey
+    }
+
+    int getNumOfThreads() {
+        return this.numOfThreads
+    }
+    
     String getInputPath() {
         return inputPath
     }
@@ -77,7 +100,20 @@ class Arguments {
         return resultsRemoteRepositoryURL
     }
 
+    String getPostScript () {
+        return postScript
+    }
+
+    String getAccessKey() {
+        return accessKey
+    }
+
+    boolean providedAccessKey() {
+        return accessKey.length() > 0
+    }
+    
     boolean isPushCommandActive() {
         return !resultsRemoteRepositoryURL.equals('')
     }
+
 }

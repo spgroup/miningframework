@@ -1,101 +1,66 @@
 package services
-import main.interfaces.StatisticsCollector
+import main.interfaces.DataCollector
 
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 import java.text.ParseException 
+import static main.app.MiningFramework.arguments
+
 
 import main.util.*
 import main.project.*
-import main.script.MiningFramework
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-class StatisticsCollectorImpl implements StatisticsCollector {
+class StatisticsCollectorImpl implements DataCollector {
 
     @Override
-    public void collectStatistics(Project project, MergeCommit mergeCommit) {
-        String outputPath = MiningFramework.getOutputPath()
-        File resultsFile = new File("${outputPath}/statistics/results.csv")
+    public void collectData(Project project, MergeCommit mergeCommit) {
+        String outputPath = arguments.getOutputPath()
+    
+        new File ("${outputPath}/statistics").mkdirs()
 
+        File resultsFile = new File("${outputPath}/statistics/results.csv")
+      
         boolean isOctopus = mergeCommit.isOctopus()
-        int numberOfMergeConflicts = getNumberOfMergeConflicts(project, mergeCommit)
-        boolean mergeConflictOcurrence = numberOfMergeConflicts > 0
-        int numberOfConflictingFiles = getNumberOfConflictingFiles(project, mergeCommit)
+
         double numberOfDevelopersMean = getNumberOfDevelopersMean(project, mergeCommit)
         double numberOfCommitsMean = getNumberOfCommitsMean(project, mergeCommit)
         double numberOfChangedFilesMean = getNumberOfChangedFilesMean(project, mergeCommit)
         double numberOfChangedLinesMean = getNumberOfChangedLinesMean(project, mergeCommit)
         double durationMean = getDurationMean(project, mergeCommit)
         int conclusionDelay = getConclusionDelay(project, mergeCommit)
+        String remoteRepositoryURL = arguments.getResultsRemoteRepositoryURL()
 
-        String remoteRepositoryURL = MiningFramework.getResultsRemoteRepositoryURL()
-        if(MiningFramework.isPushCommandActive()) {
-            File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
-            String projectLink = addLink(remoteRepositoryURL, project.getName())
-            String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
+        synchronized (this) {
+            if(arguments.isPushCommandActive()) {
+                File resultsFileLinks = new File("${outputPath}/statistics/results-links.csv")
+                String projectLink = addLink(remoteRepositoryURL, project.getName())
+                String mergeCommitSHALink = addLink(remoteRepositoryURL, "${project.getName()}/files/${project.getName()}/${mergeCommit.getSHA()}")
+                resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+             } 
+             resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        }
 
-            resultsFileLinks << "${projectLink},${mergeCommitSHALink},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
-        } 
-        resultsFile << "${project.getName()},${mergeCommit.getSHA()},${isOctopus},${numberOfMergeConflicts},${mergeConflictOcurrence},${numberOfConflictingFiles},${numberOfDevelopersMean},${numberOfCommitsMean},${numberOfChangedFilesMean},${numberOfChangedLinesMean},${durationMean},${conclusionDelay}\n"
+        println "${project.getName()} - Statistics collection finished!"
+    }
 
+    private createFilesIfTheyDontExist (String outputPath) {
+        File statisticsDir = new File(outputPath + '/statistics')
+        if (!statisticsDir.exists()) {
+            statisticsDir.mkdirs()
+        }
 
-        println "Statistics collection finished!"
+        File statisticsResultsFile = new File(outputPath + "/statistics/results.csv")
+        if (!statisticsResultsFile.exists()) {
+            statisticsResultsFile << 'project,merge commit,is octopus,number of developers\' mean,number of commits\' mean,number of changed files\' mean, number of changed lines\' mean,duration mean,conclusion delay\n'
+        }
+        
+        return statisticsResultsFile
     }
     
     private String addLink(String url, String path) {
         return "=HYPERLINK(${url}/tree/master/output-${path};${path})"
-    }
-
-    private int getNumberOfMergeConflicts(Project project, MergeCommit mergeCommit) {
-        int numberOfMergeConflicts = 0
-
-        Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
-            ArrayList<String> output = reader.readLines()
-
-            for(line in output) {
-                if(line.endsWith("======="))
-                    numberOfMergeConflicts++
-            }
-
-        } catch(IOException e) {
-            e.printStackTrace()
-        }        
-
-        return numberOfMergeConflicts
-    }
-
-    private int getNumberOfConflictingFiles(Project project, MergeCommit mergeCommit) {
-        int numberOfConflictingFiles = 0
-
-        Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', mergeCommit.getSHA())
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gitShow.getInputStream()))
-            ArrayList<String> output = reader.readLines()
-
-            boolean fileHasConflict = false
-            for(line in output) {
-                
-                if(line.startsWith('diff --cc') && fileHasConflict) {
-                    numberOfConflictingFiles++
-                } else if(line.startsWith('diff --cc')) {
-                    fileHasConflict = false
-                }
-
-                if(line.endsWith("======="))
-                    fileHasConflict = true
-            }
-
-            if(fileHasConflict)
-                numberOfConflictingFiles++
-
-        } catch(IOException e) {
-            e.printStackTrace()
-        }        
-
-        return numberOfConflictingFiles
     }
 
     private double getNumberOfDevelopersMean(Project project, MergeCommit mergeCommit) {
@@ -194,6 +159,10 @@ class StatisticsCollectorImpl implements StatisticsCollector {
     }
 
     private int getConclusionDelay(Project project, MergeCommit mergeCommit) {
+        if (mergeCommit.isOctopus()) {
+            println "Conclusion delay is not supported for octopus merge commits, delay was set to -1"
+            return -1;
+        }
         String[] parents = mergeCommit.getParentsSHA()
         Date[] commitDates = new Date[parents.length]
         SimpleDateFormat formatter = new SimpleDateFormat('yyyy-mm-dd')

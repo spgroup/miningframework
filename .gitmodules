@@ -4,3 +4,6 @@
 [submodule "test_repositories/sameline"]
 	path = test_repositories/sameline
 	url = https://github.com/rafaelmotaalves/sameline
+[submodule "test_repositories/mergeconflict"]
+	path = test_repositories/mergeconflict
+	url = https://github.com/rafaelmotaalves/mergeconflict

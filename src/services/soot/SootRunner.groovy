@@ -25,7 +25,12 @@ class SootRunner {
     }
 
     public  void processScenarios() {
-        String resultHead = "project;class;method;commit;dataflow left right;dataflow right left;reachability left right;reachability right left\n"
+        File sootResultsFile = new File(outputPath + "/data/soot-results.csv")
+
+        if (sootResultsFile.exists()) {
+            sootResultsFile.delete()
+        }
+        sootResultsFile << "project;class;method;commit;dataflow left right;dataflow right left;reachability left right;reachability right left\n"
 
         List<SootScenario> sootScenarios = SootScenario.readScenarios(outputPath + RESULTS_FILE_PATH);
 
@@ -50,12 +55,12 @@ class SootRunner {
             boolean leftRightReachability = hasSootFlow(analysisLeftRightReachability)
             println "Result: ${leftRightReachability}"
 
-
             println "Running right left reachability analysis"
             Process analysisRightLeftReachability = runSootAnalysis(filePathReverse, classPath, DATAFLOW_MODE)
             boolean rightLeftReachability = hasSootFlow(analysisRightLeftReachability)
             println "Result: ${rightLeftReachability}"
 
+            sootResultsFile << "${scenario.toString()};${leftRightDataflow};${rightLeftDataflow};${leftRightReachability};${rightLeftReachability}\n"
         }
 
     }

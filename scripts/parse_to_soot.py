@@ -41,18 +41,26 @@ def parse_modification(modifications):
 def generate_csv(collection):
     for elem in collection:
         result = []
+        resultReverse = []
         className = elem[CLASS_NAME]
         leftMods = elem[LEFT_MODIFICATION]
         rightMods = elem[RIGHT_MODIFICATION]
         for l in leftMods:
+            resultReverse.append(className + ",sink," + l)
             result.append(className + ",source," + l)
         for r in rightMods:
+            resultReverse.append(className + ",source," + r)
             result.append(className + ",sink," + r)
         try:
-            csvFile = open(outputPath + "/files/" + elem[PROJECT_NAME] + "/" + elem[COMMIT_SHA] + "/soot.csv", "w")
-            csvFile.write("\n".join(result))
-            csvFile.close()
+            basePath = outputPath + "/files/" + elem[PROJECT_NAME] + "/" + elem[COMMIT_SHA]
+            saveFile(basePath + "/soot.csv", result)
+            saveFile(basePath + "/soot-reverse.csv", resultReverse)
         except:
             pass
+
+def saveFile(filePath, result):
+    csvFile = open(filePath, "w")
+    csvFile.write("\n".join(result))
+    csvFile.close()
 
 exportCsv()

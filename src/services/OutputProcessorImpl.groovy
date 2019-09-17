@@ -7,6 +7,7 @@ import static main.app.MiningFramework.arguments
 import main.util.*
 import main.project.*
 import main.exception.*
+import services.soot.SootRunner
 
 class OutputProcessorImpl implements OutputProcessor {
     
@@ -23,6 +24,9 @@ class OutputProcessorImpl implements OutputProcessor {
 
             fetchBuildsScript(inputPath, outputPath, token)
             convertToSootScript(outputPath)
+
+            SootRunner runner = new SootRunner(outputPath)
+            runner.processScenarios()
         }
     }
 

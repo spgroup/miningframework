@@ -190,7 +190,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         for(leftDeclaration in leftModifiedDeclarations) {
             for(rightDeclaration in rightModifiedDeclarations) {
                 if(leftDeclaration == rightDeclaration)
-                    intersection.put(leftDeclaration.getSignature(), Tuple2.tuple(leftDeclaration, rightDeclaration))
+                    intersection.put(leftDeclaration.getSignature(), new Tuple2(leftDeclaration, rightDeclaration))
             }
         }
 

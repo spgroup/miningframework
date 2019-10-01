@@ -101,10 +101,10 @@ class ExperimentalDataCollectorImpl implements DataCollector {
             Set<Tuple2> rightDeletedLines = new HashSet<Tuple2>()
 
             for(modifiedLine in mergeModifiedDeclaration.getModifiedLines()) {
-                if(containsLine(mutuallyModifiedDeclarations.getV1(), modifiedLine))
+                if(containsLine(mutuallyModifiedDeclarations.getFirst(), modifiedLine))
                     addLine(modifiedLine, leftAddedLines, leftDeletedLines)
 
-                if(containsLine(mutuallyModifiedDeclarations.getV2(), modifiedLine))
+                if(containsLine(mutuallyModifiedDeclarations.getSecond(), modifiedLine))
                     addLine(modifiedLine, rightAddedLines, rightDeletedLines)
             }
 

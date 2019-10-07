@@ -77,7 +77,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
     private void saveMergeScenarioFiles(Project project, MergeCommit mergeCommit, String classFilePath, String filePath) {
         String outputPath = arguments.getOutputPath()
-
+        
         String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classFilePath}/"
         File results = new File(path)
         if(!results.exists())
@@ -163,12 +163,17 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
     private String getClassPackage(Project project, String SHA, String filePath) {
         Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${SHA}:${filePath}")
-        gitCatFile.getInputStream().eachLine {
-            String lineNoWhitespace = StringUtils.deleteWhitespace(it)
+        
+        def fileLines = gitCatFile.getInputStream().readLines()
+
+        for (String fileLine : fileLines) {
+            String lineNoWhitespace = StringUtils.deleteWhitespace(fileLine)
             if(lineNoWhitespace.take(7) == 'package') {
                 return lineNoWhitespace.substring(7, lineNoWhitespace.indexOf(';')) // assuming the ; will be at the same line
             }
         }
+        
+        return "";
     }
 
     private String getClassName(String filePath) {

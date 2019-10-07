@@ -11,14 +11,12 @@ class CommitFilterImpl implements CommitFilter {
     public boolean applyFilter(Project project, MergeCommit mergeCommit) {
         File commitsFile = new File("./commits.csv")
 
-        boolean hasMergeConflict = MergeHelper.hasMergeConflict(project, mergeCommit)
-
         if (commitsFile.exists()) {
             List commitList = parseCommitList(commitsFile)
             
-            return isInCommitList(commitList, mergeCommit) && !hasMergeConflict && containsMutuallyModifiedMethods(project, mergeCommit)
+            return isInCommitList(commitList, mergeCommit) && containsMutuallyModifiedMethods(project, mergeCommit)
         } else {
-            return !hasMergeConflict && containsMutuallyModifiedMethods(project, mergeCommit)
+            return containsMutuallyModifiedMethods(project, mergeCommit)
         }
 
     }

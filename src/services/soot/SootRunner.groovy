@@ -26,8 +26,9 @@ class SootRunner {
     public  void processScenarios() {
         File sootResultsFile = createOutputFile()
         List<SootScenario> sootScenarios = SootScenario.readScenarios(outputPath + RESULTS_FILE_PATH);
-
+        
         for (scenario in sootScenarios) {
+            println "Running soot scenario ${scenario.getCommitSHA()}"
             String filePath = scenario.getLinesFile(outputPath)
             String filePathReverse = scenario.getLinesFile(outputPath)
             String classPath = scenario.getClassPath(outputPath)

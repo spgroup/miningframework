@@ -18,13 +18,12 @@ class BuildRequester implements DataCollector {
             String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
             
             checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
+            
             File travisFile = new File("${project.getPath()}/.travis.yml")
-            if (travisFile.delete()) {
-                String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-                travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1])
-                commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
-                pushBranch(project, branchName).waitFor()
-            }
+            String[] ownerAndName = getRemoteProjectOwnerAndName(project)
+            travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1])
+            commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
+            pushBranch(project, branchName).waitFor()
             
             goBackToMaster(project).waitFor()
             println "${project.getName()} - Build requesting finished!"
@@ -54,6 +53,8 @@ class BuildRequester implements DataCollector {
     }
 
     static private Process commitChanges(Project project, String message) {
+        ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml").waitFor()
+
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
@@ -67,6 +68,9 @@ class BuildRequester implements DataCollector {
         return """
 sudo: required
 language: java
+
+jdk:
+  - openjdk8
 
 script:
   - mvn package -DskipTests

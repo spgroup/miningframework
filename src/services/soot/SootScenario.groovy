@@ -16,6 +16,10 @@ class SootScenario {
         this.methodSignature = methodSignature;
         this.commitSHA = commitSHA;
     } 
+
+    public String getCommitSHA () {
+        return this.commitSHA;
+    }
     
     public String toString() {
         return "${projectName};${className};${methodSignature};${commitSHA}"

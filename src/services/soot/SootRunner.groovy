@@ -42,11 +42,11 @@ class SootRunner {
             boolean rightLeftDataflow = hasSootFlow(analysisRightLeftDataflow)
 
             println "Running left right reachability analysis"
-            Process analysisLeftRightReachability = runSootAnalysis(filePath, classPath, DATAFLOW_MODE)
+            Process analysisLeftRightReachability = runSootAnalysis(filePath, classPath, REACHABILITY_MODE)
             boolean leftRightReachability = hasSootFlow(analysisLeftRightReachability)
 
             println "Running right left reachability analysis"
-            Process analysisRightLeftReachability = runSootAnalysis(filePathReverse, classPath, DATAFLOW_MODE)
+            Process analysisRightLeftReachability = runSootAnalysis(filePathReverse, classPath, REACHABILITY_MODE)
             boolean rightLeftReachability = hasSootFlow(analysisRightLeftReachability)
 
             sootResultsFile << "${scenario.toString()};${leftRightDataflow};${rightLeftDataflow};${leftRightReachability};${rightLeftReachability}\n"
@@ -69,6 +69,7 @@ class SootRunner {
     private boolean hasSootFlow (Process sootProcess) {
         boolean result = true
         sootProcess.getInputStream().eachLine {
+            println it;
             if (it.stripIndent() == "No conflicts detected") {
                 result = false
             }

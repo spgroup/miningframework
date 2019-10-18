@@ -33,33 +33,33 @@ class MiningWorker implements Runnable {
 
     void run () {
         while (!projectList.isEmpty()) {
+            try {
+                Project project = projectList.remove()
 
-            Project project = projectList.take()
+                printProjectInformation (project)
 
-            printProjectInformation (project)
-
-            if (project.isRemote()) {
-                cloneRepository(project, baseDir)
-            } else {
-                checkForUnstagedChanges(project);
-            }
-
-            // Since date and until date as arguments (dd/mm/yyyy).
-            List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) 
-            for (mergeCommit in mergeCommits) {
-
-
-                if (applyFilter(project, mergeCommit)) {
-                    printMergeCommitInformation(project, mergeCommit)
-
-                    runDataCollectors(project, mergeCommit)
+                if (project.isRemote()) {
+                    cloneRepository(project, baseDir)
+                } else {
+                    checkForUnstagedChanges(project);
                 }
+
+                // Since date and until date as arguments (dd/mm/yyyy).
+                List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) 
+                for (mergeCommit in mergeCommits) {
+                    if (applyFilter(project, mergeCommit)) {
+                        printMergeCommitInformation(project, mergeCommit)
+
+                        runDataCollectors(project, mergeCommit)
+                    }
+                }
+
+                if(arguments.isPushCommandActive()) // Will push.
+                    pushResults(project, arguments.getResultsRemoteRepositoryURL())
+
+                endProjectAnalysis (project)
+            } catch (NoSuchElementException e) {
             }
-
-            if(arguments.isPushCommandActive()) // Will push.
-                pushResults(project, arguments.getResultsRemoteRepositoryURL())
-
-            endProjectAnalysis (project)
         }
     } 
 

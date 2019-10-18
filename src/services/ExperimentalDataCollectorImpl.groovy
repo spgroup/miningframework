@@ -50,7 +50,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
         File experimentalDataFile = new File(outputPath + "/data/results.csv")
         if (!experimentalDataFile.exists()) {
-            experimentalDataFile << 'project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n'
+            experimentalDataFile << 'project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n'
         }
 
         return experimentalDataFile

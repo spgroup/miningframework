@@ -13,7 +13,6 @@ class BuildRequester implements DataCollector {
 
     static private final FILE_NAME = '.travis.yml'
 
-
     public enum BuildSystem {
         Maven,
         Gradle,

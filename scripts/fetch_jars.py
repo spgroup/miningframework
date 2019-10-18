@@ -65,7 +65,7 @@ def fetchJars(inputPath, outputPath, token):
         remove_commit_files_without_builds (outputPath, projectName)
       
     with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
-        outputFile.write("project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n")
+        outputFile.write("project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n")
         outputFile.write("\n".join(newResultsFile))
         outputFile.close()
 

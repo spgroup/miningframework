@@ -16,6 +16,10 @@ class SootScenario {
         this.methodSignature = methodSignature;
         this.commitSHA = commitSHA;
     } 
+
+    public String getCommitSHA () {
+        return this.commitSHA;
+    }
     
     public String toString() {
         return "${projectName};${className};${methodSignature};${commitSHA}"
@@ -72,11 +76,13 @@ class SootScenario {
 
         for (line in iterator) {
             String projectName = line["project"]
-            String className = line["class"]
+            String classPathName = line["className"]
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
 
-            def scenario = new SootScenario(projectName, className, methodSignature, commitSHA);
+            println classPathName
+            
+            def scenario = new SootScenario(projectName, classPathName, methodSignature, commitSHA);
         
             result.add(scenario)
         }

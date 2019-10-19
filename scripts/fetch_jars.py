@@ -51,18 +51,21 @@ def fetchJars(inputPath, outputPath, token):
             if (release[NAME].startswith(RELEASE_PREFIX)):
                 commitSHA = release[NAME].replace(RELEASE_PREFIX, '')
                 print ("Downloading " + commitSHA )
-                downloadPath = mount_download_path(outputPath, project, commitSHA)
-                downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
-                download_file(downloadUrl, downloadPath)
-                if (commitSHA in parsedOutput):
-                    newResultsFile.append(parsedOutput[commitSHA])
-                    untar_and_remove_file(downloadPath)
-                print (downloadPath + ' is ready')
+                try:
+                    downloadPath = mount_download_path(outputPath, project, commitSHA)
+                    downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
+                    download_file(downloadUrl, downloadPath)
+                    if (commitSHA in parsedOutput):
+                        newResultsFile.append(parsedOutput[commitSHA])
+                        untar_and_remove_file(downloadPath)
+                    print (downloadPath + ' is ready')
+                except:
+                    pass
     
         remove_commit_files_without_builds (outputPath, projectName)
       
     with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
-        outputFile.write("project;merge commit;class;method;left modifications;left deletions;right modifications;right deletions\n")
+        outputFile.write("project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n")
         outputFile.write("\n".join(newResultsFile))
         outputFile.close()
 
@@ -155,17 +158,18 @@ def get_headers(token):
 
 def remove_commit_files_without_builds (outputPath, projectName):
     files_path = outputPath + "/files/" + projectName +  "/"
-    
-    commit_dirs = os.listdir(files_path)
 
-    for directory in commit_dirs:
-        commit_dir = files_path + directory
-        build_dir = commit_dir + "/build"
+    if (os.path.exists(files_path)): 
+        commit_dirs = os.listdir(files_path)
 
-        if (not os.path.exists(build_dir)):
-            shutil.rmtree(commit_dir)
+        for directory in commit_dirs:
+            commit_dir = files_path + directory
+            build_dir = commit_dir + "/build"
 
-    if (len (os.listdir(files_path)) == 0 ):
-        shutil.rmtree(files_path)
+            if (not os.path.exists(build_dir)):
+                shutil.rmtree(commit_dir)
+
+        if (len (os.listdir(files_path)) == 0 ):
+            shutil.rmtree(files_path)
 
 fetchJars(inputPath, outputPath, token)

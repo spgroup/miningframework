@@ -10,12 +10,8 @@ class CommitFilterDynamicSemanticConflictImpl extends CommitFilterImpl {
     @Override
     public boolean applyFilter(Project project, MergeCommit mergeCommit) {
         boolean hasMergeConflict = MergeHelper.hasMergeConflict(project, mergeCommit)
-
-        if (!hasMergeConflict){
-            super.applyFilter(project, mergeCommit)
-        }else{
-            return false
-        }
+        
+        return !hasMergeConflict ? super.applyFilter(project, mergeCommit) : false
 
     }
 

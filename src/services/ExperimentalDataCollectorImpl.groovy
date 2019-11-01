@@ -50,10 +50,14 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
         File experimentalDataFile = new File(outputPath + "/data/results.csv")
         if (!experimentalDataFile.exists()) {
-            experimentalDataFile << 'project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n'
+            experimentalDataFile << addHeaderLinesForOutputFile()
         }
 
         return experimentalDataFile
+    }
+
+    protected String addHeaderLinesForOutputFile(){
+        return 'project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n'
     }
 
     private void collectMutuallyModifiedMethodsAndAttributes(Project project, MergeCommit mergeCommit) {
@@ -118,12 +122,18 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
         File resultsFile = new File("${arguments.getOutputPath()}/data/results.csv")
 
-        resultsFile << "${project.getName()};${mergeCommit.getSHA()};${className};${modifiedDeclarationSignature};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
+        resultsFile << addMergeCommitInfoIntoOutputFile(project, mergeCommit, className, modifiedDeclarationSignature, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
 
         // Add links.
         if(arguments.isPushCommandActive())
             addLinks(project.getName(), mergeCommit.getSHA(), className, modifiedDeclarationSignature, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines, arguments.getResultsRemoteRepositoryURL())
 
+    }
+
+    protected String addMergeCommitInfoIntoOutputFile(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
+                      HashSet<Integer> leftAddedLines, HashSet<Tuple2> leftDeletedLines, HashSet<Integer> rightAddedLines,
+                      HashSet<Tuple2> rightDeletedLines){
+        return "${project.getName()};${mergeCommit.getSHA()};${className};${modifiedDeclarationSignature};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
     }
 
     void addLinks(String projectName, String mergeCommitSHA, String className, String modifiedDeclarationSignature,

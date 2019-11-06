@@ -77,7 +77,7 @@ class MiningWorker implements Runnable {
         }
     }
 
-    private void cloneRepository(Project project, String target) {        
+    protected void cloneRepository(Project project, String target) {        
         println "Cloning repository ${project.getName()} into ${target}"
 
         File projectDirectory = new File(target)

@@ -8,6 +8,7 @@ class Project {
     private String name
     private String path
     private boolean remote
+    private String full_local_path
 
     public Project(String name, String path) {
         this.name = name
@@ -102,6 +103,14 @@ class Project {
 
     public void setRemote(boolean remote) {
         this.remote = remote
+    }
+
+    public String getFullLocalPath(){
+        return this.full_local_path
+    }
+
+    public void setFullLocalPath(String full_local_path){
+        this.full_local_path = full_local_path
     }
 
     public String[] getOwnerAndName() {

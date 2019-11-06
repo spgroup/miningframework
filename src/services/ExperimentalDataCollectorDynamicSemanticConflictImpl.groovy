@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import static groovy.io.FileType.FILES
 
 import static main.app.MiningFramework.arguments
 
@@ -17,14 +18,40 @@ class ExperimentalDataCollectorDynamicSemanticConflictImpl extends ExperimentalD
 
     @Override
     protected String addHeaderLinesForOutputFile(){
-        return 'project;merge commit;left commit;right commit;base commit;className;method\n'
+        return 'project;merge commit;left commit;right commit;base commit;className;method;local_clone;local_clone_module_analysis\n'
     }
     
     @Override
     protected String addMergeCommitInfoIntoOutputFile(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
                       HashSet<Integer> leftAddedLines, HashSet<Tuple2> leftDeletedLines, HashSet<Integer> rightAddedLines,
                       HashSet<Tuple2> rightDeletedLines){
-        return "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${mergeCommit.getAncestorSHA()};${className};${modifiedDeclarationSignature}\n"
+        return "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${mergeCommit.getAncestorSHA()};${className};${modifiedDeclarationSignature.split("\\(")[0]};${project.getFullLocalPath()};${closestModuleProjectForClass(project, className)}\n"
+    }
+
+    private String closestModuleProjectForClass(Project project, String className){
+        boolean isPomHere = false
+        String closestModule = ""
+
+        className = className.split("\\.").last().toString()+".java"
+        String fullPathClass;
+
+        new File('.').eachFileRecurse(FILES) {
+            if(it.name.endsWith(className)) {
+                fullPathClass = it
+            }
+        }
+        
+        File path = new File(System.getProperty("user.dir")+fullPathClass.replace("./","/").split(className)[0]+"pom.xml")
+        while(!isPomHere){
+            if (path.exists()){  
+                closestModule = path.toString().split("pom.xml")[0]
+                isPomHere = true
+            }else{
+                path = new File(path.toString().split(/[a-zA-Z0-9]*\/pom.xml/)[0]+"pom.xml")    
+            }
+            
+        }
+        return closestModule != "" ? closestModule : project.getFullLocalPath();
     }
 
 }

@@ -11,6 +11,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.Path
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 class SootRunner {
 
     private String outputPath
@@ -35,19 +38,19 @@ class SootRunner {
 
             println "Running left right dataflow analysis"
             Process analysisLeftRightDataflow = runSootAnalysis(filePath, classPath, DATAFLOW_MODE)
-            boolean leftRightDataflow = hasSootFlow(analysisLeftRightDataflow)
+            String leftRightDataflow = hasSootFlow(analysisLeftRightDataflow)
 
             println "Running right left dataflow analysis"
             Process analysisRightLeftDataflow = runSootAnalysis(filePathReverse, classPath, DATAFLOW_MODE)
-            boolean rightLeftDataflow = hasSootFlow(analysisRightLeftDataflow)
+            String rightLeftDataflow = hasSootFlow(analysisRightLeftDataflow)
 
             println "Running left right reachability analysis"
             Process analysisLeftRightReachability = runSootAnalysis(filePath, classPath, REACHABILITY_MODE)
-            boolean leftRightReachability = hasSootFlow(analysisLeftRightReachability)
+            String leftRightReachability = hasSootFlow(analysisLeftRightReachability)
 
             println "Running right left reachability analysis"
             Process analysisRightLeftReachability = runSootAnalysis(filePathReverse, classPath, REACHABILITY_MODE)
-            boolean rightLeftReachability = hasSootFlow(analysisRightLeftReachability)
+            String rightLeftReachability = hasSootFlow(analysisRightLeftReachability)
 
             sootResultsFile << "${scenario.toString()};${leftRightDataflow};${rightLeftDataflow};${leftRightReachability};${rightLeftReachability}\n"
         }
@@ -66,12 +69,15 @@ class SootRunner {
         return sootResultsFile
     }
 
-    private boolean hasSootFlow (Process sootProcess) {
-        boolean result = true
+    private String hasSootFlow (Process sootProcess) {
+        String result = "error"
+
         sootProcess.getInputStream().eachLine {
-            println it;
-            if (it.stripIndent() == "No conflicts detected") {
-                result = false
+            println it
+            if (it.stripIndent().startsWith("Number of conflicts:")) {
+                result = "true"
+            } else if (it.stripIndent() == "No conflicts detected") {
+                result = "false"
             }
         }
         return result

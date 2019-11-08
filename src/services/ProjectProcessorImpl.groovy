@@ -27,32 +27,34 @@ class ProjectProcessorImpl implements ProjectProcessor {
                     String path = "${githubHelper.URL}/${forkedProject.full_name}"
                     Project projectFork = new Project(project.getName(), path)
 
-                    projectsForks.add(projectFork)
+                    try {
+                        keepTryingToEnableTravisProject(projectFork, 10);
+                        
+                        projectsForks.add(projectFork)
+                    } catch (TravisHelperException e) {
+                        println "Couldn't enable travis for project: ${projectFork}, skipping it"
+                    }
                 } else {
                     println "${project.getName()} is not remote and cant be forked"
                 }
             }
-
-            keepTryingToEnableTravisProjects(projectsForks, 10)
 
             return projectsForks
         } 
         return projects
     }
 
-    private void keepTryingToEnableTravisProjects (ArrayList<Project> projects, int maxNumberOfTries) {
+    private void keepTryingToEnableTravisProject (Project project, int maxNumberOfTries) {
         /* This is a workaround to a limitation in travis api
         * You have to wait and sync multiple times to a project         
         * become available 
         */ 
         try {
-            for (project in projects) {
-                configureTravisProject(project)
-            }
+            configureTravisProject(project)
         } catch (TravisHelperException e) {
             travisHelper.syncAndWait()
             if (maxNumberOfTries > 0) {
-                keepTryingToEnableTravisProjects(projects, maxNumberOfTries - 1)
+                keepTryingToEnableTravisProject(project, maxNumberOfTries - 1)
             } else {
                 throw new TravisHelperException("Number of sync tries exceeded")
             }

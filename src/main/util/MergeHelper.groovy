@@ -22,11 +22,32 @@ class MergeHelper {
         return result
     }
 
+    public static boolean checkForNotEmptyDiff(Project project, MergeCommit mergeCommit){
+        Process diffAnalysis = performDiffAnalysis(project, mergeCommit)
+        boolean result = false
+        
+        if (diffAnalysis.getText() == ""){
+            result = true
+        }
+        
+        Process returnToMaster = returnToMaster(project)
+        returnToMaster.waitFor()
+    
+        return result
+    }
+
     static private Process replayMergeScenario(Project project, MergeCommit mergeCommit) {
         Process checkoutLeft = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', mergeCommit.getLeftSHA())
         checkoutLeft.waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), 'git', 'merge', mergeCommit.getRightSHA())   
+    }
+
+    static private Process performDiffAnalysis(Project project, MergeCommit mergeCommit) {
+        Process checkoutLeft = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', mergeCommit.getLeftSHA())
+        checkoutLeft.waitFor()
+
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'diff', mergeCommit.getRightSHA(), '--ignore-cr-at-eol', '--ignore-all-space', '--ignore-blank-lines', '--ignore-space-change')   
     }
 
     static private Process returnToMaster(Project project) {

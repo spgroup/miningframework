@@ -57,9 +57,7 @@ class MiningWorker implements Runnable {
                 if(arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
-                if (arguments.getKeepProjects()) {
-                    goBackToMaster(project)
-                } else {
+                if (!arguments.getKeepProjects()) {
                     FileManager.delete(new File(project.getPath()))
                 }
 
@@ -68,10 +66,6 @@ class MiningWorker implements Runnable {
             }
         }
     } 
-
-    private void goBackToMaster (Project project) {
-        ProcessRunner.runProcess(project.getPath(), "git", "checkout", "master").waitFor()
-    }
 
     private void runDataCollectors(Project project, MergeCommit mergeCommit) {
         for (dataCollector in dataCollectors) {

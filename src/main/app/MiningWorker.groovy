@@ -39,7 +39,7 @@ class MiningWorker implements Runnable {
                 printProjectInformation (project)
 
                 if (project.isRemote()) {
-                    cloneRepository(project, baseDir)
+                    cloneRepository(project, "${baseDir}/${project.getName()}")
                 } else {
                     checkForUnstagedChanges(project);
                 }
@@ -56,6 +56,10 @@ class MiningWorker implements Runnable {
 
                 if(arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
+
+                if (!arguments.getKeepProjects()) {
+                    FileManager.delete(new File(project.getPath()))
+                }
 
                 endProjectAnalysis (project)
             } catch (NoSuchElementException e) {

@@ -25,31 +25,9 @@ class MiningWorkerSemanticConflictSample extends MiningWorker {
 
     @Override
     protected void cloneRepository(Project project, String target) {    
-        target =  java.nio.file.Paths.get(target, project.getName()).toString()
-        println "Cloning repository ${project.getName()} into ${target}"
-
         String current_path = System.getProperty("user.dir");
-        File projectDirectory = new File(target)
-        if(projectDirectory.exists()) {
-            FileManager.delete(projectDirectory)
-        }
-        projectDirectory.mkdirs()
-        
-        String url = project.getPath()
-
-        if (arguments.providedAccessKey()) {
-            String token = arguments.getAccessKey();
-            String[] projectOwnerAndName = project.getOwnerAndName()
-            url = "https://${token}@github.com/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}"
-        }
-
-        ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
-        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-    
-        Process process = ProcessRunner.startProcess(builder)
-        process.waitFor()
+        super.cloneRepository(project,target)
         project.setFullLocalPath(java.nio.file.Paths.get(current_path, target).toString())
-        project.setPath(target)
     }
 
 }

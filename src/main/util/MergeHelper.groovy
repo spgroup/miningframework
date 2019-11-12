@@ -26,7 +26,7 @@ class MergeHelper {
         Process diffAnalysis = performDiffAnalysis(project, mergeCommit)
         boolean result = false
         
-        if (diffAnalysis.getText() == ""){
+        if (diffAnalysis.getText() != ""){
             result = true
         }
         

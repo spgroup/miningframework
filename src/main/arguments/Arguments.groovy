@@ -13,8 +13,8 @@ class Arguments {
     private String resultsRemoteRepositoryURL
     private String postScript
     private String accessKey
-    private boolean useForks
     private int numOfThreads
+    private boolean keepProjects
 
     Arguments() {
         isHelp = false
@@ -26,6 +26,7 @@ class Arguments {
         postScript = ''
         accessKey = ''
         numOfThreads = 1
+        keepProjects = false
     }
 
     void setNumOfThreads (int numOfThreads) {
@@ -68,6 +69,10 @@ class Arguments {
         this.accessKey = accessKey
     }
 
+    void setKeepProjects() {
+        this.keepProjects = true;
+    }
+
     int getNumOfThreads() {
         return this.numOfThreads
     }
@@ -94,6 +99,10 @@ class Arguments {
 
     boolean isHelp() {
         return isHelp
+    }
+
+    boolean getKeepProjects () {
+        return keepProjects
     }
 
     String getResultsRemoteRepositoryURL() {

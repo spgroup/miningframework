@@ -1,65 +1,68 @@
 # Mining Framework
-Framework for mining git projects.
+This is a framework for mining and analyzing git projects.
+
+We focus on analyzing merge commits, although this could be easily changed to analyze any kind of commit.
+
+We basically have variability points (hot spots) for 
+* preprocessing the set of projects to be analyzed (like forking projects and enabling Travis CI services for such forks)
+* filtering the set of merge commits in such projects (like for focusing only on merge commits with parents that involve changes to the same method)
+* collecting experimental data from each merge commit (like revisions of the files declaring the method that was changed in both parents, commit hashes, line numbers of the changes in each parent, overall statistics about the merge commit, result of replaying the merge operation with different tools, etc.)
+* postprocessing the collected experimental data (like aggregating and summarizing data, or any kind of operation that is more expensive to perform in a per merge commit basis, such as downloading Travis CI ".jar" files for each merge revision, merging spreadsheets created by different data collectors, etc.), after all projects have been analyzed
+
+We also have a number of implementations for such variability points, so that one can reuse or adapt them as needed for instantiating the framework.
+The examples illustrated above correspond to some of the implementations we provide here.
+
 
 ## Getting Started
-* This project uses [Apache Groovy](http://groovy-lang.org/). Install the version 2.5.x or newer to execute the program
-* It also uses a [Python](https://www.python.org/) script to convert the output to a SOOT compatible format and fetch the project build files. Install the version 3.7.x or newer to run with the SOOT output. 
-
-* If you want to run the tests, you must use the command to clone the repository:
+* Fork and clone the project. If you want to run the project tests, you must clone the repository with the recursive option:
  ``` git clone --recursive https://github.com/spgroup/miningframework ```
 
-## Develop
-This framework uses [Google Guice](https://github.com/google/guice) to deal with dependency injection.
+* This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 2.5.x or newer to use the framework and start mining projects.
 
-It's necessary to implement these interfaces:
-* **Commit Filter** defines conditions (filter) to analyze a commit.
-* **Data Collector** retrieves data about each analyzed merge commit (you can add multiple implementations).
-* **Project Processor** does some pre processing in the projects list
-* **Output Processor** runs at the finish of the analysis, intended to add extra steps to the analisys
+* For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Travis CI, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
 
-The [services/](https://github.com/spgroup/miningframework/tree/master/src/services/) directory contains models for these dependencies. Also, the [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy) class acts as the dependency injector.
 
-> Obs: If you intend to use the framework multithreading option, be aware of the necessity to synchronize the access to the output files. 
+## Instantiating or extending the framework
 
-## Projects List
-Another input file is a `.csv` file, that must contain information about the projects to be analyzed. Its lines should have the following structure (similar to the [projects](https://github.com/spgroup/miningframework/blob/master/projects.csv) file):
+You need to implement the following interfaces (see [interfaces/](https://github.com/spgroup/miningframework/tree/master/src/main/interfaces)) or choose their existing implementations (see [services/](https://github.com/spgroup/miningframework/tree/master/src/services/)):
+* ProjectProcessor 
+* CommitFilter
+* DataCollector 
+* OutputProcessor 
 
-**output name**,**path**[,**relative**]
+They correspond to the four variability points described at the beginning of the page.
 
-Where:
-* **output name** refers to the name that should appear in output files;
-* **path** is a local path or it's an url of a git project (https://github.com/...);
-* **relative** (`true|false`), optional, indicates if **path** is a directory containing multiple projects or it is a project directory. The default is `false`.
+The framework uses [Google Guice](https://github.com/google/guice) to implement dependency injection, and inject the interface implementations. 
+So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy), which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
 
-## Running
-One can run the framework by including `src` in the classpath and executing `src/main/app/MiningFramework.groovy`.
+
+## Running a specific framework instantiation
+
+You can run the framework by including the [src](https://github.com/spgroup/miningframework/blob/master/src) directory in the classpath and executing `src/main/app/MiningFramework.groovy`.
 
 This can be done by configuring an IDE or executing the following command in a terminal:
 * Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy [options] [input] [output]`
 
-`[input]` is a mandatory argument and refers to the path of the projects list's file. It's useful to type `--help` in the `[options]` field to see more details, including information about parameterization of the input files.
+`[input]` is the path to a CSV file containing the list of projects to be analyzed (like [projects.csv](https://github.com/spgroup/miningframework/blob/master/projects.csv)), one project per line. The list can contain external projects to be downloaded by the framework (the path field should be an URL to a git project hosted in the cloud), or local projects (the path field should refer to a local directory).
 
-To get the SOOT framework output format execute the following command:
-* Windows/Linux/Mac `groovy -cp src src/main/app/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] " [options] [input] [output]`
+`[output]` is the path to a directory that the framework should create containing the results (collected experimental data, statistics, etc.) of the mining process.  
 
-To get the build files in the output pass a github token to execution:
-* Windows/Linux/Mac `groovy -cp src src/main/app/MiningFramework.groovy --access-key "github-token" [options] [input] [output]`
-> Obs: The Github account must be registered in [Travis](https://travis-ci.org/) also. Forks will be created for each project, the builds will be generated via travis, and deployed to the forks github releases
+`[options]` a combination of our command line configuration options. It's useful to type `--help` in the `[options]` field to see the supported options and associated information.
 
-To automatically download the build files, wait for the builds succeced in travis then run the script:
-* Windows/Linux/Mac `python scripts/fetch_jars.py <input file> <output path> <github token>`
+> The options are available to all variability points implementations, but some of the implementations might not make use of all options. So check the documentation of the variability points implementations you need to confirm that they really make use of the options of interest. 
+
+> If you intend to use the framework multithreading option, be aware of the need to synchronize the access to output files or state manipulated by the implementations of the framework variability points.
+
+For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
+* Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`
+
+> For the used variability point implementation, the provided GitHub [personal access token](https://github.com/settings/tokens) (opt for repo scope) should be associated with a GitHub account also registered in [Travis](https://travis-ci.org/). Forks will be created for each project, the builds will be generated via Travis, and deployed to the forks as GitHub releases.
+
 
 ## Testing
-One can the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
+You can run the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
 
 This can be done by configuring an IDE or executing the following command in a terminal:
 * Windows/Linux/Mac: `groovy -cp src src/test/TestSuite.groovy`
 
-To create new tests, you have to create a git repository with a merge scenario simulating, add it to the `test_repositories` directory and add it to `src/test/input.csv` like a project and then create the Test class.
-
-## Scripts
-* `parse_to_soot.py` - This script receives as input the path to a directory generated by the miningframework, it reads the output files and creates a [output]/data/results-soot.csv with the output in a format suported by a SOOT analysis framework
-* `fetch_jars.py`- This script receives as input the path to a framework input file, the path to a directory generated by the miningframework and a github acess token, it downloads the release files from github and moves the files to the directory passed as input.
-
-
-
+To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, add a corresponding entry to `src/test/input.csv`, and then create the Test class.

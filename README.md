@@ -65,4 +65,4 @@ You can run the framework tests by including `src` in the classpath and executin
 This can be done by configuring an IDE or executing the following command in a terminal:
 * Windows/Linux/Mac: `groovy -cp src src/test/TestSuite.groovy`
 
-To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, aadd a corresponding entry to `src/test/input.csv`, and then create the Test class.
+To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, add a corresponding entry to `src/test/input.csv`, and then create the Test class.

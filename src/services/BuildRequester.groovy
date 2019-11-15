@@ -13,24 +13,49 @@ class BuildRequester implements DataCollector {
 
     static private final FILE_NAME = '.travis.yml'
 
+    public enum BuildSystem {
+        Maven,
+        Gradle,
+        None
+    }
+
+    static private final MAVEN_BUILD = 'mvn package -DskipTests'
+    static private final GRADLE_BUILD = './gradlew build -x test'
+
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
             String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
             
             checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
+            
             File travisFile = new File("${project.getPath()}/.travis.yml")
-            if (travisFile.delete()) {
-                String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-                travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1])
+            String[] ownerAndName = getRemoteProjectOwnerAndName(project)
+            travisFile.delete()
+            BuildSystem buildSystem = getBuildSystem(project)
+
+            if (buildSystem != BuildSystem.None) {
+                travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1], buildSystem)
                 commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
                 pushBranch(project, branchName).waitFor()
+                
+                goBackToMaster(project).waitFor()
+                println "${project.getName()} - Build requesting finished!"
             }
-            
-            goBackToMaster(project).waitFor()
-            println "${project.getName()} - Build requesting finished!"
 
         }
-        
+    }
+
+    private BuildSystem getBuildSystem (Project project) {
+        File mavenFile = new File("${project.getPath()}/pom.xml")
+        File gradleFile = new File("${project.getPath()}/build.gradle")
+
+        if (mavenFile.exists()) {
+            return BuildSystem.Maven
+        } else if (gradleFile.exists()) {
+            return BuildSystem.Gradle
+        } else {
+            return BuildSystem.None
+        }
     }
 
     static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
@@ -54,6 +79,8 @@ class BuildRequester implements DataCollector {
     }
 
     static private Process commitChanges(Project project, String message) {
+        ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml").waitFor()
+
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
@@ -62,19 +89,29 @@ class BuildRequester implements DataCollector {
             runProcess(project.getPath(), "git", "config", "--get", "remote.origin.url").getText()
     }
 
-    static private getNewTravisFile(String commitSha, String owner, String projectName) {
+    static private getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem) {
+        String buildCommand = "";
+        if (buildSystem == BuildSystem.Maven) {
+            buildCommand = MAVEN_BUILD
+        } else if (buildSystem == BuildSystem.Gradle) {
+            buildCommand = GRADLE_BUILD
+        }
+    
         String trimmedProjectName = projectName.replace('\n', '')
         return """
 sudo: required
 language: java
 
+jdk:
+  - openjdk8
+
 script:
-  - mvn package -DskipTests
+  - ${buildCommand}
 
 before_deploy:
-    - mkdir build
-    - find . -name '*.jar' -exec cp {} ./build \\;
-    - cd /home/travis/build/${owner}/${trimmedProjectName}/build
+    - mkdir MiningBuild
+    - find . -name '*.jar' -exec cp {} ./MiningBuild \\;
+    - cd /home/travis/build/${owner}/${trimmedProjectName}/MiningBuild
     - tar -zcvf result.tar.gz *
 deploy:
   provider: releases

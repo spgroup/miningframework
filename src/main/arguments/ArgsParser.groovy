@@ -30,6 +30,7 @@ class ArgsParser {
         this.cli.p(longOpt: 'post-script', args:1, argName: 'post script', 'Specify a bash script to be run after output is ready')
         this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account used')
         this.cli.t(longOpt: 'threads', args: 1, argName: 'threads', "Number of cores used in analysis (default: 1)")
+        this.cli.k(longOpt: 'keep-projects', argName: 'keep projects', 'Keep projects in disk after analysis')
     }
 
 
@@ -98,7 +99,6 @@ class ArgsParser {
             if(!repositoryExists(this.options.push))
                 throw new InvalidArgsException('Inexistent remote git repository.')
 
-            println this.options.push
             args.setResultsRemoteRepositoryURL(this.options.push)
         }
 
@@ -112,6 +112,10 @@ class ArgsParser {
 
         if (this.options.t) {
             args.setNumOfThreads(this.options.t.toInteger())
+        }
+
+        if (this.options.k) {
+            args.setKeepProjects()
         }
     }
 

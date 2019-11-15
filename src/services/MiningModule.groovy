@@ -15,6 +15,7 @@ public class MiningModule extends AbstractModule {
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
+        dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
         dataCollectorBinder.addBinding().to(ExperimentalDataCollectorImpl.class)
         dataCollectorBinder.addBinding().to(StatisticsCollectorImpl.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)

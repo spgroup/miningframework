@@ -22,14 +22,14 @@ class MergeHelper {
         return result
     }
 
-    static public Process replayMergeScenario(Project project, MergeCommit mergeCommit) {
+    static private Process replayMergeScenario(Project project, MergeCommit mergeCommit) {
         Process checkoutLeft = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', mergeCommit.getLeftSHA())
         checkoutLeft.waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), 'git', 'merge', mergeCommit.getRightSHA())   
     }
 
-    static public Process returnToMaster(Project project) {
+    static private Process returnToMaster(Project project) {
         Process resetChanges = ProcessRunner.runProcess(project.getPath(), 'git', 'reset', '--hard')
         resetChanges.waitFor()
 

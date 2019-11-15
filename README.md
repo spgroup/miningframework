@@ -2,7 +2,7 @@
 Framework for mining git projects.
 
 ## Getting Started
-* This project uses [Apache Groovy](http://groovy-lang.org/). Install it to execute the program
+* This project uses [Apache Groovy](http://groovy-lang.org/). Install the version 2.5.x or newer to execute the program
 * It also uses a [Python](https://www.python.org/) script to convert the output to a SOOT compatible format and fetch the project build files. Install the version 3.7.x or newer to run with the SOOT output. 
 
 * If you want to run the tests, you must use the command to clone the repository:
@@ -32,18 +32,18 @@ Where:
 * **relative** (`true|false`), optional, indicates if **path** is a directory containing multiple projects or it is a project directory. The default is `false`.
 
 ## Running
-One can run the framework by including `src` in the classpath and executing `src/main/script/MiningFramework.groovy`.
+One can run the framework by including `src` in the classpath and executing `src/main/app/MiningFramework.groovy`.
 
 This can be done by configuring an IDE or executing the following command in a terminal:
-* Windows/Linux/Mac: `groovy -cp src src/main/script/MiningFramework.groovy [options] [input] [output]`
+* Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy [options] [input] [output]`
 
 `[input]` is a mandatory argument and refers to the path of the projects list's file. It's useful to type `--help` in the `[options]` field to see more details, including information about parameterization of the input files.
 
 To get the SOOT framework output format execute the following command:
-* Windows/Linux/Mac `groovy -cp src src/main/script/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] " [options] [input] [output]`
+* Windows/Linux/Mac `groovy -cp src src/main/app/MiningFramework.groovy --post-script "python scripts/parse_to_soot.py [output] " [options] [input] [output]`
 
 To get the build files in the output pass a github token to execution:
-* Windows/Linux/Mac `groovy -cp src src/main/script/MiningFramework.groovy --access-key "github-token" [options] [input] [output]`
+* Windows/Linux/Mac `groovy -cp src src/main/app/MiningFramework.groovy --access-key "github-token" [options] [input] [output]`
 > Obs: The Github account must be registered in [Travis](https://travis-ci.org/) also. Forks will be created for each project, the builds will be generated via travis, and deployed to the forks github releases
 
 To automatically download the build files, wait for the builds succeced in travis then run the script:

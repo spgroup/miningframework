@@ -76,4 +76,20 @@ final class FileManager {
         }
     }
 
+    static File getFileInCommit(Project project, String filePath, String commitSHA) {
+        Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${commitSHA}:${filePath}")
+
+        StringBuilder sb = new StringBuilder()
+        File file = File.createTempFile("${commitSHA}", ".java")
+        file.deleteOnExit()
+
+        gitCatFile.getInputStream().eachLine {
+            sb.append(it)
+            sb.append("\n")
+        }
+
+        file << sb.toString()
+
+        return file
+    }
 }

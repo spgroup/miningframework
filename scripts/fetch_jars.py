@@ -5,6 +5,7 @@ import subprocess
 import time
 import shutil
 import os
+import csv
 
 PATH = "path"
 NAME = "name"
@@ -16,6 +17,7 @@ DOWNLOAD_URL='browser_download_url'
 ASSETS="assets"
 MESSAGE_PREFIX="Trigger build #"
 RELEASE_PREFIX= "fetchjar-"
+jars_build_commits = {}
 
 inputPath = sys.argv[1] # input path passed as cli argument
 outputPath = sys.argv[2] # output path passed as cli argument
@@ -54,20 +56,67 @@ def fetchJars(inputPath, outputPath, token):
                 try:
                     downloadPath = mount_download_path(outputPath, project, commitSHA)
                     downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
-                    download_file(downloadUrl, downloadPath)
+                    download_file(downloadUrl, downloadPath, commitSHA)
+                    jars_build_commits[commitSHA] = downloadPath
                     if (commitSHA in parsedOutput):
                         newResultsFile.append(parsedOutput[commitSHA])
                         untar_and_remove_file(downloadPath)
                     print (downloadPath + ' is ready')
-                except:
-                    pass
+                except Exception as e: 
+                    print(e)
     
         remove_commit_files_without_builds (outputPath, projectName)
-      
+
     with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
         outputFile.write("project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n")
         outputFile.write("\n".join(newResultsFile))
         outputFile.close()
+
+    output_for_semantic_conflict_study(outputPath, jars_build_commits)
+
+def output_for_semantic_conflict_study(outputPath, jars_build_commits):
+    new_output = ""
+    with open(outputPath+"/data/results.csv", 'r') as file:
+        reader = csv.reader(file)
+        count = False
+        for row in reader:
+            if (count != False):
+                values = row[0].split(";")
+                path_merge_jar = ""
+                path_left_jar = ""
+                path_right_jar = ""
+                path_base_jar = ""
+                try:
+                    path_merge_jar = find_project_jar_for_SHA(jars_build_commits[values[1]])
+                    path_left_jar = find_project_jar_for_SHA(jars_build_commits[values[2]])
+                    path_right_jar =  find_project_jar_for_SHA(jars_build_commits[values[3]])
+                    path_base_jar =  find_project_jar_for_SHA(jars_build_commits[values[4]])
+                except Exception as e:
+                    print ("Not available build for commit ",e)
+                new_output += format_output(values, path_merge_jar, path_left_jar, path_right_jar, path_base_jar)
+            count = True
+    create_final_output_file(outputPath, new_output)    
+
+def create_final_output_file(outputPath , contents):
+   with open(outputPath + "/data/results_semantic_study.csv", 'w') as outputFile:
+        outputFile.write(contents)
+        outputFile.close() 
+
+def format_output(values, merge, left, right, base):
+    if (merge != "" and base != "" and (left != "" or right != "")):
+        return values[0]+","+"true"+","+values[1]+","+values[2]+","+values[3]+","+values[4]+","+values[5]+","+values[6]+","+values[7]+","+values[8]+","+base+","+left+","+right+","+merge+"\n"
+    else:
+        return values[0]+","+"false"+","+values[1]+","+values[2]+","+values[3]+","+values[4]+","+values[5]+","+values[6]+","+values[7]+","+values[8]+","+base+","+left+","+right+","+merge+"\n"
+
+def find_project_jar_for_SHA(general_path):
+    local_path = os.getcwd()+"/"
+    path_jar = ""
+    for root, dirs, files in os.walk(general_path[:-13]):
+        for file in files:
+            if file.endswith("SNAPSHOT.jar"):
+                path_jar = local_path + os.path.join(root, file)
+    
+    return path_jar
 
 def read_output(outputPath):
     fo = open(outputPath + "/data/results.csv")
@@ -105,12 +154,26 @@ def parse_input(lines):
             result.append(method)
     return result
 
-def download_file(url, target_path):
+def download_file(url, target_path, commitSHA):
     # download file from url
     response = requests.get(url, stream=True)
     if response.status_code == 200:
-        with open(target_path, 'wb') as f:
-            f.write(response.raw.read())
+        try:
+            save_jar_commit_directory(target_path, response)
+            jars_build_commits[commitSHA] = target_path
+        except Exception as e: 
+            create_directory(target_path)        
+            save_jar_commit_directory(target_path, response)
+            untar_and_remove_file(target_path)
+            jars_build_commits[commitSHA] = target_path
+
+def save_jar_commit_directory(target_path, response):
+    with open(target_path, 'wb') as f:
+        f.write(response.raw.read())        
+
+def create_directory(target_path):
+    target = target_path.split("/result.tar.gz")[0]
+    os.mkdir(target)
 
 def mount_download_path(outputPath, project, commitSHA):
     # mount path where the downloaded build will be moved to
@@ -121,7 +184,7 @@ def untar_and_remove_file(downloadPath):
     subprocess.call(['mkdir', downloadDir + 'build'])
     subprocess.call(['tar', '-xf', downloadPath, '-C', downloadDir + '/build', ])
     subprocess.call(['rm', downloadPath])
-
+    
 def get_builds_and_wait(project):
     has_pendent = True
     filtered_builds = []

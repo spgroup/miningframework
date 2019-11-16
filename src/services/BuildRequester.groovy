@@ -13,12 +13,6 @@ class BuildRequester implements DataCollector {
 
     static private final FILE_NAME = '.travis.yml'
 
-    public enum BuildSystem {
-        Maven,
-        Gradle,
-        None
-    }
-
     static private final MAVEN_BUILD = 'mvn package -DskipTests'
     static private final GRADLE_BUILD = './gradlew build -x test'
 
@@ -45,7 +39,7 @@ class BuildRequester implements DataCollector {
         }
     }
 
-    private BuildSystem getBuildSystem (Project project) {
+    protected BuildSystem getBuildSystem (Project project) {
         File mavenFile = new File("${project.getPath()}/pom.xml")
         File gradleFile = new File("${project.getPath()}/build.gradle")
 

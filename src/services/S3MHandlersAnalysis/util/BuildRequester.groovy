@@ -26,6 +26,14 @@ final class BuildRequester {
 
     private static Map<String, String> buildScripts = ['Maven': 'mvn package', 'Gradle': './gradlew build']
 
+    /**
+     * Replaces the files in a project by its correspondent merge results in a new branch and triggers a Travis build from a push
+     * @param project
+     * @param mergeCommit
+     * @param mergeScenarios
+     * @param mergeAlgorithmIndex
+     * @return the link for the Travis build triggered by this method
+     */
     static String requestBuildWithRevision(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, int mergeAlgorithmIndex) {
         String toReplaceFile = Handlers.mergeResultPaths[mergeAlgorithmIndex]
         String mergeAlgorithm = Handlers.mergeAlgorithms[mergeAlgorithmIndex]

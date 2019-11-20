@@ -14,6 +14,13 @@ class SpreadsheetBuilder {
     private static final String COMMIT_SPREADSHEET_HEADER = 'project,merge commit,file,number of TM conflicts,number of CT conflicts,number of SF conflicts,number of MM conflicts,number of KB conflicts,CT text = SF text,CT text = MM text,CT text = KB text,SF text = MM text, SF text = KB text,MM text = KB text,CT conflicts = SF conflicts,CT conflicts = MM conflicts,CT conflicts = KB conflicts,SF conflicts = MM conflicts,SF conflicts = KB conflicts,MM conflicts = KB conflicts'
     private static final String SPREADSHEET_NAME = 'results.csv'
 
+    /**
+     * Builds a global spreadsheet, based on the merge commit's summary, and a local spreadsheet, for each merge commit, based on
+     * the merge scenario's summary.
+     * @param project
+     * @param mergeCommit
+     * @param summary
+     */
     static synchronized void buildSpreadsheets(Project project, MergeCommit mergeCommit, MergeCommitSummary summary) {
         buildGlobalSpreadsheet(project, mergeCommit, summary)
         buildCommitSpreadsheet(project, mergeCommit, summary.mergeScenarioSummaries)

@@ -19,6 +19,10 @@ class MergeCommitSummary {
         this.checkingBuilds = [:]
     }
 
+    /**
+     * Add the merge scenario summary's information to this summary.
+     * @param scenarioSummary
+     */
     void addMergeSummary(MergeScenarioSummary scenarioSummary) {
         numberOfModifiedFiles++
         addConflicts(scenarioSummary.numberOfConflicts)
@@ -29,6 +33,11 @@ class MergeCommitSummary {
         mergeScenarioSummaries.add(scenarioSummary)
     }
 
+    /**
+     * Add a link for a Travis build.
+     * @param link
+     * @param mergeAlgorithm
+     */
     void markAsChecking(String link, String mergeAlgorithm) {
         checkingBuilds[mergeAlgorithm] = link
     }

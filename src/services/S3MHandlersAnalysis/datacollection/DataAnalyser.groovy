@@ -11,6 +11,14 @@ import java.nio.file.Path
 
 class DataAnalyser {
 
+    /**
+     * Analyses each merge scenario's directories after S3M has run. It constructs a {@link MergeScenarioSummary} for each
+     * merge scenario and a global {@link MergeCommitSummary} for each merge commit.
+     * @param project
+     * @param mergeCommit
+     * @param mergeScenarios
+     * @return a summary of results of the merge commit
+     */
     static MergeCommitSummary analyseScenarios(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios) {
         MergeCommitSummary summary = new MergeCommitSummary()
         buildCommitSummary(summary, mergeScenarios)

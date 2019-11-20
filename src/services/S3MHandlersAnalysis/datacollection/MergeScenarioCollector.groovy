@@ -9,8 +9,17 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 
+/**
+ * Class responsible for collecting and storing eligible merge scenarios (modified from base java files).
+ */
 class MergeScenarioCollector {
 
+    /**
+     * Stores merge scenarios (left, base, right and merge files) encountered in the merge commit.
+     * @param project
+     * @param mergeCommit
+     * @return a list of directory paths where each merge scenario is located
+     */
     static List<Path> collectMergeScenarios(Project project, MergeCommit mergeCommit) {
         return getModifiedJavaFiles(project, mergeCommit).stream()
                 .map(modifiedFile -> storeAndRetrieveMergeQuadruple(project, mergeCommit, modifiedFile))

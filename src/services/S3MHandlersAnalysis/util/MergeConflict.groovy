@@ -33,6 +33,10 @@ class MergeConflict {
                 && StringUtils.deleteWhitespace(right) == StringUtils.deleteWhitespace(((MergeConflict) o).right)
     }
 
+    /**
+     * @param file
+     * @return the set of merge conflicts present in the given file
+     */
     static Set<MergeConflict> extractMergeConflicts(Path file) {
         Set<MergeConflict> mergeConflicts = new HashSet<MergeConflict>()
 

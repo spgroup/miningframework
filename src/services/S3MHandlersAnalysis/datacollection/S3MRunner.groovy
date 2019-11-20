@@ -12,6 +12,14 @@ class S3MRunner {
 
     static final Path S3M_PATH = Paths.get("src/services/S3MHandlersAnalysis/s3m.jar")
 
+    /**
+     * Runs S3M for each merge scenario and for each handler. Store the results at the same directory
+     * the merge scenario is located, in a directory for each handler.
+     *
+     * To extend the analysis for more handlers, check {@link #runHandlerVariants(Path, List < Handlers >)}
+     * @param mergeScenarios
+     * @param handlers
+     */
     static void collectS3MResults(List<Path> mergeScenarios, List<Handlers> handlers) {
         mergeScenarios.parallelStream()
                 .forEach(mergeScenario -> runHandlerVariants(mergeScenario, handlers))

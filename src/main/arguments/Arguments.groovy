@@ -12,7 +12,6 @@ class Arguments {
     private boolean isHelp
     private String resultsRemoteRepositoryURL
     private String accessKey
-    private boolean useForks
     private int numOfThreads
 
     Arguments() {

@@ -11,10 +11,10 @@ import static main.app.MiningFramework.arguments
 
 class BuildRequester implements DataCollector {
 
-    static private final FILE_NAME = '.travis.yml'
+    static protected final FILE_NAME = '.travis.yml'
 
-    static private final MAVEN_BUILD = 'mvn package -DskipTests'
-    static private final GRADLE_BUILD = './gradlew build -x test'
+    static protected final MAVEN_BUILD = 'mvn package -DskipTests'
+    static protected final GRADLE_BUILD = './gradlew build -x test'
 
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
@@ -72,7 +72,7 @@ class BuildRequester implements DataCollector {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'push','-u', 'origin', branchName)
     }
 
-    static private Process commitChanges(Project project, String message) {
+    static protected Process commitChanges(Project project, String message) {
         ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml").waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
@@ -83,7 +83,7 @@ class BuildRequester implements DataCollector {
             runProcess(project.getPath(), "git", "config", "--get", "remote.origin.url").getText()
     }
 
-    static private getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem) {
+    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem) {
         String buildCommand = "";
         if (buildSystem == BuildSystem.Maven) {
             buildCommand = MAVEN_BUILD

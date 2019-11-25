@@ -26,7 +26,7 @@ class MiningFramework {
     private OutputProcessor outputProcessor
 
     static public Arguments arguments
-    private final String LOCAL_PROJECT_PATH = 'localProject'
+    private final String LOCAL_PROJECT_PATH = 'clonedRepositories'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
@@ -102,8 +102,7 @@ class MiningFramework {
         Thread [] workers = new Thread[numOfThreads]
         
         for (int i = 0; i < numOfThreads; i++) {
-            String workerPath = "${LOCAL_PROJECT_PATH}/worker${i}" 
-            Runnable worker = new MiningWorker(dataCollectors, commitFilter, projectQueue, workerPath);
+            Runnable worker = new MiningWorker(dataCollectors, commitFilter, projectQueue, LOCAL_PROJECT_PATH);
             workers[i] = new Thread(worker)
             workers[i].start();
         }

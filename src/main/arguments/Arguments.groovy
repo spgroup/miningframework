@@ -13,6 +13,7 @@ class Arguments {
     private String resultsRemoteRepositoryURL
     private String accessKey
     private int numOfThreads
+    private boolean keepProjects
 
     Arguments() {
         isHelp = false
@@ -23,6 +24,7 @@ class Arguments {
         resultsRemoteRepositoryURL = ''
         accessKey = ''
         numOfThreads = 1
+        keepProjects = false
     }
 
     void setNumOfThreads (int numOfThreads) {
@@ -61,6 +63,10 @@ class Arguments {
         this.accessKey = accessKey
     }
 
+    void setKeepProjects() {
+        this.keepProjects = true;
+    }
+
     int getNumOfThreads() {
         return this.numOfThreads
     }
@@ -87,6 +93,10 @@ class Arguments {
 
     boolean isHelp() {
         return isHelp
+    }
+
+    boolean getKeepProjects () {
+        return keepProjects
     }
 
     String getResultsRemoteRepositoryURL() {

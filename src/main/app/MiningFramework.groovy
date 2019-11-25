@@ -64,7 +64,6 @@ class MiningFramework {
 
                 printFinishAnalysis()
 
-                runPostScript()
             }
     
         } catch (InvalidArgsException e) {
@@ -115,21 +114,6 @@ class MiningFramework {
     void waitForMiningWorkers (Thread[] workers) {
         for (int i = 0; i < workers.length ; i++) {
             workers[i].join();
-        }
-    }
-
-    static private void runPostScript() {
-        String postScript = arguments.getPostScript()
-        if (postScript.length() > 0) {
-            println "Executing post script..."
-            try {
-                String scriptOutput = ProcessRunner.runProcess(".", postScript.split(' ')).getText()
-                println scriptOutput
-            } catch (IOException e) {
-                throw new UnexpectedPostScriptException(e.message)
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new UnexpectedPostScriptException(e.message)
-            }
         }
     }
 

@@ -11,7 +11,6 @@ class Arguments {
     private Class injector
     private boolean isHelp
     private String resultsRemoteRepositoryURL
-    private String postScript
     private String accessKey
     private boolean useForks
     private int numOfThreads
@@ -23,7 +22,6 @@ class Arguments {
         outputPath = 'output'
         injector = MiningModule
         resultsRemoteRepositoryURL = ''
-        postScript = ''
         accessKey = ''
         numOfThreads = 1
     }
@@ -60,10 +58,6 @@ class Arguments {
         this.isHelp = true
     }
 
-    void setPostScript(String script) {
-        this.postScript = script
-    }
-
     void setAccessKey(String accessKey) {
         this.accessKey = accessKey
     }
@@ -98,10 +92,6 @@ class Arguments {
 
     String getResultsRemoteRepositoryURL() {
         return resultsRemoteRepositoryURL
-    }
-
-    String getPostScript () {
-        return postScript
     }
 
     String getAccessKey() {

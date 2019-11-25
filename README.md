@@ -90,3 +90,4 @@ One can run the framework tests by including `src` in the classpath and executin
 For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
 * Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`
 
+* To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, add a corresponding entry to `src/test/input.csv`, and then create the Test class.

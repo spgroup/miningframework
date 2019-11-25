@@ -25,8 +25,8 @@ class ArgsParser {
         this.cli.u(longOpt: 'until', args: 1,
                 argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY).')
         this.cli.i(longOpt: 'injector', args: 1,
-                argName:'class', 'Specify the class name of the dependency injector(it has to be in the classpath). default: MiningModule')
-        this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a link to a remote git repository of your own to push the files analysed.')
+                argName:'class', 'Specify the class of the dependency injector (Must provide full name, default src.services.MiningModule)')
+        this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a link to the remote git repository to push the output files.')
         this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account used')
         this.cli.t(longOpt: 'threads', args: 1, argName: 'threads', "Number of cores used in analysis (default: 1)")
     }
@@ -100,7 +100,7 @@ class ArgsParser {
             println this.options.push
             args.setResultsRemoteRepositoryURL(this.options.push)
         }
-        
+
         if (this.options.a) {
             args.setAccessKey(this.options.a)
         }

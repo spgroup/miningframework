@@ -49,6 +49,30 @@ To get the build files in the output pass a github token to execution:
 To automatically download the build files, wait for the builds succeced in travis then run the script:
 * Windows/Linux/Mac `python scripts/fetch_jars.py <input file> <output path> <github token>`
 
+The CLI has the following help page:
+
+```
+usage: miningframework [options] [input] [output]
+the Mining Framework take an input csv file and a name for the output dir
+(default: output)
+ Options:
+ -a,--access-key <access key>   Specify the access key of the git account
+                                used
+ -h,--help                      Show help for executing commands.
+ -i,--injector <class>          Specify the class of the dependency
+                                injector (Must provide full name, default
+                                src.services.MiningModule)
+ -p,--push <link>               Specify a link to the remote git
+                                repository to push the output files.
+ -s,--since <date>              Use commits more recent than a specific
+                                date (format DD/MM/YYY).
+ -t,--threads <threads>         Number of cores used in analysis (default:
+                                1)
+ -u,--until <date>              Use commits older than a specific
+                                date(format DD/MM/YYYY).
+```
+
+
 ## Testing
 One can the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
 

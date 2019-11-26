@@ -17,19 +17,8 @@ class InputParser {
             String name = line[0]
             String path = line[1]
 
-            boolean relativePath
-            try {
-                relativePath = line[2].equals("true")
-            } catch(ArrayIndexOutOfBoundsException e) {
-                relativePath = false
-            }
-
-            if(relativePath) 
-                projectList.addAll(getProjects(name, path))
-            else {
-                Project project = new Project(name, path)
-                projectList.add(project)
-            }
+            Project project = new Project(name, path)
+            projectList.add(project)
         }
 
         return projectList

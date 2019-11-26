@@ -53,16 +53,41 @@ This can be done by configuring an IDE or executing the following command in a t
 
 > If you intend to use the framework multithreading option, be aware of the need to synchronize the access to output files or state manipulated by the implementations of the framework variability points.
 
-For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
-* Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`
+> For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
+    * Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`
 
 > For the used variability point implementation, the provided GitHub [personal access token](https://github.com/settings/tokens) (opt for repo scope) should be associated with a GitHub account also registered in [Travis](https://travis-ci.org/). Forks will be created for each project, the builds will be generated via Travis, and deployed to the forks as GitHub releases.
 
+> The CLI has the following help page:
+```
+usage: miningframework [options] [input] [output]
+the Mining Framework take an input csv file and a name for the output dir
+(default: output)
+ Options:
+ -a,--access-key <access key>   Specify the access key of the git account
+                                for when the analysis needs user access to
+                                GitHub
+ -h,--help                      Show help for executing commands
+ -i,--injector <class>          Specify the class of the dependency
+                                injector (Must provide full name, default
+                                src.services.MiningModule)
+ -k,--keep-projects             Keep projects in disk after analysis
+ -p,--push <link>               Specify a git repository to upload the
+                                output in the end of the analysis (format
+                                https://github.com/<owner>/<name>
+ -s,--since <date>              Use commits more recent than a specific
+                                date (format DD/MM/YYY)
+ -t,--threads <threads>         Number of cores used in analysis (default:
+                                1)
+ -u,--until <date>              Use commits older than a specific
+                                date(format DD/MM/YYYY)
+```
+
 
 ## Testing
-You can run the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
+One can run the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
 
-This can be done by configuring an IDE or executing the following command in a terminal:
-* Windows/Linux/Mac: `groovy -cp src src/test/TestSuite.groovy`
+For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
+* Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`
 
-To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, add a corresponding entry to `src/test/input.csv`, and then create the Test class.
+* To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, add a corresponding entry to `src/test/input.csv`, and then create the Test class.

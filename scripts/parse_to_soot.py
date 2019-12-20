@@ -48,11 +48,13 @@ def generate_csv(collection):
         leftMods = elem[LEFT_MODIFICATION]
         rightMods = elem[RIGHT_MODIFICATION]
         for l in leftMods:
-            resultReverse.append(className + ",sink," + l)
-            result.append(className + ",source," + l)
+            if l not in rightMods:
+                resultReverse.append(className + ",sink," + l)
+                result.append(className + ",source," + l)
         for r in rightMods:
-            resultReverse.append(className + ",source," + r)
-            result.append(className + ",sink," + r)
+            if r not in leftMods:
+                resultReverse.append(className + ",source," + r)
+                result.append(className + ",sink," + r)
         try:
             basePath = outputPath + "/files/" + elem[PROJECT_NAME] + "/" + elem[COMMIT_SHA]
             saveFile(basePath + "/soot.csv", result)

@@ -79,8 +79,6 @@ class SootScenario {
             String classPathName = line["className"]
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
-
-            println classPathName
             
             def scenario = new SootScenario(projectName, classPathName, methodSignature, commitSHA);
         

@@ -26,7 +26,7 @@ class MiningFramework {
     private OutputProcessor outputProcessor
 
     static public Arguments arguments
-    private final String LOCAL_PROJECT_PATH = 'localProject'
+    private final String LOCAL_PROJECT_PATH = 'clonedRepositories'
     private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
     
     @Inject
@@ -64,7 +64,6 @@ class MiningFramework {
 
                 printFinishAnalysis()
 
-                runPostScript()
             }
     
         } catch (InvalidArgsException e) {
@@ -103,8 +102,7 @@ class MiningFramework {
         Thread [] workers = new Thread[numOfThreads]
         
         for (int i = 0; i < numOfThreads; i++) {
-            String workerPath = "${LOCAL_PROJECT_PATH}/worker${i}" 
-            Runnable worker = new MiningWorker(dataCollectors, commitFilter, projectQueue, workerPath);
+            Runnable worker = new MiningWorker(dataCollectors, commitFilter, projectQueue, LOCAL_PROJECT_PATH);
             workers[i] = new Thread(worker)
             workers[i].start();
         }
@@ -115,21 +113,6 @@ class MiningFramework {
     void waitForMiningWorkers (Thread[] workers) {
         for (int i = 0; i < workers.length ; i++) {
             workers[i].join();
-        }
-    }
-
-    static private void runPostScript() {
-        String postScript = arguments.getPostScript()
-        if (postScript.length() > 0) {
-            println "Executing post script..."
-            try {
-                String scriptOutput = ProcessRunner.runProcess(".", postScript.split(' ')).getText()
-                println scriptOutput
-            } catch (IOException e) {
-                throw new UnexpectedPostScriptException(e.message)
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new UnexpectedPostScriptException(e.message)
-            }
         }
     }
 

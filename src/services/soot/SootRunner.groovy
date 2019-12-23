@@ -11,6 +11,9 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.Path
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 class SootRunner {
 
     private String outputPath
@@ -28,28 +31,33 @@ class SootRunner {
         List<SootScenario> sootScenarios = SootScenario.readScenarios(outputPath + RESULTS_FILE_PATH);
         
         for (scenario in sootScenarios) {
+
+            String leftRightDataflow, rightLeftDataflow,leftRightReachability, rightLeftReachability = "false"
+
             println "Running soot scenario ${scenario.getCommitSHA()}"
             String filePath = scenario.getLinesFile(outputPath)
             String filePathReverse = scenario.getLinesFile(outputPath)
             String classPath = scenario.getClassPath(outputPath)
 
-            println "Running left right dataflow analysis"
-            Process analysisLeftRightDataflow = runSootAnalysis(filePath, classPath, DATAFLOW_MODE)
-            boolean leftRightDataflow = hasSootFlow(analysisLeftRightDataflow)
+            if (new File(filePath).exists()) {
+                println "Running left right dataflow analysis"
+                Process analysisLeftRightDataflow = runSootAnalysis(filePath, classPath, DATAFLOW_MODE)
+                leftRightDataflow = hasSootFlow(analysisLeftRightDataflow)
 
-            println "Running right left dataflow analysis"
-            Process analysisRightLeftDataflow = runSootAnalysis(filePathReverse, classPath, DATAFLOW_MODE)
-            boolean rightLeftDataflow = hasSootFlow(analysisRightLeftDataflow)
+                println "Running right left dataflow analysis"
+                Process analysisRightLeftDataflow = runSootAnalysis(filePathReverse, classPath, DATAFLOW_MODE)
+                rightLeftDataflow = hasSootFlow(analysisRightLeftDataflow)
 
-            println "Running left right reachability analysis"
-            Process analysisLeftRightReachability = runSootAnalysis(filePath, classPath, REACHABILITY_MODE)
-            boolean leftRightReachability = hasSootFlow(analysisLeftRightReachability)
+                println "Running left right reachability analysis"
+                Process analysisLeftRightReachability = runSootAnalysis(filePath, classPath, REACHABILITY_MODE)
+                leftRightReachability = hasSootFlow(analysisLeftRightReachability)
 
-            println "Running right left reachability analysis"
-            Process analysisRightLeftReachability = runSootAnalysis(filePathReverse, classPath, REACHABILITY_MODE)
-            boolean rightLeftReachability = hasSootFlow(analysisRightLeftReachability)
+                println "Running right left reachability analysis"
+                Process analysisRightLeftReachability = runSootAnalysis(filePathReverse, classPath, REACHABILITY_MODE)
+                rightLeftReachability = hasSootFlow(analysisRightLeftReachability)
 
-            sootResultsFile << "${scenario.toString()};${leftRightDataflow};${rightLeftDataflow};${leftRightReachability};${rightLeftReachability}\n"
+                sootResultsFile << "${scenario.toString()};${leftRightDataflow};${rightLeftDataflow};${leftRightReachability};${rightLeftReachability}\n"
+            }
         }
 
     }
@@ -66,12 +74,15 @@ class SootRunner {
         return sootResultsFile
     }
 
-    private boolean hasSootFlow (Process sootProcess) {
-        boolean result = true
+    private String hasSootFlow (Process sootProcess) {
+        String result = "error"
+
         sootProcess.getInputStream().eachLine {
-            println it;
-            if (it.stripIndent() == "No conflicts detected") {
-                result = false
+            println it
+            if (it.stripIndent().startsWith("Number of conflicts:")) {
+                result = "true"
+            } else if (it.stripIndent() == "No conflicts detected") {
+                result = "false"
             }
         }
         return result

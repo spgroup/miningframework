@@ -19,17 +19,17 @@ class ArgsParser {
     }
 
     private defParameters() {
-        this.cli.h(longOpt: 'help', 'Show help for executing commands.')
+        this.cli.h(longOpt: 'help', 'Show help for executing commands')
         this.cli.s(longOpt: 'since', args: 1,
-                argName:'date', 'Use commits more recent than a specific date (format DD/MM/YYY).')
+                argName:'date', 'Use commits more recent than a specific date (format DD/MM/YYY)')
         this.cli.u(longOpt: 'until', args: 1,
-                argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY).')
+                argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY)')
         this.cli.i(longOpt: 'injector', args: 1,
-                argName:'class', 'Specify the class name of the dependency injector(it has to be in the classpath). default: MiningModule')
-        this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a link to a remote git repository of your own to push the files analysed.')
-        this.cli.p(longOpt: 'post-script', args:1, argName: 'post script', 'Specify a bash script to be run after output is ready')
-        this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account used')
+                argName:'class', 'Specify the class of the dependency injector (Must provide full name, default src.services.MiningModule)')
+        this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a git repository to upload the output in the end of the analysis (format https://github.com/<owner>/<name>')
+        this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account for when the analysis needs user access to GitHub')
         this.cli.t(longOpt: 'threads', args: 1, argName: 'threads', "Number of cores used in analysis (default: 1)")
+        this.cli.k(longOpt: 'keep-projects', argName: 'keep projects', 'Keep projects in disk after analysis')
     }
 
 
@@ -98,12 +98,7 @@ class ArgsParser {
             if(!repositoryExists(this.options.push))
                 throw new InvalidArgsException('Inexistent remote git repository.')
 
-            println this.options.push
             args.setResultsRemoteRepositoryURL(this.options.push)
-        }
-
-        if (this.options.p) {
-            args.setPostScript(this.options.p)
         }
 
         if (this.options.a) {
@@ -112,6 +107,10 @@ class ArgsParser {
 
         if (this.options.t) {
             args.setNumOfThreads(this.options.t.toInteger())
+        }
+
+        if (this.options.k) {
+            args.setKeepProjects()
         }
     }
 

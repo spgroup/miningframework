@@ -13,12 +13,19 @@ class InputParser {
 
         String projectsFile = new File(inputPath).getText()
         def iterator = parseCsv(projectsFile)
-        for (line in iterator) {
-            String name = line[0]
-            String path = line[1]
 
-            Project project = new Project(name, path)
-            projectList.add(project)
+        for (line in iterator) {
+            Map lineMap = line.toMap()
+
+            String path = line["path"]
+
+            if (lineMap.containsKey("name")) {
+                String name = line["name"]
+                
+                projectList.add(new Project(name, path))
+            } else {
+                projectList.add(new Project(path))
+            }
         }
 
         return projectList

@@ -11,7 +11,6 @@ class Arguments {
     private Class injector
     private boolean isHelp
     private String resultsRemoteRepositoryURL
-    private String postScript
     private String accessKey
     private int numOfThreads
     private boolean keepProjects
@@ -23,7 +22,6 @@ class Arguments {
         outputPath = 'output'
         injector = MiningModule
         resultsRemoteRepositoryURL = ''
-        postScript = ''
         accessKey = ''
         numOfThreads = 1
         keepProjects = false
@@ -59,10 +57,6 @@ class Arguments {
 
     boolean setHelp() {
         this.isHelp = true
-    }
-
-    void setPostScript(String script) {
-        this.postScript = script
     }
 
     void setAccessKey(String accessKey) {
@@ -107,10 +101,6 @@ class Arguments {
 
     String getResultsRemoteRepositoryURL() {
         return resultsRemoteRepositoryURL
-    }
-
-    String getPostScript () {
-        return postScript
     }
 
     String getAccessKey() {

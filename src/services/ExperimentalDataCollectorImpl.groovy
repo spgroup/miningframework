@@ -227,7 +227,9 @@ class ExperimentalDataCollectorImpl implements DataCollector {
             String line = diffResultLines[i]
 
             if(line ==~ methodOrAttributeModification) {
-                insertDeclaration(modifiedMethodsAndAttributes, parseLine(line, diffResultLines, i + 1))
+                if (line !=~ /.+ static block .+/) {
+                    insertDeclaration(modifiedMethodsAndAttributes, parseLine(line, diffResultLines, i + 1))
+                }
             }
         }
 

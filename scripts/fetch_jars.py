@@ -12,6 +12,8 @@ import csv
 
 PATH = "path"
 NAME = "name"
+FORK_URL = "fork_url"
+
 BRANCH = "branch"
 STATE = "state"
 
@@ -43,19 +45,14 @@ def fetch_jars(input_path, output_path, token):
         parsed_input = read_csv(input_path, ",")
         parsed_output = read_csv(output_path + "/data/results.csv", ";")
         
+        projects = map(lambda p: process_project(p, token_user_name), parsed_input)
         parsed_output_hash = output_to_hash(parsed_output)
-        print (parsed_output_hash)
 
         new_results_file = []
 
-        for project in parsed_input:
-            splited_project_path = project[PATH].split('/')
-            project_name = splited_project_path[len(splited_project_path) - 1]
-            github_project = token_user_name + '/' + project_name
-
-            # check if framework used optional custom name
-            if project[NAME]:
-                project_name = project[NAME]
+        for project in projects:
+            github_project = project[FORK_URL]
+            project_name = project[NAME]
             
             try:
                 print (project_name)        
@@ -75,7 +72,7 @@ def fetch_jars(input_path, output_path, token):
                         try:
                             download_build(output_path, project_name, commit_sha, release)
                                 
-                            new_results_file.append(parsed_output_hash[commit_sha])
+                            new_results_file.append(parsed_output_hash[project_name + commit_sha])
             
                             print ("Scenario is ready")
                         except Exception as e:
@@ -88,6 +85,20 @@ def fetch_jars(input_path, output_path, token):
         save_results_with_builds(output_path, new_results_file)
     except Exception as e:
         print (e)
+
+def process_project(data, token_user_name):
+    project = {}
+    
+    splited_project_path = data[PATH].split('/')
+    github_project_name = splited_project_path[len(splited_project_path) - 1]
+    github_project = token_user_name + '/' + github_project_name
+    # check if framework used optional custom name
+
+    project[PATH] = data[PATH]
+    project[FORK_URL] = github_project
+    project[NAME] = data[NAME] if data[NAME] else github_project_name
+
+    return project
 
 def download_build(output_path, project_name, commit_sha, release):
     print ("Downloading")
@@ -116,7 +127,7 @@ def output_to_hash(parsed_output):
     parsed_output_hash = {}
 
     for scenario in parsed_output:
-        parsed_output_hash[scenario[scenario[MERGE_COMMIT]] = scenario
+        parsed_output_hash[scenario[PROJECT] + scenario[MERGE_COMMIT]] = scenario
     
     return parsed_output_hash
 

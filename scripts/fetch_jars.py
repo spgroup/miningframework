@@ -33,6 +33,13 @@ input_path = sys.argv[1] # input path passed as cli argument
 output_path = sys.argv[2].rstrip("/") # output path passed as cli argument
 token = sys.argv[3] # token passed as cli argument
 
+class AlreadyExistsException(Exception):
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.message = file_path + " already exists"
+    def __str__(self):
+        return self.message
+
 def fetch_jars(input_path, output_path, token):
     # this method reads a csv input file, with the projects name and path
     # for each project it downloads the build generated via github releases
@@ -75,6 +82,10 @@ def fetch_jars(input_path, output_path, token):
                             new_results_file.append(parsed_output_hash[project_name + commit_sha])
             
                             print ("Scenario is ready")
+                        except AlreadyExistsException as ae:
+                            new_results_file.append(parsed_output_hash[project_name + commit_sha])
+
+                            print (ae)
                         except Exception as e:
                             print ("Error downloading scenario: " + str(e))
 
@@ -110,10 +121,10 @@ def download_build(output_path, project_name, commit_sha, release):
         build_path = scenario_path + "build"
 
         if path.exists(tar_path):
-            raise Exception(tar_path + " already exists")
+            raise AlreadyExistsException(tar_path)
 
         if path.exists(build_path):
-            raise Exception(build_path + " already exists")
+            raise AlreadyExistsException(build_path)
 
         download_url = get_download_url(release)
 

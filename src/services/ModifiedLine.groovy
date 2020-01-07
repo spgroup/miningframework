@@ -45,4 +45,8 @@ public class ModifiedLine {
         return content.equals(o.content) && type == o.type
     }
 
+    @Override  
+    public int hashCode() {
+        return (content + type).hashCode()
+    }
 }

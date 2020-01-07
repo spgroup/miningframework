@@ -101,13 +101,14 @@ class ExperimentalDataCollectorImpl implements DataCollector {
             Set<Tuple2> rightDeletedLines = new HashSet<Tuple2>()
 
             for(modifiedLine in mergeModifiedDeclaration.getModifiedLines()) {
-                if(containsLine(mutuallyModifiedDeclarations.getFirst(), modifiedLine))
+                if(containsLine(mutuallyModifiedDeclarations.getFirst(), modifiedLine)) {
                     addLine(modifiedLine, leftAddedLines, leftDeletedLines)
+                }
 
-                if(containsLine(mutuallyModifiedDeclarations.getSecond(), modifiedLine))
+                if(containsLine(mutuallyModifiedDeclarations.getSecond(), modifiedLine)) {
                     addLine(modifiedLine, rightAddedLines, rightDeletedLines)
+                }
             }
-
             printResults(project, mergeCommit, className, mergeModifiedDeclaration.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines)
         }
     }
@@ -149,8 +150,9 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
     private boolean containsLine(ModifiedDeclaration declaration, ModifiedLine modifiedLine) {
         for(lineIterator in declaration.getModifiedLines())
-            if(lineIterator == modifiedLine)
+            if(lineIterator.equals(modifiedLine)) {
                 return true
+            }
         return false
     }
 
@@ -238,7 +240,6 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
     private ModifiedDeclaration parseLine(String line, String[] diffResultLines, int start) {
         String identifier = getIdentifier(line) // signature for methods, name for attributes
-
         String modifiedLinesRange = getModifiedLinesRange(line)
         List<Integer> removedLineNumbers = getRemovedLineNumbers(modifiedLinesRange)
         List<Integer> addedLineNumbers = getAddedLineNumbers(modifiedLinesRange)
@@ -296,7 +297,6 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
         for(int i = 0; outputLines[iterator].startsWith('<'); i++) { // while it's a deletion line
             String content = outputLines[iterator].substring(1) // remove the symbol
-
             ModifiedLine modifiedLine = new ModifiedLine(content, new Tuple2(removedLineNumbers[i], addedLineNumbers[0]), type)
             modifiedLines.add(modifiedLine)
             iterator++
@@ -321,9 +321,8 @@ class ExperimentalDataCollectorImpl implements DataCollector {
     private Set<ModifiedLine> getChangedLines(List<Integer> addedLineNumbers, ModificationType type, String[] outputLines, int iterator) {
         Set<ModifiedLine> modifiedLines = new HashSet<ModifiedLine>()
         for(int i = 0; isLineModification(outputLines, iterator); iterator++) {
-            if(!outputLines[i].startsWith('---')) { // ignore neutral lines
-                String content = outputLines[iterator].substring(1) // remove the symbol
-
+            if(!outputLines[iterator].trim().startsWith('---')) { // ignore neutral lines
+                String content = outputLines[iterator].trim()
                 ModifiedLine modifiedLine = new ModifiedLine(content, addedLineNumbers[i], type)
                 modifiedLines.add(modifiedLine)
                 if(outputLines[i].startsWith('>'))

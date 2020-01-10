@@ -15,7 +15,6 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
 
     static protected final MAVEN_BUILD_WITH_ALL_DEPENDENCIES = 'mvn clean compile assembly:single'
 
-    @Override
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
             findAllCommitsFromMergeScenario(mergeCommit).each { commit ->
@@ -80,14 +79,12 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
         writer.close();
     }
 
-    @Override
-    static protected Process commitChanges(Project project, String message) {
+    protected Process commitChanges(Project project, String message) {
         ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml", "pom.xml").waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
-    @Override
     protected BuildSystem getBuildSystem (Project project) {
         File mavenFile = new File("${project.getPath()}/pom.xml")
         File gradleFile = new File("${project.getPath()}/build.gradle")

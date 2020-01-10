@@ -9,48 +9,19 @@ import main.exception.TravisHelperException
 import main.util.FileManager
 import static main.app.MiningFramework.arguments
 
-class BuildRequester implements DataCollector {
+abstract class BuildRequester implements DataCollector {
 
     static protected final FILE_NAME = '.travis.yml'
 
     static protected final MAVEN_BUILD = 'mvn package -DskipTests'
     static protected final GRADLE_BUILD = './gradlew build -x test'
 
-    public void collectData(Project project, MergeCommit mergeCommit) {
-        if (arguments.providedAccessKey()) {
-            String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
-            
-            checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
-            
-            File travisFile = new File("${project.getPath()}/.travis.yml")
-            String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-            travisFile.delete()
-            BuildSystem buildSystem = getBuildSystem(project)
+    
+    abstract public void collectData(Project project, MergeCommit mergeCommit);
 
-            if (buildSystem != BuildSystem.None) {
-                travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1], buildSystem)
-                commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
-                pushBranch(project, branchName).waitFor()
-                
-                goBackToMaster(project).waitFor()
-                println "${project.getName()} - Build requesting finished!"
-            }
+    abstract protected BuildSystem getBuildSystem (Project project);
 
-        }
-    }
-
-    protected BuildSystem getBuildSystem (Project project) {
-        File mavenFile = new File("${project.getPath()}/pom.xml")
-        File gradleFile = new File("${project.getPath()}/build.gradle")
-
-        if (mavenFile.exists()) {
-            return BuildSystem.Maven
-        } else if (gradleFile.exists()) {
-            return BuildSystem.Gradle
-        } else {
-            return BuildSystem.None
-        }
-    }
+    abstract protected Process commitChanges(Project project, String message);
 
     static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
         return ProcessRunner
@@ -72,21 +43,15 @@ class BuildRequester implements DataCollector {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'push','-u', 'origin', branchName)
     }
 
-    static protected Process commitChanges(Project project, String message) {
-        ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml").waitFor()
-
-        return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
-    }
-
     static private String getRemoteUrl(Project project) {
         return ProcessRunner.
             runProcess(project.getPath(), "git", "config", "--get", "remote.origin.url").getText()
     }
 
-    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem) {
+    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem, String mavenBuildCommand) {
         String buildCommand = "";
         if (buildSystem == BuildSystem.Maven) {
-            buildCommand = MAVEN_BUILD
+            buildCommand = mavenBuildCommand
         } else if (buildSystem == BuildSystem.Gradle) {
             buildCommand = GRADLE_BUILD
         }

@@ -5,11 +5,14 @@ import static com.xlson.groovycsv.CsvParser.parseCsv
 import main.util.*
 import main.project.*
 
-class CommitFilterDynamicSemanticConflictImpl extends CommitFilterImpl {
+class CommitFilterSemanticConflictDynamicImpl extends CommitFilterImpl {
 
     @Override
     public boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return (!MergeHelper.hasMergeConflict(project, mergeCommit)) ? super.applyFilter(project, mergeCommit) : false
+        if (!MergeHelper.hasMergeConflict(project, mergeCommit)){
+            return super.applyFilter(project, mergeCommit)
+        } 
+        return false
     }
 
 }

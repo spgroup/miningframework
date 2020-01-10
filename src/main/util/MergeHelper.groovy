@@ -23,7 +23,7 @@ class MergeHelper {
         return result
     }
 
-    public static boolean checkForEmptyDiff(Project project, MergeCommit mergeCommit){
+    public static boolean checkForEmptyDiff(Project project, MergeCommit mergeCommit) {
         Process diffAnalysis = performDiffAnalysisDeffault(project, mergeCommit, options)
         boolean result = diffAnalysis.getText() == ""
         
@@ -32,7 +32,7 @@ class MergeHelper {
     
         return result
     }
-    public static ArrayList<Boolean> checkForEmptyDiffByParents(Project project, MergeCommit mergeCommit, String className){
+    public static ArrayList<Boolean> checkForEmptyDiffByParents(Project project, MergeCommit mergeCommit, String className) {
         ArrayList<Boolean> diffStatesByParents = new ArrayList<Boolean>();
         
         diffStatesByParents.add(performDiffAnalysisByParents(project, options, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), className))
@@ -42,7 +42,7 @@ class MergeHelper {
         return diffStatesByParents
     }
 
-    private static boolean getLocalPathForChangedClass(HashMap<String, Boolean> localChangedFiles, String reportChangedClass){
+    private static boolean getLocalPathForChangedClass(HashMap<String, Boolean> localChangedFiles, String reportChangedClass) {
         localChangedFiles.each{value, key ->
             if (value.include(reportChangedClass.replaceAll(".","/"))){
                 return true
@@ -51,7 +51,7 @@ class MergeHelper {
         return false
     }
 
-    public static boolean checkForEmptyDiffForFile(Project project, MergeCommit mergeCommit){
+    public static boolean checkForEmptyDiffForFile(Project project, MergeCommit mergeCommit) {
         String[] changedFiles = getListFilesChanged(project, mergeCommit)
         
         HashMap<String, Boolean> changedFileEmptyDiffState = new HashMap<String, Boolean>();
@@ -63,7 +63,7 @@ class MergeHelper {
         return changedFileEmptyDiffState
     }
 
-    public static String[] getListFilesChanged (Project project, String parentOne, String parentTwo){
+    public static String[] getListFilesChanged (Project project, String parentOne, String parentTwo) {
         //Process diffAnalysis 
         Process checkoutParentOne = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', parentOne)
         checkoutParentOne.waitFor()
@@ -101,7 +101,7 @@ class MergeHelper {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'diff', parentTwo, optionsDiff+" "+localPathClass).getText() == ""   
     }
 
-    static private String localPathClassForDiff(String[] filesList, String className){
+    static private String localPathClassForDiff(String[] filesList, String className) {
         String newClassName = className.replaceAll("\\.","/")
         filesList.each{value ->
             if (value.contains(newClassName)){

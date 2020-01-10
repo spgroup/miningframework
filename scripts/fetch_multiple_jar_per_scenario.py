@@ -31,7 +31,6 @@ def fetchJars(inputPath, outputPath, token):
     print("Starting build collection")
 
     tokenUser = get_github_user(token)[LOGIN]
-
     parsedInput = read_input(inputPath)
     parsedOutput = read_output(outputPath)
     newResultsFile = []
@@ -55,7 +54,8 @@ def fetchJars(inputPath, outputPath, token):
                     commitSHA = release[NAME].replace(RELEASE_PREFIX, '')
                     print ("Downloading " + commitSHA )
                     try:
-                        downloadPath = mount_download_path(outputPath, project, commitSHA)
+                        downloadPath = mount_download_path(outputPath, projectName, commitSHA)
+                        print("Download Path - " + downloadPath + " \n")
                         downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
                         download_file(downloadUrl, downloadPath, commitSHA)
                         jars_build_commits[commitSHA] = downloadPath
@@ -69,12 +69,15 @@ def fetchJars(inputPath, outputPath, token):
                 print(e)
         remove_commit_files_without_builds (outputPath, projectName)
 
-    with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
-        outputFile.write("project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n")
-        outputFile.write("\n".join(newResultsFile))
-        outputFile.close()
+    try:
+        with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
+            outputFile.write("project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n")
+            outputFile.write("\n".join(newResultsFile))
+            outputFile.close()
 
-    output_for_semantic_conflict_study(outputPath, jars_build_commits)
+        output_for_semantic_conflict_study(outputPath, jars_build_commits)
+    except Exception as e:
+        print(e)
 
 def output_for_semantic_conflict_study(outputPath, jars_build_commits):
     new_output = ""
@@ -84,17 +87,10 @@ def output_for_semantic_conflict_study(outputPath, jars_build_commits):
         for row in reader:
             if (count != False):
                 values = row[0].split(";")
-                path_merge_jar = ""
-                path_left_jar = ""
-                path_right_jar = ""
-                path_base_jar = ""
-                try:
-                    path_merge_jar = find_project_jar_for_SHA(jars_build_commits[values[1]])
-                    path_left_jar = find_project_jar_for_SHA(jars_build_commits[values[2]])
-                    path_right_jar =  find_project_jar_for_SHA(jars_build_commits[values[3]])
-                    path_base_jar =  find_project_jar_for_SHA(jars_build_commits[values[4]])
-                except Exception as e:
-                    print ("Not available build for commit ",e)
+                path_merge_jar = find_project_jar_for_SHA(jars_build_commits, values, 1)
+                path_left_jar = find_project_jar_for_SHA(jars_build_commits, values, 2)
+                path_right_jar =  find_project_jar_for_SHA(jars_build_commits, values, 3)
+                path_base_jar =  find_project_jar_for_SHA(jars_build_commits, values, 4)
                 new_output += format_output(values, path_merge_jar, path_left_jar, path_right_jar, path_base_jar)
             count = True
     create_final_output_file(outputPath, new_output)    
@@ -105,28 +101,35 @@ def create_final_output_file(outputPath , contents):
         outputFile.close() 
 
 def format_output(values, merge, left, right, base):
+    jars_available = "false"
     if (merge != "" and base != "" and (left != "" or right != "")):
-        return values[0]+","+"true"+","+values[1]+","+values[2]+","+values[3]+","+values[4]+","+values[5]+","+values[6]+","+values[7]+","+values[8]+","+base+","+left+","+right+","+merge+","+values[9]+","+values[10]+","+values[11]+"\n"
-    else:
-        return values[0]+","+"false"+","+values[1]+","+values[2]+","+values[3]+","+values[4]+","+values[5]+","+values[6]+","+values[7]+","+values[8]+","+base+","+left+","+right+","+merge+","+values[9]+","+values[10]+","+values[11]+"\n"
+        jars_available = "true"
 
-def find_project_jar_for_SHA(general_path):
+    return values[0]+","+jars_available+","+values[1]+","+values[2]+","+values[3]+","+values[4]+","+values[5]+","+values[6].replace("|",",")+","+values[7]+","+values[8]+","+base+","+left+","+right+","+merge+","+values[9]+","+values[10]+","+values[11]+"\n"
+
+def find_project_jar_for_SHA(jars_build_commits, values, point):
     local_path = os.getcwd()+"/"
     path_jar = ""
-    for root, dirs, files in os.walk(general_path[:-13]):
-        for file in files:
-            if file.endswith("jar-with-dependencies.jar"):
-                path_jar += local_path + os.path.join(root, file).replace("\n","")+":"
-    
+    try:
+        general_path = jars_build_commits[values[point]]
+        for root, dirs, files in os.walk(general_path[:-13]):
+            for file in files:
+                if file.endswith("jar-with-dependencies.jar"):
+                    path_jar += local_path + os.path.join(root, file).replace("\n","")+":"
+    except Exception as e:
+        print(e)    
     return path_jar
 
 def read_output(outputPath):
-    fo = open(outputPath + "/data/results.csv")
-    file = fo.read()
-    fo.close()
+    try:
+        fo = open(outputPath + "/data/results.csv")
+        file = fo.read()
+        fo.close()
 
-    fileOutLines = file.split("\n")
-    return parse_output(fileOutLines)
+        fileOutLines = file.split("\n")
+        return parse_output(fileOutLines)
+    except Exception as e:
+        print(e)
 
 def parse_output(lines):
     result = {}
@@ -177,9 +180,9 @@ def create_directory(target_path):
     target = target_path.split("/result.tar.gz")[0]
     os.mkdir(target)
 
-def mount_download_path(outputPath, project, commitSHA):
+def mount_download_path(outputPath, project_name, commitSHA):
     # mount path where the downloaded build will be moved to
-    return outputPath + '/files/' + project[NAME] + '/' + commitSHA + '/result.tar.gz'
+    return outputPath + '/files/' + project_name + '/' + commitSHA + '/result.tar.gz'
 
 def untar_and_remove_file(downloadPath): 
     downloadDir = downloadPath.replace('result.tar.gz', '')

@@ -17,9 +17,9 @@ import main.exception.UnexpectedPostScriptException
 import main.exception.NoAccessKeyException
 import main.util.*
 
-class MiningWorkerSemanticConflictSample extends MiningWorker {
+class MiningWorkerSemanticConflictSampleDynamic extends MiningWorker {
 
-    public MiningWorkerSemanticConflictSample(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
+    public MiningWorkerSemanticConflictSampleDynamic(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
         super(dataCollectors, commitFilter, projectList, baseDir)
     }
 

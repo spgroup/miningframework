@@ -11,7 +11,7 @@ import main.exception.TravisHelperException
 import main.util.FileManager
 import static main.app.MiningFramework.arguments
 
-class BuildRequesterDynamicSemanticConflictImpl extends BuildRequester {
+class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
 
     static protected final MAVEN_BUILD_WITH_ALL_DEPENDENCIES = 'mvn clean compile assembly:single'
 
@@ -29,10 +29,9 @@ class BuildRequesterDynamicSemanticConflictImpl extends BuildRequester {
                 BuildSystem buildSystem = getBuildSystem(project)
 
                 if (buildSystem != BuildSystem.None) {
-                    travisFile << getNewTravisFile(commit, ownerAndName[0], ownerAndName[1], buildSystem)
+                    travisFile << getNewTravisFile(commit, ownerAndName[0], ownerAndName[1], buildSystem, MAVEN_BUILD_WITH_ALL_DEPENDENCIES)
                     commitChanges(project, "'Trigger build #${commit}'").waitFor()
                     pushBranch(project, branchName).waitFor()
-                    
                     goBackToMaster(project).waitFor()
                     println "${project.getName()} - Build requesting finished!"
                 }
@@ -47,60 +46,38 @@ class BuildRequesterDynamicSemanticConflictImpl extends BuildRequester {
         String finalString = ""
         String pluginAllDependencies = "<plugin>\n\t<artifactId>maven-assembly-plugin</artifactId> \n\t<configuration> \n\t<archive> \n\t<manifest> \n\t\t<mainClass>fully.qualified.MainClass</mainClass> \n\t</manifest> \n\t</archive> \n\t<descriptorRefs> \n\t\t<descriptorRef>jar-with-dependencies</descriptorRef> \n\t</descriptorRefs> \n\t</configuration> \n\t</plugin> \n    </plugins>"
         String pluginAllDependenciesWithoutBuildSection = "\t<build>\n\t\t<plugins>\n\t\t   <plugin>\n\t\t\t<artifactId>maven-assembly-plugin</artifactId> \n\t\t\t<configuration> \n\t\t\t<archive> \n\t\t\t<manifest> \n\t\t\t\t<mainClass>fully.qualified.MainClass</mainClass> \n\t\t\t</manifest> \n\t\t\t</archive> \n\t\t\t<descriptorRefs> \n\t\t\t\t<descriptorRef>jar-with-dependencies</descriptorRef> \n\t\t\t</descriptorRefs> \n\t\t\t</configuration>\n\t\t   </plugin> \n\t\t</plugins>\n\t</build>\n</project>"
+        
         if(mavenFile.exists()){
             String contents = new File("${project.getPath()}/pom.xml").text
             def matcher = contents =~ /<build>[\s\S]*<plugins>[\s\S]*<\/build>/
             
             if (matcher.size() == 1){
                 String build_section = matcher[0]
-                String first_pom = contents.split(/<build>[\s\S]*<plugins>[\s\S]*<\/build>/)[0]
-                String second_pom = contents.split(/<build>[\s\S]*<plugins>[\s\S]*<\/build>/)[1]
+                String first_pom_content_part = contents.split(/<build>[\s\S]*<plugins>[\s\S]*<\/build>/)[0]
+                String second_pom_content_part = contents.split(/<build>[\s\S]*<plugins>[\s\S]*<\/build>/)[1]
 
                 if (build_section != ""){
-                    finalString += first_pom
-                    finalString += build_section.replace(/<\/plugins>/, pluginAllDependencies)
-                    finalString += second_pom
+                    finalString = concatenateNewMavenFileContents(first_pom_content_part, build_section.replace(/<\/plugins>/, pluginAllDependencies), second_pom_content_part)
                 }                
             }else{
-                String first_pom = contents.split(/<\/project>/)[0]
-                String second_pom = contents.split(/<\/project>/)[1]
-                
-                finalString += first_pom
-                finalString += pluginAllDependenciesWithoutBuildSection
-                finalString += second_pom
+                String first_pom_content_part = contents.split(/<\/project>/)[0]
+                String second_pom_content_part = contents.split(/<\/project>/)[1]                
+                finalString = concatenateNewMavenFileContents(first_pom_content_part, pluginAllDependenciesWithoutBuildSection, second_pom_content_part)
             }
-        }
 
+            writeNewMavenFile(mavenFile, finalString)
+        }
+    }
+
+    private String concatenateNewMavenFileContents(String first_part, String second_part, String third_part) {
+        return first_part + second_part + third_part
+    }
+
+    private writeNewMavenFile(File mavenFile, String newMavenFileContent) {
         PrintWriter writer = new PrintWriter(mavenFile);
         writer.print("");
-        writer.print(finalString)
+        writer.print(newMavenFileContent)
         writer.close();
-        
-        /*finalString = ""
-        pluginAllDependencies = "<plugin>\n\t<artifactId>maven-assembly-plugin</artifactId> \n\t<configuration> \n\t<archive> \n\t<manifest> \n\t\t<mainClass>fully.qualified.MainClass</mainClass> \n\t</manifest> \n\t</archive> \n\t<descriptorRefs> \n\t\t<descriptorRef>jar-with-dependencies</descriptorRef> \n\t</descriptorRefs> \n\t</configuration> \n\t</plugin> \n    </plugins>"
-        if(mavenFile.exists(project)){
-            contents = ""
-            readPom = open("${project.getPath()}/pom.xml", "r")
-            if f.mode == 'r':
-                contents =f.read()
-            if (re.search("<build>[\s\S]*<plugins>[\s\S]*<\/build>",contents)):
-                p = re.compile("<build>[\\s\\S]*<plugins>[\\s\\S]*<\\/build>")
-                build = p.search(contents)
-                if (len(build.groups())) == 0:
-                    first_pom = re.split("<build>[\\s\\S]*<plugins>[\\s\\S]*<\\/build>", contents)[0]
-                    second_pom = re.split("<build>[\\s\\S]*<plugins>[\\s\\S]*<\\/build>",contents)[1]
-                if (re.search("<\\/plugins>[\\s\\S]*<\\/build>", build.group(0))):
-                    finalString += first
-                    finalString += re.sub("<\\/plugins>", pluginAllDependencies, build.group(0))
-                    finalString += second
-                else:
-                    finalString += first
-                    finalString += "<build><plugins><plugin>"+pluginAllDependencies+"<\\build>"
-                    finalString +=  second
-                
-                with open("${project.getPath()}/pom.xml", "w") as f:
-                    f.write(finalString)
-        }*/
     }
 
     @Override
@@ -123,45 +100,6 @@ class BuildRequesterDynamicSemanticConflictImpl extends BuildRequester {
         } else {
             return BuildSystem.None
         }
-    }
-
-    @Override
-    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem) {
-        String buildCommand = "";
-        if (buildSystem == BuildSystem.Maven) {
-            buildCommand = MAVEN_BUILD_WITH_ALL_DEPENDENCIES
-        } else if (buildSystem == BuildSystem.Gradle) {
-            buildCommand = GRADLE_BUILD
-        }
-    
-        String trimmedProjectName = projectName.replace('\n', '')
-        return """
-sudo: required
-language: java
-
-jdk:
-  - openjdk8
-
-script:
-  - ${buildCommand}
-
-before_deploy:
-    - mkdir MiningBuild
-    - find . -name '*.jar' -exec cp {} ./MiningBuild \\;
-    - cd /home/travis/build/${owner}/${trimmedProjectName}/MiningBuild
-    - tar -zcvf result.tar.gz *
-deploy:
-  provider: releases
-  api_key:
-    secure: \$GITHUB_TOKEN
-  file: result.tar.gz
-  name: fetchjar-${commitSha}
-  file_glob: true
-  overwrite: true
-  skip_cleanup: true
-  on:
-    all_branches: true 
-            """
     }
 
     private String[] findAllCommitsFromMergeScenario(MergeCommit mergeCommit){

@@ -15,7 +15,7 @@ import static groovy.io.FileType.FILES
 
 import static main.app.MiningFramework.arguments
 
-class ExperimentalDataCollectorDynamicSemanticConflictImpl extends ExperimentalDataCollectorImpl {
+class ExperimentalDataCollectorSemanticConflictDynamicImpl extends ExperimentalDataCollectorImpl {
 
     @Override
     protected String addHeaderLinesForOutputFile(){
@@ -27,7 +27,7 @@ class ExperimentalDataCollectorDynamicSemanticConflictImpl extends ExperimentalD
                       HashSet<Integer> leftAddedLines, HashSet<Tuple2> leftDeletedLines, HashSet<Integer> rightAddedLines,
                       HashSet<Tuple2> rightDeletedLines){
         ArrayList<Boolean> emptyDiffsByParents = MergeHelper.checkForEmptyDiffByParents(project, mergeCommit, className)
-        return "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${mergeCommit.getAncestorSHA()};${className};${modifiedDeclarationSignature.split("\\(")[0]};${project.getFullLocalPath()};${closestModuleProjectForClass(project, className)};${emptyDiffsByParents[0]};${emptyDiffsByParents[1]};${emptyDiffsByParents[2]}\n"
+        return "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${mergeCommit.getAncestorSHA()};${className};\"${modifiedDeclarationSignature.replace(",","|")}\";${project.getFullLocalPath()};${closestModuleProjectForClass(project, className)};${emptyDiffsByParents[0]};${emptyDiffsByParents[1]};${emptyDiffsByParents[2]}\n"
     }
 
     private String closestModuleProjectForClass(Project project, String className){

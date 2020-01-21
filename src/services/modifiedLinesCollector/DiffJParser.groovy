@@ -2,48 +2,64 @@ package services.modifiedLinesCollector
 
 import java.util.HashSet
 
+import java.util.regex.Pattern
+import java.util.regex.Matcher
+
 class DiffJParser {
 
     private final String NEW_LINES_MARKER = "---";
     private final int INT_ZERO = 0;
     private final int INT_ONE = 1;
 
+    private final Pattern CHANGE_HEADER_PATTERN = Pattern.compile(".* code added in .*")
+
     public List<ModifiedLine> parse (List<String> lines) {
         def result = new ArrayList<ModifiedLine>();
+        def iterator = lines.iterator();
+           
+        while(iterator.hasNext()) {
+            // get next line
+            def line = iterator.next();
 
-        if (lines.size() > INT_ZERO) {
-            def iterator = lines.iterator();
-            
-            iterator.next();
-            def headerLine = iterator.next();
-            def lineNumbers = getLineNumbers(headerLine);
+            // checks it if its a header line e.g: 4a4 code added in method()
+            if (isHeaderLine(line)) {
+                def lineNumbers = getLineNumbersRange(line);
+                
+                int begin = lineNumbers[INT_ZERO];
+                int end = lineNumbers[INT_ONE];
+                
+                // move the iterator util it finds a predefined marker
+                skipIteratorToLinesContents(iterator)
 
-            int begin = lineNumbers[INT_ZERO];
-            int end = lineNumbers[INT_ONE];
-                        
-            skipIteratorToLinesContents(iterator)
+                // gets the contents of the lines and adds then to the list
+                for (int i = begin; i <= end; i++) {
+                    def lineContent = parseLineContent(iterator.next());
 
-            for (int i = begin; i <= end; i++) {
-                def lineContent = parseLineContent(iterator.next());
+                    def modLine = new ModifiedLine(i, lineContent, ModifiedLine.ModificationType.Added)
+                    result.add(modLine)
+                }
 
-                def modLine = new ModifiedLine(i, lineContent, ModifiedLine.ModificationType.Added)
-                result.add(modLine)
             }
-
         }
 
         return result;
     }
 
+    private boolean isHeaderLine(String line) {
+        Matcher matcher = CHANGE_HEADER_PATTERN.matcher(line);
+        
+        return matcher.find();
+    }
+
     private String parseLineContent(String line) {
-        return line.substring(1).strip();
+        return line.substring(INT_ONE).strip();
     }
 
     private void skipIteratorToLinesContents(Iterator<ModifiedLine> iterator) {
         while(iterator.next() != NEW_LINES_MARKER);
     }
 
-    private int[] getLineNumbers (String headerLine) {
+    private int[] getLineNumbersRange(String headerLine) {
         def splittedHeaderLine = headerLine.split(" ");
         def modifiedLinesPart = splittedHeaderLine[INT_ZERO]
         def splittedModifiedLinesPart = modifiedLinesPart.split("a")

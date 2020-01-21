@@ -55,6 +55,31 @@ public class DiffJParserTest {
         validateModifiedLineParameters(it.next(), new ModifiedLine(6, "int z = 0;", ModifiedLine.ModificationType.Added));
     }
 
+    @Test
+    public void withMultipleAddedLinesInDifferentPlaces() {
+        def result = diffJParser.parse([
+            "Base.java <=> Change.java",
+            "4a4,5 code added in method()",
+            "<      int c = 0;",
+            "---",
+            ">         int a = 0;",
+            ">         int b = 0;",
+            "5a7,8 code added in method()",
+            "<      }",
+            "---",
+            ">      int d = 0;",
+            ">      int e = 0;"
+        ]);
+
+        def it = result.iterator()
+        assertEquals(result.size(), 4, "Should have 4 modified lines");
+        
+        validateModifiedLineParameters(it.next(), new ModifiedLine(4, "int a = 0;", ModifiedLine.ModificationType.Added));
+        validateModifiedLineParameters(it.next(), new ModifiedLine(5, "int b = 0;", ModifiedLine.ModificationType.Added));
+        validateModifiedLineParameters(it.next(), new ModifiedLine(7, "int d = 0;", ModifiedLine.ModificationType.Added));
+        validateModifiedLineParameters(it.next(), new ModifiedLine(8, "int e = 0;", ModifiedLine.ModificationType.Added));
+    }
+
     private void validateModifiedLineParameters(ModifiedLine actual, ModifiedLine expected) {
         assertEquals(actual.getNumber(), expected.getNumber(), "Expected line number to be ${expected.getNumber()}");
         assertEquals(actual.getContent(), expected.getContent(), "Expected line content to be ${expected.getContent()}");

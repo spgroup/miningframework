@@ -11,7 +11,12 @@ class DiffParser {
     private final int INT_ZERO = 0;
     private final int INT_ONE = 1;
 
-    private final Pattern CHANGE_HEADER_PATTERN = Pattern.compile("([0-9]+(,[0-9]+)?(a|d|c)[0-9]+(,[0-9]+)?)\$")
+    private final String ADDED_FLAG = "a";
+    private final String CHANGED_FLAG = "c";
+    private final String REMOVED_FLAG = "d";
+    private final String FLAGS_REGEX = "(${ADDED_FLAG}|${CHANGED_FLAG}|${REMOVED_FLAG})"
+
+    private final Pattern HEADER_PATTERN = Pattern.compile("([0-9]+(,[0-9]+)?${FLAGS_REGEX}[0-9]+(,[0-9]+)?)\$");
 
     public List<ModifiedLine> parse (List<String> lines) {
         def result = new ArrayList<ModifiedLine>();
@@ -23,7 +28,7 @@ class DiffParser {
             // checks it if its a header line e.g: 4a4 code added in method()
             if (isHeaderLine(line)) {
                 def changeType = getChangeType(line);
-                def lineNumbers = getLineNumbersRange(line);
+                def lineNumbers = getModifiedLinesRange(line);
                 
                 int begin = lineNumbers[INT_ZERO];
                 int end = lineNumbers[INT_ONE];
@@ -47,7 +52,7 @@ class DiffParser {
     }
 
     private boolean isHeaderLine(String line) {
-        Matcher matcher = CHANGE_HEADER_PATTERN.matcher(line);
+        Matcher matcher = HEADER_PATTERN.matcher(line);
         
         return matcher.find();
     }
@@ -57,22 +62,34 @@ class DiffParser {
     }
 
     private ModifiedLine.ModificationType getChangeType(String headerLine) {
-        if (headerLine.contains("a")) {
+        if (headerLine.contains(ADDED_FLAG)) {
             return ModifiedLine.ModificationType.Added;
-        } else if (headerLine.contains("c")) {
+        } else if (headerLine.contains(CHANGED_FLAG)) {
             return ModifiedLine.ModificationType.Changed;
         } else {
             return ModifiedLine.ModificationType.Removed;
         }
     }
 
-    private int[] getLineNumbersRange(String headerLine) {
-        def splittedHeaderLine = headerLine.split(" ");
-        def modifiedLinesPart = splittedHeaderLine[INT_ZERO]
-        def splittedModifiedLinesPart = modifiedLinesPart.split(/[ac]/)
-        
-        def newLines = splittedModifiedLinesPart[INT_ONE]
-        def splittedNewLines = newLines.split(",")
+    private int[] getModifiedLinesRange(String headerLine) {
+        String[] splittedHeaderLine = headerLine.split(" ");
+        String modifiedLinesPart = splittedHeaderLine[INT_ZERO]
+        String[] splittedModifiedLinesPart = modifiedLinesPart.split(/${FLAGS_REGEX}/)
+
+        ModifiedLine.ModificationType changeType = getChangeType(headerLine);
+
+        int splitIndex = INT_ONE;
+        if (changeType == ModifiedLine.ModificationType.Removed) {
+            splitIndex = INT_ZERO;
+        }
+
+        String rangeString = splittedModifiedLinesPart[splitIndex]
+    
+        return getNumbersRange(rangeString);
+    }
+
+    private int[] getNumbersRange(String rangeString) {        
+        def splittedNewLines = rangeString.split(",")
 
         int begin = Integer.parseInt(splittedNewLines[INT_ZERO])
         int end = begin;

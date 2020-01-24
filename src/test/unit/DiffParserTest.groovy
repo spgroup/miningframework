@@ -132,6 +132,18 @@ public class DiffParserTest {
         validateModifiedLineParameters(it.next(), new ModifiedLine(6, "int z = 3;", ModifiedLine.ModificationType.Changed));
     }
 
+    @Test
+    public void withOneRemovedLine() {
+        def result = diffParser.parse([
+            "4d3",
+            "<      int x = 1;"
+        ])
+
+        def it = result.iterator();
+        assertEquals(result.size(), 1, "Should have 1 modified line");
+        validateModifiedLineParameters(it.next(), new ModifiedLine(4, "int x = 1;", ModifiedLine.ModificationType.Removed));
+    }
+
     private void validateModifiedLineParameters(ModifiedLine actual, ModifiedLine expected) {
         assertEquals(actual.getNumber(), expected.getNumber(), "Expected line number to be ${expected.getNumber()}");
         assertEquals(actual.getContent(), expected.getContent(), "Expected line content to be ${expected.getContent()}");

@@ -60,13 +60,20 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         Set<String> mutuallyModifiedFilePaths = collectMutuallyModifiedFiles(project, mergeCommit)
 
         for(String filePath in mutuallyModifiedFilePaths) {
+            println filePath
+            println "MERGE"
             Set<ModifiedDeclaration> allModifiedMethodsAndAttributes = getModifiedMethodsAndAttributes(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
             Map<String, Tuple2<ModifiedDeclaration, ModifiedDeclaration>> mutuallyModifiedMethodsAndAttributes = getMutuallyModifiedMethodsAndAttributes(project, mergeCommit, filePath)
-
             if(!mutuallyModifiedMethodsAndAttributes.isEmpty()) {
+                println "MUTUALLY MODIFIED METHODS"
                 String className = getClassFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
 
                 for(declaration in allModifiedMethodsAndAttributes) {
+                    println declaration.getSignature()
+                    for (line in declaration.getModifiedLines()) {
+                        print line.number + " "
+                    }
+                    println ""
                     storeModifiedAttributesAndMethods(project, mergeCommit, className, mutuallyModifiedMethodsAndAttributes, declaration, filePath)
                 }
 
@@ -184,7 +191,9 @@ class ExperimentalDataCollectorImpl implements DataCollector {
     }
 
     private Map<String, Tuple2<ModifiedDeclaration, ModifiedDeclaration>> getMutuallyModifiedMethodsAndAttributes(Project project, MergeCommit mergeCommit, String filePath) {
+        println "LEFT"
         Set<ModifiedDeclaration> leftModifiedDeclarations = getModifiedMethodsAndAttributes(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+        println "RIGHT"
         Set<ModifiedDeclaration> rightModifiedDeclarations = getModifiedMethodsAndAttributes(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         return intersectAndBuildMap(leftModifiedDeclarations, rightModifiedDeclarations)
     }
@@ -211,12 +220,13 @@ class ExperimentalDataCollectorImpl implements DataCollector {
     }
 
     private Set<ModifiedDeclaration> getModifiedMethodsAndAttributes(String[] diffResultLines) {
-        Set<ModifiedDeclaration> modifiedMethodsAndAttributes = new HashSet<String>()
+        Set<ModifiedDeclaration> modifiedMethodsAndAttributes = new HashSet<ModifiedDeclaration>()
 
         for (int i = 0; i < diffResultLines.length; i++) {
             String line = diffResultLines[i]
 
             if(line ==~ methodOrAttributeModification) {
+                println line
                 if (line !=~ /.+ static block .+/) {
                     insertDeclaration(modifiedMethodsAndAttributes, parseLine(line, diffResultLines, i + 1))
                 }
@@ -246,6 +256,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         ModificationType modificationType = getModificationType(line)
 
         Set<ModifiedLine> modifiedLines = getModifiedLines(modificationType, diffResultLines, removedLineNumbers, addedLineNumbers, start)
+
         return new ModifiedDeclaration(identifier, modifiedLines)
     }
 
@@ -269,7 +280,6 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         List<Integer> modifiedLines = new ArrayList<Integer>()
 
         // the lines are presented as deletedStart-deletedEnd,addedStart-addedEnd
-
         int commaIndex = lines.indexOf(',')
         if (commaIndex == -1) // if there's not a comma, it's a single line number
             modifiedLines.add(Integer.parseInt(lines))

@@ -45,4 +45,7 @@ public class ModifiedLine {
         return content.equals(o.content) && type == o.type
     }
 
+    public int hashCode() {
+        return number
+    }
 }

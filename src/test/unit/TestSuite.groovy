@@ -5,5 +5,5 @@ import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 
 @RunWith(Suite.class)
-@SuiteClasses([DiffParserTest.class])
+@SuiteClasses([DiffParserTest.class, ModifiedMethodsParserTest.class])
 public class TestSuite {}

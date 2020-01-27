@@ -21,7 +21,13 @@ abstract class BuildRequester implements DataCollector {
 
     abstract protected BuildSystem getBuildSystem (Project project);
 
-    abstract protected Process commitChanges(Project project, String message);
+    //abstract protected Process commitChanges(Project project, String message, String[] parameters);
+
+    protected Process commitChanges(Project project, String message, String parameters) {
+        ProcessRunner.runProcess(project.getPath(), "git", "add", parameters).waitFor()
+
+        return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
+    }
 
     static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
         return ProcessRunner
@@ -46,6 +52,14 @@ abstract class BuildRequester implements DataCollector {
     static private String getRemoteUrl(Project project) {
         return ProcessRunner.
             runProcess(project.getPath(), "git", "config", "--get", "remote.origin.url").getText()
+    }
+
+    protected void sendNewBuildRequest(Project project, File travisFile, String[] ownerAndName, BuildSystem buildSystem, String commit, String branchName, String mavenComand, String parameters){
+        travisFile << getNewTravisFile(commit, ownerAndName[0], ownerAndName[1], buildSystem, mavenComand)
+        commitChanges(project, "'Trigger build #${commit}'", parameters).waitFor()
+        pushBranch(project, branchName).waitFor()
+        goBackToMaster(project).waitFor()
+        println "${project.getName()} - Build requesting finished!"
     }
 
     static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem, String mavenBuildCommand) {

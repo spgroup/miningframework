@@ -24,12 +24,7 @@ class BuildRequesterSemanticConflict extends BuildRequester {
             BuildSystem buildSystem = getBuildSystem(project)
 
             if (buildSystem != BuildSystem.None) {
-                travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1], buildSystem, MAVEN_BUILD)
-                commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
-                pushBranch(project, branchName).waitFor()
-                
-                goBackToMaster(project).waitFor()
-                println "${project.getName()} - Build requesting finished!"
+                sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, MAVEN_BUILD, "\"pom.xml\"")
             }
 
         }
@@ -46,12 +41,6 @@ class BuildRequesterSemanticConflict extends BuildRequester {
         } else {
             return BuildSystem.None
         }
-    }
-
-    static protected Process commitChanges(Project project, String message) {
-        ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml").waitFor()
-
-        return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
 }

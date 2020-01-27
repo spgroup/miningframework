@@ -10,6 +10,7 @@ import main.util.ProcessRunner
 import main.exception.TravisHelperException
 import main.util.FileManager
 import static main.app.MiningFramework.arguments
+import main.util.FileTransformations
 
 class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
 
@@ -27,12 +28,8 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
                 travisFile.delete()
                 BuildSystem buildSystem = getBuildSystem(project)
 
-                if (buildSystem != BuildSystem.None) {
-                    travisFile << getNewTravisFile(commit, ownerAndName[0], ownerAndName[1], buildSystem, MAVEN_BUILD_WITH_ALL_DEPENDENCIES)
-                    commitChanges(project, "'Trigger build #${commit}'").waitFor()
-                    pushBranch(project, branchName).waitFor()
-                    goBackToMaster(project).waitFor()
-                    println "${project.getName()} - Build requesting finished!"
+                if (buildSystem == BuildSystem.Maven) {
+                    sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, MAVEN_BUILD_WITH_ALL_DEPENDENCIES, "\"pom.xml\"\\, \".travis.yml\"")
                 }
 
             }
@@ -77,12 +74,6 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
         writer.print("");
         writer.print(newMavenFileContent)
         writer.close();
-    }
-
-    protected Process commitChanges(Project project, String message) {
-        ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml", "pom.xml").waitFor()
-
-        return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
     protected BuildSystem getBuildSystem (Project project) {

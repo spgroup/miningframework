@@ -19,25 +19,35 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
             findAllCommitsFromMergeScenario(mergeCommit).each { commit ->
-                String branchName = commit.take(5) + '_build_branch_all_dependencies'
-                
-                checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
-                
-                File travisFile = new File("${project.getPath()}/.travis.yml")
-                String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-                travisFile.delete()
-                BuildSystem buildSystem = getBuildSystem(project)
-
-                if (buildSystem == BuildSystem.Maven) {
-                    sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, MAVEN_BUILD_WITH_ALL_DEPENDENCIES, "\"pom.xml\"\\, \".travis.yml\"")
-                }
-
+                setupEnvironment(project, commit, '_build_branch_all_dependencies', "\"pom.xml\"\\, \".travis.yml\"")
             }
-
         }
     }
 
-    private addPluginOnPomFile(Project project){
+    public void collectDataWithCodeTransformation(Project project, MergeCommit mergeCommit, String file, String branchNameComplement) {
+        if (arguments.providedAccessKey()) {
+            findAllCommitsFromMergeScenario(mergeCommit).each { commit ->
+                setupEnvironment(project, commit, '_build_branch_all_dependencies_with_tranformations_'+branchNameComplement, "\"pom.xml\"\\, \".travis.yml\", \"${file}\"")
+            }
+        }
+    }
+
+    private void setupEnvironment(Project project, String commit, String branch, String parameters) {
+        String branchName = commit.take(5) + branch
+                
+        checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
+        
+        File travisFile = new File("${project.getPath()}/.travis.yml")
+        String[] ownerAndName = getRemoteProjectOwnerAndName(project)
+        travisFile.delete()
+        BuildSystem buildSystem = getBuildSystem(project)
+
+        if (buildSystem == BuildSystem.Maven) {
+            sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, MAVEN_BUILD_WITH_ALL_DEPENDENCIES, parameters)
+        }
+    }
+
+    private addPluginOnPomFile(Project project) {
         File mavenFile = new File("${project.getPath()}/pom.xml")
         String finalString = ""
         String pluginAllDependencies = "<plugin>\n\t<artifactId>maven-assembly-plugin</artifactId> \n\t<configuration> \n\t<archive> \n\t<manifest> \n\t\t<mainClass>fully.qualified.MainClass</mainClass> \n\t</manifest> \n\t</archive> \n\t<descriptorRefs> \n\t\t<descriptorRef>jar-with-dependencies</descriptorRef> \n\t</descriptorRefs> \n\t</configuration> \n\t</plugin> \n    </plugins>"
@@ -90,7 +100,7 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
         }
     }
 
-    private String[] findAllCommitsFromMergeScenario(MergeCommit mergeCommit){
+    private String[] findAllCommitsFromMergeScenario(MergeCommit mergeCommit) {
         return [mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit.getRightSHA(), mergeCommit.getSHA()]
     }
 

@@ -60,20 +60,12 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         Set<String> mutuallyModifiedFilePaths = collectMutuallyModifiedFiles(project, mergeCommit)
 
         for(String filePath in mutuallyModifiedFilePaths) {
-            println filePath
-            println "MERGE"
             Set<ModifiedDeclaration> allModifiedMethodsAndAttributes = getModifiedMethodsAndAttributes(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
             Map<String, Tuple2<ModifiedDeclaration, ModifiedDeclaration>> mutuallyModifiedMethodsAndAttributes = getMutuallyModifiedMethodsAndAttributes(project, mergeCommit, filePath)
             if(!mutuallyModifiedMethodsAndAttributes.isEmpty()) {
-                println "MUTUALLY MODIFIED METHODS"
                 String className = getClassFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
 
                 for(declaration in allModifiedMethodsAndAttributes) {
-                    println declaration.getSignature()
-                    for (line in declaration.getModifiedLines()) {
-                        print line.number + " "
-                    }
-                    println ""
                     storeModifiedAttributesAndMethods(project, mergeCommit, className, mutuallyModifiedMethodsAndAttributes, declaration, filePath)
                 }
 
@@ -191,9 +183,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
     }
 
     private Map<String, Tuple2<ModifiedDeclaration, ModifiedDeclaration>> getMutuallyModifiedMethodsAndAttributes(Project project, MergeCommit mergeCommit, String filePath) {
-        println "LEFT"
         Set<ModifiedDeclaration> leftModifiedDeclarations = getModifiedMethodsAndAttributes(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
-        println "RIGHT"
         Set<ModifiedDeclaration> rightModifiedDeclarations = getModifiedMethodsAndAttributes(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         return intersectAndBuildMap(leftModifiedDeclarations, rightModifiedDeclarations)
     }
@@ -226,7 +216,6 @@ class ExperimentalDataCollectorImpl implements DataCollector {
             String line = diffResultLines[i]
 
             if(line ==~ methodOrAttributeModification) {
-                println line
                 if (line !=~ /.+ static block .+/) {
                     insertDeclaration(modifiedMethodsAndAttributes, parseLine(line, diffResultLines, i + 1))
                 }

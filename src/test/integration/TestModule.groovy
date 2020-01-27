@@ -1,4 +1,4 @@
-package test
+package test.integration
 
 import main.interfaces.DataCollector
 import main.interfaces.CommitFilter

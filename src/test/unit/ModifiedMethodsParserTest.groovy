@@ -59,4 +59,51 @@ public class ModifiedMethodsParserTest {
         assertEquals(result.get("methodTwo()"), [12, 14]);
     }
 
+    @Test
+    public void withOneModifiedMethodWithOneChangedLine() {
+        def result = methodsParser.parse([
+            "change-expression/Left.java <=> change-expression/Right.java",
+            "4c4: code changed in method()"
+        ]);
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get("method()"), [4])        
+    }
+
+    @Test
+    public void withAMethodWithMultipleArguments() {
+        def result = methodsParser.parse([
+            "change-expression/Left.java <=> change-expression/Right.java",
+            "4a4: code changed in method(int, int)"
+        ])
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get("method(int, int)"), [4]);
+    }
+
+    @Test
+    public void withOneModifiedMethodAndOneFullyRemovedLine() {
+        def result = methodsParser.parse([
+           "remove-full-line/Right.java remove-full-line/Left.java <=> remove-full-line/Right.java",
+            "4d5: code removed in method()"
+        ])
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get("method()"), [5])
+    }
+
+    @Test
+    public void withMultipleTypesOfChanges() {
+        def result = methodsParser.parse([
+            "different-types-of-changes/Left.java <=> different-types-of-changes/Right.java",
+            "4d4: code removed in method()",
+            "7c6: code changed in method()",
+            "8c7: code changed in method()",
+            "9c8: code changed in method()",
+            "11d10: code removed in method()"
+        ])
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get("method()"), [4, 6, 7,8, 10]);
+    }
 }

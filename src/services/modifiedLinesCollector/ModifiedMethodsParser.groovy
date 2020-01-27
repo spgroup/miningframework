@@ -8,6 +8,12 @@ class ModifiedMethodsParser {
     private final int INT_ZERO = 0;
     private final int INT_ONE = 1;
 
+    private final String ADDED_FLAG = "a";
+    private final String CHANGED_FLAG = "c";
+    private final String REMOVED_FLAG = "d";
+
+    private final String FLAGS_REGEX = "(${ADDED_FLAG}|${CHANGED_FLAG}|${REMOVED_FLAG})"
+
     public Map<String, List> parse (List<String> lines) {
         def result = new HashMap<String, int[]>();
         
@@ -38,16 +44,14 @@ class ModifiedMethodsParser {
     }
 
     private String getMethodName(String headerLine) {
-        String[] splittedHeaderLine = headerLine.split(" ");
-
-        return splittedHeaderLine[splittedHeaderLine.size() - 1];
+        return headerLine.replaceFirst(/^.* code (added|changed|removed) in /, "");
     }
 
     private int[] getModifiedLinesRange(String headerLine) {
         String[] splittedHeaderLine = headerLine.split(":");
         String modifiedLinesPart = splittedHeaderLine[INT_ZERO]
-        String[] splittedModifiedLinesPart = modifiedLinesPart.split("a")
-    
+        String[] splittedModifiedLinesPart = modifiedLinesPart.split(/${FLAGS_REGEX}/)
+
         return getNumbersRange(splittedModifiedLinesPart[INT_ONE]);
     }
 

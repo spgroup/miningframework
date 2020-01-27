@@ -141,7 +141,7 @@ public class DiffParserTest {
 
         def it = result.iterator();
         assertEquals(result.size(), 1, "Should have 1 modified line");
-        validateModifiedLineParameters(it.next(), new ModifiedLine(4, "int x = 1;", ModifiedLine.ModificationType.Removed));
+        validateModifiedLineParameters(it.next(), new ModifiedLine(3, "int x = 1;", ModifiedLine.ModificationType.Removed));
     }
 
     private void validateModifiedLineParameters(ModifiedLine actual, ModifiedLine expected) {

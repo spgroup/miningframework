@@ -78,12 +78,7 @@ class DiffParser {
 
         ModifiedLine.ModificationType changeType = getChangeType(headerLine);
 
-        int splitIndex = INT_ONE;
-        if (changeType == ModifiedLine.ModificationType.Removed) {
-            splitIndex = INT_ZERO;
-        }
-
-        String rangeString = splittedModifiedLinesPart[splitIndex]
+        String rangeString = splittedModifiedLinesPart[INT_ONE]
     
         return getNumbersRange(rangeString);
     }

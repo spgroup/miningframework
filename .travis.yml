@@ -12,6 +12,6 @@ before_script:
 
 script:
   - TERM=dumb groovy --version
-  - TERM=dumb groovy -cp "src" src/test/TestSuite.groovy
+  - TERM=dumb groovy -cp "src" src/test/AllTeststSuite.groovy
 jdk:
   - oraclejdk8

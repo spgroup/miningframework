@@ -92,4 +92,19 @@ final class FileManager {
 
         return file
     }
+
+    static List findLocalFileOfChangedClass(String project, String className, String commit){
+        
+        List filesPath=[]
+        File fileDir=new File(project)
+        String newClassName = className.replaceAll('\\.','\\/')
+        fileDir.eachDirRecurse() { dir ->  
+            dir.eachFileMatch(~/.*.java/) { file ->  
+                if (file.path.contains(newClassName+".java")){
+                    filesPath.add(file.path  )
+                }
+            }  
+        }
+        return filesPath
+    }
 }

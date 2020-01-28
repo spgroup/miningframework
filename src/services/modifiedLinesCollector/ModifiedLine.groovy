@@ -33,4 +33,15 @@ class ModifiedLine {
     public String toString() {
         return number + "-" + content + "-" + type
     }
+
+    @Override
+    public boolean equals(Object modifiedLine) {
+        return modifiedLine.number == this.number && modifiedLine.content == this.content &&
+            modifiedLine.type == this.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.number;
+    }
 }

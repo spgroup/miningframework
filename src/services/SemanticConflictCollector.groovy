@@ -23,7 +23,6 @@ class SemanticConflictCollector implements DataCollector{
         def codeTransformationInfo = collectCodeTransformationInfoOfMergeCommit(mergeCommit.getSHA())
         for (code in codeTransformationInfo){
             for (file in FileManager.findLocalFileOfChangedClass(code[6], code[4], mergeCommit.getSHA())){
-                FileTransformations.runTransformation(file, code[5].split("\\(")[0])                
                 String branchComplement = ""
                 try{
                     int index = file.lastIndexOf("/");
@@ -31,7 +30,7 @@ class SemanticConflictCollector implements DataCollector{
                 }catch (Exception e1){
                     println(e1)
                 }
-                buildRequestSemanticConflictDynamic.collectDataWithCodeTransformation(project, mergeCommit, file, branchComplement)
+                buildRequestSemanticConflictDynamic.collectDataWithCodeTransformation(project, mergeCommit, file, code[5].split("\\(")[0], branchComplement)
             }
         }
     }

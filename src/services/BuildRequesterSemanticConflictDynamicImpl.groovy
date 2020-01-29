@@ -24,23 +24,30 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
         }
     }
 
-    public void collectDataWithCodeTransformation(Project project, MergeCommit mergeCommit, String file, String branchNameComplement) {
+    public void collectDataWithCodeTransformation(Project project, MergeCommit mergeCommit, String fileName, String methodName, String branchNameComplement) {
         if (arguments.providedAccessKey()) {
             findAllCommitsFromMergeScenario(mergeCommit).each { commit ->
-                setupEnvironment(project, commit, '_build_branch_all_dependencies_with_tranformations_'+branchNameComplement, "\"pom.xml\"\\, \".travis.yml\", \"${file}\"")
+                String branchComplement = ""
+                try{
+                    int index = fileName.lastIndexOf("/");
+                    branchComplement =  fileName.substring(index+1, fileName.size()).replace(".java","#") + methodName;
+                }catch (Exception e1){
+                    println(e1)
+                }
+                setupEnvironment(project, commit, fileName, methodName, '_build_branch_all_dependencies_with_tranformations_'+branchNameComplement, "\"pom.xml\", \".travis.yml\", \"${fileName}\"")
             }
         }
     }
 
-    private void setupEnvironment(Project project, String commit, String branch, String parameters) {
+    private void setupEnvironment(Project project, String commit, String fileName, String methodName, String branch, String parameters) {
         String branchName = commit.take(5) + branch
-                
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
         
         File travisFile = new File("${project.getPath()}/.travis.yml")
         String[] ownerAndName = getRemoteProjectOwnerAndName(project)
         travisFile.delete()
         BuildSystem buildSystem = getBuildSystem(project)
+        FileTransformations.runTransformation(fileName, methodName)                
 
         if (buildSystem == BuildSystem.Maven) {
             sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, MAVEN_BUILD_WITH_ALL_DEPENDENCIES, parameters)

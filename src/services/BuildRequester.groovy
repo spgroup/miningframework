@@ -21,8 +21,6 @@ abstract class BuildRequester implements DataCollector {
 
     abstract protected BuildSystem getBuildSystem (Project project);
 
-    //abstract protected Process commitChanges(Project project, String message, String[] parameters);
-
     protected Process commitChanges(Project project, String message, String parameters) {
         ProcessRunner.runProcess(project.getPath(), "git", "add", parameters).waitFor()
 

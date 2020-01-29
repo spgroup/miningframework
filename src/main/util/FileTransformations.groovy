@@ -25,36 +25,40 @@ final class FileTransformations {
     private static AnonymousClassDeclaration classNode = null;
 
 
-    final static void parse(String str, ASTParser parser, CompilationUnit cu, final String modifiedMethod) {
-        cu.accept(new ASTVisitor() {
-            Set names = new HashSet();
+    public static void parse(String str, final ASTParser parser, final CompilationUnit cu, final String modifiedMethod) {
+        try{
+            cu.accept(new ASTVisitor() {
+                Set names = new HashSet();
 
-            public boolean visit(FieldDeclaration node) {
-                removeModifiersFields(node);
-                return true; // do not continue
-            }
-
-
-            public boolean visit(SimpleName node) {
-                if (this.names.contains(node.getIdentifier())) {
+                public boolean visit(FieldDeclaration node) {
+                    removeModifiersFields(node);
+                    return true; // do not continue
                 }
-                return true;
-            }
 
-            public boolean visit(MethodDeclaration node) {
-                if(node.isConstructor()){
-                    if(node.parameters().isEmpty()){
-                        hasEmptyConstructor = true;
+
+                public boolean visit(SimpleName node) {
+                    if (this.names.contains(node.getIdentifier())) {
                     }
-                    className = node.getName().toString();
+                    return true;
                 }
-                if (node.getName().toString().equals(modifiedMethod)){
-                    removeModifiersMethods(node, cu);
-                }
-                return true;
-            }
 
-        });
+                public boolean visit(MethodDeclaration node) {
+                    if(node.isConstructor()){
+                        if(node.parameters().isEmpty()){
+                            hasEmptyConstructor = true;
+                        }
+                        className = node.getName().toString();
+                    }
+                    if (node.getName().toString().equals(modifiedMethod)){
+                        removeModifiersMethods(node, cu);
+                    }
+                    return true;
+                }
+
+            });
+        }catch (Exception e){
+            println(e)
+        }
     }
     public static String readFileToString(String filePath) throws IOException {
         StringBuilder fileData = new StringBuilder(1000);
@@ -112,7 +116,8 @@ final class FileTransformations {
         }
     }
 
-    private static void removeModifiersMethods(MethodDeclaration node){
+    private static void removeModifiersMethods(MethodDeclaration node, CompilationUnit cu) {
+        AST ast = cu.getAST();
         List<Modifier> modifiersToRemove = new ArrayList<Modifier>();
 
         int i = 0;
@@ -127,19 +132,27 @@ final class FileTransformations {
             }
             i++;
         }
+
         for(Modifier mod : modifiersToRemove){
             node.modifiers().remove(mod);
         }
 
-        if (node.modifiers().get(0) instanceof Modifier) {	
-            Modifier a = (Modifier) node.modifiers().get(0);	
-            if (!a.isPublic()) {	
-                node.modifiers().add(0, ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));	
-            }	
+        if (node.modifiers().get(0) instanceof Modifier) {
+            Modifier a = (Modifier) node.modifiers().get(0);
+            if (!a.isPublic()) {
+                node.modifiers().add(0, ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
+            }
         }
     }
 
-    static final void runTransformation(String file, String modifiedMethod) throws IOException {
+    public static void saveChanges(CompilationUnit cu, String file) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(file);
+        writer.print("");
+        writer.print(cu);
+        writer.close();
+    }
+
+    public static final void runTransformation(String file, String modifiedMethod) throws IOException {
         ASTParser parser = ASTParser.newParser(AST.JLS8);
         String str = readFileToString(file);
         parser.setSource(str.toCharArray());
@@ -150,5 +163,7 @@ final class FileTransformations {
         if(!hasEmptyConstructor) {
             addEmptyConstructor(readFileToString(file),parser,cu);
         }
+        saveChanges(cu,file)
     }
+
 }

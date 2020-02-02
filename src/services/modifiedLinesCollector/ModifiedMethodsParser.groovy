@@ -18,7 +18,9 @@ class ModifiedMethodsParser {
         def result = new HashMap<String, int[]>();
         
         def iterator = lines.iterator();
-        iterator.next();
+        if (iterator.hasNext()) {
+            iterator.next();
+        }
 
         while(iterator.hasNext()) {
             def line = iterator.next();

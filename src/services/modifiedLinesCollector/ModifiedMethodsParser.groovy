@@ -14,7 +14,7 @@ class ModifiedMethodsParser {
 
     private final String FLAGS_REGEX = "(${ADDED_FLAG}|${CHANGED_FLAG}|${REMOVED_FLAG})"
 
-    public Map<String, int[]> parse (List<String> lines) {
+    public Map<String, int[]> parse (String[] lines) {
         def result = new HashMap<String, int[]>();
         
         def iterator = lines.iterator();

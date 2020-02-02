@@ -13,8 +13,10 @@ public class MethodModifiedLinesMatcher {
 
             for (def lineNumber: lines) {
                 def diffLine = findModifiedLineByNumber(lineNumber, modifiedLines);
-
-                lineSet.add(diffLine);
+            
+                if (diffLine != null) {
+                    lineSet.add(diffLine);
+                }
             }
 
             methodSet.add(new ModifiedMethod(methodSignature, lineSet));

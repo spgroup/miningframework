@@ -28,4 +28,13 @@ class ModifiedMethod {
         return this.signature.hashCode();
     }
 
+    @Override
+    public String toString() {
+        String result = this.signature + "\n"
+        for (def line : this.lines) {
+            result += line.toString()    + "\n";
+        }
+        return result;
+    }
+
 }

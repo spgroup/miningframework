@@ -18,7 +18,7 @@ class DiffParser {
 
     private final Pattern HEADER_PATTERN = Pattern.compile("([0-9]+(,[0-9]+)?${FLAGS_REGEX}[0-9]+(,[0-9]+)?)\$");
 
-    public List<ModifiedLine> parse (List<String> lines) {
+    public List<ModifiedLine> parse (String[] lines) {
         def result = new ArrayList<ModifiedLine>();
         def iterator = lines.iterator();
         

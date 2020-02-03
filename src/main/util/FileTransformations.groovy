@@ -1,22 +1,19 @@
 package main.util
 
 @Grab(group='org.eclipse.jdt', module='org.eclipse.jdt.core', version='3.12.2')
+@Grab(group='commons-io', module='commons-io', version='2.4')
 import main.project.*
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
+import org.apache.commons.io.FileUtils;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.text.edits.TextEdit;
 
 import static org.eclipse.jdt.core.dom.Modifier.*;
-
 
 final class FileTransformations {
 
@@ -24,21 +21,14 @@ final class FileTransformations {
     private static String className = "";
     private static AnonymousClassDeclaration classNode = null;
 
-
     public static void parse(String str, final ASTParser parser, final CompilationUnit cu, final String modifiedMethod) {
-        try{
+        hasEmptyConstructor = false
+        try{ 
             cu.accept(new ASTVisitor() {
                 Set names = new HashSet();
 
                 public boolean visit(FieldDeclaration node) {
                     removeModifiersFields(node);
-                    return true; // do not continue
-                }
-
-
-                public boolean visit(SimpleName node) {
-                    if (this.names.contains(node.getIdentifier())) {
-                    }
                     return true;
                 }
 
@@ -56,10 +46,11 @@ final class FileTransformations {
                 }
 
             });
-        }catch (Exception e){
-            println(e)
+        }catch(Exception e1){
+            print(e1)
         }
     }
+
     public static String readFileToString(String filePath) throws IOException {
         StringBuilder fileData = new StringBuilder(1000);
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -90,7 +81,6 @@ final class FileTransformations {
 
     private static void addEmptyConstructor(String str, ASTParser parser, CompilationUnit cu) {
         AST ast = cu.getAST();
-        ASTRewrite rewriter = ASTRewrite.create(ast);
 
         MethodDeclaration newConstructor = ast.newMethodDeclaration();
 
@@ -106,11 +96,18 @@ final class FileTransformations {
 
     private static void removeModifiersFields(FieldDeclaration node) {
         List<Modifier> modifiersToRemove = new ArrayList<Modifier>();
-        for(Modifier mod : (List<Modifier>) node.modifiers()){
-            if(mod.isFinal()|| mod.isProtected()){
-                modifiersToRemove.add(mod);
+        int i = 0;
+
+        while(i < node.modifiers().size()) {
+            if (node.modifiers().get(i) instanceof Modifier) {
+                Modifier mod = (Modifier) node.modifiers().get(i);
+                if(mod.isFinal()|| mod.isProtected() ){
+                    modifiersToRemove.add(mod);
+                }
             }
+            i++;
         }
+
         for(Modifier mod : modifiersToRemove){
             node.modifiers().remove(mod);
         }
@@ -136,34 +133,49 @@ final class FileTransformations {
         for(Modifier mod : modifiersToRemove){
             node.modifiers().remove(mod);
         }
-
-        if (node.modifiers().get(0) instanceof Modifier) {
-            Modifier a = (Modifier) node.modifiers().get(0);
-            if (!a.isPublic()) {
-                node.modifiers().add(0, ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
+        if(node.modifiers().size() > 0) {
+            if (node.modifiers().get(0) instanceof Modifier) {
+                Modifier a = (Modifier) node.modifiers().get(0);
+                if (!a.isPublic()) {
+                    node.modifiers().add(0, ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
+                }
             }
+        }else{
+            node.modifiers().add(0, ast.newModifier(ModifierKeyword.PUBLIC_KEYWORD));
         }
     }
 
-    public static void saveChanges(CompilationUnit cu, String file) throws FileNotFoundException {
-        PrintWriter writer = new PrintWriter(file);
-        writer.print("");
-        writer.print(cu);
-        writer.close();
+    public static void saveChanges(File file, CompilationUnit cu) throws FileNotFoundException {
+        FileWriter fooWriter = new FileWriter(file, false);
+        fooWriter.write(cu.toString());
+        fooWriter.close();
     }
 
-    public static final void runTransformation(String file, String modifiedMethod) throws IOException {
+    public static final void runTransformation(String fileName, String modifiedMethod) throws IOException {
+        File file = new File(fileName);
+        final String str = FileUtils.readFileToString(file);
+        org.eclipse.jface.text.Document document = new org.eclipse.jface.text.Document(str);
+
         ASTParser parser = ASTParser.newParser(AST.JLS8);
-        String str = readFileToString(file);
-        parser.setSource(str.toCharArray());
-        parser.setKind(ASTParser.K_COMPILATION_UNIT);
-        final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+        Map options = JavaCore.getOptions();
+        JavaCore.setComplianceOptions(JavaCore.VERSION_1_8, options);
+        parser.setCompilerOptions(options);
 
-        parse(readFileToString(file),parser, cu, modifiedMethod);
+        parser.setSource(document.get().toCharArray());
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+
+        final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+        List types = cu.types();
+        TypeDeclaration typeDec = (TypeDeclaration) types.get(0);
+        className = typeDec.getName().toString();
+
+        parse(str, parser, cu, modifiedMethod);
         if(!hasEmptyConstructor) {
-            addEmptyConstructor(readFileToString(file),parser,cu);
+            addEmptyConstructor(str,parser,cu);
+            this.hasEmptyConstructor = true
         }
-        saveChanges(cu,file)
+        saveChanges(file, cu)
+        
     }
 
 }

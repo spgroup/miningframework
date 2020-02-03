@@ -36,12 +36,11 @@ class ModifiedLine {
 
     @Override
     public boolean equals(Object modifiedLine) {
-        return modifiedLine.getContent().equals(this.content) &&
-            modifiedLine.getType() == this.type;
+        return modifiedLine.getContent().equals(this.content);
     }
 
     @Override
     public int hashCode() {
-        return (this.content + this.type).hashCode();
+        return (this.content).hashCode();
     }
 }

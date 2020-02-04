@@ -4,12 +4,12 @@ import org.junit.Test
 import static test.Assert.assertEquals
 import org.junit.BeforeClass
 
-import services.modifiedLinesCollector.DiffParser
+import services.modifiedLinesCollector.TextualDiffParser
 import services.modifiedLinesCollector.ModifiedLine
 
-public class DiffParserTest {
+public class TextualDiffParserTest {
 
-    private diffParser = new DiffParser()
+    private diffParser = new TextualDiffParser()
 
     @Test
     public void withEmptyArrayShouldReturnEmptySet() {

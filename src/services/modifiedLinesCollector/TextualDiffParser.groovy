@@ -5,7 +5,7 @@ import java.util.HashSet
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-class DiffParser {
+class TextualDiffParser {
 
     private final String NEW_LINES_MARKER = "---";
     private final int INT_ZERO = 0;
@@ -18,7 +18,7 @@ class DiffParser {
 
     private final Pattern HEADER_PATTERN = Pattern.compile("([0-9]+(,[0-9]+)?${FLAGS_REGEX}[0-9]+(,[0-9]+)?)\$");
 
-    public List<ModifiedLine> parse (String[] lines) {
+    public List<ModifiedLine> parse (List<String> lines) {
         def result = new ArrayList<ModifiedLine>();
         def iterator = lines.iterator();
         

@@ -63,10 +63,9 @@ public class MethodModifiedLinesMatcherTest {
         
         assertEquals(method.getLines().size(), 3);
         def it = method.getLines().iterator();
-
-        assertEquals(it.next(), addedLineOne);
-        assertEquals(it.next(), addedLineTwo);
-        assertEquals(it.next(), addedLineThree);
+        assertModifiedLineEquals(it.next(), addedLineTwo);
+        assertModifiedLineEquals(it.next(), addedLineOne);
+        assertModifiedLineEquals(it.next(), addedLineThree);
     };
 
     @Test
@@ -96,9 +95,12 @@ public class MethodModifiedLinesMatcherTest {
 
         def lineIterator = method.getLines().iterator();
         assertEquals(method.getLines().size(), 2);
+        
+        def first = lineIterator.next()
+        def second = lineIterator.next()
 
-        assertEquals(lineIterator.next(), addedLineOne);
-        assertEquals(lineIterator.next(), addedLineTwo);
+        assertModifiedLineEquals(second, addedLineOne);
+        assertModifiedLineEquals(first, addedLineTwo);
 
         method = methodIterator.next();
 
@@ -107,7 +109,13 @@ public class MethodModifiedLinesMatcherTest {
         assertEquals(method.getLines().size(), 1);
         lineIterator = method.getLines().iterator();
 
-        assertEquals(lineIterator.next(), addedLineThree);
+        assertModifiedLineEquals(lineIterator.next(), addedLineThree);
+    }
+
+    private assertModifiedLineEquals(ModifiedLine actual, ModifiedLine expected) {
+        assertEquals(actual.getNumber(), expected.getNumber());
+        assertEquals(actual.getContent(), expected.getContent());
+        assertEquals(actual.getType(), expected.getType());
     }
 
 }

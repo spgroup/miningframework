@@ -19,7 +19,6 @@ public class MiningModule extends AbstractModule {
 
         dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)
-        // dataCollectorBinder.addBinding().to(ExperimentalDataCollectorImpl.class)
 
         dataCollectorBinder.addBinding().to(StatisticsCollectorImpl.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)

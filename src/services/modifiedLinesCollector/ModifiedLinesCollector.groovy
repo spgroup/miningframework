@@ -7,10 +7,8 @@ import main.interfaces.DataCollector
 import main.util.FileManager
 import main.util.ProcessRunner
 
-import org.apache.commons.lang3.StringUtils
-
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+import services.ClassNameHelper
+import services.RevisionsFilesCollector
 
 import static main.app.MiningFramework.arguments
 
@@ -23,9 +21,7 @@ class ModifiedLinesCollector implements DataCollector {
     private ModifiedMethodsParser modifiedMethodsParser = new ModifiedMethodsParser();
     private MethodModifiedLinesMatcher modifiedMethodsMatcher = new MethodModifiedLinesMatcher();
 
-    ModifiedLinesCollector() {
-        // createOutputFiles(arguments.getOutputPath());
-    }
+    private RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();
     
     private void createOutputFiles(String outputPath) {
         File experimentalDataDir = new File(outputPath + '/data')
@@ -39,7 +35,6 @@ class ModifiedLinesCollector implements DataCollector {
             this.experimentalDataFile << 'project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n'
         }
         
-       
         if(arguments.isPushCommandActive()) {
             this.experimentalDataFileWithLinks = new File("${outputPath}/data/result-links.csv");
         }
@@ -50,13 +45,21 @@ class ModifiedLinesCollector implements DataCollector {
         Set<String> mutuallyModifiedFiles = getMutuallyModifiedFiles(project, mergeCommit); 
 
         for (String filePath : mutuallyModifiedFiles) {
+            // get merge revision modified methods
             Set<ModifiedMethod> allModifiedMethods = getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            // get methods modified by both left and right revisions
             Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, filePath);
 
             if (!mutuallyModifiedMethods.isEmpty()) {
-                String className = getClassFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
+                // get file class name
+                String className = ClassNameHelper.getClassFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
+                
+                // calling a data collector here because in this specific case we only need
+                // revisions for the cases where there are mutually modified methods in this class
+                revisionsCollector.collectDataFromFile(project, mergeCommit, filePath);
 
                 for (def method : allModifiedMethods) {
+                    // get left and right methods for the specific merge method
                     Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods = mutuallyModifiedMethods[method.getSignature()];
                     if (leftAndRightMethods != null) {
                         ModifiedMethod leftMethod = leftAndRightMethods.getFirst();
@@ -67,7 +70,9 @@ class ModifiedLinesCollector implements DataCollector {
                         Set<Integer> rightAddedLines = new HashSet<Integer>();
                         Set<Integer> rightDeletedLines = new HashSet<Integer>();
 
+                        // for each modified line in merge
                         for (def mergeLine : method.getLines()) {
+                            // if it is at left's modified lines add it to left list
                             if (leftMethod.getLines().contains(mergeLine)) {
                                 if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
                                     leftDeletedLines.add(mergeLine.getNumber());
@@ -75,6 +80,7 @@ class ModifiedLinesCollector implements DataCollector {
                                     leftAddedLines.add(mergeLine.getNumber());
                                 }
                             }
+                            // if it is at rights's modified lines add it to right list
                             if (rightMethod.getLines().contains(mergeLine)) {
                                 if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
                                     rightDeletedLines.add(mergeLine.getNumber());
@@ -84,7 +90,6 @@ class ModifiedLinesCollector implements DataCollector {
                             }
                         }
 
-                        saveMergeScenarioFiles(project, mergeCommit, className.replaceAll('\\.', '\\/'), filePath);
                         printResults(project, mergeCommit, className, method.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines,rightDeletedLines); 
                     }
 
@@ -95,20 +100,6 @@ class ModifiedLinesCollector implements DataCollector {
 
         }
         println "${project.getName()} - ModifiedLinesCollector collection finished"
-    }
-
-    private void saveMergeScenarioFiles(Project project, MergeCommit mergeCommit, String classFilePath, String filePath) {
-        String outputPath = arguments.getOutputPath()
-        
-        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classFilePath}/"
-        File results = new File(path)
-        if(!results.exists())
-            results.mkdirs()
-
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getLeftSHA(), "${path}/left.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${path}/right.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${path}/base.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${path}/merge.java")
     }
 
     private synchronized void printResults(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
@@ -124,34 +115,6 @@ class ModifiedLinesCollector implements DataCollector {
 
     }
 
-    private String getClassFullyQualifiedName(Project project, String filePath, String SHA) {
-        String className = getClassName(filePath)
-        String classPackage = getClassPackage(project, SHA, filePath)
-
-        return (classPackage == "" ? "" : classPackage + '.') + className
-    }
-
-    private String getClassPackage(Project project, String SHA, String filePath) {
-        Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${SHA}:${filePath}")
-        
-        def fileLines = gitCatFile.getInputStream().readLines()
-
-        for (String fileLine : fileLines) {
-            String lineNoWhitespace = StringUtils.deleteWhitespace(fileLine)
-            if(lineNoWhitespace.take(7) == 'package') {
-                return lineNoWhitespace.substring(7, lineNoWhitespace.indexOf(';')) // assuming the ; will be at the same line
-            }
-        }
-        
-        return "";
-    }
-
-    private String getClassName(String filePath) {
-        Pattern pattern = Pattern.compile("/?([A-Z][A-Za-z0-9]*?)\\.java") // find the name of the class by the name of the file
-        Matcher matcher = pattern.matcher(filePath)
-        if(matcher.find())
-            return matcher.group(1)
-    }
 
     private Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath) {
         Set<ModifiedMethod> leftModifiedMethods = getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())

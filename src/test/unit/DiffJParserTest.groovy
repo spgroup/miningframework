@@ -4,11 +4,11 @@ import org.junit.Test
 import static test.Assert.assertEquals
 import org.junit.BeforeClass
 
-import services.modifiedLinesCollector.ModifiedMethodsParser
+import services.modifiedLinesCollector.DiffJParser
 
-public class ModifiedMethodsParserTest {
+public class DiffJParserTest {
 
-    private def methodsParser = new ModifiedMethodsParser();
+    private def methodsParser = new DiffJParser();
 
     @Test
     public void withOneModifiedMethodWithOneAddedLine() {

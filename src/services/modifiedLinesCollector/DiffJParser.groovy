@@ -3,7 +3,7 @@ package services.modifiedLinesCollector
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-class ModifiedMethodsParser {
+class DiffJParser {
 
     private final int INT_ZERO = 0;
     private final int INT_ONE = 1;

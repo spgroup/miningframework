@@ -18,7 +18,7 @@ class ModifiedLinesCollector implements DataCollector {
     private File experimentalDataFileWithLinks;
 
     private TextualDiffParser textualDiffParser = new TextualDiffParser();
-    private ModifiedMethodsParser modifiedMethodsParser = new ModifiedMethodsParser();
+    private DiffJParser modifiedMethodsParser = new DiffJParser();
     private MethodModifiedLinesMatcher modifiedMethodsMatcher = new MethodModifiedLinesMatcher();
 
     private RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();

@@ -31,10 +31,10 @@ class RevisionsFilesCollector implements DataCollector {
             revisionsFolder.mkdirs()
         }
 
-        FileManager.copyAndMoveFile(project, revisionsFolderPath, mergeCommit.getLeftSHA(), "${revisionsFolderPath}/left.java")
-        FileManager.copyAndMoveFile(project, revisionsFolderPath, mergeCommit.getRightSHA(), "${revisionsFolderPath}/right.java")
-        FileManager.copyAndMoveFile(project, revisionsFolderPath, mergeCommit.getAncestorSHA(), "${revisionsFolderPath}/base.java")
-        FileManager.copyAndMoveFile(project, revisionsFolderPath, mergeCommit.getSHA(), "${revisionsFolderPath}/merge.java")     
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getLeftSHA(), "${revisionsFolderPath}/left.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${revisionsFolderPath}/right.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${revisionsFolderPath}/base.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${revisionsFolderPath}/merge.java")     
     }
     
     private String getClassFilePath(Project project, MergeCommit mergeCommit, String filePath) {

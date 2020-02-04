@@ -1,5 +1,8 @@
 package services
 
+@Grab('com.xlson.groovycsv:groovycsv:1.3')
+import static com.xlson.groovycsv.CsvParser.parseCsv
+
 import java.io.File 
 import groovy.util.NodeBuilder
 import main.interfaces.DataCollector
@@ -18,28 +21,14 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
 
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
+            def codeTransformationInfo = collectCodeTransformationInfoOfMergeCommit(mergeCommit.getSHA())
             findAllCommitsFromMergeScenario(mergeCommit).each { commit ->
-                setupEnvironment(project, commit, '_build_branch_all_dependencies', "\"pom.xml\"\\, \".travis.yml\"")
+                setupEnvironment(project, mergeCommit, commit, codeTransformationInfo, '_build_branch_all_dependencies_with_tranformations', "\"pom.xml\", \".travis.yml\"")
             }
         }
     }
 
-    public void collectDataWithCodeTransformation(Project project, MergeCommit mergeCommit, String fileName, String methodName, String branchNameComplement) {
-        if (arguments.providedAccessKey()) {
-            findAllCommitsFromMergeScenario(mergeCommit).each { commit ->
-                String branchComplement = ""
-                try{
-                    int index = fileName.lastIndexOf("/");
-                    branchComplement =  fileName.substring(index+1, fileName.size()).replace(".java","#") + methodName;
-                }catch (Exception e1){
-                    println(e1)
-                }
-                setupEnvironment(project, commit, fileName, methodName, '_build_branch_all_dependencies_with_tranformations_'+branchNameComplement, "\"pom.xml\", \".travis.yml\", \"${fileName}\"")
-            }
-        }
-    }
-
-    private void setupEnvironment(Project project, String commit, String fileName, String methodName, String branch, String parameters) {
+    private void setupEnvironment(Project project, MergeCommit mergeCommit, String commit, ArrayList<String> codeTransformationInfo, String branch, String parameters) {
         String branchName = commit.take(5) + branch
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
         
@@ -47,8 +36,13 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
         String[] ownerAndName = getRemoteProjectOwnerAndName(project)
         travisFile.delete()
         BuildSystem buildSystem = getBuildSystem(project)
-        FileTransformations.runTransformation(fileName, methodName)                
-
+        for (code in codeTransformationInfo){
+            for (file in FileManager.findLocalFileOfChangedClass(code[6], code[4], mergeCommit.getSHA())){
+                FileTransformations.runTransformation(file, code[5].split("\\(")[0])
+                parameters += ", \"${file}\""
+            }
+        }
+                        
         if (buildSystem == BuildSystem.Maven) {
             sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, MAVEN_BUILD_WITH_ALL_DEPENDENCIES, parameters)
         }
@@ -109,6 +103,25 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
 
     private String[] findAllCommitsFromMergeScenario(MergeCommit mergeCommit) {
         return [mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit.getRightSHA(), mergeCommit.getSHA()]
+    }
+
+    public ArrayList<String> collectCodeTransformationInfoOfMergeCommit (String mergeCommit){
+        ArrayList<String> codeTransformationInfo = new ArrayList<String>();
+        try{
+            File outputFile = new File("${arguments.getOutputPath()}/data/results.csv")
+            def csv_content = outputFile.getText('utf-8')
+            def data_iterator = parseCsv(csv_content, separator: ';', readFirstLine: false)
+            
+            for (line in data_iterator) {
+                if (line[1] == mergeCommit){
+                    codeTransformationInfo.add([line[1],line[2],line[3],line[4],line[5],line[6],line[7]])
+                }
+            }
+        }catch(Exception e1){
+            print(e1)
+        }
+
+        return codeTransformationInfo;
     }
 
 }

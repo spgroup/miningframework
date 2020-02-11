@@ -34,7 +34,9 @@ class ClassNameHelper {
     }
 
     static private String getClassName(String filePath) {
-        Pattern pattern = Pattern.compile("/?([A-Z][A-Za-z0-9]*?)\\.java") // find the name of the class by the name of the file
+        // this uses two built in identifiers used in java to represent the Patterns that recognize 
+        // java valid indetifiers
+        Pattern pattern = Pattern.compile("(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)\\.java") 
         Matcher matcher = pattern.matcher(filePath)
         if(matcher.find())
             return matcher.group(1)

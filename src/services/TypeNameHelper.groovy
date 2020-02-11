@@ -9,16 +9,16 @@ import main.project.Project
 
 import main.util.ProcessRunner
 
-class ClassNameHelper {
+class TypeNameHelper {
 
-    static public String getClassFullyQualifiedName(Project project, String filePath, String SHA) {
-        String className = getClassName(filePath)
-        String classPackage = getClassPackage(project, SHA, filePath)
+    static public String getFullyQualifiedName(Project project, String filePath, String SHA) {
+        String name = getName(filePath)
+        String package = getPackage(project, SHA, filePath)
 
-        return (classPackage == "" ? "" : classPackage + '.') + className
+        return (package == "" ? "" : package + '.') + name
     }
 
-    static private String getClassPackage(Project project, String SHA, String filePath) {
+    static private String getPackage(Project project, String SHA, String filePath) {
         Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${SHA}:${filePath}")
         
         def fileLines = gitCatFile.getInputStream().readLines()
@@ -33,7 +33,7 @@ class ClassNameHelper {
         return "";
     }
 
-    static private String getClassName(String filePath) {
+    static private String getName(String filePath) {
         // this uses two built in identifiers used in java to represent the Patterns that recognize 
         // java valid indetifiers
         Pattern pattern = Pattern.compile("(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)\\.java") 

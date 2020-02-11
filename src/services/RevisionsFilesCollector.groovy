@@ -38,7 +38,7 @@ class RevisionsFilesCollector implements DataCollector {
     }
     
     private String getClassFilePath(Project project, MergeCommit mergeCommit, String filePath) {
-        String className = ClassNameHelper.getClassFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
+        String className = TypeNameHelper.getFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
 
         return className.replaceAll('\\.', '\\/')
     }  

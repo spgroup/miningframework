@@ -7,7 +7,7 @@ import main.interfaces.DataCollector
 import main.util.FileManager
 import main.util.ProcessRunner
 
-import services.ClassNameHelper
+import services.TypeNameHelper
 import services.RevisionsFilesCollector
 
 import static main.app.MiningFramework.arguments
@@ -49,7 +49,7 @@ class ModifiedLinesCollector implements DataCollector {
 
             if (!mutuallyModifiedMethods.isEmpty()) {
                 // get file class name
-                String className = ClassNameHelper.getClassFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
+                String className = TypeNameHelper.getFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
                 
                 // calling a data collector here because in this specific case we only need
                 // revisions for the cases where there are mutually modified methods in this class

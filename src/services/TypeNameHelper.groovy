@@ -1,7 +1,5 @@
 package services
 
-import org.apache.commons.lang3.StringUtils
-
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -13,9 +11,9 @@ class TypeNameHelper {
 
     static public String getFullyQualifiedName(Project project, String filePath, String SHA) {
         String name = getName(filePath)
-        String package = getPackage(project, SHA, filePath)
+        String packageName = getPackage(project, SHA, filePath)
 
-        return (package == "" ? "" : package + '.') + name
+        return (packageName == "" ? "" : packageName + '.') + name
     }
 
     static private String getPackage(Project project, String SHA, String filePath) {
@@ -24,9 +22,15 @@ class TypeNameHelper {
         def fileLines = gitCatFile.getInputStream().readLines()
 
         for (String fileLine : fileLines) {
-            String lineNoWhitespace = StringUtils.deleteWhitespace(fileLine)
+            String lineNoWhitespace = fileLine.trim()
             if(lineNoWhitespace.take(7) == 'package') {
-                return lineNoWhitespace.substring(7, lineNoWhitespace.indexOf(';')) // assuming the ; will be at the same line
+                String packageName;
+                if (lineNoWhitespace.endsWith(";")) {
+                    packageName = lineNoWhitespace.substring(7, lineNoWhitespace.indexOf(';'))
+                } else {
+                    packageName = lineNoWhitespace.substring(7, lineNoWhitespace.length() - 1)
+                }
+                return packageName;
             }
         }
         

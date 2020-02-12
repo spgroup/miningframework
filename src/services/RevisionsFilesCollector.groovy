@@ -21,7 +21,6 @@ class RevisionsFilesCollector implements DataCollector {
         println "${project.getName()} - Revisions collection finished!"
     }
 
-    // This method is used within the modified lines data collector save revisions from a specific file
     public String collectDataFromFile(Project project, MergeCommit mergeCommit, String filePath) {
         File revisionsFolder = createRevisionsFolderIfItDoesntExist(project, mergeCommit, filePath);
         

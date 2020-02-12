@@ -7,7 +7,7 @@ import main.interfaces.DataCollector
 import main.util.FileManager
 import main.util.ProcessRunner
 
-import services.TypeNameHelper
+import services.ClassNameHelper
 import services.RevisionsFilesCollector
 
 import static main.app.MiningFramework.arguments
@@ -39,7 +39,7 @@ class ModifiedLinesCollector implements DataCollector {
 
     void collectData(Project project, MergeCommit mergeCommit) {
         createOutputFiles(arguments.getOutputPath())
-        Set<String> mutuallyModifiedFiles = getMutuallyModifiedFiles(project, mergeCommit); 
+        Set<String> mutuallyModifiedFiles = getFilesModifiedByBothParents(project, mergeCommit); 
 
         for (String filePath : mutuallyModifiedFiles) {
             // get merge revision modified methods
@@ -49,7 +49,7 @@ class ModifiedLinesCollector implements DataCollector {
 
             if (!mutuallyModifiedMethods.isEmpty()) {
                 // get file class name
-                String className = TypeNameHelper.getFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
+                String className = ClassNameHelper.getClassFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
                 
                 // calling a data collector here because in this specific case we only need
                 // revisions for the cases where there are mutually modified methods in this class
@@ -112,7 +112,7 @@ class ModifiedLinesCollector implements DataCollector {
 
     }
 
-    private Set<String> getMutuallyModifiedFiles(Project project, MergeCommit mergeCommit) {
+    private Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
 

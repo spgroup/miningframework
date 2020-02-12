@@ -11,7 +11,7 @@ import static main.app.MiningFramework.arguments
 class RevisionsFilesCollector implements DataCollector {
 
     public void collectData(Project project, MergeCommit mergeCommit) {
-        Set<String> modifiedFiles = getMutuallyModifiedFiles(project, mergeCommit);
+        Set<String> modifiedFiles = getFilesModifiedByBothParents(project, mergeCommit);
 
 
         for (String filePath: modifiedFiles) {
@@ -43,7 +43,7 @@ class RevisionsFilesCollector implements DataCollector {
         return className.replaceAll('\\.', '\\/')
     }  
 
-    private Set<String> getMutuallyModifiedFiles(Project project, MergeCommit mergeCommit) {
+    private Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
 

@@ -22,7 +22,7 @@ abstract class BuildRequester implements DataCollector {
     abstract protected BuildSystem getBuildSystem (Project project);
 
     protected Process commitChanges(Project project, String message, String parameters) {
-        ProcessRunner.runProcess(project.getPath(), "git", "add", parameters).waitFor()
+        ProcessRunner.runProcess(project.getPath(), "git", "add", ".").waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }

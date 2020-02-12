@@ -23,6 +23,15 @@ class RevisionsFilesCollector implements DataCollector {
 
     // This method is used within the modified lines data collector save revisions from a specific file
     public String collectDataFromFile(Project project, MergeCommit mergeCommit, String filePath) {
+        File revisionsFolder = createRevisionsFolderIfItDoesntExist(project, mergeCommit, filePath);
+        
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getLeftSHA(), "${revisionsFolder.getAbsolutePath()}/left.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${revisionsFolder.getAbsolutePath()}/right.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${revisionsFolder.getAbsolutePath()}/base.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${revisionsFolder.getAbsolutePath()}/merge.java")     
+    }
+
+    private File createRevisionsFolderIfItDoesntExist (Project project, MergeCommit mergeCommit, String filePath) {
         String classFilePath = getClassFilePath(project, mergeCommit, filePath);
         
         String revisionsFolderPath = "${arguments.getOutputPath()}/files/${project.getName()}/${mergeCommit.getSHA()}/${classFilePath}/";
@@ -31,10 +40,7 @@ class RevisionsFilesCollector implements DataCollector {
             revisionsFolder.mkdirs()
         }
 
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getLeftSHA(), "${revisionsFolderPath}/left.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${revisionsFolderPath}/right.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${revisionsFolderPath}/base.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${revisionsFolderPath}/merge.java")     
+        return revisionsFolder
     }
     
     private String getClassFilePath(Project project, MergeCommit mergeCommit, String filePath) {

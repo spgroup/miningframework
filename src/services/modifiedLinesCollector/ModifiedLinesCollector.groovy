@@ -67,9 +67,9 @@ class ModifiedLinesCollector implements DataCollector {
         Set<Integer> rightDeletedLines = new HashSet<Integer>();
 
         // for each modified line in merge
-        for (def mergeLine : mergeMethod.getLines()) {
+        for (def mergeLine : mergeMethod.getModifiedLines()) {
             // if it is at left's modified lines add it to left list
-            if (leftMethod.getLines().contains(mergeLine)) {
+            if (leftMethod.getModifiedLines().contains(mergeLine)) {
                 if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
                     leftDeletedLines.add(mergeLine.getNumber());
                 } else {
@@ -77,7 +77,7 @@ class ModifiedLinesCollector implements DataCollector {
                 }
             }
             // if it is at rights's modified lines add it to right list
-            if (rightMethod.getLines().contains(mergeLine)) {
+            if (rightMethod.getModifiedLines().contains(mergeLine)) {
                 if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
                     rightDeletedLines.add(mergeLine.getNumber());
                 } else {

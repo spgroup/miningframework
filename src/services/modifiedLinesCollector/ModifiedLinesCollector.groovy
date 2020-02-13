@@ -5,7 +5,6 @@ import main.project.Project
 import main.interfaces.DataCollector
 
 import main.util.FileManager
-import main.util.ProcessRunner
 
 import services.TypeNameHelper
 import services.RevisionsFilesCollector
@@ -19,27 +18,10 @@ class ModifiedLinesCollector implements DataCollector {
 
     private ModifiedMethodsHelper modifiedMethodsHelper = new ModifiedMethodsHelper();
     private RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();
-    
-    private void createOutputFiles(String outputPath) {
-        File experimentalDataDir = new File(outputPath + '/data')
-        
-        if (!experimentalDataDir.exists()) {
-            experimentalDataDir.mkdirs()
-        }
-
-        this.experimentalDataFile = new File(outputPath + "/data/results.csv")
-        if (!experimentalDataFile.exists()) {
-            this.experimentalDataFile << 'project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n'
-        }
-        
-        if(arguments.isPushCommandActive()) {
-            this.experimentalDataFileWithLinks = new File("${outputPath}/data/result-links.csv");
-        }
-    }
 
     void collectData(Project project, MergeCommit mergeCommit) {
         createOutputFiles(arguments.getOutputPath())
-        Set<String> mutuallyModifiedFiles = getFilesModifiedByBothParents(project, mergeCommit); 
+        Set<String> mutuallyModifiedFiles = getFilesModifiedByBothParents(project, mergeCommit);
 
         for (String filePath : mutuallyModifiedFiles) {
             // get merge revision modified methods
@@ -50,7 +32,7 @@ class ModifiedLinesCollector implements DataCollector {
             if (!mutuallyModifiedMethods.isEmpty()) {
                 // get file class name
                 String className = TypeNameHelper.getFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
-                
+
                 // calling a data collector here because in this specific case we only need
                 // revisions for the cases where there are mutually modified methods in this class
                 revisionsCollector.collectDataFromFile(project, mergeCommit, filePath);
@@ -88,7 +70,7 @@ class ModifiedLinesCollector implements DataCollector {
                         }
 
                         // prints results to a csv file
-                        printResults(project, mergeCommit, className, method.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines,rightDeletedLines); 
+                        printResults(project, mergeCommit, className, method.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines,rightDeletedLines);
                     }
 
                 }
@@ -98,6 +80,30 @@ class ModifiedLinesCollector implements DataCollector {
 
         }
         println "${project.getName()} - ModifiedLinesCollector collection finished"
+    }
+
+    private void createOutputFiles(String outputPath) {
+        createExperimentalDataDir(outputPath)
+        createExperimentalDataFiles(outputPath)
+    }
+
+    private void createExperimentalDataFiles(String outputPath) {
+        this.experimentalDataFile = new File(outputPath + "/data/results.csv")
+        if (!experimentalDataFile.exists()) {
+            this.experimentalDataFile << 'project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n'
+        }
+
+        if (arguments.isPushCommandActive()) {
+            this.experimentalDataFileWithLinks = new File("${outputPath}/data/result-links.csv");
+        }
+    }
+
+    private void createExperimentalDataDir(String outputPath) {
+        File experimentalDataDir = new File(outputPath + '/data')
+
+        if (!experimentalDataDir.exists()) {
+            experimentalDataDir.mkdirs()
+        }
     }
 
     private synchronized void printResults(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,

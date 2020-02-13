@@ -6,6 +6,13 @@ import main.project.MergeCommit
 import main.util.ProcessRunner
 import main.util.FileManager
 
+/**
+ * This class uses a combination o two diffing tools to provide the necessary diff output
+ * it uses the semantic diff tool (diffj) to get which methods were modified and which lines
+ * were modified in the method and it uses the textual diff tool to get type of the modifications
+ * because for this analysis we need full line modification so we indicate if: the line was fully added,
+ * fully removed or changed
+ */
 class ModifiedMethodsHelper {
 
     private TextualDiffParser textualDiffParser = new TextualDiffParser();

@@ -38,7 +38,7 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
         BuildSystem buildSystem = getBuildSystem(project)
         for (code in codeTransformationInfo){
             for (file in FileManager.findLocalFileOfChangedClass(code[6], code[4], mergeCommit.getSHA())){
-                FileTransformations.runTransformation(file, code[5].split("\\(")[0])
+                FileTransformations.executeCodeTransformations(file.toString().replace("[","").replace("]",""))
                 parameters += ", \"${file}\""
             }
         }

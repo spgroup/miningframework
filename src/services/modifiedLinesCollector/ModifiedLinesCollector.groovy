@@ -29,7 +29,8 @@ class ModifiedLinesCollector implements DataCollector {
             // get methods modified by both left and right revisions
             Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, filePath);
 
-            if (!mutuallyModifiedMethods.isEmpty()) {
+            boolean fileHasMutuallyModifiedMethods = !mutuallyModifiedMethods.isEmpty()
+            if (fileHasMutuallyModifiedMethods) {
                 // get file class name
                 String className = TypeNameHelper.getFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
 
@@ -40,37 +41,11 @@ class ModifiedLinesCollector implements DataCollector {
                 for (def method : allModifiedMethods) {
                     // get left and right methods for the specific merge method
                     Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods = mutuallyModifiedMethods[method.getSignature()];
-                    if (leftAndRightMethods != null) {
-                        ModifiedMethod leftMethod = leftAndRightMethods.getFirst();
-                        ModifiedMethod rightMethod = leftAndRightMethods.getSecond();
+                    // if its null than this methods wasn't modified by both left and right
 
-                        Set<Integer> leftAddedLines = new HashSet<Integer>();
-                        Set<Integer> leftDeletedLines = new HashSet<Integer>();
-                        Set<Integer> rightAddedLines = new HashSet<Integer>();
-                        Set<Integer> rightDeletedLines = new HashSet<Integer>();
-
-                        // for each modified line in merge
-                        for (def mergeLine : method.getLines()) {
-                            // if it is at left's modified lines add it to left list
-                            if (leftMethod.getLines().contains(mergeLine)) {
-                                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
-                                    leftDeletedLines.add(mergeLine.getNumber());
-                                } else {
-                                    leftAddedLines.add(mergeLine.getNumber());
-                                }
-                            }
-                            // if it is at rights's modified lines add it to right list
-                            if (rightMethod.getLines().contains(mergeLine)) {
-                                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
-                                    rightDeletedLines.add(mergeLine.getNumber());
-                                } else {
-                                    rightAddedLines.add(mergeLine.getNumber());
-                                }
-                            }
-                        }
-
-                        // prints results to a csv file
-                        printResults(project, mergeCommit, className, method.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines,rightDeletedLines);
+                    boolean methodWasModifiedByBothParents = leftAndRightMethods != null
+                    if (methodWasModifiedByBothParents) {
+                        collectMethodData(leftAndRightMethods, method, project, mergeCommit, className)
                     }
 
                 }
@@ -80,6 +55,39 @@ class ModifiedLinesCollector implements DataCollector {
 
         }
         println "${project.getName()} - ModifiedLinesCollector collection finished"
+    }
+
+    private void collectMethodData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
+        ModifiedMethod leftMethod = leftAndRightMethods.getV1();
+        ModifiedMethod rightMethod = leftAndRightMethods.getV2();
+
+        Set<Integer> leftAddedLines = new HashSet<Integer>();
+        Set<Integer> leftDeletedLines = new HashSet<Integer>();
+        Set<Integer> rightAddedLines = new HashSet<Integer>();
+        Set<Integer> rightDeletedLines = new HashSet<Integer>();
+
+        // for each modified line in merge
+        for (def mergeLine : mergeMethod.getLines()) {
+            // if it is at left's modified lines add it to left list
+            if (leftMethod.getLines().contains(mergeLine)) {
+                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
+                    leftDeletedLines.add(mergeLine.getNumber());
+                } else {
+                    leftAddedLines.add(mergeLine.getNumber());
+                }
+            }
+            // if it is at rights's modified lines add it to right list
+            if (rightMethod.getLines().contains(mergeLine)) {
+                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
+                    rightDeletedLines.add(mergeLine.getNumber());
+                } else {
+                    rightAddedLines.add(mergeLine.getNumber());
+                }
+            }
+        }
+
+        // prints results to a csv file
+        printResults(project, mergeCommit, className, mergeMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
     }
 
     private void createOutputFiles(String outputPath) {

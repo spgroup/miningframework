@@ -86,7 +86,7 @@ class TextualDiffParser {
         if (splittedModifiedLinesPart.length <= INT_ONE) {
             throw new TextualDiffParsingException("a, c or d", modifiedLinesPart);
         }
-        
+
         ModifiedLine.ModificationType changeType = getChangeType(headerLine);
 
         String rangeString = splittedModifiedLinesPart[INT_ONE]

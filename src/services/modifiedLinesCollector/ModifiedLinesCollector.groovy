@@ -44,6 +44,10 @@ class ModifiedLinesCollector implements DataCollector {
                     // if its null than this methods wasn't modified by both left and right
 
                     boolean methodWasModifiedByBothParents = leftAndRightMethods != null
+                    // we loop in all methods and discard the cases that were not modified by both left and right
+                    // instead of looping directly the mutually modified methods because its cheaper to do it like this
+                    // because the other way we would have to search the all methods list for each iteration to get merge
+                    // revision method
                     if (methodWasModifiedByBothParents) {
                         collectMethodData(leftAndRightMethods, method, project, mergeCommit, className)
                     }

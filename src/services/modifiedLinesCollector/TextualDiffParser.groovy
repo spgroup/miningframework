@@ -1,5 +1,7 @@
 package services.modifiedLinesCollector
 
+import services.modifiedLinesCollector.exceptions.TextualDiffParsingException
+
 import java.util.HashSet
 
 import java.util.regex.Pattern
@@ -34,9 +36,9 @@ class TextualDiffParser {
                 int end = lineNumbers[INT_ONE];
 
                 if (changeType == ModifiedLine.ModificationType.Changed) {
-                    while (iterator.next().trim() != NEW_LINES_MARKER) {}
+                    dropUntilFindMarker(iterator)
                 }
-                
+
                 // gets the contents of the lines and adds then to the list
                 for (int i = begin; i <= end; i++) {
                     def lineContent = parseLineContent(iterator.next());
@@ -49,6 +51,11 @@ class TextualDiffParser {
         }
 
         return result;
+    }
+
+    private void dropUntilFindMarker(Iterator<String> iterator) {
+        while (iterator.next().trim() != NEW_LINES_MARKER) {
+        }
     }
 
     private boolean isHeaderLine(String line) {
@@ -76,6 +83,10 @@ class TextualDiffParser {
         String modifiedLinesPart = splittedHeaderLine[INT_ZERO]
         String[] splittedModifiedLinesPart = modifiedLinesPart.split(/${FLAGS_REGEX}/)
 
+        if (splittedModifiedLinesPart.length <= INT_ONE) {
+            throw new TextualDiffParsingException("a, c or d", modifiedLinesPart);
+        }
+        
         ModifiedLine.ModificationType changeType = getChangeType(headerLine);
 
         String rangeString = splittedModifiedLinesPart[INT_ONE]
@@ -83,16 +94,20 @@ class TextualDiffParser {
         return getNumbersRange(rangeString);
     }
 
-    private int[] getNumbersRange(String rangeString) {        
-        def splittedNewLines = rangeString.split(",")
+    private int[] getNumbersRange(String rangeString) {
+        try {
+            def splittedNewLines = rangeString.split(",")
 
-        int begin = Integer.parseInt(splittedNewLines[INT_ZERO])
-        int end = begin;
-        if (splittedNewLines.size() > INT_ONE) {
-            end = Integer.parseInt(splittedNewLines[INT_ONE]);
+            int begin = Integer.parseInt(splittedNewLines[INT_ZERO])
+            int end = begin;
+            if (splittedNewLines.size() > INT_ONE) {
+                end = Integer.parseInt(splittedNewLines[INT_ONE]);
+            }
+
+            return [begin, end]
+        } catch (NumberFormatException e) {
+            throw new TextualDiffParsingException("a number range", rangeString);
         }
-
-        return [begin, end]
     }
 
 

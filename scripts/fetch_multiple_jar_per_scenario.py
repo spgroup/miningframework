@@ -161,16 +161,29 @@ def parse_input(lines):
 
 def download_file(url, target_path, commitSHA):
     # download file from url
-    response = requests.get(url, stream=True)
-    if response.status_code == 200:
-        try:
-            save_jar_commit_directory(target_path, response)
-            jars_build_commits[commitSHA] = target_path
-        except Exception as e: 
-            create_directory(target_path)        
-            save_jar_commit_directory(target_path, response)
-            untar_and_remove_file(target_path)
-            jars_build_commits[commitSHA] = target_path
+    if (check_if_directory_has_jar_files(target_path)):
+        jars_build_commits[commitSHA] = target_path
+    else:
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            try:
+                save_jar_commit_directory(target_path, response)
+                jars_build_commits[commitSHA] = target_path
+            except Exception as e: 
+                create_directory(target_path)        
+                save_jar_commit_directory(target_path, response)
+                untar_and_remove_file(target_path)
+                jars_build_commits[commitSHA] = target_path
+
+def check_if_directory_has_jar_files(target_path):
+    default_path = os.getcwd()+"/"+target_path.replace("result.tar.gz","")
+    for root, dirs, files in os.walk(default_path):
+        for file in files:
+            if file.endswith(".jar"):
+                print("The jar files are already available from a previous study execution. No new download will be performed.")
+                return True
+    
+    return False
 
 def save_jar_commit_directory(target_path, response):
     with open(target_path, 'wb') as f:

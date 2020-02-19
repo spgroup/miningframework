@@ -9,6 +9,8 @@ import main.project.*
 import main.exception.*
 import services.soot.SootRunner
 
+import main.exception.ExternalScriptException
+
 class OutputProcessorImpl implements OutputProcessor {
     
     private final String SCRIPT_RUNNER = "python3"
@@ -36,7 +38,11 @@ class OutputProcessorImpl implements OutputProcessor {
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
     
         Process process = ProcessRunner.startProcess(builder)
-        process.waitFor()
+        int exitStatus = process.waitFor()
+
+        if (exitStatus != 0) {
+            throw new ExternalScriptException(FETCH_JARS_PATH, exitStatus);
+        }
     }
 
     private void convertToSootScript (String outputPath) {
@@ -45,7 +51,11 @@ class OutputProcessorImpl implements OutputProcessor {
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
     
         Process process = ProcessRunner.startProcess(builder)
-        process.waitFor()
+        int exitStatus = process.waitFor()
+
+        if (exitStatus != 0) {
+            throw new ExternalScriptException(PARSE_TO_SOOT_PATH, exitStatus);
+        }
     }
 
 }

@@ -1,4 +1,7 @@
 # Mining Framework
+[![Build Status](https://travis-ci.org/rafaelmotaalves/miningframework.svg?branch=master)](https://travis-ci.org/rafaelmotaalves/miningframework)
+
+
 This is a framework for mining and analyzing git projects.
 
 We focus on analyzing merge commits, although this could be easily changed to analyze any kind of commit.

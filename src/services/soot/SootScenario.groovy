@@ -76,7 +76,7 @@ class SootScenario {
 
         for (line in iterator) {
             String projectName = line["project"]
-            String classPathName = line["className"]
+            String classPathName = line["class"]
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
             

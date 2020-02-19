@@ -9,6 +9,8 @@ import main.exception.TravisHelperException
 import main.util.FileManager
 import static main.app.MiningFramework.arguments
 
+import java.text.SimpleDateFormat
+
 class BuildRequester implements DataCollector {
 
     static private final FILE_NAME = '.travis.yml'
@@ -24,7 +26,7 @@ class BuildRequester implements DataCollector {
 
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
-            String branchName = mergeCommit.getSHA().take(5) + '_build_branch'
+            String branchName = mergeCommit.getSHA().take(5) + "_build_branch_${getCurrentTimestamp()}"
             
             checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
             
@@ -89,6 +91,16 @@ class BuildRequester implements DataCollector {
             runProcess(project.getPath(), "git", "config", "--get", "remote.origin.url").getText()
     }
 
+    static private String getBranchName(MergeCommit mergeCommit) {
+        // the branch name is created with a timestamp so that every execution a new branch is created
+        // and the build is reruned
+        return mergeCommit.getSHA().take(5) + "_build_branch_${getCurrentTimestamp()}"
+    }
+
+    static private String getCurrentTimestamp() {
+        return new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
+    }
+
     static private getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem) {
         String buildCommand = "";
         if (buildSystem == BuildSystem.Maven) {
@@ -120,7 +132,7 @@ deploy:
   file: result.tar.gz
   name: fetchjar-${commitSha}
   file_glob: true
-  overwrite: true
+  overwrite: false
   skip_cleanup: true
   on:
     all_branches: true 

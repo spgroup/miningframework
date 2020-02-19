@@ -1,6 +1,3 @@
-[submodule "test_repositories/deletions"]
-	path = test_repositories/deletions
-	url = https://github.com/rafaelmotaalves/deletions
 [submodule "test_repositories/sameline"]
 	path = test_repositories/sameline
 	url = https://github.com/rafaelmotaalves/sameline

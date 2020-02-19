@@ -15,9 +15,4 @@ public class SameLineTest {
         assertEquals(TestSuite.getModifiedLines('addSameLine()'), '[4] [] [4] []')
     }
 
-    @Test
-    public void removeSameLineTest() {
-        assertEquals(TestSuite.getModifiedLines('removeSameLine()'), '[] [[8, 9]] [] [[8, 9]]')
-    }
-    
 }

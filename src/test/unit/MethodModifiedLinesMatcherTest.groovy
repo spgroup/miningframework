@@ -2,11 +2,9 @@ package test.unit
 
 import org.junit.Test
 import static test.Assert.assertEquals
-import org.junit.BeforeClass
 
 import services.modifiedLinesCollector.MethodModifiedLinesMatcher
 import services.modifiedLinesCollector.ModifiedLine
-import services.modifiedLinesCollector.ModifiedMethod
 
 public class MethodModifiedLinesMatcherTest {
 
@@ -33,8 +31,8 @@ public class MethodModifiedLinesMatcherTest {
 
         assertEquals(method.getSignature(), "method()");
         
-        assertEquals(method.getLines().size(), 1);
-        def line = method.getLines().iterator().next();
+        assertEquals(method.getModifiedLines().size(), 1);
+        def line = method.getModifiedLines().iterator().next();
 
         assertEquals(line, addedLine);
     }
@@ -61,8 +59,8 @@ public class MethodModifiedLinesMatcherTest {
 
         assertEquals(method.getSignature(), "method()");
         
-        assertEquals(method.getLines().size(), 3);
-        def it = method.getLines().iterator();
+        assertEquals(method.getModifiedLines().size(), 3);
+        def it = method.getModifiedLines().iterator();
         assertModifiedLineEquals(it.next(), addedLineTwo);
         assertModifiedLineEquals(it.next(), addedLineOne);
         assertModifiedLineEquals(it.next(), addedLineThree);
@@ -93,8 +91,8 @@ public class MethodModifiedLinesMatcherTest {
 
         assertEquals(method.getSignature(), "method()");
 
-        def lineIterator = method.getLines().iterator();
-        assertEquals(method.getLines().size(), 2);
+        def lineIterator = method.getModifiedLines().iterator();
+        assertEquals(method.getModifiedLines().size(), 2);
         
         def first = lineIterator.next()
         def second = lineIterator.next()
@@ -106,8 +104,8 @@ public class MethodModifiedLinesMatcherTest {
 
         assertEquals(method.getSignature(), "methodTwo()");
 
-        assertEquals(method.getLines().size(), 1);
-        lineIterator = method.getLines().iterator();
+        assertEquals(method.getModifiedLines().size(), 1);
+        lineIterator = method.getModifiedLines().iterator();
 
         assertModifiedLineEquals(lineIterator.next(), addedLineThree);
     }

@@ -18,7 +18,7 @@ import main.util.FileManager
 import test.*
 
 @RunWith(Suite.class)
-@SuiteClasses([DeletionTest.class, SameLineTest.class, MergeConflictFilterTest.class])
+@SuiteClasses([SameLineTest.class, MergeConflictFilterTest.class])
 public class TestSuite {
     public static Map<String, String> modifiedLines;
 

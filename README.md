@@ -85,7 +85,14 @@ the Mining Framework take an input csv file and a name for the output dir
 
 
 ## Testing
-One can run the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
+One can run the framework tests by including `src` in the classpath and executing `src/test/AllTestsSuite.groovy`
+
+This command runs both unit and integration tests, to run them separately you can run:
+`groovy -cp "src" src/test/unit/TestSuite.groovy`
+or
+`
+groovy -cp "src" src/integration/TestSuite.groovy
+`
 
 For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
 * Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`

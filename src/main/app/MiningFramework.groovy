@@ -1,7 +1,6 @@
 package main.app
 
-@Grab('com.google.inject:guice:4.2.2')
-import com.google.inject.*
+import com.google.inject.Inject
 import java.io.File
 import java.util.ArrayList
 import java.util.concurrent.BlockingQueue
@@ -10,7 +9,6 @@ import java.util.concurrent.LinkedBlockingQueue
 import main.arguments.*
 import main.project.*
 import main.interfaces.*
-import main.util.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
 import main.exception.ProjectProcessorException
@@ -37,56 +35,27 @@ class MiningFramework {
         this.outputProcessor = outputProcessor
     }
 
-    static main(args) {
-        ArgsParser argsParser = new ArgsParser()
+    public void start() {
         try {
-            Arguments appArguments = argsParser.parse(args)
+            printStartAnalysis()                
+
+            projectList = processProjects(projectList)
+
+            BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
             
-            if (appArguments.isHelp()) {
-                argsParser.printHelp()
-            } else {
-                Class injectorClass = appArguments.getInjector()
-                Injector injector = Guice.createInjector(injectorClass.newInstance())
-                MiningFramework framework = injector.getInstance(MiningFramework.class)
+            Thread [] workers = createAndStartMiningWorkers (projectQueue)
 
-                framework.setArguments(appArguments)
+            waitForMiningWorkers(workers)
 
-                FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
-            
-                printStartAnalysis()                
+            processOutput()
 
-                String inputPath = arguments.getInputPath()
-                
-                ArrayList<Project> projectList = InputParser.getProjectList(inputPath)
-
-                framework.setProjectList(projectList)
-                framework.start()
-
-                printFinishAnalysis()
-
-            }
-    
-        } catch (InvalidArgsException e) {
-            println e.message
-            println 'Run the miningframework with --help to see the possible arguments'
+            printFinishAnalysis()
         } catch (UnstagedChangesException e) { // framework defined errors
             println e.message;
         } catch (ProjectProcessorException | OutputProcessorException e) { // implementation errors
             println "There was a problem on the user implementation: "
             e.printStackTrace();
         }
-    }
-
-    public void start() {
-        projectList = processProjects(projectList)
-
-        BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
-        
-        Thread [] workers = createAndStartMiningWorkers (projectQueue)
-
-        waitForMiningWorkers(workers)
-
-        processOutput()
     }
 
     BlockingQueue<Project> populateProjectsQueue(List<Project> projectList) {

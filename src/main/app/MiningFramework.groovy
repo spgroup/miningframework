@@ -11,8 +11,6 @@ import main.project.*
 import main.interfaces.*
 import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
-import main.exception.ProjectProcessorException
-import main.exception.OutputProcessorException
 
 class MiningFramework {
 
@@ -52,9 +50,6 @@ class MiningFramework {
             printFinishAnalysis()
         } catch (UnstagedChangesException e) { // framework defined errors
             println e.message;
-        } catch (ProjectProcessorException | OutputProcessorException e) { // implementation errors
-            println "There was a problem on the user implementation: "
-            e.printStackTrace();
         }
     }
 
@@ -89,19 +84,11 @@ class MiningFramework {
     }
 
     private ArrayList<Project> processProjects(ArrayList<Project> projects) {
-        try {
-            return projectProcessor.processProjects(projects)
-        } catch (Exception e) {
-            throw new ProjectProcessorException(e.message);
-        }
+        return projectProcessor.processProjects(projects)
     }
 
     private void processOutput() {
-        try {
-            outputProcessor.processOutput()
-        } catch (Exception e) {
-            throw new OutputProcessorException(e.message);
-        }
+        outputProcessor.processOutput()
     }
 
     public void setProjectList(ArrayList<Project> projectList) {

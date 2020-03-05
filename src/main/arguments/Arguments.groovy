@@ -5,6 +5,7 @@ import services.MiningModule
 class Arguments {
     
     private String inputPath
+    private String inputCommitPairs
     private String outputPath
     private String sinceDate
     private String untilDate
@@ -33,6 +34,10 @@ class Arguments {
 
     void setInputPath(String inputPath) {
         this.inputPath = inputPath
+    }
+
+    void setInputCommitPairs(String inputCommitPairs) {
+        this.inputCommitPairs = inputCommitPairs
     }
 
     void setOutputPath(String outputPath) {
@@ -73,6 +78,10 @@ class Arguments {
     
     String getInputPath() {
         return inputPath
+    }
+
+    String getInputCommitPairs() {
+        return inputCommitPairs
     }
 
     String getOutputPath() {

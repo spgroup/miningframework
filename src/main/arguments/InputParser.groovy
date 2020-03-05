@@ -47,4 +47,24 @@ class InputParser {
 
         return projectList
     }
+
+    private static ArrayList<CommitPair> getCommitPairsByProject(String commitPairFilePath, String projectName) {
+        ArrayList<CommitPair> commitPairs = new ArrayList<CommitPair>()
+
+        String commitPairFile = new File(commitPairFilePath).getText()
+        def iterator = parseCsv(commitPairFile)
+        
+        for (line in iterator) {
+            if (line[0] == projectName) {
+                if (line[4] != "" && line[5] != ""){
+                    CommitPair commitPair = new CommitPair(line[2], line[3], line[4], line[5])
+                    commitPairs.add(commitPair)
+                }else{
+                    CommitPair commitPair = new CommitPair(line[2], line[3])
+                    commitPairs.add(commitPair)
+                }
+            }
+        }
+        return commitPairs
+    }
 } 

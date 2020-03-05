@@ -52,7 +52,7 @@ class ArgsParser {
     }
 
     private void parseInputs(Arguments args) {
-        if (this.getArgumentQuantity() > 2)
+        if (this.getArgumentQuantity() > 3)
             throw new InvalidArgsException('Too many arguments passed')    
 
         String inputFile = this.options.arguments()[0]
@@ -63,8 +63,17 @@ class ArgsParser {
             throw new InvalidArgsException("Could not find input file: ${inputFile}")
 
         args.setInputPath(inputFile)
-            
-        if (this.getArgumentQuantity() > 1) {
+        
+        inputFile = this.options.arguments()[1]
+        if (!inputFile.endsWith('.csv'))
+            throw new InvalidArgsException('The input must be a csv file')
+        
+        if (!new File(inputFile).exists())
+            throw new InvalidArgsException("Could not find input file: ${inputFile}")
+
+        args.setInputCommitPairs(inputFile)
+
+        if (this.getArgumentQuantity() > 2) {
             String outputPath = this.options.arguments()[1]
             String parsedOutputPath = outputPath.endsWith("/") ? outputPath.substring(0,dir.lastIndexOf("/")) : outputPath;
             args.setOutputPath(parsedOutputPath)

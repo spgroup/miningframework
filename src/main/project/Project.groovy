@@ -6,6 +6,8 @@ import main.exception.UnexpectedOutputException
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
+import main.arguments.*
+
 class Project {
     
     private String name
@@ -61,6 +63,10 @@ class Project {
         if(mergeCommits.isEmpty())
             println "No merge commits."
         return mergeCommits
+    }
+
+    public ArrayList<CommitPair> getCommitPairs(String pathCommitPairs, String projectName){
+        return InputParser.getCommitPairsByProject(pathCommitPairs, projectName)
     }
 
     private String getSHA(String[] informations) {

@@ -33,7 +33,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         println "${project.getName()} - Data collection finished!"
     }
 
-    private void setUp() {
+    protected void setUp() {
         String outputPath = arguments.getOutputPath()
         File resultsFile = createFilesIfTheyDontExist(outputPath)
 
@@ -164,7 +164,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         return false
     }
 
-    private String getClassFullyQualifiedName(Project project, String filePath, String SHA) {
+    protected String getClassFullyQualifiedName(Project project, String filePath, String SHA) {
         String className = getClassName(filePath)
         String classPackage = getClassPackage(project, SHA, filePath)
 
@@ -186,7 +186,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         return "";
     }
 
-    private String getClassName(String filePath) {
+    protected String getClassName(String filePath) {
         Pattern pattern = Pattern.compile("/?([A-Z][A-Za-z0-9]*?)\\.java") // find the name of the class by the name of the file
         Matcher matcher = pattern.matcher(filePath)
         if(matcher.find())
@@ -212,7 +212,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         return intersection
     }
 
-    private Set<ModifiedDeclaration> getModifiedMethodsAndAttributes(Project project, String filePath, String ancestorSHA, String targetSHA) {
+    protected Set<ModifiedDeclaration> getModifiedMethodsAndAttributes(Project project, String filePath, String ancestorSHA, String targetSHA) {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
@@ -220,7 +220,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         return getModifiedMethodsAndAttributes(diffResultLines)
     }
 
-    private Set<ModifiedDeclaration> getModifiedMethodsAndAttributes(String[] diffResultLines) {
+    protected Set<ModifiedDeclaration> getModifiedMethodsAndAttributes(String[] diffResultLines) {
         Set<ModifiedDeclaration> modifiedMethodsAndAttributes = new HashSet<String>()
 
         for (int i = 0; i < diffResultLines.length; i++) {
@@ -364,8 +364,8 @@ class ExperimentalDataCollectorImpl implements DataCollector {
         return line.substring(line.indexOf(" in ") + 4)
     }
 
-    private String[] runDiffJ(File ancestorFile, File targetFile) {
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
+    protected String[] runDiffJ(File ancestorFile, File targetFile) {
+        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj-method-return-info.jar', ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
         String[] output = reader.readLines()
         reader.close()

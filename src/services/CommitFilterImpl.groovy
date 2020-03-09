@@ -69,7 +69,7 @@ class CommitFilterImpl implements CommitFilter {
     }
 
     private Set<String> getModifiedAttributesAndMethods(Project project, String filePath, String childSHA, String ancestorSHA) {
-        Set<String> modifiedDeclarations = new HashSet<ModifiedDeclaration>()
+        Set<String> modifiedDeclarations = new HashSet<String>()
 
         File childFile = FileManager.copyFile(project, filePath, childSHA) 
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA)

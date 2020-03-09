@@ -63,6 +63,7 @@ class MiningWorker implements Runnable {
 
                 endProjectAnalysis (project)
             } catch (NoSuchElementException e) {
+                println e.printStackTrace()
             }
         }
     } 

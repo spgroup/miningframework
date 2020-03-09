@@ -1,4 +1,4 @@
-package test
+package test.integration
 
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
 

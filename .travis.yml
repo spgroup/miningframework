@@ -4,7 +4,7 @@ language: groovy
 
 before_script:
   - TERM=dumb groovy --version
-  - export GROOVY_VERSION=2.5.7
+  - export GROOVY_VERSION=3.0.0
   - wget http://dl.bintray.com/groovy/maven/apache-groovy-binary-$GROOVY_VERSION.zip -O /tmp/groovy.zip
   - unzip /tmp/groovy.zip -d $PWD/.groovy
   - export PATH=$PWD/.groovy/groovy-$GROOVY_VERSION/bin:$PATH
@@ -12,6 +12,6 @@ before_script:
 
 script:
   - TERM=dumb groovy --version
-  - TERM=dumb groovy -cp "src" src/test/TestSuite.groovy
+  - TERM=dumb groovy -cp "src" src/test/AllTestsSuite.groovy
 jdk:
   - oraclejdk8

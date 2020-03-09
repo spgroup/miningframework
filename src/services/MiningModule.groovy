@@ -9,6 +9,8 @@ import main.interfaces.OutputProcessor
 import com.google.inject.*
 import com.google.inject.multibindings.Multibinder
 
+import services.modifiedLinesCollector.ModifiedLinesCollector
+
 public class MiningModule extends AbstractModule {
 
     @Override
@@ -16,7 +18,8 @@ public class MiningModule extends AbstractModule {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
         dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
-        dataCollectorBinder.addBinding().to(ExperimentalDataCollectorImpl.class)
+        dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)
+
         dataCollectorBinder.addBinding().to(StatisticsCollectorImpl.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)
 

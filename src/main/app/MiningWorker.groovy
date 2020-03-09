@@ -73,6 +73,12 @@ class MiningWorker implements Runnable {
         }
     }
 
+    private void runDataCollectors(Project project, CommitPair commitPair) {
+        for (dataCollector in dataCollectors) {
+            dataCollector.collectData(project, commitPair)
+        }
+    }
+
     private void checkForUnstagedChanges(Project project) {
         String gitDiffOutput = ProcessRunner.runProcess(project.getPath(), "git", "diff").getText()
 
@@ -117,6 +123,10 @@ class MiningWorker implements Runnable {
 
     private void printMergeCommitInformation(Project project, MergeCommit mergeCommit) {
         println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
+    }
+
+    private void printCommitPairInformation(Project project, CommitPair commitPair) {
+        println "${project.getName()} - Commit Pair: ${commitPair.getSHACommitOne()} - ${commitPair.getSHACommitTwo()}"
     }
 
     private void endProjectAnalysis(Project project) {

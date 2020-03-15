@@ -43,7 +43,7 @@ class HttpHelper {
             request.setRequestMethod(method)
             return request
         } catch (IOException e) {
-            throw new HttpException("Error sending the HTTP request")
+            throw new HttpException("Error sending the HTTP request: " + e.message)
         } catch (UnknownHostException e) {
             throw new HttpException("Unable to find request Host")
         }

@@ -3,7 +3,7 @@
 import sys
 from csv import DictReader, writer
 
-CLASS_NAME = "className"
+CLASS_NAME = "class"
 LEFT_MODIFICATIONS = "left modifications"
 RIGHT_MODIFICATIONS = "right modifications"
 COMMIT_SHA = "merge commit"

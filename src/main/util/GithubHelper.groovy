@@ -81,7 +81,22 @@ class GithubHelper {
         return responseMessage
     }
 
+    public getRepositoryReleases(String projectOwner, String projectName) {
+        String url = getRepoApiUrl(projectOwner, projectName) + "/releases"   
+        HttpURLConnection connection = HttpHelper.requestToApi(url, "GET", this.accessKey);
+        String responseMessage = connection.getResponseMessage()
+        if (responseMessage != "OK") {
+            throw new GithubHelperException("Http request returned an error ${responseMessage}")
+        }
+    
+        return HttpHelper.responseToJSON(connection.getInputStream())
+    }
+
     private getContentApiUrl(String projectOwner, String projectName, String path) {
-        return "${API_URL}/repos/${projectOwner}/${projectName}/contents/${path}"
+        return "${getRepoApiUrl(projectOwner, projectName)}/contents/${path}"
+    }
+
+    private getRepoApiUrl(String projectOwner, String projectName) {
+        return "${API_URL}/repos/${projectOwner}/${projectName}"
     }
 }

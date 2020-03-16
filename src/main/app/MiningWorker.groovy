@@ -11,10 +11,7 @@ import java.util.concurrent.BlockingQueue
 import main.arguments.*
 import main.project.*
 import main.interfaces.*
-import main.exception.InvalidArgsException
 import main.exception.UnstagedChangesException
-import main.exception.UnexpectedPostScriptException
-import main.exception.NoAccessKeyException
 import main.util.*
 
 class MiningWorker implements Runnable {
@@ -36,7 +33,7 @@ class MiningWorker implements Runnable {
             try {
                 Project project = projectList.remove()
 
-                printProjectInformation (project)
+                printProjectInformation(project)
 
                 if (project.isRemote()) {
                     cloneRepository(project, "${baseDir}/${project.getName()}")
@@ -47,10 +44,15 @@ class MiningWorker implements Runnable {
                 // Since date and until date as arguments (dd/mm/yyyy).
                 List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) 
                 for (mergeCommit in mergeCommits) {
-                    if (applyFilter(project, mergeCommit)) {
-                        printMergeCommitInformation(project, mergeCommit)
+                    try {
+                        if (applyFilter(project, mergeCommit)) {
+                            printMergeCommitInformation(project, mergeCommit)
 
-                        runDataCollectors(project, mergeCommit)
+                            runDataCollectors(project, mergeCommit)
+                        }
+                    } catch (Exception e) {
+                        println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
+                        e.printStackTrace();
                     }
                 }
 

@@ -151,7 +151,7 @@ def get_download_url(release):
 def save_results_with_builds(output_path, new_results_file):
     with open(output_path + "/data/results-with-builds.csv", 'w') as outputFile:
         csv_writer = csv.DictWriter(outputFile, delimiter=";", 
-            fieldnames=["project","merge commit","class","method","left modifications","left deletions","right modifications","right deletions"])
+            fieldnames=["project","merge commit","className","method","left modifications","left deletions","right modifications","right deletions"])
 
         csv_writer.writeheader()
         for scenario in new_results_file:

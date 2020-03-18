@@ -41,10 +41,10 @@ So, to select the interface implementations you want to use in your desired inst
 
 ## Running a specific framework instantiation
 
-You can run the framework by including the [src](https://github.com/spgroup/miningframework/blob/master/src) directory in the classpath and executing `src/main/app/MiningFramework.groovy`.
+You can run the framework by including the [src](https://github.com/spgroup/miningframework/blob/master/src) directory in the classpath and executing `src/main/app/Main.groovy`.
 
 This can be done by configuring an IDE or executing the following command in a terminal:
-* Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy [options] [input] [output]`
+* Windows/Linux/Mac: `groovy -cp src src/main/app/Main.groovy [options] [input] [output]`
 
 `[input]` is the path to a CSV file containing the list of projects to be analyzed (like [projects.csv](https://github.com/spgroup/miningframework/blob/master/projects.csv)), one project per line. The list can contain external projects to be downloaded by the framework (the path field should be an URL to a git project hosted in the cloud), or local projects (the path field should refer to a local directory).
 

@@ -20,7 +20,7 @@ The examples illustrated above correspond to some of the implementations we prov
 * Fork and clone the project. If you want to run the project tests, you must clone the repository with the recursive option:
  ``` git clone --recursive https://github.com/spgroup/miningframework ```
 
-* This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 2.5.x or newer to use the framework and start mining projects.
+* This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 3.0.x or newer to use the framework and start mining projects.
 
 * For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Travis CI, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
 

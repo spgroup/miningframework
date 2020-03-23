@@ -42,8 +42,7 @@ public class TestSuite {
         
         framework.setProjectList(projectList)
         framework.start()
-
-
+        
         Map<String, String> outputFiles = new HashMap<String, String>();
         String output = new File('src/test/integration/output/data/results.csv').getText()
         def iterator = parseCsv(output, separator:';')

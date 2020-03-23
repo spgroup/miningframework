@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="dependencies/diffj.jar"/>
+	<classpathentry kind="lib" path="dependencies/soot-analysis.jar"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="output" path="bin/default"/>
+</classpath>

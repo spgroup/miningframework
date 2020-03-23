@@ -1,6 +1,5 @@
 package main.app
 
-@Grab('com.google.inject:guice:4.2.2')
 import com.google.inject.*
 
 import main.arguments.ArgsParser

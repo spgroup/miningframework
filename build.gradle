@@ -2,8 +2,6 @@ apply plugin: 'groovy'
 
 apply plugin: 'application'
 
-apply plugin: 'idea'
-
 mainClassName = 'app.Main'
 
 repositories {
@@ -26,7 +24,7 @@ sourceSets {
 
 test {
 	filter {
-		includeTestsMatching '*TestSuite'		
+		includeTestsMatching '*TestSuite'
 	}
 }
 

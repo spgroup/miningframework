@@ -1,8 +1,5 @@
 package integration
 
-@Grab('com.google.inject:guice:4.2.2')
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
-
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import com.google.inject.*
 import org.junit.runner.RunWith

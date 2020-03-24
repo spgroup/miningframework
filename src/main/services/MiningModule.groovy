@@ -1,6 +1,5 @@
 package services
 
-@Grab('com.google.inject:guice:4.2.2')
 import com.google.inject.*
 import com.google.inject.multibindings.Multibinder
 import interfaces.CommitFilter

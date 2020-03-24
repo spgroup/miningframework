@@ -1,4 +1,4 @@
-package main.exception
+package exception
 
 /*
 * This exception is meant to be called everytime the execution depends on the script returning success

@@ -1,11 +1,9 @@
-package test.integration
+package integration
 
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
 
-import static com.xlson.groovycsv.CsvParser.parseCsv
 import org.junit.Test
-import org.junit.BeforeClass
-import static test.Assert.assertEquals
+
+import static util.Assert.assertEquals
 
 
 public class MergeConflictFilterTest {

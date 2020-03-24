@@ -1,7 +1,4 @@
-package test.integration
-
-@Grab('com.google.inject:guice:4.2.2')
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
+package integration
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import com.google.inject.*
@@ -10,12 +7,11 @@ import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 import org.junit.BeforeClass
 
-import main.app.MiningFramework
-import main.project.*
-import main.arguments.*
-import main.util.FileManager
+import app.MiningFramework
+import project.*
+import arguments.*
+import util.FileManager
 
-import test.*
 
 @RunWith(Suite.class)
 @SuiteClasses([SameLineTest.class, MergeConflictFilterTest.class])
@@ -42,8 +38,7 @@ public class TestSuite {
         
         framework.setProjectList(projectList)
         framework.start()
-
-
+        
         Map<String, String> outputFiles = new HashMap<String, String>();
         String output = new File('src/test/integration/output/data/results.csv').getText()
         def iterator = parseCsv(output, separator:';')

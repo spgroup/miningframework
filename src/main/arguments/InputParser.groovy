@@ -1,10 +1,9 @@
-package main.arguments
+package arguments
 
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
 import static groovy.io.FileType.DIRECTORIES
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
-import main.project.*;
+import project.*;
 
 class InputParser {
 

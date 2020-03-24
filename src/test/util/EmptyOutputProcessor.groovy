@@ -1,7 +1,7 @@
 
-package test.util
+package util
 
-import main.interfaces.OutputProcessor
+import interfaces.OutputProcessor
 
 class EmptyOutputProcessor implements OutputProcessor {
     

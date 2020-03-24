@@ -1,18 +1,18 @@
-package main.app
+package app
 
 import java.text.SimpleDateFormat
 import java.io.File
 
-import main.interfaces.*
-import static main.app.MiningFramework.arguments
+import interfaces.*
+import static app.MiningFramework.arguments
 import java.util.concurrent.BlockingQueue
 
 
-import main.arguments.*
-import main.project.*
-import main.interfaces.*
-import main.exception.UnstagedChangesException
-import main.util.*
+import arguments.*
+import project.*
+import interfaces.*
+import exception.UnstagedChangesException
+import util.*
 
 class MiningWorker implements Runnable {
 

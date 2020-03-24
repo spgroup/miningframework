@@ -1,4 +1,4 @@
-package main.util
+package util
 
 final class ProcessRunner {
 

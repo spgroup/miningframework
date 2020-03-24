@@ -1,4 +1,4 @@
-package main.app
+package app
 
 import com.google.inject.Inject
 import java.io.File
@@ -6,11 +6,10 @@ import java.util.ArrayList
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
-import main.arguments.*
-import main.project.*
-import main.interfaces.*
-import main.exception.InvalidArgsException
-import main.exception.UnstagedChangesException
+import arguments.*
+import project.*
+import interfaces.*
+import exception.UnstagedChangesException
 
 class MiningFramework {
 

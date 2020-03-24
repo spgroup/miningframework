@@ -1,11 +1,11 @@
-package main.util
+package util
 
 import java.net.URL
 import java.net.UnknownHostException
 import java.net.HttpURLConnection
 import groovy.json.*
 import java.util.Base64
-import main.exception.HttpException
+import exception.HttpException
 
 class HttpHelper {
 

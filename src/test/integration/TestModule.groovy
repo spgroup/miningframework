@@ -1,16 +1,15 @@
-package test.integration
+package integration
 
-import main.interfaces.DataCollector
-import main.interfaces.CommitFilter
-import main.interfaces.ProjectProcessor
-import main.interfaces.OutputProcessor
+import interfaces.DataCollector
+import interfaces.CommitFilter
+import interfaces.ProjectProcessor
+import interfaces.OutputProcessor
 
-import test.util.*
+import util.*
 import services.*
 
 import services.modifiedLinesCollector.ModifiedLinesCollector
 
-@Grab('com.google.inject:guice:4.2.2')
 import com.google.inject.*
 import com.google.inject.multibindings.Multibinder
 

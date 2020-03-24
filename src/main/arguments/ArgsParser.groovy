@@ -1,10 +1,10 @@
-package main.arguments
+package arguments
 
 import groovy.cli.commons.CliBuilder
 import groovy.cli.commons.OptionAccessor
 import java.text.SimpleDateFormat
 import java.text.ParseException
-import main.exception.InvalidArgsException
+import exception.InvalidArgsException
 
 class ArgsParser {
 

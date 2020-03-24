@@ -30,9 +30,7 @@ test {
 	}
 }
 
-dependencies {    
-	implementation files('dependencies/diffj.jar')
-	implementation files('dependencies/soot-analysis.jar')
+dependencies {
 	implementation 'com.google.inject:guice:4.2.2'
 	implementation 'commons-io:commons-io:2.6'
 	implementation 'com.xlson.groovycsv:groovycsv:1.3'

@@ -1,4 +1,4 @@
-package main.exception
+package exception
 
 public class UnexpectedOutputException extends Exception {
     public UnexpectedOutputException(String message, String expectedFormat, String retrievedLine) {

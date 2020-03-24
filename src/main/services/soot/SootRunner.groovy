@@ -1,18 +1,9 @@
 
 package services.soot
 
-import main.interfaces.OutputProcessor
-
-import static main.app.MiningFramework.arguments
-import main.util.*
-import main.project.*
-import main.exception.*
-import java.nio.file.Files 
-import java.nio.file.Paths
-import java.nio.file.Path
-
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+import exception.*
+import project.*
+import util.*
 
 class SootRunner {
 

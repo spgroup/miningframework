@@ -1,8 +1,8 @@
-package main.util
+package util
 
 import java.net.HttpURLConnection
-import main.project.Project
-import main.exception.*
+import project.Project
+import exception.*
 
 class GithubHelper {
 

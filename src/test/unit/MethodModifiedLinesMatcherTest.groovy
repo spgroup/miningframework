@@ -1,7 +1,7 @@
-package test.unit
+package unit
 
 import org.junit.Test
-import static test.Assert.assertEquals
+import static util.Assert.assertEquals
 
 import services.modifiedLinesCollector.MethodModifiedLinesMatcher
 import services.modifiedLinesCollector.ModifiedLine

@@ -1,11 +1,11 @@
-package test.integration
+package integration
 
-import main.interfaces.DataCollector
-import main.interfaces.CommitFilter
-import main.interfaces.ProjectProcessor
-import main.interfaces.OutputProcessor
+import interfaces.DataCollector
+import interfaces.CommitFilter
+import interfaces.ProjectProcessor
+import interfaces.OutputProcessor
 
-import test.util.*
+import util.*
 import services.*
 
 import services.modifiedLinesCollector.ModifiedLinesCollector

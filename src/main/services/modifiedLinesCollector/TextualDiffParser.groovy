@@ -2,10 +2,8 @@ package services.modifiedLinesCollector
 
 import services.modifiedLinesCollector.exceptions.TextualDiffParsingException
 
-import java.util.HashSet
-
-import java.util.regex.Pattern
 import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class TextualDiffParser {
 

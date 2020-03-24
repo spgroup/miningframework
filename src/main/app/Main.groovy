@@ -1,15 +1,15 @@
-package main.app
+package app
 
 import com.google.inject.*
 
-import main.arguments.ArgsParser
-import main.arguments.Arguments
-import main.arguments.InputParser
+import arguments.ArgsParser
+import arguments.Arguments
+import arguments.InputParser
 
-import main.exception.InvalidArgsException
-import main.project.Project
+import exception.InvalidArgsException
+import project.Project
 
-import main.util.FileManager
+import util.FileManager
 
 class Main {
         static main(args) {

@@ -1,10 +1,8 @@
 package services.modifiedLinesCollector
 
-import main.project.Project
-import main.project.MergeCommit
-
-import main.util.ProcessRunner
-import main.util.FileManager
+import project.Project
+import util.FileManager
+import util.ProcessRunner
 
 /**
  * This class uses a combination o two diffing tools to provide the necessary diff output

@@ -1,9 +1,9 @@
 package services.modifiedLinesCollector
 
-import java.util.regex.Pattern
-import java.util.regex.Matcher
-
 import services.modifiedLinesCollector.exceptions.DiffJParsingException
+
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class DiffJParser {
 

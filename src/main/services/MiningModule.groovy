@@ -1,14 +1,12 @@
 package services
 
-import main.interfaces.DataCollector
-import main.interfaces.CommitFilter
-import main.interfaces.ProjectProcessor
-import main.interfaces.OutputProcessor
-
 @Grab('com.google.inject:guice:4.2.2')
 import com.google.inject.*
 import com.google.inject.multibindings.Multibinder
-
+import interfaces.CommitFilter
+import interfaces.DataCollector
+import interfaces.OutputProcessor
+import interfaces.ProjectProcessor
 import services.modifiedLinesCollector.ModifiedLinesCollector
 
 public class MiningModule extends AbstractModule {

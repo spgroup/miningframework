@@ -1,4 +1,4 @@
-package test
+package util
 
 class Assert {
     static public void assertEquals(actual, expected) {

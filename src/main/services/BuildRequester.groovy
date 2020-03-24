@@ -1,17 +1,13 @@
 package services
 
-import main.interfaces.DataCollector
-import main.project.*
-import main.util.TravisHelper
-import main.util.GithubHelper
-import main.util.ProcessRunner
-import main.exception.TravisHelperException
-import main.util.FileManager
-import main.util.GithubHelper
-import static main.app.MiningFramework.arguments
-
+import interfaces.DataCollector
+import project.*
+import util.GithubHelper
+import util.ProcessRunner
 
 import java.text.SimpleDateFormat
+
+import static app.MiningFramework.arguments
 
 class BuildRequester implements DataCollector {
 

@@ -1,11 +1,10 @@
 package services
 
+import project.Project
+import util.ProcessRunner
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
-import main.project.Project
-
-import main.util.ProcessRunner
 
 class TypeNameHelper {
 

@@ -1,15 +1,13 @@
 package services.modifiedLinesCollector
 
-import main.project.MergeCommit
-import main.project.Project
-import main.interfaces.DataCollector
-
-import main.util.FileManager
-
-import services.TypeNameHelper
+import interfaces.DataCollector
+import project.MergeCommit
+import project.Project
+import util.FileManager
 import services.RevisionsFilesCollector
+import services.TypeNameHelper
 
-import static main.app.MiningFramework.arguments
+import static app.MiningFramework.arguments
 
 class ModifiedLinesCollector implements DataCollector {
 

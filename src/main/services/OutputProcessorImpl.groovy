@@ -1,15 +1,14 @@
 
 package services
 
-import main.interfaces.OutputProcessor
-
-import static main.app.MiningFramework.arguments
-import main.util.*
-import main.project.*
-import main.exception.*
+import exception.*
+import exception.ExternalScriptException
+import interfaces.OutputProcessor
+import project.*
+import util.*
 import services.soot.SootRunner
 
-import main.exception.ExternalScriptException
+import static app.MiningFramework.arguments
 
 class OutputProcessorImpl implements OutputProcessor {
     

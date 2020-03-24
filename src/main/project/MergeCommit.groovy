@@ -1,4 +1,4 @@
-package main.project
+package project
 
 class MergeCommit {
 

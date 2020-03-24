@@ -1,7 +1,7 @@
-package test.integration
+package integration
 
 import org.junit.Test
-import static test.Assert.assertEquals
+import static util.Assert.assertEquals
 
 public class SameLineTest {
 

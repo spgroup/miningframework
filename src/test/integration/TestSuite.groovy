@@ -1,4 +1,4 @@
-package test.integration
+package integration
 
 @Grab('com.google.inject:guice:4.2.2')
 @Grab('com.xlson.groovycsv:groovycsv:1.3')
@@ -10,12 +10,11 @@ import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 import org.junit.BeforeClass
 
-import main.app.MiningFramework
-import main.project.*
-import main.arguments.*
-import main.util.FileManager
+import app.MiningFramework
+import project.*
+import arguments.*
+import util.FileManager
 
-import test.*
 
 @RunWith(Suite.class)
 @SuiteClasses([SameLineTest.class, MergeConflictFilterTest.class])

@@ -1,4 +1,4 @@
-package main.arguments
+package arguments
 
 import services.MiningModule
 

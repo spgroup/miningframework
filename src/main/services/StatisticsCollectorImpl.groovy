@@ -1,16 +1,14 @@
 package services
-import main.interfaces.DataCollector
 
+import interfaces.DataCollector
+import project.*
+import util.*
+
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
-import java.text.ParseException 
-import static main.app.MiningFramework.arguments
 
-
-import main.util.*
-import main.project.*
-import java.util.regex.Pattern
-import java.util.regex.Matcher
+import static app.MiningFramework.arguments
 
 class StatisticsCollectorImpl implements DataCollector {
 

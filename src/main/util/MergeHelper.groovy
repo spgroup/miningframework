@@ -1,6 +1,6 @@
-package main.util
+package util
 
-import main.project.*
+import project.*
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 

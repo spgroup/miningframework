@@ -1,10 +1,10 @@
 package services
-import main.interfaces.CommitFilter
+
+import interfaces.CommitFilter
+import project.*
+import util.*
+
 import static com.xlson.groovycsv.CsvParser.parseCsv
-
-import main.util.*
-import main.project.*
-
 
 class CommitFilterImpl implements CommitFilter {
 

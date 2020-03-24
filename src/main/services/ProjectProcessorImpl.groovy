@@ -1,13 +1,11 @@
 package services
 
-import main.interfaces.ProjectProcessor
-import java.util.regex.Pattern
-import java.util.regex.Matcher
+import exception.*
+import interfaces.ProjectProcessor
+import project.*
+import util.*
 
-import static main.app.MiningFramework.arguments
-import main.util.*
-import main.project.*
-import main.exception.*
+import static app.MiningFramework.arguments
 
 class ProjectProcessorImpl implements ProjectProcessor {
 

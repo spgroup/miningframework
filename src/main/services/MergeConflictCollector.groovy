@@ -1,16 +1,11 @@
 package services
 
-import main.interfaces.DataCollector
-import main.project.MergeCommit
-import main.project.Project
-import main.util.FileManager
-import main.util.ProcessRunner
-import main.util.MergeHelper
+import interfaces.DataCollector
+import project.MergeCommit
+import project.Project
+import util.MergeHelper
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
-import static main.app.MiningFramework.arguments
+import static app.MiningFramework.arguments
 
 class MergeConflictCollector implements DataCollector {
 

@@ -1,12 +1,11 @@
 package services
 
-import main.util.FileManager
-import main.interfaces.DataCollector
+import interfaces.DataCollector
+import project.MergeCommit
+import project.Project
+import util.FileManager
 
-import main.project.MergeCommit
-import main.project.Project
-
-import static main.app.MiningFramework.arguments
+import static app.MiningFramework.arguments
 
 class RevisionsFilesCollector implements DataCollector {
 

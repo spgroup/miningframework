@@ -2,7 +2,9 @@ apply plugin: 'groovy'
 
 apply plugin: 'application'
 
-mainClassName = 'main.app.Main'
+apply plugin: 'idea'
+
+mainClassName = 'app.Main'
 
 repositories {
    mavenCentral()
@@ -11,10 +13,9 @@ repositories {
 sourceSets {
 	main {
 		groovy {
-			srcDirs = ['src/main', 'src/services']
+			srcDirs = ['src/main']
 		}
 	}
-
 	test {
 		groovy {
 			srcDirs = ['src/test']
@@ -29,7 +30,9 @@ test {
 	}
 }
 
-dependencies {
+dependencies {    
+	implementation files('dependencies/diffj.jar')
+	implementation files('dependencies/soot-analysis.jar')
 	implementation 'com.google.inject:guice:4.2.2'
 	implementation 'commons-io:commons-io:2.6'
 	implementation 'com.xlson.groovycsv:groovycsv:1.3'

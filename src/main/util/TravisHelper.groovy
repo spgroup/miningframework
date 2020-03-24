@@ -1,8 +1,8 @@
-package main.util
+package util
 
-import main.project.*
+import project.*
 import java.net.HttpURLConnection
-import main.exception.TravisHelperException
+import exception.TravisHelperException
 
 class TravisHelper {
 

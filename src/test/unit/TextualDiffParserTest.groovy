@@ -1,8 +1,7 @@
-package test.unit
+package unit
 
 import org.junit.Test
-import static test.Assert.assertEquals
-import org.junit.BeforeClass
+import static util.Assert.assertEquals
 
 import services.modifiedLinesCollector.TextualDiffParser
 import services.modifiedLinesCollector.ModifiedLine

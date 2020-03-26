@@ -86,8 +86,7 @@ before_deploy:
     - tar -zcvf result.tar.gz *
 deploy:
   provider: releases
-  api_key:
-    secure: \$GITHUB_TOKEN
+  api_key: \$GITHUB_TOKEN
   file: result.tar.gz
   name: fetchjar-${commitSha}
   file_glob: true

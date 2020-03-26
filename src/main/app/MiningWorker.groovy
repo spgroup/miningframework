@@ -105,6 +105,8 @@ class MiningWorker implements Runnable {
         process.waitFor()
   
         project.setPath(target)
+        String current_path = System.getProperty("user.dir");
+        project.setFullLocalPath(java.nio.file.Paths.get(current_path, target).toString())
     }
 
     private boolean applyFilter(Project project, MergeCommit mergeCommit) {

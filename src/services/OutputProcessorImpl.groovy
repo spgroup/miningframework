@@ -12,7 +12,7 @@ import services.soot.SootRunner
 class OutputProcessorImpl implements OutputProcessor {
     
     private final String SCRIPT_RUNNER = "python3"
-    private final String FETCH_JARS_PATH = "./scripts/fetch_jars.py"
+    private final String FETCH_JARS_PATH = "./scripts/fetch_multiple_jar_per_scenario.py"
     private final String PARSE_TO_SOOT_PATH = "./scripts/parse_to_soot.py"
 
     public void processOutput() {
@@ -23,10 +23,6 @@ class OutputProcessorImpl implements OutputProcessor {
             String token = arguments.getAccessKey()
 
             fetchBuildsScript(inputPath, outputPath, token)
-            convertToSootScript(outputPath)
-
-            SootRunner runner = new SootRunner(outputPath)
-            runner.processScenarios()
         }
     }
 

@@ -82,7 +82,7 @@ class ExperimentalDataCollectorImpl implements DataCollector {
     private void saveMergeScenarioFiles(Project project, MergeCommit mergeCommit, String classFilePath, String filePath) {
         String outputPath = arguments.getOutputPath()
         
-        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classFilePath}/"
+        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/transformed/source/"
         File results = new File(path)
         if(!results.exists())
             results.mkdirs()

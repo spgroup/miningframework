@@ -74,7 +74,7 @@ class CommitFilterImpl implements CommitFilter {
         File childFile = FileManager.copyFile(project, filePath, childSHA) 
         File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA)
 
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', '--brief', ancestorFile.getAbsolutePath(), childFile.getAbsolutePath())
+        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj-method-return-info.jar.jar', '--brief', ancestorFile.getAbsolutePath(), childFile.getAbsolutePath())
         diffJ.getInputStream().eachLine {
             int inIndex = it.indexOf("in ")
             if(inIndex != -1) {

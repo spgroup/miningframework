@@ -31,15 +31,16 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
     private void setupEnvironment(Project project, MergeCommit mergeCommit, String commit, ArrayList<String> codeTransformationInfo, String branch, String parameters) {
         String branchName = commit.take(5) + branch
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
-        
+        FileTransformations transformations = new FileTransformations()
+
         File travisFile = new File("${project.getPath()}/.travis.yml")
         String[] ownerAndName = getRemoteProjectOwnerAndName(project)
         travisFile.delete()
         BuildSystem buildSystem = getBuildSystem(project)
         for (code in codeTransformationInfo){
             for (file in FileManager.findLocalFileOfChangedClass(code[6], code[4], mergeCommit.getSHA())){
-                FileTransformations.executeCodeTransformations(file.toString().replace("[","").replace("]",""))
-                parameters += ", \"${file}\""
+                transformations.executeCodeTransformations(file.toString().replace("[","").replace("]","")).waitFor()
+                parameters += ", \"${file.toString().split(project.getPath()+"/")[1]}\""
             }
         }
                         

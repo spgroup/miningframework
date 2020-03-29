@@ -233,7 +233,7 @@ def mount_download_path(outputPath, project_name, commitSHA):
 def untar_and_remove_file(downloadPath): 
     downloadDir = downloadPath.replace('result.tar.gz', '')
     subprocess.call(['mkdir', downloadDir + 'build'])
-    subprocess.call(['tar', '-xf', downloadPath, '-C', downloadDir + '/build', ])
+    subprocess.call(['tar', '-xf', downloadPath, '-C', downloadDir])
     subprocess.call(['rm', downloadPath])
     
 def get_builds_and_wait(project):
@@ -259,7 +259,7 @@ def get_builds_and_wait(project):
 
 
 def get_travis_project_builds(project):
-    return requests.get(TRAVIS_API + '/repos/' + project + '/builds').json()
+    return requests.get(TRAVIS_API + '/repos/' + project).json()
 
 def get_github_user(token):
     return requests.get(GITHUB_API + '/user', headers=get_headers(token)).json()
@@ -281,7 +281,7 @@ def remove_commit_files_without_builds (outputPath, projectName):
 
         for directory in commit_dirs:
             commit_dir = files_path + directory
-            build_dir = commit_dir + "/build"
+            build_dir = commit_dir
 
             if (not os.path.exists(build_dir)):
                 shutil.rmtree(commit_dir)

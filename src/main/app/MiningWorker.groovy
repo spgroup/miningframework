@@ -21,7 +21,7 @@ class MiningWorker implements Runnable {
     private BlockingQueue<Project> projectList
     private String baseDir
 
-    public MiningWorker(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
+    MiningWorker(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectList = projectList
@@ -33,7 +33,7 @@ class MiningWorker implements Runnable {
             try {
                 Project project = projectList.remove()
 
-                printProjectInformation(project)
+                println "STARTING PROJECT: ${project.getName()}"
 
                 if (project.isRemote()) {
                     cloneRepository(project, "${baseDir}/${project.getName()}")
@@ -45,8 +45,8 @@ class MiningWorker implements Runnable {
                 List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) 
                 for (mergeCommit in mergeCommits) {
                     try {
-                        if (applyFilter(project, mergeCommit)) {
-                            printMergeCommitInformation(project, mergeCommit)
+                        if (commitFilter.applyFilter(project, mergeCommit)) {
+                            println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
                             runDataCollectors(project, mergeCommit)
                         }
@@ -59,11 +59,9 @@ class MiningWorker implements Runnable {
                 if(arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
-                if (!arguments.getKeepProjects()) {
+                if (!arguments.getKeepProjects())
                     FileManager.delete(new File(project.getPath()))
-                }
 
-                endProjectAnalysis (project)
             } catch (NoSuchElementException e) {
                 println e.printStackTrace()
             }
@@ -110,30 +108,14 @@ class MiningWorker implements Runnable {
         project.setPath(target)
     }
 
-    private boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return commitFilter.applyFilter(project, mergeCommit)
-    }
-
-    private void printProjectInformation(Project project) {
-        println "STARTING PROJECT: ${project.getName()}"
-    }
-
-    private void printMergeCommitInformation(Project project, MergeCommit mergeCommit) {
-        println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
-    }
-
-    private void endProjectAnalysis(Project project) {
-        File projectDirectory = new File(project.getPath())
-    }
 
     private void pushResults(Project project, String remoteRepositoryURL) {
         Project resultsRepository = new Project('', remoteRepositoryURL)
-        printPushInformation(remoteRepositoryURL)
-        String targetPath = "${LOCAL_RESULTS_REPOSITORY_PATH}/resultsRepository"
+        String targetPath = "/resultsRepository"
         cloneRepository(resultsRepository, targetPath)
 
         // Copy output files, add, commit and then push.
-        FileManager.copyDirectory(getOutputPath(), "${targetPath}/output-${project.getName()}")
+        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath}/output-${project.getName()}")
         Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
         gitAdd.waitFor()
 

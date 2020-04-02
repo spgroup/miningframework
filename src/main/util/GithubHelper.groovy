@@ -23,6 +23,7 @@ class GithubHelper {
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new GithubHelperException("Http request returned an error ${connection.getResponseMessage()}")
         }
+
         return resBody
     }
 
@@ -39,7 +40,7 @@ class GithubHelper {
             if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 result = HttpHelper.responseToJSON(httpConnection.getInputStream());
             } else if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                throw new GithubHelperException("Project ${projectOwner}/${projectName} was not found")
+                result = null;
             } else {
                 throw new GithubHelperException("Http request returned an error " + httpConnection.getResponseMessage())
             }

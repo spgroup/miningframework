@@ -22,21 +22,20 @@ class MiningFramework {
 
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'clonedRepositories'
-    private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
-    
+
     @Inject
-    public MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
+    MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectProcessor = projectProcessor
         this.outputProcessor = outputProcessor
     }
 
-    public void start() {
+    void start() {
         try {
-            printStartAnalysis()                
+            println "#### MINING STARTED ####"
 
-            projectList = processProjects(projectList)
+            projectList = projectProcessor.processProjects(projectList)
 
             BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
             
@@ -44,9 +43,9 @@ class MiningFramework {
 
             waitForMiningWorkers(workers)
 
-            processOutput()
+            outputProcessor.processOutput()
 
-            printFinishAnalysis()
+            println "#### MINING FINISHED ####"
         } catch (UnstagedChangesException e) { // framework defined errors
             println e.message;
         }
@@ -82,29 +81,12 @@ class MiningFramework {
         }
     }
 
-    private ArrayList<Project> processProjects(ArrayList<Project> projects) {
-        return projectProcessor.processProjects(projects)
-    }
-
-    private void processOutput() {
-        outputProcessor.processOutput()
-    }
-
-    public void setProjectList(ArrayList<Project> projectList) {
+    void setProjectList(ArrayList<Project> projectList) {
         this.projectList = projectList
     }
 
     void setArguments(Arguments arguments) {
         this.arguments = arguments
-    }
-
-
-    static void printStartAnalysis() {
-        println "#### MINING STARTED ####\n"
-    }
-
-    static void printFinishAnalysis() {
-        println "#### MINING FINISHED ####"
     }
 
 }

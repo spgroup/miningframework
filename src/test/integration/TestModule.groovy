@@ -17,14 +17,16 @@ public class TestModule extends AbstractModule {
     @Override
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class);
-        Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
 
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class);
         dataCollectorBinder.addBinding().to(StatisticsCollector.class);
         bind(CommitFilter.class).to(InCommitListAndHasMutuallyModifiedMethodsFilter.class)
 
+        Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(EmptyProjectProcessor.class)
-        bind(OutputProcessor.class).to(EmptyOutputProcessor.class)
+
+        Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
+        outputProcessorBinder.addBinding().to(EmptyOutputProcessor.class)
     }
 
 }

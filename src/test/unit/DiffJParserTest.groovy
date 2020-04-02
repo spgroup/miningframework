@@ -3,7 +3,7 @@ package unit
 import org.junit.Test
 import static util.Assert.assertEquals
 
-import services.modifiedLinesCollector.DiffJParser
+import services.dataCollectors.modifiedLinesCollector.DiffJParser
 
 public class DiffJParserTest {
 

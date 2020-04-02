@@ -3,8 +3,8 @@ package unit
 import org.junit.Test
 import static util.Assert.assertEquals
 
-import services.modifiedLinesCollector.MethodModifiedLinesMatcher
-import services.modifiedLinesCollector.ModifiedLine
+import services.dataCollectors.modifiedLinesCollector.MethodModifiedLinesMatcher
+import services.dataCollectors.modifiedLinesCollector.ModifiedLine
 
 public class MethodModifiedLinesMatcherTest {
 

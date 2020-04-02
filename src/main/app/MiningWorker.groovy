@@ -1,14 +1,10 @@
 package app
 
 import java.text.SimpleDateFormat
-import java.io.File
 
-import interfaces.*
 import static app.MiningFramework.arguments
 import java.util.concurrent.BlockingQueue
 
-
-import arguments.*
 import project.*
 import interfaces.*
 import exception.UnstagedChangesException
@@ -28,7 +24,7 @@ class MiningWorker implements Runnable {
         this.baseDir = baseDir
     }
 
-    void run () {
+    void run() {
         while (!projectList.isEmpty()) {
             try {
                 Project project = projectList.remove()
@@ -41,8 +37,7 @@ class MiningWorker implements Runnable {
                     checkForUnstagedChanges(project);
                 }
 
-                // Since date and until date as arguments (dd/mm/yyyy).
-                List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) 
+                List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
                 for (mergeCommit in mergeCommits) {
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {
@@ -56,7 +51,7 @@ class MiningWorker implements Runnable {
                     }
                 }
 
-                if(arguments.isPushCommandActive()) // Will push.
+                if (arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
                 if (!arguments.getKeepProjects())
@@ -66,7 +61,7 @@ class MiningWorker implements Runnable {
                 println e.printStackTrace()
             }
         }
-    } 
+    }
 
     private void runDataCollectors(Project project, MergeCommit mergeCommit) {
         for (dataCollector in dataCollectors) {
@@ -82,15 +77,15 @@ class MiningWorker implements Runnable {
         }
     }
 
-    private void cloneRepository(Project project, String target) {        
+    private void cloneRepository(Project project, String target) {
         println "Cloning repository ${project.getName()} into ${target}"
 
         File projectDirectory = new File(target)
-        if(projectDirectory.exists()) {
+        if (projectDirectory.exists()) {
             FileManager.delete(projectDirectory)
         }
         projectDirectory.mkdirs()
-        
+
         String url = project.getPath()
 
         if (arguments.providedAccessKey()) {
@@ -101,10 +96,10 @@ class MiningWorker implements Runnable {
 
         ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-    
+
         Process process = ProcessRunner.startProcess(builder)
         process.waitFor()
-  
+
         project.setPath(target)
     }
 
@@ -122,7 +117,7 @@ class MiningWorker implements Runnable {
         def nowDate = new Date()
         def sdf = new SimpleDateFormat("dd/MM/yyyy")
         Process gitCommit = ProcessRunner
-            .runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()} - ${sdf.format(nowDate)}")
+                .runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()} - ${sdf.format(nowDate)}")
         gitCommit.waitFor()
         gitCommit.getInputStream().eachLine {
             println it

@@ -1,8 +1,7 @@
 package app
 
 import com.google.inject.Inject
-import java.io.File
-import java.util.ArrayList
+
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -17,17 +16,17 @@ class MiningFramework {
    
     private Set<DataCollector> dataCollectors
     private CommitFilter commitFilter
-    private ProjectProcessor projectProcessor
+    private Set<ProjectProcessor> projectProcessors
     private OutputProcessor outputProcessor
 
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'clonedRepositories'
 
     @Inject
-    MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
+    MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, Set<ProjectProcessor> projectProcessors, OutputProcessor outputProcessor) {
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
-        this.projectProcessor = projectProcessor
+        this.projectProcessors = projectProcessors
         this.outputProcessor = outputProcessor
     }
 
@@ -35,7 +34,9 @@ class MiningFramework {
         try {
             println "#### MINING STARTED ####"
 
-            projectList = projectProcessor.processProjects(projectList)
+            for (ProjectProcessor projectProcessor : projectProcessors) {
+                projectList = projectProcessor.processProjects(projectList)
+            }
 
             BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
             

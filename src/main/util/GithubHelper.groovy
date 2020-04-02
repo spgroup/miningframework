@@ -1,6 +1,5 @@
 package util
 
-import java.net.HttpURLConnection
 import project.Project
 import exception.*
 

@@ -23,12 +23,12 @@ abstract class BuildRequester implements DataCollector {
 
     protected Process commitChanges(Project project, String message, String parameters) {
     	ProcessRunner.runProcess(project.getPath(), "git", "add", ".").waitFor()
-        return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}").waitFor()
+        return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
     static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
         return ProcessRunner
-            .runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha).waitFor()
+            .runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha)
     }
 
     static private String[] getRemoteProjectOwnerAndName(Project project) {
@@ -39,11 +39,11 @@ abstract class BuildRequester implements DataCollector {
     }
 
     static private Process goBackToMaster(Project project) {
-        return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master').waitFor()
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
     }
 
     static private Process pushBranch(Project project, String branchName) {
-        return ProcessRunner.runProcess(project.getPath(), 'git', 'push','-u', 'origin', branchName).waitFor()
+        return ProcessRunner.runProcess(project.getPath(), 'git', 'push','-u', 'origin', branchName)
     }
 
     static private String getRemoteUrl(Project project) {

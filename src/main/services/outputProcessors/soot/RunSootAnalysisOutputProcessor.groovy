@@ -1,34 +1,35 @@
 
-package services.soot
+package services.outputProcessors.soot
 
-import exception.*
-import project.*
+import interfaces.OutputProcessor
 import util.*
 
-class SootRunner {
+import static app.MiningFramework.arguments
 
-    private String outputPath
+class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-builds.csv"
     private final String DATAFLOW_MODE = "dataflow"
     private final String REACHABILITY_MODE = "reachability"
 
-    SootRunner(String outputPath) {
-        this.outputPath = outputPath
+    void processOutput () {
+        if (arguments.providedAccessKey()) {
+            runSootAnalysis()
+        }
     }
 
-    public  void processScenarios() {
+    private void runSootAnalysis() {
         File sootResultsFile = createOutputFile()
-        List<SootScenario> sootScenarios = SootScenario.readScenarios(outputPath + RESULTS_FILE_PATH);
+        List<SootScenario> sootScenarios = SootScenario.readScenarios(arguments.getOutputPath() + RESULTS_FILE_PATH);
         
         for (scenario in sootScenarios) {
 
             String leftRightDataflow, rightLeftDataflow,leftRightReachability, rightLeftReachability = "false"
 
             println "Running soot scenario ${scenario.getCommitSHA()}"
-            String filePath = scenario.getLinesFile(outputPath)
-            String filePathReverse = scenario.getLinesFile(outputPath)
-            String classPath = scenario.getClassPath(outputPath)
+            String filePath = scenario.getLinesFile(arguments.getOutputPath())
+            String filePathReverse = scenario.getLinesFile(arguments.getOutputPath())
+            String classPath = scenario.getClassPath(arguments.getOutputPath())
 
             if (new File(filePath).exists()) {
                 println "Running left right dataflow analysis"
@@ -54,7 +55,7 @@ class SootRunner {
     }
 
     private File createOutputFile() {
-        File sootResultsFile = new File(outputPath + "/data/soot-results.csv")
+        File sootResultsFile = new File(arguments.getOutputPath() + "/data/soot-results.csv")
 
         if (sootResultsFile.exists()) {
             sootResultsFile.delete()

@@ -17,17 +17,18 @@ class MiningFramework {
     private Set<DataCollector> dataCollectors
     private CommitFilter commitFilter
     private Set<ProjectProcessor> projectProcessors
-    private OutputProcessor outputProcessor
+    private Set<OutputProcessor> outputProcessors
 
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'clonedRepositories'
 
     @Inject
-    MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, Set<ProjectProcessor> projectProcessors, OutputProcessor outputProcessor) {
+    MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter,
+                    Set<ProjectProcessor> projectProcessors, Set<OutputProcessor> outputProcessor) {
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectProcessors = projectProcessors
-        this.outputProcessor = outputProcessor
+        this.outputProcessors = outputProcessor
     }
 
     void start() {
@@ -44,7 +45,9 @@ class MiningFramework {
 
             waitForMiningWorkers(workers)
 
-            outputProcessor.processOutput()
+            for (OutputProcessor outputProcessor : outputProcessors) {
+                outputProcessor.processOutput()
+            }
 
             println "#### MINING FINISHED ####"
         } catch (UnstagedChangesException e) { // framework defined errors

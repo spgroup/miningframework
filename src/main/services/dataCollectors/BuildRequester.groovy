@@ -49,7 +49,7 @@ class BuildRequester implements DataCollector {
                 println "${project.getName()} - Build requesting skiped: build already exists"
             }
         } else {
-            println "${project.getName()} - Build requesting skiped: access key not provideds"
+            println "${project.getName()} - Build requesting skiped: access key not provided"
         }
     }
 

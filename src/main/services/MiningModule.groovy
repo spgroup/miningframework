@@ -12,7 +12,9 @@ import services.dataCollectors.BuildRequester
 import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
-
+import services.outputProcessors.FetchBuildsOutputProcessor
+import services.outputProcessors.GenerateSootInputFilesOutputProcessor
+import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
 import services.projectProcessors.FilterNonExistentProjectsProcessor
 import services.projectProcessors.ForkAndEnableTravisProcessor
 
@@ -21,7 +23,6 @@ public class MiningModule extends AbstractModule {
     @Override
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
-        Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
 
         dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)
@@ -30,10 +31,14 @@ public class MiningModule extends AbstractModule {
 
         bind(CommitFilter.class).to(InCommitListAndHasMutuallyModifiedMethodsFilter.class)
 
+        Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(FilterNonExistentProjectsProcessor.class)
         projectProcessorBinder.addBinding().to(ForkAndEnableTravisProcessor.class)
 
-        bind(OutputProcessor.class).to(OutputProcessorImpl.class)
+        Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
+        outputProcessorBinder.addBinding().to(FetchBuildsOutputProcessor.class)
+        outputProcessorBinder.addBinding().to(GenerateSootInputFilesOutputProcessor.class)
+        outputProcessorBinder.addBinding().to(RunSootAnalysisOutputProcessor.class)
     }
 
 }

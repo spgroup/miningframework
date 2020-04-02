@@ -27,16 +27,17 @@ The examples illustrated above correspond to some of the implementations we prov
 
 ## Instantiating or extending the framework
 
-You need to implement the following interfaces (see [interfaces/](https://github.com/spgroup/miningframework/tree/master/src/main/interfaces)) or choose their existing implementations (see [services/](https://github.com/spgroup/miningframework/tree/master/src/services/)):
-* ProjectProcessor 
+You need to implement the following interfaces (see [interfaces/](https://github.com/spgroup/miningframework/tree/master/src/main/interfaces)) or choose their existing implementations (see [services/](https://github.com/spgroup/miningframework/tree/master/src/main/services/)):
+
+* ProjectProcessor
 * CommitFilter
-* DataCollector 
+* DataCollector
 * OutputProcessor 
 
 They correspond to the four variability points described at the beginning of the page.
 
 The framework uses [Google Guice](https://github.com/google/guice) to implement dependency injection, and inject the interface implementations. 
-So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy), which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
+So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/main/services/MiningModule.groovy), which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
 
 
 ## Running a specific framework instantiation

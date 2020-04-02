@@ -8,92 +8,78 @@ class GithubHelper {
 
     public final String URL = "https://github.com"
     public final String API_URL = "https://api.github.com"
-    public final String RAW_CONTENT_URL = "https://raw.githubusercontent.com"
     private String accessKey;
-    
-    public GithubHelper (String accessKey) {
+
+    GithubHelper (String accessKey) {
         this.accessKey = accessKey
     }
 
-    public getUser() {
+    Object getUser() {
         String url = "${API_URL}/user"
-        HttpURLConnection connection = HttpHelper.requestToApi(url, "GET", this.accessKey)
-        
-        def resBody = HttpHelper.responseToJSON(connection.getInputStream())
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_GET, this.accessKey)
 
-        if (connection.getResponseMessage() != "OK") {
-            throw new GithubHelperException("Http request returned an error ${responseMessage}")
+        Object resBody = HttpHelper.responseToJSON(connection.getInputStream())
+
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new GithubHelperException("Http request returned an error ${connection.getResponseMessage()}")
         }
         return resBody
     }
 
-    public Map fork (Project project) {
+    Object getRepository(Project project) {
+        def result = null;
+        if (project.isRemote()) {
+            String[] projectNameAndOwner = project.getOwnerAndName()
+            String projectOwner = projectNameAndOwner[0]
+            String projectName = projectNameAndOwner[1]
+
+            String url = getRepoApiUrl(projectOwner, projectName)
+            HttpURLConnection httpConnection = HttpHelper.requestToApi(url, HttpHelper.METHOD_GET, this.accessKey)
+
+            if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                result = HttpHelper.responseToJSON(httpConnection.getInputStream());
+            } else if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
+                throw new GithubHelperException("Project ${projectOwner}/${projectName} was not found")
+            } else {
+                throw new GithubHelperException("Http request returned an error " + httpConnection.getResponseMessage())
+            }
+        }
+        return result
+    }
+
+
+    Object fork (Project project) {
+        def result = null;
         if (project.isRemote()) {
             try {
                 String[] projectNameAndOwner = project.getOwnerAndName()
                 String projectOwner = projectNameAndOwner[0]
                 String projectName = projectNameAndOwner[1]
 
-                String url = "${API_URL}/repos/${projectOwner}/${projectName}/forks"
-                HttpURLConnection response = HttpHelper.requestToApi(url, "POST", this.accessKey)
+                String url = getRepoApiUrl(projectOwner, projectName) + "/forks"
+                HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_POST, this.accessKey)
 
-                String responseMessage = response.getResponseMessage()
-                if (responseMessage != "Accepted") {
-                    throw new GithubHelperException("Http request returned an error ${responseMessage}")
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_ACCEPTED) {
+                    throw new GithubHelperException("Http request returned an error ${connection.getResponseMessage()}")
                 }
-                return HttpHelper.responseToJSON(response.getInputStream())
+
+                result = HttpHelper.responseToJSON(connection.getInputStream())
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new GithubHelperException("Error parsing project remote")
             }
         }
-    }
-
-    public getFile (String projectOwner, String projectName, String path) {
-        String url = getContentApiUrl(projectOwner, projectName, path)
-        HttpURLConnection response = HttpHelper.requestToApi(url, "GET", this.accessKey)
-        String responseMessage = response.getResponseMessage()
-        if (responseMessage != "OK") {
-            throw new GithubHelperException("Http request returned an error ${responseMessage}")
-        }
-        
-        def result = HttpHelper.responseToJSON(response.getInputStream())
-        result.content = HttpHelper.convertToUTF8(result.content)
-
         return result
     }
 
-    public updateFile(String projectOwner, String projectName, String path, String fileSha, String content, String branch, String commitMessage) {
-        String url = getContentApiUrl(projectOwner, projectName, path)
-        HttpURLConnection connection = HttpHelper.requestToApi(url, "PUT", this.accessKey)
-        def message = [
-            message: commitMessage, 
-            content: HttpHelper.convertToBase64(content), 
-            sha: fileSha,
-            branch: branch
-        ]
-        
-        HttpHelper.sendJsonBody(connection, message)
-        String responseMessage = connection.getResponseMessage()
-
-        if (responseMessage != "OK") {
-            throw new GithubHelperException("Http request returned an error ${responseMessage}")
-        }
-        return responseMessage
-    }
-
-    public getRepositoryReleases(String projectOwner, String projectName) {
+    Object getRepositoryReleases(String projectOwner, String projectName) {
         String url = getRepoApiUrl(projectOwner, projectName) + "/releases"   
-        HttpURLConnection connection = HttpHelper.requestToApi(url, "GET", this.accessKey);
-        String responseMessage = connection.getResponseMessage()
-        if (responseMessage != "OK") {
-            throw new GithubHelperException("Http request returned an error ${responseMessage}")
-        }
-    
-        return HttpHelper.responseToJSON(connection.getInputStream())
-    }
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_GET, this.accessKey);
 
-    private getContentApiUrl(String projectOwner, String projectName, String path) {
-        return "${getRepoApiUrl(projectOwner, projectName)}/contents/${path}"
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new GithubHelperException("Http request returned an error ${connection.getResponseMessage()}")
+        }
+
+        return HttpHelper.responseToJSON(connection.getInputStream())
     }
 
     private getRepoApiUrl(String projectOwner, String projectName) {

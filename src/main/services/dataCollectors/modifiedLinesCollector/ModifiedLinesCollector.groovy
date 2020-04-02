@@ -5,7 +5,7 @@ import project.MergeCommit
 import project.Project
 import util.FileManager
 import services.dataCollectors.RevisionsFilesCollector
-import services.TypeNameHelper
+import util.TypeNameHelper
 
 import static app.MiningFramework.arguments
 

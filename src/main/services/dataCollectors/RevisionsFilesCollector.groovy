@@ -1,8 +1,9 @@
-package services
+package services.dataCollectors
 
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
+import services.TypeNameHelper
 import util.FileManager
 
 import static app.MiningFramework.arguments

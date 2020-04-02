@@ -1,10 +1,10 @@
-package services.modifiedLinesCollector
+package services.dataCollectors.modifiedLinesCollector
 
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
 import util.FileManager
-import services.RevisionsFilesCollector
+import services.dataCollectors.RevisionsFilesCollector
 import services.TypeNameHelper
 
 import static app.MiningFramework.arguments

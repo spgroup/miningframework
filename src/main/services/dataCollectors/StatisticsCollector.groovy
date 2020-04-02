@@ -1,4 +1,4 @@
-package services
+package services.dataCollectors
 
 import interfaces.DataCollector
 import project.*
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 
 import static app.MiningFramework.arguments
 
-class StatisticsCollectorImpl implements DataCollector {
+class StatisticsCollector implements DataCollector {
 
     @Override
     public void collectData(Project project, MergeCommit mergeCommit) {

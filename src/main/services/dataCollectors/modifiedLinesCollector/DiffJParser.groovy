@@ -1,4 +1,4 @@
-package services.modifiedLinesCollector
+package services.dataCollectors.modifiedLinesCollector
 
 import services.modifiedLinesCollector.exceptions.DiffJParsingException
 

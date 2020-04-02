@@ -1,4 +1,4 @@
-package services.modifiedLinesCollector.exceptions
+package services.dataCollectors.modifiedLinesCollector.exceptions
 
 class TextualDiffParsingException extends Exception {
     TextualDiffParsingException(String expectedCharacter, String foundLine) {

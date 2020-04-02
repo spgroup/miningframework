@@ -1,4 +1,4 @@
-package services
+package services.dataCollectors
 
 import interfaces.DataCollector
 import project.MergeCommit

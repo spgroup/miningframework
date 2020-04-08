@@ -115,11 +115,6 @@ class BuildRequester implements DataCollector {
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
-    static private String getBranchName(MergeCommit mergeCommit) {
-        // the branch name is created with a timestamp so that every execution a new branch is created
-        // and the build is reruned
-        return mergeCommit.getSHA().take(5) + "_build_branch_${getCurrentTimestamp()}"
-    }
 
     static private String getCurrentTimestamp() {
         return new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());

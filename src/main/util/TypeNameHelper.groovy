@@ -12,7 +12,7 @@ class TypeNameHelper {
         String name = getName(filePath)
         String packageName = getPackage(project, SHA, filePath)
 
-        return (packageName == "" ? "" : packageName + '.') + name
+        return ((packageName == "" ? "" : packageName + '.') + name).stripIndent();
     }
 
     static private String getPackage(Project project, String SHA, String filePath) {

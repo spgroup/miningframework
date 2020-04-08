@@ -25,7 +25,7 @@ class ArgsParser {
         this.cli.u(longOpt: 'until', args: 1,
                 argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY)')
         this.cli.i(longOpt: 'injector', args: 1,
-                argName:'class', 'Specify the class of the dependency injector (Must provide full name, default src.services.MiningModule)')
+                argName:'class', 'Specify the class of the dependency injector (Must provide full name, default injectors.StaticAnalysisConflictsDetectionModule)')
         this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a git repository to upload the output in the end of the analysis (format https://github.com/<owner>/<name>')
         this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account for when the analysis needs user access to GitHub')
         this.cli.t(longOpt: 'threads', args: 1, argName: 'threads', "Number of cores used in analysis (default: 1)")
@@ -33,7 +33,7 @@ class ArgsParser {
     }
 
 
-    private Arguments parse(args) {
+     Arguments parse(args) {
         this.options = this.cli.parse(args)
         Arguments resultArgs = new Arguments()
         
@@ -47,7 +47,7 @@ class ArgsParser {
         return resultArgs
     }
 
-    private void printHelp() {
+    void printHelp() {
         this.cli.usage()
     }
 
@@ -122,14 +122,6 @@ class ArgsParser {
             return huc.getResponseCode() == 200
         } catch (MalformedURLException e) {
                 throw new InvalidArgsException('Invalid url.')
-        }
-    }
-
-    private Class parseInjector() {
-        try {
-            return Class.forName(this.options.injector);
-        } catch (Exception e) {
-            throw new InvalidArgsException('Invalid class')
         }
     }
 

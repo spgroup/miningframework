@@ -1,7 +1,8 @@
-package services
+package injectors
 
 import com.google.inject.*
 import com.google.inject.multibindings.Multibinder
+
 import interfaces.CommitFilter
 import interfaces.DataCollector
 import interfaces.OutputProcessor
@@ -18,7 +19,7 @@ import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
 import services.projectProcessors.FilterNonExistentProjectsProcessor
 import services.projectProcessors.ForkAndEnableTravisProcessor
 
-public class MiningModule extends AbstractModule {
+class StaticAnalysisConflictsDetectionModule extends AbstractModule {
 
     @Override
     protected void configure() {

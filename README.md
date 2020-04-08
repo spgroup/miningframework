@@ -34,10 +34,16 @@ You need to implement the following interfaces (see [interfaces/](https://github
 * DataCollector
 * OutputProcessor 
 
-They correspond to the four variability points described at the beginning of the page.
+They correspond to the four variability points described at the beginning of the page. The following Interfaces can have multiple implementations injected:
+
+* ProjectProcessor
+* DataCollector
+* OutputProcessor
+
+For those, the order which the they are injected will be followed by the framework, running the implementations in order
 
 The framework uses [Google Guice](https://github.com/google/guice) to implement dependency injection, and inject the interface implementations. 
-So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/main/services/MiningModule.groovy), which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
+So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [StaticAnalysisConflictsDetectionModule](https://github.com/spgroup/miningframework/blob/master/src/main/injectors/StaticAnalysisConflictsDetectionModule.groovy) in the injectors package, which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
 
 
 ## Running a specific framework instantiation

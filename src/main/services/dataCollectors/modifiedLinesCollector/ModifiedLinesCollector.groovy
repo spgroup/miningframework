@@ -120,6 +120,12 @@ class ModifiedLinesCollector implements DataCollector {
         if (!experimentalDataDir.exists()) {
             experimentalDataDir.mkdirs()
         }
+
+        File resultFile = new File("${outputPath}/data/results.csv")
+        if (resultFile.exists()) {
+            resultFile.delete();
+        }
+
     }
 
     private synchronized void printResults(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,

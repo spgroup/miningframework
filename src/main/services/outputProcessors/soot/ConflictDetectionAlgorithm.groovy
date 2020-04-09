@@ -4,12 +4,12 @@ import util.ProcessRunner
 
 import java.util.concurrent.TimeUnit
 
-class SootAlgorithm {
+class ConflictDetectionAlgorithm {
 
     private String name;
     private final long TIMEOUT = 30;
 
-    SootAlgorithm (String name) {
+    ConflictDetectionAlgorithm(String name) {
         this.name = name
     }
 
@@ -19,7 +19,7 @@ class SootAlgorithm {
 
     @Override
     String toString() {
-        return "SootAlgorithm{" +
+        return "ConflictDetectionAlgorithm{" +
                 "name='" + name + '\'' +
                 '}';
     }
@@ -28,7 +28,7 @@ class SootAlgorithm {
         return this.name;
     }
 
-    String run (SootScenario scenario) {
+    String run (Scenario scenario) {
         println "Running ${toString()}"
         String filePath = scenario.getLinesFilePath()
         String classPath = scenario.getClassPath()

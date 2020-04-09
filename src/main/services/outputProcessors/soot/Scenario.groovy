@@ -2,7 +2,7 @@ package services.outputProcessors.soot
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
-class SootScenario {
+class Scenario {
 
     private String projectName;
     private String className;
@@ -11,7 +11,7 @@ class SootScenario {
 
     private String scenarioDirectory;
 
-    SootScenario (projectName, className, methodSignature, commitSHA, scenarioDirectory) {
+    Scenario(projectName, className, methodSignature, commitSHA, scenarioDirectory) {
         this.projectName = projectName;
         this.className = className;
         this.methodSignature = methodSignature;

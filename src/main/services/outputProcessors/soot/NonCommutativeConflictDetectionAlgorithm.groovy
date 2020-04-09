@@ -1,8 +1,8 @@
 package services.outputProcessors.soot
 
-class SootNonCommutativeAlgorithm extends SootAlgorithm {
+class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorithm {
 
-    SootNonCommutativeAlgorithm(String name) {
+    NonCommutativeConflictDetectionAlgorithm(String name) {
         super(name)
     }
 
@@ -12,7 +12,7 @@ class SootNonCommutativeAlgorithm extends SootAlgorithm {
     }
 
     @Override
-    String run (SootScenario scenario) {
+    String run (Scenario scenario) {
         String filePath = scenario.getLinesFilePath()
         String classPath = scenario.getClassPath()
         String filePathReverse = scenario.getLinesReverseFilePath()
@@ -27,6 +27,6 @@ class SootNonCommutativeAlgorithm extends SootAlgorithm {
 
     @Override
     public String toString() {
-        return "SootNonCommutativeAlgorithm{name = ${this.name}}";
+        return "NonCommutativeConflictDetectionAlgorithm{name = ${this.name}}";
     }
 }

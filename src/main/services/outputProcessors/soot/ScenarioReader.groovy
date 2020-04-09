@@ -2,7 +2,7 @@ package services.outputProcessors.soot
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
-class SootScenarioReader {
+class ScenarioReader {
 
     static List<Scenario> read (String outputPath, String fileName) {
         String filePath = "${outputPath}/${fileName}"

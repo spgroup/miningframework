@@ -9,6 +9,12 @@ import util.TypeNameHelper
 
 import static app.MiningFramework.arguments
 
+
+/**
+ * @requires: that a diffj cli is in the dependencies folder and that diff (textual diff tool) is installed
+ * @produces: a [outputPath]/data/results.csv file with the following format:
+ * project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions
+ */
 class ModifiedLinesCollector implements DataCollector {
 
     private File experimentalDataFile;

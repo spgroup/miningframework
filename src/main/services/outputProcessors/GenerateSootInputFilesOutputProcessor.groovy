@@ -8,6 +8,11 @@ import util.ProcessRunner
 
 import static app.MiningFramework.arguments
 
+/**
+ * @requires: python3 installed on the machine and that the outputProcessor FetchBuildsOutputProcessor was ran before
+ * @produces: files soot.csv and soot-reverse.csv on the [outputPath]/files/[projectName]/[mergeCommit]/ folder with the
+ * format expected by the soot-analysis tool for specifying scenarios source and sink
+ */
 class GenerateSootInputFilesOutputProcessor implements OutputProcessor {
     
     private final String SCRIPT_RUNNER = "python3"

@@ -6,6 +6,10 @@ import util.*
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
+/**
+ * @requires: that a diffj cli is in the dependencies folder
+ * @produces: returns true if both left and right of the merge scenario have a intersection on the modified methods list
+ */
 class MutuallyModifiedMethodsCommitFilter implements CommitFilter {
 
     boolean applyFilter(Project project, MergeCommit mergeCommit) {

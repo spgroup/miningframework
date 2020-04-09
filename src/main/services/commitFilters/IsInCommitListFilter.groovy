@@ -6,6 +6,10 @@ import project.Project
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
+/**
+ * @requires: that a commits.csv file exists on the project's root, otherwise it will always return true
+ * @produces: returns true if the passed mergeCommit sha is in the commits.csv file
+ */
 class IsInCommitListFilter implements CommitFilter {
     @Override
     boolean applyFilter(Project project, MergeCommit mergeCommit) {

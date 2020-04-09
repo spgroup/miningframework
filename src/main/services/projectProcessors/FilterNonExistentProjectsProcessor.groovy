@@ -8,6 +8,9 @@ import java.util.stream.Collectors
 
 import static app.MiningFramework.arguments
 
+/**
+ * @produces: filters off the projects are not accessible on github
+ */
 class FilterNonExistentProjectsProcessor implements ProjectProcessor {
 
     @Override

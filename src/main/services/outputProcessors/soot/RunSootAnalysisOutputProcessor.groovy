@@ -6,6 +6,11 @@ import util.*
 
 import static app.MiningFramework.arguments
 
+/**
+ * @requires: that soot-analysis.jar is in the dependencies folder, that access key was passed and
+ * that FetchBuildsOutputProcessor and GenerateSootInputFilesOutputProcessor were ran
+ * @produces: a [outputPath]/data/soot-results.csv file with the results for the soot algorithms ran
+ */
 class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-builds.csv"

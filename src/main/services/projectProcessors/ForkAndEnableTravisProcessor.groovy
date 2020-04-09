@@ -7,6 +7,12 @@ import util.*
 
 import static app.MiningFramework.arguments
 
+/**
+ * @requires: that the projects passed are on github, that the access key was passed and that
+ * travis is enabled for the github account
+ * @produces: forks the passed github projects and enables them on travis with the access key as a environment
+ * variable, returns the projects with the path updated to the fork url
+ * */
 class ForkAndEnableTravisProcessor implements ProjectProcessor {
 
     private GithubHelper githubHelper

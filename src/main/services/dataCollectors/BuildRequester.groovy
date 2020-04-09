@@ -9,11 +9,18 @@ import java.text.SimpleDateFormat
 
 import static app.MiningFramework.arguments
 
+
+/**
+ * @requires: that the access key argument is passed and that the project has one of the following build systems:
+ * Maven or Gradle and that the project is a github project, otherwise it will not be executed
+ * @produces: creates a branch with a name following the format: [reduced sha]_build_branch_[timestamp] with a custom travis file
+ * and pushes it to the project, triggering a travis build, that will deploy the jar to the repository's releases page
+ */
 class BuildRequester implements DataCollector {
 
     static private final FILE_NAME = '.travis.yml'
 
-    public enum BuildSystem {
+    enum BuildSystem {
         Maven,
         Gradle,
         None
@@ -54,7 +61,7 @@ class BuildRequester implements DataCollector {
     }
 
     private File getTravisFile(Project project) {
-        return new File("${project.getPath()}/.travis.yml")
+        return new File("${project.getPath()}/${FILE_NAME}")
     }
 
     private String generateBranchName(MergeCommit mergeCommit) {

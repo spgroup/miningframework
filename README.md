@@ -83,7 +83,7 @@ the Mining Framework take an input csv file and a name for the output dir
                                 injectors.StaticAnalysisConflictsDetection
                                 Module)
  -k,--keep-projects             Specify that cloned projects must be kept
-                                after the the analysis (those are kept in
+                                after the analysis (those are kept in
                                 clonedRepositories/ )
  -p,--push <link>               Specify a git repository to upload the
                                 output in the end of the analysis (format

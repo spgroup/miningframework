@@ -29,7 +29,7 @@ class ArgsParser {
         this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a git repository to upload the output in the end of the analysis (format https://github.com/<owner>/<name>')
         this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account for when the analysis needs user access to GitHub')
         this.cli.t(longOpt: 'threads', args: 1, argName: 'threads', "Number of cores used in analysis (default: 1)")
-        this.cli.k(longOpt: 'keep-projects', argName: 'keep projects', 'Specify that cloned projects must be kept after the the analysis (those are kept in clonedRepositories/ )')
+        this.cli.k(longOpt: 'keep-projects', argName: 'keep projects', 'Specify that cloned projects must be kept after the analysis (those are kept in clonedRepositories/ )')
     }
 
 

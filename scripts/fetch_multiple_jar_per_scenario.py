@@ -116,7 +116,7 @@ def find_project_jar_for_SHA(jars_build_commits, values, point):
         general_path = jars_build_commits[values[point]]
         for root, dirs, files in os.walk(general_path[:-13]):
             for file in files:
-                if file.endswith("jar-with-dependencies.jar"):
+                if file.endswith(".jar"):
                     path_jar += local_path + os.path.join(root, file).replace("\n","")+":"
     except Exception as e:
         print(e)    

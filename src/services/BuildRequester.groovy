@@ -59,12 +59,12 @@ abstract class BuildRequester implements DataCollector {
         println "${project.getName()} - Build requesting finished!"
     }
 
-    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem, String mavenBuildCommand) {
+    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem, String buildManagerCommand) {
         String buildCommand = "";
         if (buildSystem == BuildSystem.Maven) {
-            buildCommand = mavenBuildCommand
+            buildCommand = buildManagerCommand
         } else if (buildSystem == BuildSystem.Gradle) {
-            buildCommand = GRADLE_BUILD
+            buildCommand = buildManagerCommand
         }
     
         String trimmedProjectName = projectName.replace('\n', '')

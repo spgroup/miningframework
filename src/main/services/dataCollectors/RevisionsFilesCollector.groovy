@@ -9,7 +9,7 @@ import util.FileManager
 import static app.MiningFramework.arguments
 
 /**
- * @produces: for each file modified by both parents, creates a folder with the format:
+ * @provides: for each file modified by both parents, creates a folder with the format:
  * [outputPath]/files/[projectName]/[commitSha]/ with base, left, right and merge versions of that file
  */
 class RevisionsFilesCollector implements DataCollector {

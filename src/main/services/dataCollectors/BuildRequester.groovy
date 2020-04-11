@@ -13,7 +13,7 @@ import static app.MiningFramework.arguments
 /**
  * @requires: that the access key argument is passed and that the project has one of the following build systems:
  * Maven or Gradle and that the project is a github project, otherwise it will not be executed
- * @produces: creates a branch with a name following the format: [reduced sha]_build_branch_[timestamp] with a custom travis file
+ * @provides: creates a branch with a name following the format: [reduced sha]_build_branch_[timestamp] with a custom travis file
  * and pushes it to the project, triggering a travis build, that will deploy the jar to the repository's releases page
  */
 class BuildRequester implements DataCollector {

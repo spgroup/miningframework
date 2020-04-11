@@ -8,7 +8,7 @@ import util.MergeHelper
 import static app.MiningFramework.arguments
 
 /**
- * @produces: a [outputPath]/mergeconflicts/results.csv file with the following format:
+ * @provides: a [outputPath]/mergeconflicts/results.csv file with the following format:
  * project;merge commit;textual conflict
  * [projectName];[merge sha];(true | false)
  */

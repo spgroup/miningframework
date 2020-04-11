@@ -9,7 +9,7 @@ import static app.MiningFramework.arguments
 /**
  * @requires: that soot-analysis.jar is in the dependencies folder, that access key was passed and
  * that FetchBuildsOutputProcessor and GenerateSootInputFilesOutputProcessor were ran
- * @produces: a [outputPath]/data/soot-results.csv file with the results for the soot algorithms ran
+ * @provides: a [outputPath]/data/soot-results.csv file with the results for the soot algorithms ran
  */
 class RunSootAnalysisOutputProcessor implements OutputProcessor {
 

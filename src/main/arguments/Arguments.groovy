@@ -1,6 +1,6 @@
 package arguments
 
-import services.MiningModule
+import injectors.StaticAnalysisConflictsDetectionModule
 
 class Arguments {
     
@@ -15,12 +15,12 @@ class Arguments {
     private int numOfThreads
     private boolean keepProjects
 
-    Arguments() {
+    Arguments() { // set the default values for all parameters
         isHelp = false
         sinceDate = ''
         untilDate = ''
         outputPath = 'output'
-        injector = MiningModule
+        injector = StaticAnalysisConflictsDetectionModule
         resultsRemoteRepositoryURL = ''
         accessKey = ''
         numOfThreads = 1

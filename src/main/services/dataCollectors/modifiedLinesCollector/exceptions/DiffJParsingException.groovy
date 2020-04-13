@@ -1,4 +1,4 @@
-package services.modifiedLinesCollector.exceptions
+package services.dataCollectors.modifiedLinesCollector.exceptions
 
 public class DiffJParsingException extends Exception {
     public DiffJParsingException(String expectedCharacter, String foundLine) {

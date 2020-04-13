@@ -1,4 +1,4 @@
-package services
+package services.dataCollectors
 
 import interfaces.DataCollector
 import project.*
@@ -10,7 +10,11 @@ import java.util.concurrent.TimeUnit
 
 import static app.MiningFramework.arguments
 
-class StatisticsCollectorImpl implements DataCollector {
+/**
+ * @provides: a [outputPath]/statistics/results.csv file with the format:
+ * project,merge commit,is octopus,number of developers' mean,number of commits' mean,number of changed files' mean, number of changed lines' mean,duration mean,conclusion delay
+ */
+class StatisticsCollector implements DataCollector {
 
     @Override
     public void collectData(Project project, MergeCommit mergeCommit) {

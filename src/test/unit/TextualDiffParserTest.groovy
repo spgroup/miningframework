@@ -3,8 +3,8 @@ package unit
 import org.junit.Test
 import static util.Assert.assertEquals
 
-import services.modifiedLinesCollector.TextualDiffParser
-import services.modifiedLinesCollector.ModifiedLine
+import services.dataCollectors.modifiedLinesCollector.TextualDiffParser
+import services.dataCollectors.modifiedLinesCollector.ModifiedLine
 
 public class TextualDiffParserTest {
 

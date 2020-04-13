@@ -1,14 +1,20 @@
-package services.modifiedLinesCollector
+package services.dataCollectors.modifiedLinesCollector
 
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
 import util.FileManager
-import services.RevisionsFilesCollector
-import services.TypeNameHelper
+import services.dataCollectors.RevisionsFilesCollector
+import util.TypeNameHelper
 
 import static app.MiningFramework.arguments
 
+
+/**
+ * @requires: that a diffj cli is in the dependencies folder and that diff (textual diff tool) is installed
+ * @provides: a [outputPath]/data/results.csv file with the following format:
+ * project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions
+ */
 class ModifiedLinesCollector implements DataCollector {
 
     private File experimentalDataFile;

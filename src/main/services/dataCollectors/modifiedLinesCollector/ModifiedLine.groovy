@@ -1,4 +1,4 @@
-package services.modifiedLinesCollector
+package services.dataCollectors.modifiedLinesCollector
 
 class ModifiedLine {
 

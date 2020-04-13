@@ -1,4 +1,4 @@
-package services
+package services.dataCollectors
 
 import interfaces.DataCollector
 import project.MergeCommit
@@ -7,6 +7,11 @@ import util.MergeHelper
 
 import static app.MiningFramework.arguments
 
+/**
+ * @provides: a [outputPath]/mergeconflicts/results.csv file with the following format:
+ * project;merge commit;textual conflict
+ * [projectName];[merge sha];(true | false)
+ */
 class MergeConflictCollector implements DataCollector {
 
     @Override

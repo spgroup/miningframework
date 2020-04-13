@@ -1,4 +1,4 @@
-package services
+package util
 
 import project.Project
 import util.ProcessRunner
@@ -38,7 +38,7 @@ class TypeNameHelper {
 
     static private String getName(String filePath) {
         // this uses two built in identifiers used in java to represent the Patterns that recognize 
-        // java valid indetifiers
+        // java valid identifiers
         Pattern pattern = Pattern.compile("(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*)\\.java") 
         Matcher matcher = pattern.matcher(filePath)
         if(matcher.find())

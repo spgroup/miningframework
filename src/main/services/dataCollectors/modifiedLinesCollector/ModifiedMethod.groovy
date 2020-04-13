@@ -1,4 +1,4 @@
-package services.modifiedLinesCollector
+package services.dataCollectors.modifiedLinesCollector
 
 /**
  * This class represents a method's difference from a base to commit to

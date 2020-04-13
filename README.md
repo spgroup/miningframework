@@ -27,16 +27,23 @@ The examples illustrated above correspond to some of the implementations we prov
 
 ## Instantiating or extending the framework
 
-You need to implement the following interfaces (see [interfaces/](https://github.com/spgroup/miningframework/tree/master/src/main/interfaces)) or choose their existing implementations (see [services/](https://github.com/spgroup/miningframework/tree/master/src/services/)):
-* ProjectProcessor 
+You need to implement the following interfaces (see [interfaces/](https://github.com/spgroup/miningframework/tree/master/src/main/interfaces)) or choose their existing implementations (see [services/](https://github.com/spgroup/miningframework/tree/master/src/main/services/)):
+
+* ProjectProcessor
 * CommitFilter
-* DataCollector 
+* DataCollector
 * OutputProcessor 
 
-They correspond to the four variability points described at the beginning of the page.
+They correspond to the four variability points described at the beginning of the page. The following Interfaces can have multiple implementations injected:
+
+* ProjectProcessor
+* DataCollector
+* OutputProcessor
+
+For those, the order which the they are injected will be followed by the framework, running the implementations in order
 
 The framework uses [Google Guice](https://github.com/google/guice) to implement dependency injection, and inject the interface implementations. 
-So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy), which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
+So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [StaticAnalysisConflictsDetectionModule](https://github.com/spgroup/miningframework/blob/master/src/main/injectors/StaticAnalysisConflictsDetectionModule.groovy) in the injectors package, which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
 
 
 ## Running a specific framework instantiation
@@ -73,8 +80,11 @@ the Mining Framework take an input csv file and a name for the output dir
  -h,--help                      Show help for executing commands
  -i,--injector <class>          Specify the class of the dependency
                                 injector (Must provide full name, default
-                                src.services.MiningModule)
- -k,--keep-projects             Keep projects in disk after analysis
+                                injectors.StaticAnalysisConflictsDetection
+                                Module)
+ -k,--keep-projects             Specify that cloned projects must be kept
+                                after the analysis (those are kept in
+                                clonedRepositories/ )
  -p,--push <link>               Specify a git repository to upload the
                                 output in the end of the analysis (format
                                 https://github.com/<owner>/<name>

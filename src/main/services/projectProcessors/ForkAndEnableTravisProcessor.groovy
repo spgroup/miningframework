@@ -1,4 +1,4 @@
-package services
+package services.projectProcessors
 
 import exception.*
 import interfaces.ProjectProcessor
@@ -7,16 +7,24 @@ import util.*
 
 import static app.MiningFramework.arguments
 
-class ProjectProcessorImpl implements ProjectProcessor {
+/**
+ * @requires: that the projects passed are on github, that the access key was passed and that
+ * travis is enabled for the github account
+ * @provides: forks the passed github projects and enables them on travis with the access key as a environment
+ * variable, returns the projects with the path updated to the fork url
+ * */
+class ForkAndEnableTravisProcessor implements ProjectProcessor {
 
     private GithubHelper githubHelper
     private TravisHelper travisHelper
 
-    public ArrayList<Project> processProjects(ArrayList<Project> projects) {
+    @Override
+    ArrayList<Project> processProjects(ArrayList<Project> projects) {
+        ArrayList<Project> result = projects;
         if (arguments.providedAccessKey()) {
+            println "Running ForkAndEnableTravisProcessor"
             githubHelper = new GithubHelper(arguments.getAccessKey())
             travisHelper = new TravisHelper(arguments.getAccessKey())
-            println "Processing projects"
 
             ArrayList<Project> projectsForks = new ArrayList<Project>()
             for (project in projects) {
@@ -37,9 +45,11 @@ class ProjectProcessorImpl implements ProjectProcessor {
                 }
             }
 
-            return projectsForks
-        } 
-        return projects
+            result = projectsForks
+        } else {
+            println "Skiping ForkAndEnableTravisProcessor: access key not provided"
+        }
+        return result
     }
 
     private void keepTryingToEnableTravisProject (Project project, int maxNumberOfTries) {

@@ -1,4 +1,4 @@
-package services.modifiedLinesCollector
+package services.dataCollectors.modifiedLinesCollector
 
 import project.Project
 import util.FileManager

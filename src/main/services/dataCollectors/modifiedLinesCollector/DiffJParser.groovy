@@ -1,6 +1,6 @@
-package services.modifiedLinesCollector
+package services.dataCollectors.modifiedLinesCollector
 
-import services.modifiedLinesCollector.exceptions.DiffJParsingException
+import services.dataCollectors.modifiedLinesCollector.exceptions.DiffJParsingException
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern

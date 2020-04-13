@@ -1,4 +1,4 @@
-package services
+package services.commitFilters
 
 import interfaces.CommitFilter
 import project.*
@@ -6,45 +6,20 @@ import util.*
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
-class CommitFilterImpl implements CommitFilter {
+/**
+ * @requires: that a diffj cli is in the dependencies folder
+ * @provides: returns true if both left and right of the merge scenario have a intersection on the modified methods list
+ */
+class MutuallyModifiedMethodsCommitFilter implements CommitFilter {
 
-    public boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        File commitsFile = new File("./commits.csv")
-
-        if (commitsFile.exists()) {
-            List commitList = parseCommitList(commitsFile)
-            
-            return isInCommitList(commitList, mergeCommit) && containsMutuallyModifiedMethods(project, mergeCommit)
-        } else {
-            return containsMutuallyModifiedMethods(project, mergeCommit)
-        }
-
-    }
-
-    private List parseCommitList (File commitsFile) {
-        ArrayList<String> commitList = new ArrayList<String>()
-        def iterator = parseCsv(commitsFile.getText())
-            
-        for (line in iterator) {
-            commitList.add(line["commitSHA"])
-        }
-
-        return commitList
-    }
-
-    private boolean isInCommitList (List commitList, MergeCommit mergeCommit) {
-        for (commit in commitList) {
-            if (mergeCommit.getSHA() == commit) {
-                return true;
-            } 
-        }
-        return false;
+    boolean applyFilter(Project project, MergeCommit mergeCommit) {
+        return containsMutuallyModifiedMethods(project, mergeCommit)
     }
 
     private boolean containsMutuallyModifiedMethods(Project project, MergeCommit mergeCommit) {
         if (mergeCommit.getAncestorSHA() == null) {
             /**
-            * Some merge scenarios dont return an valid ancestor SHA this check prevents
+            * Some merge scenarios don't return an valid ancestor SHA this check prevents
             * unexpected crashes
             */
             return false;

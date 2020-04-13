@@ -1,8 +1,7 @@
 package app
 
 import com.google.inject.Inject
-import java.io.File
-import java.util.ArrayList
+
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -17,26 +16,28 @@ class MiningFramework {
    
     private Set<DataCollector> dataCollectors
     private CommitFilter commitFilter
-    private ProjectProcessor projectProcessor
-    private OutputProcessor outputProcessor
+    private Set<ProjectProcessor> projectProcessors
+    private Set<OutputProcessor> outputProcessors
 
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'clonedRepositories'
-    private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
-    
+
     @Inject
-    public MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
+    MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter,
+                    Set<ProjectProcessor> projectProcessors, Set<OutputProcessor> outputProcessor) {
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
-        this.projectProcessor = projectProcessor
-        this.outputProcessor = outputProcessor
+        this.projectProcessors = projectProcessors
+        this.outputProcessors = outputProcessor
     }
 
-    public void start() {
+    void start() {
         try {
-            printStartAnalysis()                
+            println "#### MINING STARTED ####"
 
-            projectList = processProjects(projectList)
+            for (ProjectProcessor projectProcessor : projectProcessors) {
+                projectList = projectProcessor.processProjects(projectList)
+            }
 
             BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
             
@@ -44,9 +45,11 @@ class MiningFramework {
 
             waitForMiningWorkers(workers)
 
-            processOutput()
+            for (OutputProcessor outputProcessor : outputProcessors) {
+                outputProcessor.processOutput()
+            }
 
-            printFinishAnalysis()
+            println "#### MINING FINISHED ####"
         } catch (UnstagedChangesException e) { // framework defined errors
             println e.message;
         }
@@ -82,29 +85,12 @@ class MiningFramework {
         }
     }
 
-    private ArrayList<Project> processProjects(ArrayList<Project> projects) {
-        return projectProcessor.processProjects(projects)
-    }
-
-    private void processOutput() {
-        outputProcessor.processOutput()
-    }
-
-    public void setProjectList(ArrayList<Project> projectList) {
+    void setProjectList(ArrayList<Project> projectList) {
         this.projectList = projectList
     }
 
     void setArguments(Arguments arguments) {
         this.arguments = arguments
-    }
-
-
-    static void printStartAnalysis() {
-        println "#### MINING STARTED ####\n"
-    }
-
-    static void printFinishAnalysis() {
-        println "#### MINING FINISHED ####"
     }
 
 }

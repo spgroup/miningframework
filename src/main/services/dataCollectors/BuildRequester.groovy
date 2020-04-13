@@ -1,4 +1,4 @@
-package services
+package services.dataCollectors
 
 import interfaces.DataCollector
 import project.*
@@ -9,11 +9,19 @@ import java.text.SimpleDateFormat
 
 import static app.MiningFramework.arguments
 
+
+/**
+ * @requires: that the access key argument is passed and that the project has one of the following build systems:
+ * Maven or Gradle and that the project is a github project (the project doesn't need to have a travis configuration file)
+ * otherwise it will not be executed
+ * @provides: creates a branch with a name following the format: [merge commit's reduced sha]_build_branch_[timestamp] with a custom travis file
+ * and pushes it to the project, triggering a travis build, that will deploy the jars to the github repository's releases section
+ */
 class BuildRequester implements DataCollector {
 
     static private final FILE_NAME = '.travis.yml'
 
-    public enum BuildSystem {
+    enum BuildSystem {
         Maven,
         Gradle,
         None
@@ -49,12 +57,12 @@ class BuildRequester implements DataCollector {
                 println "${project.getName()} - Build requesting skiped: build already exists"
             }
         } else {
-            println "${project.getName()} - Build requesting skiped: access key not provideds"
+            println "${project.getName()} - Build requesting skiped: access key not provided"
         }
     }
 
     private File getTravisFile(Project project) {
-        return new File("${project.getPath()}/.travis.yml")
+        return new File("${project.getPath()}/${FILE_NAME}")
     }
 
     private String generateBranchName(MergeCommit mergeCommit) {
@@ -115,11 +123,6 @@ class BuildRequester implements DataCollector {
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
-    static private String getBranchName(MergeCommit mergeCommit) {
-        // the branch name is created with a timestamp so that every execution a new branch is created
-        // and the build is reruned
-        return mergeCommit.getSHA().take(5) + "_build_branch_${getCurrentTimestamp()}"
-    }
 
     static private String getCurrentTimestamp() {
         return new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());

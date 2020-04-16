@@ -32,7 +32,6 @@ class ArgsParser {
         this.cli.k(longOpt: 'keep-projects', argName: 'keep projects', 'Specify that cloned projects must be kept after the analysis (those are kept in clonedRepositories/ )')
     }
 
-
      Arguments parse(args) {
         this.options = this.cli.parse(args)
         Arguments resultArgs = new Arguments()
@@ -66,7 +65,7 @@ class ArgsParser {
             
         if (this.getArgumentQuantity() > 1) {
             String outputPath = this.options.arguments()[1]
-            String parsedOutputPath = outputPath.endsWith("/") ? outputPath.substring(0,dir.lastIndexOf("/")) : outputPath;
+            String parsedOutputPath = outputPath.endsWith("/") ? outputPath.substring(0, outputPath.lastIndexOf("/")) : outputPath;
             args.setOutputPath(parsedOutputPath)
         }
     }
@@ -126,10 +125,12 @@ class ArgsParser {
     }
 
     private boolean validDate(String value) {
+        SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy")
         try {
-            new SimpleDateFormat("dd/mm/yyyy").parse(value);
+            format.setLenient(false)
+            format.parse(value)
             return true;
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException e) {
             return false;
         }
     }

@@ -12,12 +12,12 @@ import static app.MiningFramework.arguments
  */
 class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
-    private final String RESULTS_FILE_PATH = "data/results-with-builds.csv"
+    private final String RESULTS_FILE_PATH = "/data/results-with-builds.csv"
 
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
             new NonCommutativeConflictDetectionAlgorithm("dataflow"),
             new NonCommutativeConflictDetectionAlgorithm("tainted"),
-            new NonCommutativeConflictDetectionAlgorithm("svfa"),
+            new NonCommutativeConflictDetectionAlgorithm("svfa", 30),
             new ConflictDetectionAlgorithm("confluence")
     ]
 
@@ -30,7 +30,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     void executeAllAnalyses(String outputPath) {
         File sootResultsFile = createOutputFile(outputPath)
 
-        File resultsWithBuildsFile = new File(arguments.getOutputPath() + RESULTS_FILE_PATH)
+        File resultsWithBuildsFile = new File(outputPath + RESULTS_FILE_PATH)
         if (resultsWithBuildsFile.exists()) {
 
             List<Scenario> sootScenarios = ScenarioReader.read(outputPath, RESULTS_FILE_PATH);

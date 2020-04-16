@@ -1,9 +1,24 @@
 package services.outputProcessors.soot
 
+
+/**
+ * Runs a soot algorithm twice, once with:
+ * left -> source
+ * right -> sink
+ * and once with:
+ * left -> sink
+ * right -> source
+ * This is used for algorithms that are non commutative, that means different conflicts can be found running from
+ * left to right and right to left
+ */
 class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorithm {
 
     NonCommutativeConflictDetectionAlgorithm(String name) {
         super(name)
+    }
+
+    NonCommutativeConflictDetectionAlgorithm(String name, long timeout) {
+        super(name, timeout)
     }
 
     @Override

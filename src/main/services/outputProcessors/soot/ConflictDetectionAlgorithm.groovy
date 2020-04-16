@@ -4,13 +4,26 @@ import util.ProcessRunner
 
 import java.util.concurrent.TimeUnit
 
+/**
+ * Runs a soot algorithm with:
+ * left -> sink
+ * right -> source
+ * This case is used with algorithms that are commutative, that means that running them from left to right is the same
+ * thing  as running them from right to left
+ */
 class ConflictDetectionAlgorithm {
 
     private String name;
-    private final long TIMEOUT = 30;
+    private Long timeout;
 
     ConflictDetectionAlgorithm(String name) {
         this.name = name
+        this.timeout = null;
+    }
+
+    ConflictDetectionAlgorithm(String name, long timeout) {
+        this.name = name;
+        this.timeout = timeout;
     }
 
     String getName() {
@@ -40,11 +53,16 @@ class ConflictDetectionAlgorithm {
         String result;
 
         Process sootProcess = runProcess(filePath, classPath);
-        boolean executionCompleted = sootProcess.waitFor(TIMEOUT, TimeUnit.SECONDS)
+
+        boolean executionCompleted = true;
+        if (timeout != null) {
+            executionCompleted = sootProcess.waitFor(timeout, TimeUnit.SECONDS)
+        }
+
         if (executionCompleted) {
             result = hasSootFlow(sootProcess);
         } else {
-            println "Execution exceeded timeout: " + TIMEOUT + " seconds";
+            println "Execution exceeded timeout: " + timeout + " seconds";
             result = "timeout";
         }
 

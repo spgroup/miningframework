@@ -15,9 +15,13 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     private final String RESULTS_FILE_PATH = "/data/results-with-builds.csv"
 
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
+            // dataflow: direct dependency between contributions, intraprocedural and without transitivity
             new NonCommutativeConflictDetectionAlgorithm("dataflow"),
+            // tainted: direct dependency between contributions, intraprocedural and with transitivity
             new NonCommutativeConflictDetectionAlgorithm("tainted"),
+            // svfa: direct dependency between contributions, interprocedural and  with transitivity
             new NonCommutativeConflictDetectionAlgorithm("svfa", 30),
+            // confluence: indirect dependency between contributions, intraprocedural and without transitivity
             new ConflictDetectionAlgorithm("confluence")
     ]
 

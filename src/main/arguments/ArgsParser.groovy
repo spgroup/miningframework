@@ -1,15 +1,16 @@
 package arguments
 
+import exception.InvalidArgsException
 import groovy.cli.commons.CliBuilder
 import groovy.cli.commons.OptionAccessor
-import java.text.SimpleDateFormat
+
 import java.text.ParseException
-import exception.InvalidArgsException
+import java.text.SimpleDateFormat
 
 class ArgsParser {
 
-    private  CliBuilder cli
-    private  OptionAccessor options
+    private CliBuilder cli
+    private OptionAccessor options
 
     ArgsParser() {
         this.cli = new CliBuilder(usage: "miningframework [options] [input] [output]",
@@ -21,21 +22,21 @@ class ArgsParser {
     private defParameters() {
         this.cli.h(longOpt: 'help', 'Show help for executing commands')
         this.cli.s(longOpt: 'since', args: 1,
-                argName:'date', 'Use commits more recent than a specific date (format DD/MM/YYY)')
+                argName: 'date', 'Use commits more recent than a specific date (format DD/MM/YYY)')
         this.cli.u(longOpt: 'until', args: 1,
-                argName:'date', 'Use commits older than a specific date(format DD/MM/YYYY)')
+                argName: 'date', 'Use commits older than a specific date(format DD/MM/YYYY)')
         this.cli.i(longOpt: 'injector', args: 1,
-                argName:'class', 'Specify the class of the dependency injector (Must provide full name, default injectors.StaticAnalysisConflictsDetectionModule)')
+                argName: 'class', 'Specify the class of the dependency injector (Must provide full name, default injectors.StaticAnalysisConflictsDetectionModule)')
         this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a git repository to upload the output in the end of the analysis (format https://github.com/<owner>/<name>')
-        this.cli.a(longOpt: 'access-key',args:1, argName: 'access key', 'Specify the access key of the git account for when the analysis needs user access to GitHub')
+        this.cli.a(longOpt: 'access-key', args: 1, argName: 'access key', 'Specify the access key of the git account for when the analysis needs user access to GitHub')
         this.cli.t(longOpt: 'threads', args: 1, argName: 'threads', "Number of cores used in analysis (default: 1)")
         this.cli.k(longOpt: 'keep-projects', argName: 'keep projects', 'Specify that cloned projects must be kept after the analysis (those are kept in clonedRepositories/ )')
     }
 
-     Arguments parse(args) {
+    Arguments parse(args) {
         this.options = this.cli.parse(args)
         Arguments resultArgs = new Arguments()
-        
+
         if (this.getArgumentQuantity() == 0 || this.options.h) {
             resultArgs.setHelp()
         } else {
@@ -51,18 +52,20 @@ class ArgsParser {
     }
 
     private void parseInputs(Arguments args) {
-        if (this.getArgumentQuantity() > 2)
-            throw new InvalidArgsException('Too many arguments passed')    
+        if (this.getArgumentQuantity() > 2) {
+            String message = hasOptionValid() ? 'Too many arguments passed' : 'Invalid argument passed'
+            throw new InvalidArgsException(message)
+        }
 
         String inputFile = this.options.arguments()[0]
         if (!inputFile.endsWith('.csv'))
             throw new InvalidArgsException('The input must be a csv file')
-        
+
         if (!new File(inputFile).exists())
             throw new InvalidArgsException("Could not find input file: ${inputFile}")
 
         args.setInputPath(inputFile)
-            
+
         if (this.getArgumentQuantity() > 1) {
             String outputPath = this.options.arguments()[1]
             String parsedOutputPath = outputPath.endsWith("/") ? outputPath.substring(0, outputPath.lastIndexOf("/")) : outputPath;
@@ -74,15 +77,15 @@ class ArgsParser {
         if (this.options.since) {
             if (!validDate(this.options.since))
                 throw new InvalidArgsException('Invalid since date. You must specify it with the format DD/MM/YYYY')
-            
-            args.setSinceDate(this.options.since) 
+
+            args.setSinceDate(this.options.since)
         }
 
         if (this.options.until) {
             if (!validDate(this.options.until))
                 throw new InvalidArgsException('Invalid since date. You must specify it with the format DD/MM/YYYY')
-               
-            args.setUntilDate(this.options.until) 
+
+            args.setUntilDate(this.options.until)
         }
 
         if (this.options.injector) {
@@ -94,7 +97,7 @@ class ArgsParser {
         }
 
         if (this.options.push) {
-            if(!repositoryExists(this.options.push))
+            if (!repositoryExists(this.options.push))
                 throw new InvalidArgsException('Inexistent remote git repository.')
 
             args.setResultsRemoteRepositoryURL(this.options.push)
@@ -120,7 +123,7 @@ class ArgsParser {
             huc.setRequestMethod("HEAD")
             return huc.getResponseCode() == 200
         } catch (MalformedURLException e) {
-                throw new InvalidArgsException('Invalid url.')
+            throw new InvalidArgsException('Invalid url.')
         }
     }
 
@@ -133,6 +136,16 @@ class ArgsParser {
         } catch (ParseException | NullPointerException e) {
             return false;
         }
+    }
+
+    private boolean hasOptionValid() {
+        List<String> arguments = this.options.arguments()
+        for (String arg : arguments) {
+            if (arg.contains('-') || arg.contains('--')) {
+                return false
+            }
+        }
+        return true
     }
 
     private int getArgumentQuantity() {

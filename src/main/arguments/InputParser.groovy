@@ -1,9 +1,10 @@
 package arguments
 
-import static groovy.io.FileType.DIRECTORIES
-import static com.xlson.groovycsv.CsvParser.parseCsv
 
-import project.*;
+import project.Project
+
+import static com.xlson.groovycsv.CsvParser.parseCsv
+import static groovy.io.FileType.DIRECTORIES
 
 class InputParser {
 
@@ -20,16 +21,16 @@ class InputParser {
 
             if (lineMap.containsKey("name")) {
                 String name = line["name"]
-                
+
                 projectList.add(new Project(name, path))
             } else {
                 projectList.add(new Project(path))
             }
         }
-
         return projectList
     }
 
+    @Deprecated
     private static ArrayList<Project> getProjects(String directoryName, String directoryPath) {
         ArrayList<Project> projectList = new ArrayList<Project>()
 

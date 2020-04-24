@@ -219,16 +219,29 @@ def get_github_user(token):
 
         return res.json()
     except Exception as e:
-        raise Exception("Error getting github user: " + str(e))
+        raise Exception("Error getting github user: " + str(e))    
+
 
 def get_github_releases(token, project):
-    res = requests.get(GITHUB_API + '/repos/' + project + '/releases', headers=get_headers(token))
+    page = 1
+    reqRes = get_github_releases_page(token, project, page)
+    result = reqRes
+    # this is a workaround to get all releases at once, it is needed because of the API pagination
+    while len(reqRes):
+        page += 1
+        reqRes = get_github_releases_page(token, project, page)
+        result = result + reqRes
+    return result
+
+def get_github_releases_page(token, project, page_number):
+    res = requests.get(GITHUB_API + '/repos/' + project + '/releases?page=' + str(page_number),headers=get_headers(token))
     try:
         res.raise_for_status()
 
         return res.json()
     except Exception as e:
         raise Exception("Error getting github releases: " + str(e))
+
 
 def get_headers(token):
     return {

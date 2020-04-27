@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="daa10f15-d388-48a1-954b-aa3a1616d0e9" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1b0a9UISJYOu6GtsrLu2hiU9Sgl" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="show.unlinked.gradle.project.popup" value="true" />
+  </component>
+  <component name="RunManager" selected="Gradle.TestSuite">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="app.Main" />
+      <module name="miningframework.main" />
+      <option name="PROGRAM_PARAMETERS" value="--access-key 17650d3e2b82571eed3b1969ea44de1a4a0a840e --threads 5 ./projects.csv SOOTAnalysisOutput" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="app.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestSuite" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;unit.TestSuite&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.TestSuite" />
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="daa10f15-d388-48a1-954b-aa3a1616d0e9" name="Default Changelist" comment="" />
+      <created>1587771314136</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1587771314136</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="463" y="110" width="621" height="609" key="#Main" timestamp="1587995662841">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="463" y="110" width="621" height="609" key="#Main/0.0.1536.824@0.0.1536.824" timestamp="1587995662841" />
+    <state x="625" y="168" width="726" height="778" key="#Main/67.27.1853.1053@67.27.1853.1053" timestamp="1587771552178" />
+    <state x="451" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587771420394">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="451" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1587771420394" />
+    <state width="1807" height="689" key="GridCell.Tab.0.bottom" timestamp="1588009349194">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1493" height="464" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
+    <state width="1807" height="689" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588009349194" />
+    <state width="1807" height="689" key="GridCell.Tab.0.center" timestamp="1588009349194">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1493" height="464" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
+    <state width="1807" height="689" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588009349194" />
+    <state width="1807" height="689" key="GridCell.Tab.0.left" timestamp="1588009349193">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1493" height="464" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
+    <state width="1807" height="689" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588009349193" />
+    <state width="1807" height="689" key="GridCell.Tab.0.right" timestamp="1588009349194">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1493" height="464" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
+    <state width="1807" height="689" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588009349194" />
+    <state width="1807" height="446" key="GridCell.Tab.1.bottom" timestamp="1587771608644">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="446" key="GridCell.Tab.1.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1587771608644" />
+    <state width="1807" height="446" key="GridCell.Tab.1.center" timestamp="1587771608644">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="446" key="GridCell.Tab.1.center/67.27.1853.1053@67.27.1853.1053" timestamp="1587771608644" />
+    <state width="1807" height="446" key="GridCell.Tab.1.left" timestamp="1587771608644">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="446" key="GridCell.Tab.1.left/67.27.1853.1053@67.27.1853.1053" timestamp="1587771608644" />
+    <state width="1807" height="446" key="GridCell.Tab.1.right" timestamp="1587771608644">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="446" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1587771608644" />
+    <state x="684" y="35" width="902" height="777" key="find.popup" timestamp="1588008267413">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="684" y="35" width="902" height="777" key="find.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588008267413" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/app/MiningFramework.groovy</url>
+          <line>68</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

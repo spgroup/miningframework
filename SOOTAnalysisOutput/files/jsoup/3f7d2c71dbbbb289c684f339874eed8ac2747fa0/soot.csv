@@ -1,0 +1,4 @@
+org.jsoup.helper.HttpConnection,sink,456
+org.jsoup.helper.HttpConnection,source,483
+org.jsoup.helper.HttpConnection,source,484
+org.jsoup.helper.HttpConnection,source,485

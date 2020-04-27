@@ -1,0 +1,1751 @@
+class org.jsoup.select.QueryParser extends java.lang.Object
+{
+    private static final java.lang.String[] combinators;
+    private static final java.lang.String[] AttributeEvals;
+    private org.jsoup.parser.TokenQueue tq;
+    private java.lang.String query;
+    private java.util.List evals;
+    private static final java.util.regex.Pattern NTH_AB;
+    private static final java.util.regex.Pattern NTH_B;
+
+    private void <init>(java.lang.String)
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.String r1;
+        java.util.ArrayList r4;
+        org.jsoup.parser.TokenQueue r5;
+        java.util.List r6;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r4 = new java.util.ArrayList;
+
+        specialinvoke r4.<java.util.ArrayList: void <init>()>();
+
+        r6 = (java.util.List) r4;
+
+        r0.<org.jsoup.select.QueryParser: java.util.List evals> = r6;
+
+        r0.<org.jsoup.select.QueryParser: java.lang.String query> = r1;
+
+        r5 = new org.jsoup.parser.TokenQueue;
+
+        specialinvoke r5.<org.jsoup.parser.TokenQueue: void <init>(java.lang.String)>(r1);
+
+        r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq> = r5;
+
+        return;
+    }
+
+    public static org.jsoup.select.Evaluator parse(java.lang.String)
+    {
+        java.lang.String r0;
+        org.jsoup.select.QueryParser $r2;
+        org.jsoup.select.Evaluator $r3;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r2 = new org.jsoup.select.QueryParser;
+
+        specialinvoke $r2.<org.jsoup.select.QueryParser: void <init>(java.lang.String)>(r0);
+
+        $r3 = virtualinvoke $r2.<org.jsoup.select.QueryParser: org.jsoup.select.Evaluator parse()>();
+
+        return $r3;
+    }
+
+    org.jsoup.select.Evaluator parse()
+    {
+        org.jsoup.select.QueryParser r0;
+        boolean z0, $z2, $z3, $z5;
+        org.jsoup.parser.TokenQueue $r1, $r3, $r10, $r12, $r13, $r16, $r17;
+        java.lang.String[] $r2, $r11;
+        java.util.List $r4, $r6, $r7, $r15;
+        int $i0;
+        org.jsoup.select.CombiningEvaluator$And $r5;
+        java.lang.Object $r8;
+        org.jsoup.select.Evaluator $r9;
+        char $c1, $c2;
+        org.jsoup.select.StructuralEvaluator$Root $r14;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r1 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        virtualinvoke $r1.<org.jsoup.parser.TokenQueue: boolean consumeWhitespace()>();
+
+        $r3 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r2 = <org.jsoup.select.QueryParser: java.lang.String[] combinators>;
+
+        $z2 = virtualinvoke $r3.<org.jsoup.parser.TokenQueue: boolean matchesAny(java.lang.String[])>($r2);
+
+        if $z2 == 0 goto label1;
+
+        $r15 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r14 = new org.jsoup.select.StructuralEvaluator$Root;
+
+        specialinvoke $r14.<org.jsoup.select.StructuralEvaluator$Root: void <init>()>();
+
+        interfaceinvoke $r15.<java.util.List: boolean add(java.lang.Object)>($r14);
+
+        $r16 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $c2 = virtualinvoke $r16.<org.jsoup.parser.TokenQueue: char consume()>();
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void combinator(char)>($c2);
+
+        goto label2;
+
+     label1:
+        specialinvoke r0.<org.jsoup.select.QueryParser: void findElements()>();
+
+     label2:
+        $r17 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z5 = virtualinvoke $r17.<org.jsoup.parser.TokenQueue: boolean isEmpty()>();
+
+        if $z5 != 0 goto label6;
+
+        $r10 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        z0 = virtualinvoke $r10.<org.jsoup.parser.TokenQueue: boolean consumeWhitespace()>();
+
+        $r12 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r11 = <org.jsoup.select.QueryParser: java.lang.String[] combinators>;
+
+        $z3 = virtualinvoke $r12.<org.jsoup.parser.TokenQueue: boolean matchesAny(java.lang.String[])>($r11);
+
+        if $z3 == 0 goto label3;
+
+        $r13 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $c1 = virtualinvoke $r13.<org.jsoup.parser.TokenQueue: char consume()>();
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void combinator(char)>($c1);
+
+        goto label5;
+
+     label3:
+        if z0 == 0 goto label4;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void combinator(char)>(32);
+
+        goto label5;
+
+     label4:
+        specialinvoke r0.<org.jsoup.select.QueryParser: void findElements()>();
+
+     label5:
+        goto label2;
+
+     label6:
+        $r4 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $i0 = interfaceinvoke $r4.<java.util.List: int size()>();
+
+        if $i0 != 1 goto label7;
+
+        $r7 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r8 = interfaceinvoke $r7.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r9 = (org.jsoup.select.Evaluator) $r8;
+
+        return $r9;
+
+     label7:
+        $r5 = new org.jsoup.select.CombiningEvaluator$And;
+
+        $r6 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        specialinvoke $r5.<org.jsoup.select.CombiningEvaluator$And: void <init>(java.util.Collection)>($r6);
+
+        return $r5;
+    }
+
+    private void combinator(char)
+    {
+        org.jsoup.select.QueryParser r0;
+        char c0;
+        java.lang.String r1, $r11;
+        org.jsoup.select.Evaluator r2, $r30, r32, r33;
+        org.jsoup.parser.TokenQueue $r3;
+        java.util.List $r4, $r6, $r14, $r28, $r34;
+        int $i1;
+        java.lang.StringBuilder $r9, $r10, r47;
+        java.lang.Object[] $r12;
+        boolean $z1, $z3, z4;
+        org.jsoup.select.CombiningEvaluator$Or $r15, $r31, r36, r46;
+        org.jsoup.select.Evaluator[] $r17, $r20, $r23, $r26;
+        java.lang.Object $r29;
+        org.jsoup.select.CombiningEvaluator r35;
+        org.jsoup.select.CombiningEvaluator$And r37, r39, r41, r43, r45;
+        org.jsoup.select.StructuralEvaluator$ImmediateParent r38;
+        org.jsoup.select.StructuralEvaluator$Parent r40;
+        org.jsoup.select.StructuralEvaluator$ImmediatePreviousSibling r42;
+        org.jsoup.select.StructuralEvaluator$PreviousSibling r44;
+        org.jsoup.select.Selector$SelectorParseException r48;
+        java.lang.Throwable r49;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        c0 := @parameter0: char;
+
+        $r3 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        virtualinvoke $r3.<org.jsoup.parser.TokenQueue: boolean consumeWhitespace()>();
+
+        r1 = specialinvoke r0.<org.jsoup.select.QueryParser: java.lang.String consumeSubQuery()>();
+
+        r2 = staticinvoke <org.jsoup.select.QueryParser: org.jsoup.select.Evaluator parse(java.lang.String)>(r1);
+
+        z4 = 0;
+
+        $r4 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $i1 = interfaceinvoke $r4.<java.util.List: int size()>();
+
+        if $i1 != 1 goto label01;
+
+        $r28 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r29 = interfaceinvoke $r28.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r30 = (org.jsoup.select.Evaluator) $r29;
+
+        r32 = $r30;
+
+        r33 = $r30;
+
+        $z3 = $r30 instanceof org.jsoup.select.CombiningEvaluator$Or;
+
+        if $z3 == 0 goto label02;
+
+        if c0 == 44 goto label02;
+
+        $r31 = (org.jsoup.select.CombiningEvaluator$Or) $r30;
+
+        r32 = virtualinvoke $r31.<org.jsoup.select.CombiningEvaluator$Or: org.jsoup.select.Evaluator rightMostEvaluator()>();
+
+        z4 = 1;
+
+        goto label02;
+
+     label01:
+        r37 = new org.jsoup.select.CombiningEvaluator$And;
+
+        $r6 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        specialinvoke r37.<org.jsoup.select.CombiningEvaluator$And: void <init>(java.util.Collection)>($r6);
+
+        r32 = r37;
+
+        r33 = r37;
+
+     label02:
+        $r34 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        interfaceinvoke $r34.<java.util.List: void clear()>();
+
+        if c0 != 62 goto label03;
+
+        r39 = new org.jsoup.select.CombiningEvaluator$And;
+
+        $r26 = newarray (org.jsoup.select.Evaluator)[2];
+
+        $r26[0] = r2;
+
+        r38 = new org.jsoup.select.StructuralEvaluator$ImmediateParent;
+
+        specialinvoke r38.<org.jsoup.select.StructuralEvaluator$ImmediateParent: void <init>(org.jsoup.select.Evaluator)>(r32);
+
+        $r26[1] = r38;
+
+        specialinvoke r39.<org.jsoup.select.CombiningEvaluator$And: void <init>(org.jsoup.select.Evaluator[])>($r26);
+
+        r35 = r39;
+
+        goto label10;
+
+     label03:
+        if c0 != 32 goto label04;
+
+        r41 = new org.jsoup.select.CombiningEvaluator$And;
+
+        $r23 = newarray (org.jsoup.select.Evaluator)[2];
+
+        $r23[0] = r2;
+
+        r40 = new org.jsoup.select.StructuralEvaluator$Parent;
+
+        specialinvoke r40.<org.jsoup.select.StructuralEvaluator$Parent: void <init>(org.jsoup.select.Evaluator)>(r32);
+
+        $r23[1] = r40;
+
+        specialinvoke r41.<org.jsoup.select.CombiningEvaluator$And: void <init>(org.jsoup.select.Evaluator[])>($r23);
+
+        r35 = r41;
+
+        goto label10;
+
+     label04:
+        if c0 != 43 goto label05;
+
+        r43 = new org.jsoup.select.CombiningEvaluator$And;
+
+        $r20 = newarray (org.jsoup.select.Evaluator)[2];
+
+        $r20[0] = r2;
+
+        r42 = new org.jsoup.select.StructuralEvaluator$ImmediatePreviousSibling;
+
+        specialinvoke r42.<org.jsoup.select.StructuralEvaluator$ImmediatePreviousSibling: void <init>(org.jsoup.select.Evaluator)>(r32);
+
+        $r20[1] = r42;
+
+        specialinvoke r43.<org.jsoup.select.CombiningEvaluator$And: void <init>(org.jsoup.select.Evaluator[])>($r20);
+
+        r35 = r43;
+
+        goto label10;
+
+     label05:
+        if c0 != 126 goto label06;
+
+        r45 = new org.jsoup.select.CombiningEvaluator$And;
+
+        $r17 = newarray (org.jsoup.select.Evaluator)[2];
+
+        $r17[0] = r2;
+
+        r44 = new org.jsoup.select.StructuralEvaluator$PreviousSibling;
+
+        specialinvoke r44.<org.jsoup.select.StructuralEvaluator$PreviousSibling: void <init>(org.jsoup.select.Evaluator)>(r32);
+
+        $r17[1] = r44;
+
+        specialinvoke r45.<org.jsoup.select.CombiningEvaluator$And: void <init>(org.jsoup.select.Evaluator[])>($r17);
+
+        r35 = r45;
+
+        goto label10;
+
+     label06:
+        if c0 != 44 goto label09;
+
+        $z1 = r32 instanceof org.jsoup.select.CombiningEvaluator$Or;
+
+        if $z1 == 0 goto label07;
+
+        r36 = (org.jsoup.select.CombiningEvaluator$Or) r32;
+
+        virtualinvoke r36.<org.jsoup.select.CombiningEvaluator$Or: void add(org.jsoup.select.Evaluator)>(r2);
+
+        goto label08;
+
+     label07:
+        r46 = new org.jsoup.select.CombiningEvaluator$Or;
+
+        specialinvoke r46.<org.jsoup.select.CombiningEvaluator$Or: void <init>()>();
+
+        r36 = r46;
+
+        virtualinvoke r46.<org.jsoup.select.CombiningEvaluator$Or: void add(org.jsoup.select.Evaluator)>(r32);
+
+        virtualinvoke r46.<org.jsoup.select.CombiningEvaluator$Or: void add(org.jsoup.select.Evaluator)>(r2);
+
+     label08:
+        r35 = r36;
+
+        goto label10;
+
+     label09:
+        r48 = new org.jsoup.select.Selector$SelectorParseException;
+
+        r47 = new java.lang.StringBuilder;
+
+        specialinvoke r47.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke r47.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unknown combinator: ");
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(c0);
+
+        $r11 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r12 = newarray (java.lang.Object)[0];
+
+        specialinvoke r48.<org.jsoup.select.Selector$SelectorParseException: void <init>(java.lang.String,java.lang.Object[])>($r11, $r12);
+
+        r49 = (java.lang.Throwable) r48;
+
+        throw r49;
+
+     label10:
+        if z4 == 0 goto label11;
+
+        $r15 = (org.jsoup.select.CombiningEvaluator$Or) r33;
+
+        virtualinvoke $r15.<org.jsoup.select.CombiningEvaluator$Or: void replaceRightMostEvaluator(org.jsoup.select.Evaluator)>(r35);
+
+        goto label12;
+
+     label11:
+        r33 = r35;
+
+     label12:
+        $r14 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        interfaceinvoke $r14.<java.util.List: boolean add(java.lang.Object)>(r33);
+
+        return;
+    }
+
+    private java.lang.String consumeSubQuery()
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.StringBuilder $r2, $r10, $r13, $r15, $r18;
+        java.lang.String $r3, $r12, $r17;
+        org.jsoup.parser.TokenQueue $r4, $r5, $r7, $r8, $r11, $r16, $r20;
+        boolean $z0, $z1, $z2, $z3;
+        java.lang.String[] $r6;
+        char $c0;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+     label1:
+        $r20 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z3 = virtualinvoke $r20.<org.jsoup.parser.TokenQueue: boolean isEmpty()>();
+
+        if $z3 != 0 goto label5;
+
+        $r4 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z0 = virtualinvoke $r4.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>("(");
+
+        if $z0 == 0 goto label2;
+
+        $r15 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("(");
+
+        $r16 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r17 = virtualinvoke $r16.<org.jsoup.parser.TokenQueue: java.lang.String chompBalanced(char,char)>(40, 41);
+
+        $r18 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r17);
+
+        virtualinvoke $r18.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        goto label1;
+
+     label2:
+        $r5 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z1 = virtualinvoke $r5.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>("[");
+
+        if $z1 == 0 goto label3;
+
+        $r10 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[");
+
+        $r11 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r12 = virtualinvoke $r11.<org.jsoup.parser.TokenQueue: java.lang.String chompBalanced(char,char)>(91, 93);
+
+        $r13 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        goto label1;
+
+     label3:
+        $r7 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r6 = <org.jsoup.select.QueryParser: java.lang.String[] combinators>;
+
+        $z2 = virtualinvoke $r7.<org.jsoup.parser.TokenQueue: boolean matchesAny(java.lang.String[])>($r6);
+
+        if $z2 == 0 goto label4;
+
+        goto label5;
+
+     label4:
+        $r8 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $c0 = virtualinvoke $r8.<org.jsoup.parser.TokenQueue: char consume()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>($c0);
+
+        goto label1;
+
+     label5:
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3;
+    }
+
+    private void findElements()
+    {
+        org.jsoup.select.QueryParser r0;
+        org.jsoup.parser.TokenQueue $r1, $r2, $r3, $r4, $r5, $r6, $r7, $r8, $r9, $r10, $r11, $r12, $r13, $r14, $r15, $r16, $r17, $r18, $r19, $r20, $r21, $r22, $r23, $r24, $r25, $r26, $r27, $r31;
+        boolean $z0, $z1, $z2, $z3, $z4, $z5, $z6, $z7, $z8, $z9, $z10, $z11, $z12, $z13, $z14, $z15, $z16, $z17, $z18, $z19, $z20, $z21, $z22, $z23, $z24, $z25, $z26;
+        java.lang.Object[] $r29;
+        java.lang.String $r30, $r32;
+        java.util.List $r34, $r36, $r38, $r40, $r42, $r44, $r46, $r48;
+        org.jsoup.select.Evaluator$IsFirstChild r49;
+        org.jsoup.select.Evaluator$IsLastChild r50;
+        org.jsoup.select.Evaluator$IsFirstOfType r51;
+        org.jsoup.select.Evaluator$IsLastOfType r52;
+        org.jsoup.select.Evaluator$IsOnlyChild r53;
+        org.jsoup.select.Evaluator$IsOnlyOfType r54;
+        org.jsoup.select.Evaluator$IsEmpty r55;
+        org.jsoup.select.Evaluator$IsRoot r56;
+        org.jsoup.select.Selector$SelectorParseException r57;
+        java.lang.Throwable r58;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r1 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z0 = virtualinvoke $r1.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("#");
+
+        if $z0 == 0 goto label01;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void byId()>();
+
+        goto label28;
+
+     label01:
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z1 = virtualinvoke $r2.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(".");
+
+        if $z1 == 0 goto label02;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void byClass()>();
+
+        goto label28;
+
+     label02:
+        $r3 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z2 = virtualinvoke $r3.<org.jsoup.parser.TokenQueue: boolean matchesWord()>();
+
+        if $z2 != 0 goto label03;
+
+        $r4 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z3 = virtualinvoke $r4.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>("*|");
+
+        if $z3 == 0 goto label04;
+
+     label03:
+        specialinvoke r0.<org.jsoup.select.QueryParser: void byTag()>();
+
+        goto label28;
+
+     label04:
+        $r5 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z4 = virtualinvoke $r5.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>("[");
+
+        if $z4 == 0 goto label05;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void byAttribute()>();
+
+        goto label28;
+
+     label05:
+        $r6 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z5 = virtualinvoke $r6.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("*");
+
+        if $z5 == 0 goto label06;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void allElements()>();
+
+        goto label28;
+
+     label06:
+        $r7 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z6 = virtualinvoke $r7.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":lt(");
+
+        if $z6 == 0 goto label07;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void indexLessThan()>();
+
+        goto label28;
+
+     label07:
+        $r8 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z7 = virtualinvoke $r8.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":gt(");
+
+        if $z7 == 0 goto label08;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void indexGreaterThan()>();
+
+        goto label28;
+
+     label08:
+        $r9 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z8 = virtualinvoke $r9.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":eq(");
+
+        if $z8 == 0 goto label09;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void indexEquals()>();
+
+        goto label28;
+
+     label09:
+        $r10 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z9 = virtualinvoke $r10.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>(":has(");
+
+        if $z9 == 0 goto label10;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void has()>();
+
+        goto label28;
+
+     label10:
+        $r11 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z10 = virtualinvoke $r11.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>(":contains(");
+
+        if $z10 == 0 goto label11;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void contains(boolean)>(0);
+
+        goto label28;
+
+     label11:
+        $r12 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z11 = virtualinvoke $r12.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>(":containsOwn(");
+
+        if $z11 == 0 goto label12;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void contains(boolean)>(1);
+
+        goto label28;
+
+     label12:
+        $r13 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z12 = virtualinvoke $r13.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>(":matches(");
+
+        if $z12 == 0 goto label13;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void matches(boolean)>(0);
+
+        goto label28;
+
+     label13:
+        $r14 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z13 = virtualinvoke $r14.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>(":matchesOwn(");
+
+        if $z13 == 0 goto label14;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void matches(boolean)>(1);
+
+        goto label28;
+
+     label14:
+        $r15 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z14 = virtualinvoke $r15.<org.jsoup.parser.TokenQueue: boolean matches(java.lang.String)>(":not(");
+
+        if $z14 == 0 goto label15;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void not()>();
+
+        goto label28;
+
+     label15:
+        $r16 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z15 = virtualinvoke $r16.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":nth-child(");
+
+        if $z15 == 0 goto label16;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void cssNthChild(boolean,boolean)>(0, 0);
+
+        goto label28;
+
+     label16:
+        $r17 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z16 = virtualinvoke $r17.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":nth-last-child(");
+
+        if $z16 == 0 goto label17;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void cssNthChild(boolean,boolean)>(1, 0);
+
+        goto label28;
+
+     label17:
+        $r18 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z17 = virtualinvoke $r18.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":nth-of-type(");
+
+        if $z17 == 0 goto label18;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void cssNthChild(boolean,boolean)>(0, 1);
+
+        goto label28;
+
+     label18:
+        $r19 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z18 = virtualinvoke $r19.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":nth-last-of-type(");
+
+        if $z18 == 0 goto label19;
+
+        specialinvoke r0.<org.jsoup.select.QueryParser: void cssNthChild(boolean,boolean)>(1, 1);
+
+        goto label28;
+
+     label19:
+        $r20 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z19 = virtualinvoke $r20.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":first-child");
+
+        if $z19 == 0 goto label20;
+
+        $r48 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r49 = new org.jsoup.select.Evaluator$IsFirstChild;
+
+        specialinvoke r49.<org.jsoup.select.Evaluator$IsFirstChild: void <init>()>();
+
+        interfaceinvoke $r48.<java.util.List: boolean add(java.lang.Object)>(r49);
+
+        goto label28;
+
+     label20:
+        $r21 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z20 = virtualinvoke $r21.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":last-child");
+
+        if $z20 == 0 goto label21;
+
+        $r46 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r50 = new org.jsoup.select.Evaluator$IsLastChild;
+
+        specialinvoke r50.<org.jsoup.select.Evaluator$IsLastChild: void <init>()>();
+
+        interfaceinvoke $r46.<java.util.List: boolean add(java.lang.Object)>(r50);
+
+        goto label28;
+
+     label21:
+        $r22 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z21 = virtualinvoke $r22.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":first-of-type");
+
+        if $z21 == 0 goto label22;
+
+        $r44 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r51 = new org.jsoup.select.Evaluator$IsFirstOfType;
+
+        specialinvoke r51.<org.jsoup.select.Evaluator$IsFirstOfType: void <init>()>();
+
+        interfaceinvoke $r44.<java.util.List: boolean add(java.lang.Object)>(r51);
+
+        goto label28;
+
+     label22:
+        $r23 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z22 = virtualinvoke $r23.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":last-of-type");
+
+        if $z22 == 0 goto label23;
+
+        $r42 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r52 = new org.jsoup.select.Evaluator$IsLastOfType;
+
+        specialinvoke r52.<org.jsoup.select.Evaluator$IsLastOfType: void <init>()>();
+
+        interfaceinvoke $r42.<java.util.List: boolean add(java.lang.Object)>(r52);
+
+        goto label28;
+
+     label23:
+        $r24 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z23 = virtualinvoke $r24.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":only-child");
+
+        if $z23 == 0 goto label24;
+
+        $r40 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r53 = new org.jsoup.select.Evaluator$IsOnlyChild;
+
+        specialinvoke r53.<org.jsoup.select.Evaluator$IsOnlyChild: void <init>()>();
+
+        interfaceinvoke $r40.<java.util.List: boolean add(java.lang.Object)>(r53);
+
+        goto label28;
+
+     label24:
+        $r25 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z24 = virtualinvoke $r25.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":only-of-type");
+
+        if $z24 == 0 goto label25;
+
+        $r38 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r54 = new org.jsoup.select.Evaluator$IsOnlyOfType;
+
+        specialinvoke r54.<org.jsoup.select.Evaluator$IsOnlyOfType: void <init>()>();
+
+        interfaceinvoke $r38.<java.util.List: boolean add(java.lang.Object)>(r54);
+
+        goto label28;
+
+     label25:
+        $r26 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z25 = virtualinvoke $r26.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":empty");
+
+        if $z25 == 0 goto label26;
+
+        $r36 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r55 = new org.jsoup.select.Evaluator$IsEmpty;
+
+        specialinvoke r55.<org.jsoup.select.Evaluator$IsEmpty: void <init>()>();
+
+        interfaceinvoke $r36.<java.util.List: boolean add(java.lang.Object)>(r55);
+
+        goto label28;
+
+     label26:
+        $r27 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $z26 = virtualinvoke $r27.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>(":root");
+
+        if $z26 == 0 goto label27;
+
+        $r34 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r56 = new org.jsoup.select.Evaluator$IsRoot;
+
+        specialinvoke r56.<org.jsoup.select.Evaluator$IsRoot: void <init>()>();
+
+        interfaceinvoke $r34.<java.util.List: boolean add(java.lang.Object)>(r56);
+
+        goto label28;
+
+     label27:
+        r57 = new org.jsoup.select.Selector$SelectorParseException;
+
+        $r29 = newarray (java.lang.Object)[2];
+
+        $r30 = r0.<org.jsoup.select.QueryParser: java.lang.String query>;
+
+        $r29[0] = $r30;
+
+        $r31 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r32 = virtualinvoke $r31.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        $r29[1] = $r32;
+
+        specialinvoke r57.<org.jsoup.select.Selector$SelectorParseException: void <init>(java.lang.String,java.lang.Object[])>("Could not parse query \'%s\': unexpected token at \'%s\'", $r29);
+
+        r58 = (java.lang.Throwable) r57;
+
+        throw r58;
+
+     label28:
+        return;
+    }
+
+    private void byId()
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.String r1;
+        org.jsoup.parser.TokenQueue $r2;
+        org.jsoup.select.Evaluator$Id $r3;
+        java.util.List $r4;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        r1 = virtualinvoke $r2.<org.jsoup.parser.TokenQueue: java.lang.String consumeCssIdentifier()>();
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String)>(r1);
+
+        $r4 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r3 = new org.jsoup.select.Evaluator$Id;
+
+        specialinvoke $r3.<org.jsoup.select.Evaluator$Id: void <init>(java.lang.String)>(r1);
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r3);
+
+        return;
+    }
+
+    private void byClass()
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.String r1, $r5;
+        org.jsoup.parser.TokenQueue $r2;
+        org.jsoup.select.Evaluator$Class $r3;
+        java.util.List $r4;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        r1 = virtualinvoke $r2.<org.jsoup.parser.TokenQueue: java.lang.String consumeCssIdentifier()>();
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String)>(r1);
+
+        $r4 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r3 = new org.jsoup.select.Evaluator$Class;
+
+        $r5 = virtualinvoke r1.<java.lang.String: java.lang.String trim()>();
+
+        specialinvoke $r3.<org.jsoup.select.Evaluator$Class: void <init>(java.lang.String)>($r5);
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r3);
+
+        return;
+    }
+
+    private void byTag()
+    {
+        org.jsoup.select.QueryParser r0;
+        org.jsoup.parser.TokenQueue $r1;
+        boolean $z0, $z1;
+        org.jsoup.select.Evaluator$Tag $r2, $r7;
+        java.util.List $r3, $r8;
+        java.lang.String $r4, $r9, $r10, $r12, $r13, $r14, r15;
+        org.jsoup.select.CombiningEvaluator$Or $r5;
+        org.jsoup.select.Evaluator[] $r6;
+        org.jsoup.select.Evaluator$TagEndsWith $r11;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r1 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        r15 = virtualinvoke $r1.<org.jsoup.parser.TokenQueue: java.lang.String consumeElementSelector()>();
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String)>(r15);
+
+        $z0 = virtualinvoke r15.<java.lang.String: boolean startsWith(java.lang.String)>("*|");
+
+        if $z0 == 0 goto label1;
+
+        $r8 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r5 = new org.jsoup.select.CombiningEvaluator$Or;
+
+        $r6 = newarray (org.jsoup.select.Evaluator)[2];
+
+        $r7 = new org.jsoup.select.Evaluator$Tag;
+
+        $r9 = virtualinvoke r15.<java.lang.String: java.lang.String trim()>();
+
+        $r10 = virtualinvoke $r9.<java.lang.String: java.lang.String toLowerCase()>();
+
+        specialinvoke $r7.<org.jsoup.select.Evaluator$Tag: void <init>(java.lang.String)>($r10);
+
+        $r6[0] = $r7;
+
+        $r11 = new org.jsoup.select.Evaluator$TagEndsWith;
+
+        $r12 = virtualinvoke r15.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("*|", ":");
+
+        $r13 = virtualinvoke $r12.<java.lang.String: java.lang.String trim()>();
+
+        $r14 = virtualinvoke $r13.<java.lang.String: java.lang.String toLowerCase()>();
+
+        specialinvoke $r11.<org.jsoup.select.Evaluator$TagEndsWith: void <init>(java.lang.String)>($r14);
+
+        $r6[1] = $r11;
+
+        specialinvoke $r5.<org.jsoup.select.CombiningEvaluator$Or: void <init>(org.jsoup.select.Evaluator[])>($r6);
+
+        interfaceinvoke $r8.<java.util.List: boolean add(java.lang.Object)>($r5);
+
+        goto label3;
+
+     label1:
+        $z1 = virtualinvoke r15.<java.lang.String: boolean contains(java.lang.CharSequence)>("|");
+
+        if $z1 == 0 goto label2;
+
+        r15 = virtualinvoke r15.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("|", ":");
+
+     label2:
+        $r3 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r2 = new org.jsoup.select.Evaluator$Tag;
+
+        $r4 = virtualinvoke r15.<java.lang.String: java.lang.String trim()>();
+
+        specialinvoke $r2.<org.jsoup.select.Evaluator$Tag: void <init>(java.lang.String)>($r4);
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+     label3:
+        return;
+    }
+
+    private void byAttribute()
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.String r2, $r5, $r9, $r10, $r13, $r17, $r20, $r23, $r26, $r29, $r34;
+        org.jsoup.parser.TokenQueue $r4, r35;
+        java.lang.String[] $r6;
+        boolean $z1, $z2, $z3, $z4, $z5, $z6, $z7, $z14;
+        java.lang.Object[] $r8;
+        java.util.List $r12, $r16, $r19, $r22, $r25, $r28, $r31, $r33;
+        java.util.regex.Pattern $r14;
+        org.jsoup.select.Evaluator$AttributeStarting r36;
+        org.jsoup.select.Evaluator$Attribute r37;
+        org.jsoup.select.Evaluator$AttributeWithValue r38;
+        org.jsoup.select.Evaluator$AttributeWithValueNot r39;
+        org.jsoup.select.Evaluator$AttributeWithValueStarting r40;
+        org.jsoup.select.Evaluator$AttributeWithValueEnding r41;
+        org.jsoup.select.Evaluator$AttributeWithValueContaining r42;
+        org.jsoup.select.Evaluator$AttributeWithValueMatching r43;
+        org.jsoup.select.Selector$SelectorParseException r44;
+        java.lang.Throwable r45;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        r35 = new org.jsoup.parser.TokenQueue;
+
+        $r4 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r5 = virtualinvoke $r4.<org.jsoup.parser.TokenQueue: java.lang.String chompBalanced(char,char)>(91, 93);
+
+        specialinvoke r35.<org.jsoup.parser.TokenQueue: void <init>(java.lang.String)>($r5);
+
+        $r6 = <org.jsoup.select.QueryParser: java.lang.String[] AttributeEvals>;
+
+        r2 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String consumeToAny(java.lang.String[])>($r6);
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String)>(r2);
+
+        virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean consumeWhitespace()>();
+
+        $z1 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean isEmpty()>();
+
+        if $z1 == 0 goto label2;
+
+        $z14 = virtualinvoke r2.<java.lang.String: boolean startsWith(java.lang.String)>("^");
+
+        if $z14 == 0 goto label1;
+
+        $r33 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r36 = new org.jsoup.select.Evaluator$AttributeStarting;
+
+        $r34 = virtualinvoke r2.<java.lang.String: java.lang.String substring(int)>(1);
+
+        specialinvoke r36.<org.jsoup.select.Evaluator$AttributeStarting: void <init>(java.lang.String)>($r34);
+
+        interfaceinvoke $r33.<java.util.List: boolean add(java.lang.Object)>(r36);
+
+        goto label9;
+
+     label1:
+        $r31 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r37 = new org.jsoup.select.Evaluator$Attribute;
+
+        specialinvoke r37.<org.jsoup.select.Evaluator$Attribute: void <init>(java.lang.String)>(r2);
+
+        interfaceinvoke $r31.<java.util.List: boolean add(java.lang.Object)>(r37);
+
+        goto label9;
+
+     label2:
+        $z2 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("=");
+
+        if $z2 == 0 goto label3;
+
+        $r28 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r38 = new org.jsoup.select.Evaluator$AttributeWithValue;
+
+        $r29 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        specialinvoke r38.<org.jsoup.select.Evaluator$AttributeWithValue: void <init>(java.lang.String,java.lang.String)>(r2, $r29);
+
+        interfaceinvoke $r28.<java.util.List: boolean add(java.lang.Object)>(r38);
+
+        goto label9;
+
+     label3:
+        $z3 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("!=");
+
+        if $z3 == 0 goto label4;
+
+        $r25 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r39 = new org.jsoup.select.Evaluator$AttributeWithValueNot;
+
+        $r26 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        specialinvoke r39.<org.jsoup.select.Evaluator$AttributeWithValueNot: void <init>(java.lang.String,java.lang.String)>(r2, $r26);
+
+        interfaceinvoke $r25.<java.util.List: boolean add(java.lang.Object)>(r39);
+
+        goto label9;
+
+     label4:
+        $z4 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("^=");
+
+        if $z4 == 0 goto label5;
+
+        $r22 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r40 = new org.jsoup.select.Evaluator$AttributeWithValueStarting;
+
+        $r23 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        specialinvoke r40.<org.jsoup.select.Evaluator$AttributeWithValueStarting: void <init>(java.lang.String,java.lang.String)>(r2, $r23);
+
+        interfaceinvoke $r22.<java.util.List: boolean add(java.lang.Object)>(r40);
+
+        goto label9;
+
+     label5:
+        $z5 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("$=");
+
+        if $z5 == 0 goto label6;
+
+        $r19 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r41 = new org.jsoup.select.Evaluator$AttributeWithValueEnding;
+
+        $r20 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        specialinvoke r41.<org.jsoup.select.Evaluator$AttributeWithValueEnding: void <init>(java.lang.String,java.lang.String)>(r2, $r20);
+
+        interfaceinvoke $r19.<java.util.List: boolean add(java.lang.Object)>(r41);
+
+        goto label9;
+
+     label6:
+        $z6 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("*=");
+
+        if $z6 == 0 goto label7;
+
+        $r16 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r42 = new org.jsoup.select.Evaluator$AttributeWithValueContaining;
+
+        $r17 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        specialinvoke r42.<org.jsoup.select.Evaluator$AttributeWithValueContaining: void <init>(java.lang.String,java.lang.String)>(r2, $r17);
+
+        interfaceinvoke $r16.<java.util.List: boolean add(java.lang.Object)>(r42);
+
+        goto label9;
+
+     label7:
+        $z7 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: boolean matchChomp(java.lang.String)>("~=");
+
+        if $z7 == 0 goto label8;
+
+        $r12 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r43 = new org.jsoup.select.Evaluator$AttributeWithValueMatching;
+
+        $r13 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        $r14 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>($r13);
+
+        specialinvoke r43.<org.jsoup.select.Evaluator$AttributeWithValueMatching: void <init>(java.lang.String,java.util.regex.Pattern)>(r2, $r14);
+
+        interfaceinvoke $r12.<java.util.List: boolean add(java.lang.Object)>(r43);
+
+        goto label9;
+
+     label8:
+        r44 = new org.jsoup.select.Selector$SelectorParseException;
+
+        $r8 = newarray (java.lang.Object)[2];
+
+        $r9 = r0.<org.jsoup.select.QueryParser: java.lang.String query>;
+
+        $r8[0] = $r9;
+
+        $r10 = virtualinvoke r35.<org.jsoup.parser.TokenQueue: java.lang.String remainder()>();
+
+        $r8[1] = $r10;
+
+        specialinvoke r44.<org.jsoup.select.Selector$SelectorParseException: void <init>(java.lang.String,java.lang.Object[])>("Could not parse attribute query \'%s\': unexpected token at \'%s\'", $r8);
+
+        r45 = (java.lang.Throwable) r44;
+
+        throw r45;
+
+     label9:
+        return;
+    }
+
+    private void allElements()
+    {
+        org.jsoup.select.QueryParser r0;
+        org.jsoup.select.Evaluator$AllElements $r1;
+        java.util.List $r2;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r1 = new org.jsoup.select.Evaluator$AllElements;
+
+        specialinvoke $r1.<org.jsoup.select.Evaluator$AllElements: void <init>()>();
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    private void indexLessThan()
+    {
+        org.jsoup.select.QueryParser r0;
+        org.jsoup.select.Evaluator$IndexLessThan $r1;
+        java.util.List $r2;
+        int $i0;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r1 = new org.jsoup.select.Evaluator$IndexLessThan;
+
+        $i0 = specialinvoke r0.<org.jsoup.select.QueryParser: int consumeIndex()>();
+
+        specialinvoke $r1.<org.jsoup.select.Evaluator$IndexLessThan: void <init>(int)>($i0);
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    private void indexGreaterThan()
+    {
+        org.jsoup.select.QueryParser r0;
+        org.jsoup.select.Evaluator$IndexGreaterThan $r1;
+        java.util.List $r2;
+        int $i0;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r1 = new org.jsoup.select.Evaluator$IndexGreaterThan;
+
+        $i0 = specialinvoke r0.<org.jsoup.select.QueryParser: int consumeIndex()>();
+
+        specialinvoke $r1.<org.jsoup.select.Evaluator$IndexGreaterThan: void <init>(int)>($i0);
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    private void indexEquals()
+    {
+        org.jsoup.select.QueryParser r0;
+        org.jsoup.select.Evaluator$IndexEquals $r1;
+        java.util.List $r2;
+        int $i0;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r1 = new org.jsoup.select.Evaluator$IndexEquals;
+
+        $i0 = specialinvoke r0.<org.jsoup.select.QueryParser: int consumeIndex()>();
+
+        specialinvoke $r1.<org.jsoup.select.Evaluator$IndexEquals: void <init>(int)>($i0);
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    private void cssNthChild(boolean, boolean)
+    {
+        org.jsoup.select.QueryParser r0;
+        boolean z0, z1, $z2, $z3, $z4, $z5;
+        java.lang.String r1, $r5, $r6, $r9, $r10, $r13, $r14, $r23, $r24, $r25, $r26, $r27, $r28;
+        java.util.regex.Matcher r2, r3;
+        org.jsoup.parser.TokenQueue $r4;
+        java.util.regex.Pattern $r7, $r8;
+        java.lang.Object[] $r12;
+        java.util.List $r16, $r18, $r20, $r22;
+        int i0, i1, $i2, $i3;
+        org.jsoup.select.Selector$SelectorParseException r29;
+        org.jsoup.select.Evaluator$IsNthLastOfType r30;
+        org.jsoup.select.Evaluator$IsNthOfType r31;
+        org.jsoup.select.Evaluator$IsNthLastChild r32;
+        org.jsoup.select.Evaluator$IsNthChild r33;
+        java.lang.Throwable r34;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        z0 := @parameter0: boolean;
+
+        z1 := @parameter1: boolean;
+
+        $r4 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r5 = virtualinvoke $r4.<org.jsoup.parser.TokenQueue: java.lang.String chompTo(java.lang.String)>(")");
+
+        $r6 = virtualinvoke $r5.<java.lang.String: java.lang.String trim()>();
+
+        r1 = virtualinvoke $r6.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $r7 = <org.jsoup.select.QueryParser: java.util.regex.Pattern NTH_AB>;
+
+        r2 = virtualinvoke $r7.<java.util.regex.Pattern: java.util.regex.Matcher matcher(java.lang.CharSequence)>(r1);
+
+        $r8 = <org.jsoup.select.QueryParser: java.util.regex.Pattern NTH_B>;
+
+        r3 = virtualinvoke $r8.<java.util.regex.Pattern: java.util.regex.Matcher matcher(java.lang.CharSequence)>(r1);
+
+        $r9 = "odd";
+
+        $z2 = virtualinvoke $r9.<java.lang.String: boolean equals(java.lang.Object)>(r1);
+
+        if $z2 == 0 goto label01;
+
+        i0 = 2;
+
+        i1 = 1;
+
+        goto label09;
+
+     label01:
+        $r10 = "even";
+
+        $z3 = virtualinvoke $r10.<java.lang.String: boolean equals(java.lang.Object)>(r1);
+
+        if $z3 == 0 goto label02;
+
+        i0 = 2;
+
+        i1 = 0;
+
+        goto label09;
+
+     label02:
+        $z4 = virtualinvoke r2.<java.util.regex.Matcher: boolean matches()>();
+
+        if $z4 == 0 goto label07;
+
+        $r23 = virtualinvoke r2.<java.util.regex.Matcher: java.lang.String group(int)>(3);
+
+        if $r23 == null goto label03;
+
+        $r27 = virtualinvoke r2.<java.util.regex.Matcher: java.lang.String group(int)>(1);
+
+        $r28 = virtualinvoke $r27.<java.lang.String: java.lang.String replaceFirst(java.lang.String,java.lang.String)>("^\\+", "");
+
+        $i2 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r28);
+
+        goto label04;
+
+     label03:
+        $i2 = 1;
+
+     label04:
+        i0 = $i2;
+
+        $r24 = virtualinvoke r2.<java.util.regex.Matcher: java.lang.String group(int)>(4);
+
+        if $r24 == null goto label05;
+
+        $r25 = virtualinvoke r2.<java.util.regex.Matcher: java.lang.String group(int)>(4);
+
+        $r26 = virtualinvoke $r25.<java.lang.String: java.lang.String replaceFirst(java.lang.String,java.lang.String)>("^\\+", "");
+
+        $i3 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r26);
+
+        goto label06;
+
+     label05:
+        $i3 = 0;
+
+     label06:
+        i1 = $i3;
+
+        goto label09;
+
+     label07:
+        $z5 = virtualinvoke r3.<java.util.regex.Matcher: boolean matches()>();
+
+        if $z5 == 0 goto label08;
+
+        i0 = 0;
+
+        $r13 = virtualinvoke r3.<java.util.regex.Matcher: java.lang.String group()>();
+
+        $r14 = virtualinvoke $r13.<java.lang.String: java.lang.String replaceFirst(java.lang.String,java.lang.String)>("^\\+", "");
+
+        i1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r14);
+
+        goto label09;
+
+     label08:
+        r29 = new org.jsoup.select.Selector$SelectorParseException;
+
+        $r12 = newarray (java.lang.Object)[1];
+
+        $r12[0] = r1;
+
+        specialinvoke r29.<org.jsoup.select.Selector$SelectorParseException: void <init>(java.lang.String,java.lang.Object[])>("Could not parse nth-index \'%s\': unexpected format", $r12);
+
+        r34 = (java.lang.Throwable) r29;
+
+        throw r34;
+
+     label09:
+        if z1 == 0 goto label11;
+
+        if z0 == 0 goto label10;
+
+        $r22 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r30 = new org.jsoup.select.Evaluator$IsNthLastOfType;
+
+        specialinvoke r30.<org.jsoup.select.Evaluator$IsNthLastOfType: void <init>(int,int)>(i0, i1);
+
+        interfaceinvoke $r22.<java.util.List: boolean add(java.lang.Object)>(r30);
+
+        goto label13;
+
+     label10:
+        $r20 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r31 = new org.jsoup.select.Evaluator$IsNthOfType;
+
+        specialinvoke r31.<org.jsoup.select.Evaluator$IsNthOfType: void <init>(int,int)>(i0, i1);
+
+        interfaceinvoke $r20.<java.util.List: boolean add(java.lang.Object)>(r31);
+
+        goto label13;
+
+     label11:
+        if z0 == 0 goto label12;
+
+        $r18 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r32 = new org.jsoup.select.Evaluator$IsNthLastChild;
+
+        specialinvoke r32.<org.jsoup.select.Evaluator$IsNthLastChild: void <init>(int,int)>(i0, i1);
+
+        interfaceinvoke $r18.<java.util.List: boolean add(java.lang.Object)>(r32);
+
+        goto label13;
+
+     label12:
+        $r16 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        r33 = new org.jsoup.select.Evaluator$IsNthChild;
+
+        specialinvoke r33.<org.jsoup.select.Evaluator$IsNthChild: void <init>(int,int)>(i0, i1);
+
+        interfaceinvoke $r16.<java.util.List: boolean add(java.lang.Object)>(r33);
+
+     label13:
+        return;
+    }
+
+    private int consumeIndex()
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.String r1, $r3;
+        org.jsoup.parser.TokenQueue $r2;
+        boolean $z0;
+        int $i0;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r3 = virtualinvoke $r2.<org.jsoup.parser.TokenQueue: java.lang.String chompTo(java.lang.String)>(")");
+
+        r1 = virtualinvoke $r3.<java.lang.String: java.lang.String trim()>();
+
+        $z0 = staticinvoke <org.jsoup.helper.StringUtil: boolean isNumeric(java.lang.String)>(r1);
+
+        staticinvoke <org.jsoup.helper.Validate: void isTrue(boolean,java.lang.String)>($z0, "Index must be numeric");
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>(r1);
+
+        return $i0;
+    }
+
+    private void has()
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.String r1;
+        org.jsoup.parser.TokenQueue $r2, $r3;
+        org.jsoup.select.StructuralEvaluator$Has $r4;
+        java.util.List $r5;
+        org.jsoup.select.Evaluator $r6;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        virtualinvoke $r2.<org.jsoup.parser.TokenQueue: void consume(java.lang.String)>(":has");
+
+        $r3 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        r1 = virtualinvoke $r3.<org.jsoup.parser.TokenQueue: java.lang.String chompBalanced(char,char)>(40, 41);
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String,java.lang.String)>(r1, ":has(el) subselect must not be empty");
+
+        $r5 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r4 = new org.jsoup.select.StructuralEvaluator$Has;
+
+        $r6 = staticinvoke <org.jsoup.select.QueryParser: org.jsoup.select.Evaluator parse(java.lang.String)>(r1);
+
+        specialinvoke $r4.<org.jsoup.select.StructuralEvaluator$Has: void <init>(org.jsoup.select.Evaluator)>($r6);
+
+        interfaceinvoke $r5.<java.util.List: boolean add(java.lang.Object)>($r4);
+
+        return;
+    }
+
+    private void contains(boolean)
+    {
+        org.jsoup.select.QueryParser r0;
+        boolean z0;
+        java.lang.String r1, $r4, $r9;
+        org.jsoup.parser.TokenQueue $r2, $r3;
+        org.jsoup.select.Evaluator$ContainsText $r5;
+        java.util.List $r6, $r8;
+        org.jsoup.select.Evaluator$ContainsOwnText $r7;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        z0 := @parameter0: boolean;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        if z0 == 0 goto label1;
+
+        $r9 = ":containsOwn";
+
+        goto label2;
+
+     label1:
+        $r9 = ":contains";
+
+     label2:
+        virtualinvoke $r2.<org.jsoup.parser.TokenQueue: void consume(java.lang.String)>($r9);
+
+        $r3 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        $r4 = virtualinvoke $r3.<org.jsoup.parser.TokenQueue: java.lang.String chompBalanced(char,char)>(40, 41);
+
+        r1 = staticinvoke <org.jsoup.parser.TokenQueue: java.lang.String unescape(java.lang.String)>($r4);
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String,java.lang.String)>(r1, ":contains(text) query must not be empty");
+
+        if z0 == 0 goto label3;
+
+        $r8 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r7 = new org.jsoup.select.Evaluator$ContainsOwnText;
+
+        specialinvoke $r7.<org.jsoup.select.Evaluator$ContainsOwnText: void <init>(java.lang.String)>(r1);
+
+        interfaceinvoke $r8.<java.util.List: boolean add(java.lang.Object)>($r7);
+
+        goto label4;
+
+     label3:
+        $r6 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r5 = new org.jsoup.select.Evaluator$ContainsText;
+
+        specialinvoke $r5.<org.jsoup.select.Evaluator$ContainsText: void <init>(java.lang.String)>(r1);
+
+        interfaceinvoke $r6.<java.util.List: boolean add(java.lang.Object)>($r5);
+
+     label4:
+        return;
+    }
+
+    private void matches(boolean)
+    {
+        org.jsoup.select.QueryParser r0;
+        boolean z0;
+        java.lang.String r1, $r10;
+        org.jsoup.parser.TokenQueue $r2, $r3;
+        org.jsoup.select.Evaluator$Matches $r4;
+        java.util.List $r5, $r8;
+        java.util.regex.Pattern $r6, $r9;
+        org.jsoup.select.Evaluator$MatchesOwn $r7;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        z0 := @parameter0: boolean;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        if z0 == 0 goto label1;
+
+        $r10 = ":matchesOwn";
+
+        goto label2;
+
+     label1:
+        $r10 = ":matches";
+
+     label2:
+        virtualinvoke $r2.<org.jsoup.parser.TokenQueue: void consume(java.lang.String)>($r10);
+
+        $r3 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        r1 = virtualinvoke $r3.<org.jsoup.parser.TokenQueue: java.lang.String chompBalanced(char,char)>(40, 41);
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String,java.lang.String)>(r1, ":matches(regex) query must not be empty");
+
+        if z0 == 0 goto label3;
+
+        $r8 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r7 = new org.jsoup.select.Evaluator$MatchesOwn;
+
+        $r9 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>(r1);
+
+        specialinvoke $r7.<org.jsoup.select.Evaluator$MatchesOwn: void <init>(java.util.regex.Pattern)>($r9);
+
+        interfaceinvoke $r8.<java.util.List: boolean add(java.lang.Object)>($r7);
+
+        goto label4;
+
+     label3:
+        $r5 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r4 = new org.jsoup.select.Evaluator$Matches;
+
+        $r6 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>(r1);
+
+        specialinvoke $r4.<org.jsoup.select.Evaluator$Matches: void <init>(java.util.regex.Pattern)>($r6);
+
+        interfaceinvoke $r5.<java.util.List: boolean add(java.lang.Object)>($r4);
+
+     label4:
+        return;
+    }
+
+    private void not()
+    {
+        org.jsoup.select.QueryParser r0;
+        java.lang.String r1;
+        org.jsoup.parser.TokenQueue $r2, $r3;
+        org.jsoup.select.StructuralEvaluator$Not $r4;
+        java.util.List $r5;
+        org.jsoup.select.Evaluator $r6;
+
+        r0 := @this: org.jsoup.select.QueryParser;
+
+        $r2 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        virtualinvoke $r2.<org.jsoup.parser.TokenQueue: void consume(java.lang.String)>(":not");
+
+        $r3 = r0.<org.jsoup.select.QueryParser: org.jsoup.parser.TokenQueue tq>;
+
+        r1 = virtualinvoke $r3.<org.jsoup.parser.TokenQueue: java.lang.String chompBalanced(char,char)>(40, 41);
+
+        staticinvoke <org.jsoup.helper.Validate: void notEmpty(java.lang.String,java.lang.String)>(r1, ":not(selector) subselect must not be empty");
+
+        $r5 = r0.<org.jsoup.select.QueryParser: java.util.List evals>;
+
+        $r4 = new org.jsoup.select.StructuralEvaluator$Not;
+
+        $r6 = staticinvoke <org.jsoup.select.QueryParser: org.jsoup.select.Evaluator parse(java.lang.String)>(r1);
+
+        specialinvoke $r4.<org.jsoup.select.StructuralEvaluator$Not: void <init>(org.jsoup.select.Evaluator)>($r6);
+
+        interfaceinvoke $r5.<java.util.List: boolean add(java.lang.Object)>($r4);
+
+        return;
+    }
+
+    static void <clinit>()
+    {
+        java.lang.String[] $r0, $r1;
+        java.util.regex.Pattern $r2, $r3;
+
+        $r0 = newarray (java.lang.String)[5];
+
+        $r0[0] = ",";
+
+        $r0[1] = ">";
+
+        $r0[2] = "+";
+
+        $r0[3] = "~";
+
+        $r0[4] = " ";
+
+        <org.jsoup.select.QueryParser: java.lang.String[] combinators> = $r0;
+
+        $r1 = newarray (java.lang.String)[6];
+
+        $r1[0] = "=";
+
+        $r1[1] = "!=";
+
+        $r1[2] = "^=";
+
+        $r1[3] = "$=";
+
+        $r1[4] = "*=";
+
+        $r1[5] = "~=";
+
+        <org.jsoup.select.QueryParser: java.lang.String[] AttributeEvals> = $r1;
+
+        $r2 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String,int)>("((\\+|-)?(\\d+)?)n(\\s*(\\+|-)?\\s*\\d+)?", 2);
+
+        <org.jsoup.select.QueryParser: java.util.regex.Pattern NTH_AB> = $r2;
+
+        $r3 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>("(\\+|-)?(\\d+)");
+
+        <org.jsoup.select.QueryParser: java.util.regex.Pattern NTH_B> = $r3;
+
+        return;
+    }
+}

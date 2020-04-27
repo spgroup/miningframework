@@ -3,7 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/jsoup" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/test_repositories/mergeconflict" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/test_repositories/sameline" vcs="Git" />
   </component>
 </project>

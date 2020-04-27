@@ -1,0 +1,8 @@
+project;class;method;merge commit;left right dataflow;right left dataflow;left right tainted;right left tainted;left right svfa;right left svfa;confluence
+jsoup;org.jsoup.nodes.TextNode;outerHtmlHead(StringBuilder, int, Document.OutputSettings);a44e18aa3c1fcd25a68a5965f9490d8f7d026509;false;false;false;false;false;false;false
+jsoup;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);3f7d2c71dbbbb289c684f339874eed8ac2747fa0;false;false;false;false;false;false;false
+jsoup;org.jsoup.helper.HttpConnection;createConnection(Connection.Request);fee4762322f85a1109edd75ccb67f38cf5008c80;false;false;false;false;false;false;false
+jsoup;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);a8b6982de98ff76ef254031d7152fff57f6bf941;false;false;false;false;false;false;false
+jsoup;org.jsoup.select.QueryParser;byTag();e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f;false;false;false;false;false;false;false
+jsoup;org.jsoup.helper.HttpConnection;data(String);7ba0ee75547878ddccc5ab50777b67c712aa73e4;error;error;error;error;error;error;error
+jsoup;org.jsoup.nodes.Document;charset(Charset);ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3;error;error;error;error;error;error;error

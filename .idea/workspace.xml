@@ -19,7 +19,72 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="daa10f15-d388-48a1-954b-aa3a1616d0e9" name="Default Changelist" comment="" />
+    <list default="true" id="daa10f15-d388-48a1-954b-aa3a1616d0e9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/SameLineTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/SameLineTest.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/TestSuite.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/TestSuite.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/OutputFileTest.groovy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/TestSuite.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/unit/TestSuite.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/TestModule.groovy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/compare/data/soot-results.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/data/soot-results.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/projects.csv" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,6 +94,21 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -43,13 +123,41 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="show.unlinked.gradle.project.popup" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/integration/output/data" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/integration/output/data" />
+    </key>
+  </component>
   <component name="RunManager" selected="Gradle.TestSuite">
+    <configuration name="ArgsParserTest" type="AndroidJUnit" factoryName="Android JUnit" temporary="true" nameIsGenerated="true">
+      <module name="miningframework.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="unit.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="unit" />
+      <option name="MAIN_CLASS_NAME" value="unit.ArgsParserTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="app.Main" />
       <module name="miningframework.main" />
-      <option name="PROGRAM_PARAMETERS" value="--access-key 17650d3e2b82571eed3b1969ea44de1a4a0a840e --threads 5 ./projects.csv SOOTAnalysisOutput" />
+      <option name="PROGRAM_PARAMETERS" value="--args=&quot;--access-key 4ba5dcc432fb8a2da8307fbc98a9a7443a1a763e --threads 2 ./projects.csv SOOTAnalysisOutput&quot;" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="app.*" />
@@ -60,12 +168,31 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="OutputFileTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;unit.OutputFileTest&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="TestSuite" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;unit.TestSuite&quot;" />
+        <option name="scriptParameters" value="--tests &quot;integration.TestSuite&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -82,7 +209,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.TestSuite" />
-        <item itemvalue="Application.Main" />
+        <item itemvalue="Gradle.OutputFileTest" />
+        <item itemvalue="Android JUnit.ArgsParserTest" />
+        <item itemvalue="Gradle.TestSuite" />
+        <item itemvalue="Gradle.TestSuite" />
       </list>
     </recent_temporary>
   </component>
@@ -111,36 +241,46 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/test_repositories/mergeconflict" />
+      <path value="$PROJECT_DIR$/test_repositories/sameline" />
+    </ignored-roots>
+  </component>
   <component name="WindowStateProjectService">
-    <state x="463" y="110" width="621" height="609" key="#Main" timestamp="1587995662841">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="625" y="168" width="740" height="778" key="#Main" timestamp="1588015572344">
+      <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="463" y="110" width="621" height="609" key="#Main/0.0.1536.824@0.0.1536.824" timestamp="1587995662841" />
-    <state x="625" y="168" width="726" height="778" key="#Main/67.27.1853.1053@67.27.1853.1053" timestamp="1587771552178" />
+    <state x="625" y="168" width="740" height="778" key="#Main/67.27.1853.1053@67.27.1853.1053" timestamp="1588015572344" />
+    <state x="655" y="153" width="666" height="807" key="#TestSuite" timestamp="1588016760182">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="655" y="153" width="666" height="807" key="#TestSuite/67.27.1853.1053@67.27.1853.1053" timestamp="1588016760182" />
     <state x="451" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587771420394">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="451" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1587771420394" />
-    <state width="1807" height="484" key="GridCell.Tab.0.bottom" timestamp="1588009840788">
+    <state width="1807" height="481" key="GridCell.Tab.0.bottom" timestamp="1588017959492">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1493" height="464" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
-    <state width="1807" height="484" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588009840788" />
-    <state width="1807" height="484" key="GridCell.Tab.0.center" timestamp="1588009840787">
+    <state width="1807" height="481" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588017959492" />
+    <state width="1807" height="481" key="GridCell.Tab.0.center" timestamp="1588017959490">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1493" height="464" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
-    <state width="1807" height="484" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588009840787" />
-    <state width="1807" height="484" key="GridCell.Tab.0.left" timestamp="1588009840786">
+    <state width="1807" height="481" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588017959490" />
+    <state width="1807" height="481" key="GridCell.Tab.0.left" timestamp="1588017959489">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1493" height="464" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
-    <state width="1807" height="484" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588009840786" />
-    <state width="1807" height="484" key="GridCell.Tab.0.right" timestamp="1588009840787">
+    <state width="1807" height="481" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588017959489" />
+    <state width="1807" height="481" key="GridCell.Tab.0.right" timestamp="1588017959491">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1493" height="464" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1587995674661" />
-    <state width="1807" height="484" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588009840787" />
+    <state width="1807" height="481" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588017959491" />
     <state width="1807" height="446" key="GridCell.Tab.1.bottom" timestamp="1587771608644">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -157,10 +297,18 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state width="1807" height="446" key="GridCell.Tab.1.right/67.27.1853.1053@67.27.1853.1053" timestamp="1587771608644" />
-    <state x="684" y="35" width="902" height="777" key="find.popup" timestamp="1588008267413">
+    <state x="67" y="104" width="1495" height="737" key="SettingsEditor" timestamp="1588016826623">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="684" y="35" width="902" height="777" key="find.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588008267413" />
+    <state x="67" y="104" width="1495" height="737" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1588016826623" />
+    <state x="473" y="178" width="1020" height="764" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1588013817511">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="473" y="178" width="1020" height="764" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/67.27.1853.1053@67.27.1853.1053" timestamp="1588013817511" />
+    <state x="684" y="35" width="1007" height="777" key="find.popup" timestamp="1588014525914">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="684" y="35" width="1007" height="777" key="find.popup/67.27.1853.1053@67.27.1853.1053" timestamp="1588014525914" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

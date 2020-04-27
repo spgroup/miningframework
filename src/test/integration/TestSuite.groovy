@@ -66,7 +66,7 @@ public class TestSuite {
         MiningFramework framework = injector.getInstance(MiningFramework.class)
 
         framework.setArguments(args)
-        git submodule update
+
         FileManager.createOutputFiles(args.getOutputPath(), false)
 
         ArrayList<Project> projectList = InputParser.getProjectList(args.getInputPath())

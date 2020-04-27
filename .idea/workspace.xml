@@ -20,70 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="daa10f15-d388-48a1-954b-aa3a1616d0e9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/SameLineTest.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/SameLineTest.groovy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/integration/TestSuite.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/TestSuite.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/b610225c36e1eb020b9899be907e06b96a19c1c0/Test/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/c00294fb7135e5bdcd6f7c3417405aea75b66444/Test/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/Test/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/mergeconflict/ea29fc17bdf20b40208ae39f88fd8aa2b2a5322b/TestTwo/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/integration/output/files/sameline/ef1a4c9095c04af5eab2e0c54f590c053c48d410/Test/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/OutputFileTest.groovy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/TestSuite.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/unit/TestSuite.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/TestModule.groovy" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/compare/data/soot-results.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/data/soot-results.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/3f7d2c71dbbbb289c684f339874eed8ac2747fa0/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/7ba0ee75547878ddccc5ab50777b67c712aa73e4/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/821b021a1e5fc75719c71ae5ea84157d770c1a9d/org/jsoup/helper/DataUtil/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a44e18aa3c1fcd25a68a5965f9490d8f7d026509/org/jsoup/nodes/TextNode/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/a8b6982de98ff76ef254031d7152fff57f6bf941/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f/org/jsoup/select/QueryParser/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3/org/jsoup/nodes/Document/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/output/files/jsoup/fee4762322f85a1109edd75ccb67f38cf5008c80/org/jsoup/helper/HttpConnection/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/unit/fileTest/projects.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

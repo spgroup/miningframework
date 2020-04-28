@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="integration.TestSuite" tests="0" skipped="0" failures="0" errors="0" timestamp="1970-01-01T00:00:00" hostname="santos" time="0.0">
+  <properties/>
+  <system-out><![CDATA[#### MINING STARTED ####
+Running FilterNonExistentProjectsProcessor
+Skiping ForkAndEnableTravisProcessor: access key not provided
+STARTING PROJECT: jsoup
+Cloning repository jsoup into clonedRepositories/jsoup
+jsoup - Merge commit: ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+jsoup - Merge commit: 7ba0ee75547878ddccc5ab50777b67c712aa73e4
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+jsoup - Merge commit: e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+jsoup - Merge commit: a8b6982de98ff76ef254031d7152fff57f6bf941
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+jsoup - Merge commit: fee4762322f85a1109edd75ccb67f38cf5008c80
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+jsoup - Merge commit: 3f7d2c71dbbbb289c684f339874eed8ac2747fa0
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+jsoup - Merge commit: 821b021a1e5fc75719c71ae5ea84157d770c1a9d
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+jsoup - Merge commit: a44e18aa3c1fcd25a68a5965f9490d8f7d026509
+jsoup - Merge Data collection finished!
+jsoup - ModifiedLinesCollector collection finished
+jsoup - Statistics collection finished!
+jsoup - Build requesting skiped: access key not provided
+Executing RunSootAnalysisOutputProcessor
+#### MINING FINISHED ####
+#### MINING STARTED ####
+STARTING PROJECT: sameline
+#### MINING FINISHED ####
+]]></system-out>
+  <system-err><![CDATA[Exception in thread "Thread-5" exception.UnstagedChangesException: Local project: 'sameline' has unstaged changes, please commit or stash them before running the framework
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.codehaus.groovy.reflection.CachedConstructor.invoke(CachedConstructor.java:72)
+	at org.codehaus.groovy.runtime.callsite.ConstructorSite$ConstructorSiteNoUnwrapNoCoerce.callConstructor(ConstructorSite.java:105)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallConstructor(CallSiteArray.java:59)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:237)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callConstructor(AbstractCallSite.java:249)
+	at app.MiningWorker.checkForUnstagedChanges(MiningWorker.groovy:76)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.codehaus.groovy.runtime.callsite.PlainObjectMetaMethodSite.doInvoke(PlainObjectMetaMethodSite.java:43)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite$PogoCachedMethodSiteNoUnwrapNoCoerce.invoke(PogoMetaMethodSite.java:193)
+	at org.codehaus.groovy.runtime.callsite.PogoMetaMethodSite.callCurrent(PogoMetaMethodSite.java:61)
+	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:51)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:156)
+	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:168)
+	at app.MiningWorker.run(MiningWorker.groovy:37)
+	at java.lang.Thread.run(Thread.java:748)
+]]></system-err>
+</testsuite>

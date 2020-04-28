@@ -34,10 +34,8 @@ public class FileTestModule extends AbstractModule {
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(FilterNonExistentProjectsProcessor.class)
-        projectProcessorBinder.addBinding().to(ForkAndEnableTravisProcessor.class)
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
-        outputProcessorBinder.addBinding().to(FetchBuildsOutputProcessor.class)
         outputProcessorBinder.addBinding().to(GenerateSootInputFilesOutputProcessor.class)
         outputProcessorBinder.addBinding().to(RunSootAnalysisOutputProcessor.class)
     }

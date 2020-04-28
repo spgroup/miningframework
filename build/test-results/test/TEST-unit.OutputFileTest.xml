@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unit.OutputFileTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2020-04-27T20:48:42" hostname="santos" time="0.018">
+  <properties/>
+  <testcase name="compareMergeResults" classname="unit.OutputFileTest" time="0.014"/>
+  <testcase name="compareStatisticsResults" classname="unit.OutputFileTest" time="0.001"/>
+  <testcase name="compareSootResults" classname="unit.OutputFileTest" time="0.001"/>
+  <testcase name="compareResults" classname="unit.OutputFileTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

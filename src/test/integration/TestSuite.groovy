@@ -59,7 +59,7 @@ public class TestSuite {
 
         args.setUntilDate('21/04/2020')
         args.setInputPath('src/test/integration/fileTest/projects.csv')
-        args.setOutputPath('src/test/integration/fileTest/out')
+        args.setOutputPath('src/test/integration/fileTest/output')
         delDirectory(args.getOutputPath())
 
         Injector injector = Guice.createInjector(new FileTestModule())

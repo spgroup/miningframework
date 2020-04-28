@@ -23,23 +23,7 @@ public class TestSuite {
     @BeforeClass
     static void setUp() {
 
-        Arguments args = new Arguments()
-        
-        args.setInputPath('src/test/integration/input.csv')
-        args.setOutputPath('src/test/integration/output')
-        args.setKeepProjects()
-
-        Injector injector = Guice.createInjector(new TestModule())
-        MiningFramework framework = injector.getInstance(MiningFramework.class)
-
-        framework.setArguments(args)
-
-        FileManager.createOutputFiles(args.getOutputPath(), false)
-
-        ArrayList<Project> projectList = InputParser.getProjectList(args.getInputPath())
-        
-        framework.setProjectList(projectList)
-        framework.start()
+        runFramework('src/test/integration/input.csv', 'src/test/integration/output', new TestModule())
 
         Map<String, String> outputFiles = new HashMap<String, String>();
         String output = new File('src/test/integration/output/data/results.csv').getText()
@@ -50,19 +34,22 @@ public class TestSuite {
 
         modifiedLines = outputFiles
 
+        runFramework('src/test/integration/fileTest/projects.csv', 'src/test/integration/fileTest/output', new FileTestModule())
     }
 
-    @BeforeClass
-    static void runFiles(){
 
+    static void runFramework(String input, String output, def testModule){
         Arguments args = new Arguments()
 
-        args.setUntilDate('21/04/2020')
-        args.setInputPath('src/test/integration/fileTest/projects.csv')
-        args.setOutputPath('src/test/integration/fileTest/output')
+        args.setInputPath(input)
+        args.setOutputPath(output)
+        if (testModule instanceof FileTestModule) {
+            args.setUntilDate('21/04/2020')
+        }
+        args.setKeepProjects()
         delDirectory(args.getOutputPath())
 
-        Injector injector = Guice.createInjector(new FileTestModule())
+        Injector injector = Guice.createInjector(testModule)
         MiningFramework framework = injector.getInstance(MiningFramework.class)
 
         framework.setArguments(args)
@@ -73,6 +60,7 @@ public class TestSuite {
 
         framework.setProjectList(projectList)
         framework.start()
+
     }
 
     public static getModifiedLines(String method) {

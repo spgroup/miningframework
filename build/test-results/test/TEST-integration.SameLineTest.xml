@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="integration.SameLineTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2020-04-27T20:48:42" hostname="santos" time="0.011">
+<testsuite name="integration.SameLineTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2020-04-28T01:06:07" hostname="santos" time="0.009">
   <properties/>
-  <testcase name="modifySameLineTest" classname="integration.SameLineTest" time="0.011"/>
+  <testcase name="modifySameLineTest" classname="integration.SameLineTest" time="0.008"/>
   <testcase name="addSameLineTest" classname="integration.SameLineTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

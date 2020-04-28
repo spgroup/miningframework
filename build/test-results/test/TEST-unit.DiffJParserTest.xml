@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unit.DiffJParserTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2020-04-28T01:06:07" hostname="santos" time="0.005">
+  <properties/>
+  <testcase name="withOneModifiedMethodWithOneAddedLine" classname="unit.DiffJParserTest" time="0.003"/>
+  <testcase name="withOneModifiedMethodWithMultipleAddedLines" classname="unit.DiffJParserTest" time="0.0"/>
+  <testcase name="withOneModifiedMethodAndOneFullyRemovedLine" classname="unit.DiffJParserTest" time="0.001"/>
+  <testcase name="withOneModifiedMethodWithOneChangedLine" classname="unit.DiffJParserTest" time="0.0"/>
+  <testcase name="withOneModifiedMethodWithMultipleAddedLinesInDifferentPlaces" classname="unit.DiffJParserTest" time="0.0"/>
+  <testcase name="withTwoModifiedMethodsWithMultipleLinesInDifferentPlaces" classname="unit.DiffJParserTest" time="0.001"/>
+  <testcase name="withAMethodWithMultipleArguments" classname="unit.DiffJParserTest" time="0.0"/>
+  <testcase name="withMultipleTypesOfChanges" classname="unit.DiffJParserTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

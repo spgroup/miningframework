@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="347e592b-5e41-4c93-bb6f-fced71ceeccc" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/6.2.2/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.2.2/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.2.2/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.2.2/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.2.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.2.2/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.2.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.2.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/groovy/test/integration/FileTestModule.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/groovy/test/integration/FileTestModule.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/groovy/test/integration/TestSuite.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/groovy/test/integration/TestSuite.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/groovy/test/unit/OutputFileTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/groovy/test/unit/OutputFileTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/classes/integration.MergeConflictFilterTest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/classes/integration.SameLineTest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/classes/integration.TestSuite.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/classes/unit.OutputFileTest.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/css/base-style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/js/report.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/packages/integration.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/tests/test/packages/unit.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/TEST-integration.MergeConflictFilterTest.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/TEST-integration.SameLineTest.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/TEST-integration.TestSuite.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/TEST-unit.OutputFileTest.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/test-results/test/binary/output.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/output.bin.idx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/test-results/test/binary/results.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/TestSuite.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/TestSuite.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/fileTest/output/data/results.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/fileTest/output/data/results.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/fileTest/output/data/soot-results.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/fileTest/output/mergeconflicts/results.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/fileTest/output/mergeconflicts/results.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/fileTest/output/statistics/results.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/fileTest/output/statistics/results.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/data/results.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/output/data/results.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/integration/output/statistics/results.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/integration/output/statistics/results.csv" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="863" y="422" width="251" height="270" key="#Notifications" timestamp="1588035872887">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="863" y="422" width="251" height="270" key="#Notifications/67.27.1853.1053@67.27.1853.1053" timestamp="1588035872887" />
+    <state width="1807" height="481" key="GridCell.Tab.0.bottom" timestamp="1588034742281">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="481" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1588034742281" />
+    <state width="1807" height="481" key="GridCell.Tab.0.center" timestamp="1588034742281">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="481" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1588034742281" />
+    <state width="1807" height="481" key="GridCell.Tab.0.left" timestamp="1588034742280">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="481" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1588034742280" />
+    <state width="1807" height="481" key="GridCell.Tab.0.right" timestamp="1588034742281">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state width="1807" height="481" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1588034742281" />
+  </component>
+</project>

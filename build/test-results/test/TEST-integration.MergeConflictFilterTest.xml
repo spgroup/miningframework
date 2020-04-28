@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="integration.MergeConflictFilterTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2020-04-27T20:48:42" hostname="santos" time="0.004">
+<testsuite name="integration.MergeConflictFilterTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2020-04-28T01:06:07" hostname="santos" time="0.005">
   <properties/>
-  <testcase name="noMergeConflictTest" classname="integration.MergeConflictFilterTest" time="0.003"/>
+  <testcase name="noMergeConflictTest" classname="integration.MergeConflictFilterTest" time="0.004"/>
   <testcase name="multipleConflictInOneFile" classname="integration.MergeConflictFilterTest" time="0.0"/>
   <testcase name="mergeConflictTest" classname="integration.MergeConflictFilterTest" time="0.0"/>
   <testcase name="multipleConflict" classname="integration.MergeConflictFilterTest" time="0.001"/>

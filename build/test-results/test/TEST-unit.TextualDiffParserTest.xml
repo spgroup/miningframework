@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unit.TextualDiffParserTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2020-04-28T01:06:07" hostname="santos" time="0.008">
+  <properties/>
+  <testcase name="withMultipleAddedLinesInDifferentPlaces" classname="unit.TextualDiffParserTest" time="0.004"/>
+  <testcase name="withOneRemovedLine" classname="unit.TextualDiffParserTest" time="0.001"/>
+  <testcase name="withEmptyArrayShouldReturnEmptySet" classname="unit.TextualDiffParserTest" time="0.0"/>
+  <testcase name="withMultipleAddedLinesInTheSamePlace" classname="unit.TextualDiffParserTest" time="0.0"/>
+  <testcase name="withMultipleChangedLinesInOnePlace" classname="unit.TextualDiffParserTest" time="0.001"/>
+  <testcase name="withMultipleAddedLinesInDifferentMethods" classname="unit.TextualDiffParserTest" time="0.001"/>
+  <testcase name="withOneAddedLine" classname="unit.TextualDiffParserTest" time="0.0"/>
+  <testcase name="withOneChangedLine" classname="unit.TextualDiffParserTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

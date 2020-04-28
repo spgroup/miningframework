@@ -27,7 +27,7 @@ class InputParser {
                 projectList.add(new Project(path))
             }
         }
-        if(projectList.size() == 0) throw new InvalidArgsException('The input file cannot be processed, the project list will be considered as empty')
+        if(projectList.size() == 0) throw new InvalidArgsException('The input file cannot be processed')
         return projectList
     }
 

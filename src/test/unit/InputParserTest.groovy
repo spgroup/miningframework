@@ -46,7 +46,7 @@ public class InputParserTest {
             projectList = InputParser.getProjectList(inputPath)
         })
 
-        String expectedMessage = 'The input file cannot be processed, the project list will be considered as empty'
+        String expectedMessage = 'The input file cannot be processed'
         String actualMessage = exception.getMessage()
 
         assertEquals(expectedMessage, actualMessage)
@@ -62,7 +62,7 @@ public class InputParserTest {
             projectList = InputParser.getProjectList(inputPath)
         })
 
-        String expectedMessage = 'The input file cannot be processed, the project list will be considered as empty'
+        String expectedMessage = 'The input file cannot be processed'
         String actualMessage = exception.getMessage()
 
         assertEquals(expectedMessage, actualMessage)

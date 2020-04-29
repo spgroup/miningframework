@@ -56,6 +56,7 @@ class MiningWorker implements Runnable {
 
                 if (!arguments.getKeepProjects())
                     FileManager.delete(new File(project.getPath()))
+                    MergeHelper.returnToMaster(project)
 
             } catch (NoSuchElementException e) {
                 println e.printStackTrace()

@@ -2,15 +2,19 @@ package services.commitFilters
 
 import interfaces.CommitFilter
 import project.*
+import services.dataCollectors.modifiedLinesCollector.ModifiedMethod
 import util.*
+import services.dataCollectors.modifiedLinesCollector.ModifiedMethodsHelper
 
-import static com.xlson.groovycsv.CsvParser.parseCsv
+import java.util.stream.Collectors
 
 /**
  * @requires: that a diffj cli is in the dependencies folder
  * @provides: returns true if both left and right of the merge scenario have a intersection on the modified methods list
  */
 class MutuallyModifiedMethodsCommitFilter implements CommitFilter {
+
+    private modifiedMethodsHelper = new ModifiedMethodsHelper();
 
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
         return containsMutuallyModifiedMethods(project, mergeCommit)
@@ -31,8 +35,8 @@ class MutuallyModifiedMethodsCommitFilter implements CommitFilter {
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
         for(file in mutuallyModifiedFiles) {
-            Set<String> leftModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-            Set<String> rightModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+            Set<String> leftModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+            Set<String> rightModifiedAttributesAndMethods = getModifiedAttributesAndMethods(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
 
             leftModifiedAttributesAndMethods.retainAll(rightModifiedAttributesAndMethods) // Intersection.
 
@@ -43,25 +47,11 @@ class MutuallyModifiedMethodsCommitFilter implements CommitFilter {
         return false
     }
 
-    private Set<String> getModifiedAttributesAndMethods(Project project, String filePath, String childSHA, String ancestorSHA) {
-        Set<String> modifiedDeclarations = new HashSet<String>()
-
-        File childFile = FileManager.copyFile(project, filePath, childSHA) 
-        File ancestorFile = FileManager.copyFile(project, filePath, ancestorSHA)
-
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', '--brief', ancestorFile.getAbsolutePath(), childFile.getAbsolutePath())
-        diffJ.getInputStream().eachLine {
-            int inIndex = it.indexOf("in ")
-            if(inIndex != -1) {
-                String signature = it.substring(inIndex + 3)
-                modifiedDeclarations.add(signature)
-            }
-        }
-        
-        FileManager.delete(childFile)
-        FileManager.delete(ancestorFile)
-
-        return modifiedDeclarations
+    private Set<String> getModifiedAttributesAndMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
+        return modifiedMethodsHelper.getModifiedMethods(project, filePath, ancestorSHA, targetSHA)
+                .stream()
+                .map(method -> method.getSignature())
+                .collect(Collectors.toSet())
     }
 
 }

@@ -5,6 +5,7 @@ import interfaces.CommitFilter
 import interfaces.ProjectProcessor
 import interfaces.OutputProcessor
 import services.commitFilters.InCommitListAndHasMutuallyModifiedMethodsFilter
+import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
 import util.*
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
@@ -20,6 +21,7 @@ public class TestModule extends AbstractModule {
 
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class);
         dataCollectorBinder.addBinding().to(StatisticsCollector.class);
+        dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
         bind(CommitFilter.class).to(InCommitListAndHasMutuallyModifiedMethodsFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)

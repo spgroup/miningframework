@@ -14,7 +14,7 @@ import util.FileManager
 
 
 @RunWith(Suite.class)
-@SuiteClasses([SameLineTest.class, CommitFilterTest.class])
+@SuiteClasses([SameLineTest.class, MergeConflictCollectorTest.class, CommitFilterTest.class])
 public class TestSuite {
     public static Map<String, String> outputMethods;
     public static Map<String, String> outputCommits;
@@ -48,7 +48,6 @@ public class TestSuite {
             outputMethods.put(line[3], "${line[4]} ${line[5]} ${line[6]} ${line[7]}")
             outputCommits.put(line[1], line.toString())
         }
-
 
         this.outputMethods = outputMethods
         this.outputCommits = outputCommits

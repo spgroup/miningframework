@@ -1,3 +1,4 @@
 name,path,relative,
 sameline,./test_repositories/sameline
+mergeconflict,./test_repositories/mergeconflict
 commitfilter,./test_repositories/commitfilter

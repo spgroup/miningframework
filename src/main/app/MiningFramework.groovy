@@ -66,7 +66,7 @@ class MiningFramework {
     }
 
     Thread [] createAndStartMiningWorkers (BlockingQueue<Project> projectQueue) {
-        int numOfThreads = arguments.getNumOfThreads()
+        int numOfThreads = arguments.getNumOfThreads() > projectQueue.size() ? projectQueue.size() : arguments.getNumOfThreads()
         
         Thread [] workers = new Thread[numOfThreads]
         

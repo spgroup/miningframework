@@ -45,12 +45,16 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
                 List<String> results = [];
 
                 for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
-                    String algorithmResult = algorithm.run(scenario);
-
+                    String algorithmResult
+                    try {
+                        algorithmResult = algorithm.run(scenario);
+                    } catch (ClassNotFoundInJarException e) {
+                        println e.getMessage()
+                        algorithmResult = "error"
+                    }
                     results.add(algorithmResult)
                 }
                 sootResultsFile << "${scenario.toString()};${results.join(";")}\n"
-
             }
         }
     }

@@ -1,5 +1,7 @@
 package services.outputProcessors.soot
 
+import util.JarHelper
+
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
 class Scenario {
@@ -37,23 +39,25 @@ class Scenario {
     
     String getClassPath() {
         File file = new File("${this.scenarioDirectory}/build");
+        File[] buildJars = file.listFiles()
 
-        String separator = ":"
-        if (isWindows()) {
-            separator = ";"
+        String buildJarPath = getJarThatHasClass(buildJars)
+        if (buildJarPath == null) {
+            throw new ClassNotFoundInJarException(this.className)
         }
+        return buildJarPath
+    }
 
-        def buildJars = file.listFiles()
-        StringBuilder result = new StringBuilder()
-
-        for (int i = 0 ; i < buildJars.length ; i++) {
-            result.append(buildJars[i])
-            if (buildJars.length - 1 > i) {
-                result.append(separator)
+    private String getJarThatHasClass(File[] buildJars) {
+        File resultJar = null;
+        for (int i = 0 ; i < buildJars.length && resultJar == null; i++) {
+            boolean classIsInJar = JarHelper.classExistsInJarFile(buildJars[i], this.className)
+            if (classIsInJar) {
+                resultJar = buildJars[i]
             }
         }
 
-        return result.toString()
+        return resultJar != null ? resultJar.getAbsolutePath() : null
     }
 
     private boolean isWindows() {

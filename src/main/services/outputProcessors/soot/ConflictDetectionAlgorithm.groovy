@@ -51,6 +51,7 @@ class ConflictDetectionAlgorithm {
 
     private String runAndReportResult (String filePath, String classPath) {
         String result;
+        println "Using jar at " + classPath
 
         Process sootProcess = runProcess(filePath, classPath);
 

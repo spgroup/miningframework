@@ -24,6 +24,9 @@ class ModifiedMethodsHelper {
         List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
 
+        targetFile.delete()
+        ancestorFile.delete()
+
         Map<String, int[]> parsedDiffJResult = modifiedMethodsParser.parse(diffJOutput);
         List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
 

@@ -16,23 +16,27 @@ import util.FileManager
 
 
 @RunWith(Suite.class)
-@SuiteClasses([SameLineTest.class, MergeConflictFilterTest.class, OutputFileTest.class])
+@SuiteClasses([SameLineTest.class, MergeConflictCollectorTest.class, CommitFilterTest.class, OutputFileTest.class])
 public class TestSuite {
-    public static Map<String, String> modifiedLines;
+    public static Map<String, String> outputMethods;
+    public static Map<String, String> outputCommits;
 
     @BeforeClass
     static void setUp() {
 
         runFramework('src/test/integration/input.csv', 'src/test/integration/output', new TestModule())
-
-        Map<String, String> outputFiles = new HashMap<String, String>();
+        
+        Map<String, String> outputMethods = new HashMap<String, String>();
+        Map<String, String> outputCommits = new HashMap<String, String>();
         String output = new File('src/test/integration/output/data/results.csv').getText()
         def iterator = parseCsv(output, separator:';')
         for (line in iterator) {
-            outputFiles.put(line[3], "${line[4]} ${line[5]} ${line[6]} ${line[7]}")
+            outputMethods.put(line[3], "${line[4]} ${line[5]} ${line[6]} ${line[7]}")
+            outputCommits.put(line[1], line.toString())
         }
 
-        modifiedLines = outputFiles
+        this.outputMethods = outputMethods
+        this.outputCommits = outputCommits
 
         runFramework('src/test/integration/fileTest/projects.csv', 'src/test/integration/fileTest/output', new FileTestModule())
     }
@@ -60,11 +64,10 @@ public class TestSuite {
 
         framework.setProjectList(projectList)
         framework.start()
-
     }
 
     public static getModifiedLines(String method) {
-        this.modifiedLines.get(method)
+        this.outputMethods.get(method)
     }
 
 

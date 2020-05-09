@@ -16,7 +16,7 @@ import util.FileManager
 
 
 @RunWith(Suite.class)
-@SuiteClasses([SameLineTest.class, MergeConflictCollectorTest.class, CommitFilterTest.class, OutputFileTest.class])
+@SuiteClasses([SameLineTest.class, TextualConflictFilterTest.class, CommitFilterTest.class, OutputFileTest.class])
 public class TestSuite {
     public static Map<String, String> outputMethods;
     public static Map<String, String> outputCommits;

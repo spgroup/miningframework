@@ -1,14 +1,10 @@
 package integration
 
 import org.junit.Assert
+import org.junit.Ignore
 import org.junit.Test
 
 class CommitFilterTest {
-
-    @Test
-    public void withBothRevisionsChangingTheSameMethodBody() {
-        Assert.assertNotNull(TestSuite.outputCommits.get("9743e3eac3d3f53fd7b0793c1cbbeee34047bf79"))
-    }
 
     @Test
     public void withBothRevisionsChangingDifferentMethods() {

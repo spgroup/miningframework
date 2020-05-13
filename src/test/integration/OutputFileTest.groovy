@@ -1,9 +1,9 @@
 package unit
 
 import org.apache.commons.io.FileUtils
+import org.junit.Ignore
 import org.junit.Test
 import static util.Assert.assertEquals
-
 
 public class OutputFileTest {
 
@@ -18,14 +18,6 @@ public class OutputFileTest {
         assertEquals(FileUtils.readFileToString(new File('src/test/integration/fileTest/compare/data/soot-results.csv'), "utf-8"),
                 FileUtils.readFileToString(new File('src/test/integration/fileTest/output/data/soot-results.csv'), "utf-8"))
     }
-
-
-    @Test
-    public void compareMergeResults(){
-        assertEquals(FileUtils.readFileToString(new File('src/test/integration/fileTest/compare/mergeconflicts/result.csv'), "utf-8"),
-                FileUtils.readFileToString(new File('src/test/integration/fileTest/output/mergeconflicts/results.csv'), "utf-8"))
-    }
-
 
     @Test
     public void compareStatisticsResults(){

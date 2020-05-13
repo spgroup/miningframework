@@ -8,9 +8,8 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 
-import services.commitFilters.InCommitListAndHasMutuallyModifiedMethodsFilter
+import services.commitFilters.InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter
 import services.dataCollectors.BuildRequester
-import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
 import services.outputProcessors.FetchBuildsOutputProcessor
@@ -25,12 +24,11 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
-        dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)
         dataCollectorBinder.addBinding().to(StatisticsCollector.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)
 
-        bind(CommitFilter.class).to(InCommitListAndHasMutuallyModifiedMethodsFilter.class)
+        bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(FilterNonExistentProjectsProcessor.class)

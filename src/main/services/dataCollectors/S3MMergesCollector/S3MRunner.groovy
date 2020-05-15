@@ -9,7 +9,7 @@ import java.nio.file.StandardCopyOption
 
 class S3MRunner {
 
-    static final Path S3M_PATH = Paths.get("src/services/S3MHandlersAnalysis/s3m.jar")
+    static final Path S3M_PATH = Paths.get("dependencies/s3m.jar")
 
     /**
      * Runs S3M for each merge scenario and for each handler. Store the results at the same directory

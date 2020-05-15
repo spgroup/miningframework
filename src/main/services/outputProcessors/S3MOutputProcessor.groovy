@@ -1,13 +1,13 @@
 
 package services.outputProcessors
 
-
+import interfaces.OutputProcessor
 import services.util.Utils
 
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class S3MOutputProcessor implements S3MOutputProcessor {
+class S3MOutputProcessor implements OutputProcessor {
 
     private static final Path ANALYSIS_REPOSITORY_PATH = Paths.get('../merge-tools')
     static final String ANALYSIS_REMOTE_URL = "https://github.com/jvcoutinho/merge-tools/tree/master/s3m-handlers-analysis"

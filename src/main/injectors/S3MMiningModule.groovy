@@ -3,10 +3,11 @@ package injectors
 @Grab('com.google.inject:guice:4.2.2')
 import com.google.inject.AbstractModule
 import com.google.inject.multibindings.Multibinder
-import interfaces.DataCollector
+import interfaces.*
 import services.commitFilters.S3MCommitFilter
-
-import services.outputProcessors.FetchBuildsOutputProcessor
+import services.dataCollectors.S3MMergesCollector.MergesCollector
+import services.outputProcessors.S3MOutputProcessor
+import services.projectProcessors.ForkAndEnableTravisProcessor
 
 class S3MMiningModule extends AbstractModule {
 
@@ -16,9 +17,9 @@ class S3MMiningModule extends AbstractModule {
 
         dataCollectorBinder.addBinding().to(MergesCollector.class)
 
-        bind(main.interfaces.CommitFilter.class).to(S3MCommitFilter.class)
-        bind(main.interfaces.ProjectProcessor.class).to(S3MProjectProcessor.class)
-        bind(main.interfaces.OutputProcessor.class).to(FetchBuildsOutputProcessor.S3MOutputProcessor.class)
+        bind(CommitFilter.class).to(S3MCommitFilter.class)
+        bind(ProjectProcessor.class).to(ForkAndEnableTravisProcessor.class)
+        bind(OutputProcessor.class).to(S3MOutputProcessor.class)
     }
 
 }

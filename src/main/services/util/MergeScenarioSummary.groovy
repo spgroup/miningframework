@@ -2,8 +2,8 @@ package services.util
 
 import org.apache.commons.lang3.StringUtils
 
-
-import services.outputProcessors.FetchBuildsOutputProcessor
+import services.outputProcessors.S3MOutputProcessor
+import util.Handlers
 
 import java.nio.file.Path
 
@@ -72,7 +72,7 @@ class MergeScenarioSummary {
 
     @Override
     String toString() {
-        String mergeScenarioLink = Utils.getHyperLink(FetchBuildsOutputProcessor.S3MOutputProcessor.ANALYSIS_REMOTE_URL + '/' + mergeScenario.toString(), mergeScenario.getFileName().toString())
+        String mergeScenarioLink = Utils.getHyperLink(S3MOutputProcessor.ANALYSIS_REMOTE_URL + '/' + mergeScenario.toString(), mergeScenario.getFileName().toString())
 
         return "${mergeScenarioLink},${Utils.toStringList(numberOfConflicts, ',')},${Utils.toStringList(differenceBetweenMergeResults, ',')},${Utils.toStringList(differenceBetweenConflictSets, ',')}"
     }

@@ -2,11 +2,10 @@ package services.dataCollectors.S3MMergesCollector
 
 import project.MergeCommit
 import project.Project
-
+import services.outputProcessors.S3MOutputProcessor
 import services.util.MergeCommitSummary
 import services.util.MergeScenarioSummary
 import services.util.Utils
-import services.outputProcessors.FetchBuildsOutputProcessor
 
 import java.nio.file.Path
 
@@ -52,8 +51,8 @@ class SpreadsheetBuilder {
     }
 
     private static String appendAfterProjectAndMergeCommitLinks(Project project, MergeCommit mergeCommit, String string) {
-        String projectName = Utils.getHyperLink(FetchBuildsOutputProcessor.S3MOutputProcessor.ANALYSIS_REMOTE_URL + "/${project.getName()}", project.getName())
-        String commitSHA = Utils.getHyperLink(FetchBuildsOutputProcessor.S3MOutputProcessor.ANALYSIS_REMOTE_URL + "/${project.getName()}/${mergeCommit.getSHA()}", mergeCommit.getSHA())
+        String projectName = Utils.getHyperLink(S3MOutputProcessor.ANALYSIS_REMOTE_URL + "/${project.getName()}", project.getName())
+        String commitSHA = Utils.getHyperLink(S3MOutputProcessor.ANALYSIS_REMOTE_URL + "/${project.getName()}/${mergeCommit.getSHA()}", mergeCommit.getSHA())
         return "${projectName},${commitSHA},${string}"
     }
 

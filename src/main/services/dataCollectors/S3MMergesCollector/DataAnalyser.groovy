@@ -5,6 +5,7 @@ import project.Project
 import services.util.BuildRequester
 import services.util.MergeCommitSummary
 import services.util.MergeScenarioSummary
+import util.Handlers
 
 import java.nio.file.Path
 

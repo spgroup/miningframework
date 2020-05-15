@@ -4,6 +4,7 @@ import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
 import services.util.MergeCommitSummary
+import util.Handlers
 
 import java.nio.file.Path
 

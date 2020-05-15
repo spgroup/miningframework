@@ -1,21 +1,14 @@
-package main.app
+package app
 
 import java.text.SimpleDateFormat
-import java.io.File
 
-import main.interfaces.*
-import static main.app.MiningFramework.arguments
+import static app.MiningFramework.arguments
 import java.util.concurrent.BlockingQueue
 
-
-import main.arguments.*
-import main.project.*
-import main.interfaces.*
-import main.exception.InvalidArgsException
-import main.exception.UnstagedChangesException
-import main.exception.UnexpectedPostScriptException
-import main.exception.NoAccessKeyException
-import main.util.*
+import project.*
+import interfaces.*
+import exception.UnstagedChangesException
+import util.*
 
 class MiningWorker implements Runnable {
 
@@ -24,19 +17,19 @@ class MiningWorker implements Runnable {
     private BlockingQueue<Project> projectList
     private String baseDir
 
-    public MiningWorker(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
+    MiningWorker(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectList = projectList
         this.baseDir = baseDir
     }
 
-    void run () {
+    void run() {
         while (!projectList.isEmpty()) {
             try {
                 Project project = projectList.remove()
 
-                printProjectInformation (project)
+                println "STARTING PROJECT: ${project.getName()}"
 
                 if (project.isRemote()) {
                     cloneRepository(project, "${baseDir}/${project.getName()}")
@@ -44,28 +37,32 @@ class MiningWorker implements Runnable {
                     checkForUnstagedChanges(project);
                 }
 
-                // Since date and until date as arguments (dd/mm/yyyy).
-                List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate()) 
+                List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
                 for (mergeCommit in mergeCommits) {
-                    if (applyFilter(project, mergeCommit)) {
-                        printMergeCommitInformation(project, mergeCommit)
+                    try {
+                        if (commitFilter.applyFilter(project, mergeCommit)) {
+                            println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
-                        runDataCollectors(project, mergeCommit)
+                            runDataCollectors(project, mergeCommit)
+                        }
+                    } catch (Exception e) {
+                        println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
+                        e.printStackTrace();
                     }
                 }
 
-                if(arguments.isPushCommandActive()) // Will push.
+                if (arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
-                if (!arguments.getKeepProjects()) {
+                if (!arguments.getKeepProjects())
                     FileManager.delete(new File(project.getPath()))
-                }
+                    MergeHelper.returnToMaster(project)
 
-                endProjectAnalysis (project)
             } catch (NoSuchElementException e) {
+                println e.printStackTrace()
             }
         }
-    } 
+    }
 
     private void runDataCollectors(Project project, MergeCommit mergeCommit) {
         for (dataCollector in dataCollectors) {
@@ -81,15 +78,15 @@ class MiningWorker implements Runnable {
         }
     }
 
-    private void cloneRepository(Project project, String target) {        
+    private void cloneRepository(Project project, String target) {
         println "Cloning repository ${project.getName()} into ${target}"
 
         File projectDirectory = new File(target)
-        if(projectDirectory.exists()) {
+        if (projectDirectory.exists()) {
             FileManager.delete(projectDirectory)
         }
         projectDirectory.mkdirs()
-        
+
         String url = project.getPath()
 
         if (arguments.providedAccessKey()) {
@@ -100,44 +97,28 @@ class MiningWorker implements Runnable {
 
         ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-    
+
         Process process = ProcessRunner.startProcess(builder)
         process.waitFor()
-  
+
         project.setPath(target)
     }
 
-    private boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return commitFilter.applyFilter(project, mergeCommit)
-    }
-
-    private void printProjectInformation(Project project) {
-        println "STARTING PROJECT: ${project.getName()}"
-    }
-
-    private void printMergeCommitInformation(Project project, MergeCommit mergeCommit) {
-        println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
-    }
-
-    private void endProjectAnalysis(Project project) {
-        File projectDirectory = new File(project.getPath())
-    }
 
     private void pushResults(Project project, String remoteRepositoryURL) {
         Project resultsRepository = new Project('', remoteRepositoryURL)
-        printPushInformation(remoteRepositoryURL)
-        String targetPath = "${LOCAL_RESULTS_REPOSITORY_PATH}/resultsRepository"
+        String targetPath = "/resultsRepository"
         cloneRepository(resultsRepository, targetPath)
 
         // Copy output files, add, commit and then push.
-        FileManager.copyDirectory(getOutputPath(), "${targetPath}/output-${project.getName()}")
+        FileManager.copyDirectory(arguments.getOutputPath(), "${targetPath}/output-${project.getName()}")
         Process gitAdd = ProcessRunner.runProcess(targetPath, 'git', 'add', '.')
         gitAdd.waitFor()
 
         def nowDate = new Date()
         def sdf = new SimpleDateFormat("dd/MM/yyyy")
         Process gitCommit = ProcessRunner
-            .runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()} - ${sdf.format(nowDate)}")
+                .runProcess(targetPath, 'git', 'commit', '-m', "Analysed project ${project.getName()} - ${sdf.format(nowDate)}")
         gitCommit.waitFor()
         gitCommit.getInputStream().eachLine {
             println it

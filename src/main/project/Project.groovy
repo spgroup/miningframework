@@ -1,18 +1,37 @@
-package main.project
+package project
 
-import main.util.ProcessRunner
-import main.exception.UnexpectedOutputException
+import util.ProcessRunner
+import exception.UnexpectedOutputException
+
+import java.util.regex.Pattern
+import java.util.regex.Matcher
 
 class Project {
     
     private String name
     private String path
     private boolean remote
+    static private Pattern REMOTE_REPO_PATTERN = Pattern.compile("((http|https):\\/\\/)?.+.com\\/.+\\/.+")
 
     public Project(String name, String path) {
         this.name = name
         this.path = path
-        this.remote = path.startsWith('https://github.com/')
+        
+        this.remote = checkIfPathIsUrl(path)
+    }
+
+    public Project(String path) {
+        this.path = path
+
+        this.remote = checkIfPathIsUrl(path)   
+    
+        this.name = this.getOwnerAndName()[1] 
+    }
+
+    private checkIfPathIsUrl (String path) {
+        Matcher matcher = REMOTE_REPO_PATTERN.matcher(path)
+
+        return matcher.find()
     }
 
     public ArrayList<MergeCommit> getMergeCommits(String sinceDate, String untilDate) {
@@ -105,13 +124,15 @@ class Project {
     }
 
     public String[] getOwnerAndName() {
+        String[] splitedPath = this.path.split("/");
+        String projectName = splitedPath[splitedPath.length - 1]
+        
         if (remote) {
-            String[] splitedPath = this.path.split("/");
             String projectOwner = splitedPath[splitedPath.length - 2]
-            String projectName = splitedPath[splitedPath.length - 1]
             return [projectOwner, projectName]
+        } else {
+            return ["local", projectName]
         }
-        return []
     }
 
 }

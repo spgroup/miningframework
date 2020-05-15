@@ -1,0 +1,6 @@
+project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions
+jsoup;7ba0ee75547878ddccc5ab50777b67c712aa73e4;org.jsoup.helper.HttpConnection;data(String);[];[];[];[]
+jsoup;a8b6982de98ff76ef254031d7152fff57f6bf941;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);[584, 585, 586];[590];[544, 547];[]
+jsoup;3f7d2c71dbbbb289c684f339874eed8ac2747fa0;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);[456];[];[483, 484, 485];[]
+jsoup;821b021a1e5fc75719c71ae5ea84157d770c1a9d;org.jsoup.helper.DataUtil;getCharsetFromContentType(String);[181];[];[181];[]
+jsoup;a44e18aa3c1fcd25a68a5965f9490d8f7d026509;org.jsoup.nodes.TextNode;outerHtmlHead(StringBuilder, int, Document.OutputSettings);[94];[];[98];[]

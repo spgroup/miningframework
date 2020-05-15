@@ -1,10 +1,10 @@
-package main.arguments
+package arguments
 
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
-import static groovy.io.FileType.DIRECTORIES
+import exception.InvalidArgsException
+import project.Project
+
 import static com.xlson.groovycsv.CsvParser.parseCsv
-
-import main.project.*;
+import static groovy.io.FileType.DIRECTORIES
 
 class InputParser {
 
@@ -13,17 +13,25 @@ class InputParser {
 
         String projectsFile = new File(inputPath).getText()
         def iterator = parseCsv(projectsFile)
+
         for (line in iterator) {
-            String name = line[0]
-            String path = line[1]
+            Map lineMap = line.toMap()
 
-            Project project = new Project(name, path)
-            projectList.add(project)
+            String path = line["path"]
+
+            if (lineMap.containsKey("name")) {
+                String name = line["name"]
+
+                projectList.add(new Project(name, path))
+            } else {
+                projectList.add(new Project(path))
+            }
         }
-
+        if(projectList.size() == 0) throw new InvalidArgsException('The input file cannot be processed')
         return projectList
     }
 
+    @Deprecated
     private static ArrayList<Project> getProjects(String directoryName, String directoryPath) {
         ArrayList<Project> projectList = new ArrayList<Project>()
 

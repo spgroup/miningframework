@@ -1,6 +1,4 @@
-package main.interfaces
-
-import main.project.*
+package interfaces
 
 public interface OutputProcessor {
 

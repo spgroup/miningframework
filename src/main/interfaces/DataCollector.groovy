@@ -1,6 +1,6 @@
-package main.interfaces
+package interfaces
 
-import main.project.*
+import project.*
 
 public interface DataCollector {
 

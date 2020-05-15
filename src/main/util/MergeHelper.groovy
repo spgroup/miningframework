@@ -1,6 +1,6 @@
-package main.util
+package util
 
-import main.project.*
+import project.*
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -22,14 +22,14 @@ class MergeHelper {
         return result
     }
 
-    static private Process replayMergeScenario(Project project, MergeCommit mergeCommit) {
+    static public Process replayMergeScenario(Project project, MergeCommit mergeCommit) {
         Process checkoutLeft = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', mergeCommit.getLeftSHA())
         checkoutLeft.waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), 'git', 'merge', mergeCommit.getRightSHA())   
     }
 
-    static private Process returnToMaster(Project project) {
+    static public Process returnToMaster(Project project) {
         Process resetChanges = ProcessRunner.runProcess(project.getPath(), 'git', 'reset', '--hard')
         resetChanges.waitFor()
 

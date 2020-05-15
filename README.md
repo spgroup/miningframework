@@ -1,4 +1,7 @@
 # Mining Framework
+[![Build Status](https://travis-ci.org/rafaelmotaalves/miningframework.svg?branch=master)](https://travis-ci.org/rafaelmotaalves/miningframework)
+
+
 This is a framework for mining and analyzing git projects.
 
 We focus on analyzing merge commits, although this could be easily changed to analyze any kind of commit.
@@ -17,31 +20,38 @@ The examples illustrated above correspond to some of the implementations we prov
 * Fork and clone the project. If you want to run the project tests, you must clone the repository with the recursive option:
  ``` git clone --recursive https://github.com/spgroup/miningframework ```
 
-* This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 2.5.x or newer to use the framework and start mining projects.
+* This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 3.0.x or newer to use the framework and start mining projects.
 
 * For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Travis CI, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
 
 
 ## Instantiating or extending the framework
 
-You need to implement the following interfaces (see [interfaces/](https://github.com/spgroup/miningframework/tree/master/src/main/interfaces)) or choose their existing implementations (see [services/](https://github.com/spgroup/miningframework/tree/master/src/services/)):
-* ProjectProcessor 
+You need to implement the following interfaces (see [interfaces/](https://github.com/spgroup/miningframework/tree/master/src/main/interfaces)) or choose their existing implementations (see [services/](https://github.com/spgroup/miningframework/tree/master/src/main/services/)):
+
+* ProjectProcessor
 * CommitFilter
-* DataCollector 
+* DataCollector
 * OutputProcessor 
 
-They correspond to the four variability points described at the beginning of the page.
+They correspond to the four variability points described at the beginning of the page. The following Interfaces can have multiple implementations injected:
+
+* ProjectProcessor
+* DataCollector
+* OutputProcessor
+
+For those, the order which the they are injected will be followed by the framework, running the implementations in order
 
 The framework uses [Google Guice](https://github.com/google/guice) to implement dependency injection, and inject the interface implementations. 
-So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [MiningModule](https://github.com/spgroup/miningframework/blob/master/src/services/MiningModule.groovy), which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
+So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [StaticAnalysisConflictsDetectionModule](https://github.com/spgroup/miningframework/blob/master/src/main/injectors/StaticAnalysisConflictsDetectionModule.groovy) in the injectors package, which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
 
 
 ## Running a specific framework instantiation
 
-You can run the framework by including the [src](https://github.com/spgroup/miningframework/blob/master/src) directory in the classpath and executing `src/main/app/MiningFramework.groovy`.
+You can run the framework by including the [src](https://github.com/spgroup/miningframework/blob/master/src) directory in the classpath and executing `src/main/app/Main.groovy`. This project uses [Gradle](https://gradle.org/) as its build system, so we will be using Gradle tasks to execute all framework's operations.
 
 This can be done by configuring an IDE or executing the following command in a terminal:
-* Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy [options] [input] [output]`
+* Windows/Linux/Mac: `./gradlew run --args="[options] [input] [output]"`
 
 `[input]` is the path to a CSV file containing the list of projects to be analyzed (like [projects.csv](https://github.com/spgroup/miningframework/blob/master/projects.csv)), one project per line. The list can contain external projects to be downloaded by the framework (the path field should be an URL to a git project hosted in the cloud), or local projects (the path field should refer to a local directory).
 
@@ -54,7 +64,7 @@ This can be done by configuring an IDE or executing the following command in a t
 > If you intend to use the framework multithreading option, be aware of the need to synchronize the access to output files or state manipulated by the implementations of the framework variability points.
 
 > For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
-    * Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`
+    * Windows/Linux/Mac: `./gradlew run --args="--access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput"`
 
 > For the used variability point implementation, the provided GitHub [personal access token](https://github.com/settings/tokens) (opt for repo scope) should be associated with a GitHub account also registered in [Travis](https://travis-ci.org/). Forks will be created for each project, the builds will be generated via Travis, and deployed to the forks as GitHub releases.
 
@@ -70,8 +80,11 @@ the Mining Framework take an input csv file and a name for the output dir
  -h,--help                      Show help for executing commands
  -i,--injector <class>          Specify the class of the dependency
                                 injector (Must provide full name, default
-                                src.services.MiningModule)
- -k,--keep-projects             Keep projects in disk after analysis
+                                injectors.StaticAnalysisConflictsDetection
+                                Module)
+ -k,--keep-projects             Specify that cloned projects must be kept
+                                after the analysis (those are kept in
+                                clonedRepositories/ )
  -p,--push <link>               Specify a git repository to upload the
                                 output in the end of the analysis (format
                                 https://github.com/<owner>/<name>
@@ -85,9 +98,8 @@ the Mining Framework take an input csv file and a name for the output dir
 
 
 ## Testing
-One can run the framework tests by including `src` in the classpath and executing `src/test/TestSuite.groovy`
+One can run the framework tests by running the check task:
 
-For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
-* Windows/Linux/Mac: `groovy -cp src src/main/app/MiningFramework.groovy --access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput`
+`./gradlew check`
 
 * To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, add a corresponding entry to `src/test/input.csv`, and then create the Test class.

@@ -14,12 +14,15 @@ class S3MMiningModule extends AbstractModule {
     @Override
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
-
         dataCollectorBinder.addBinding().to(MergesCollector.class)
 
+        Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
+        projectProcessorBinder.addBinding().to(ForkAndEnableTravisProcessor.class)
+
+        Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
+        outputProcessorBinder.addBinding().to(S3MOutputProcessor.class)
+
         bind(CommitFilter.class).to(S3MCommitFilter.class)
-        bind(ProjectProcessor.class).to(ForkAndEnableTravisProcessor.class)
-        bind(OutputProcessor.class).to(S3MOutputProcessor.class)
     }
 
 }

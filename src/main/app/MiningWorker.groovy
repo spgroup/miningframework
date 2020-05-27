@@ -54,9 +54,11 @@ class MiningWorker implements Runnable {
                 if (arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
 
-                if (!arguments.getKeepProjects())
+                if (!arguments.getKeepProjects()) {
                     FileManager.delete(new File(project.getPath()))
+                } else {
                     MergeHelper.returnToMaster(project)
+                }
 
             } catch (NoSuchElementException e) {
                 println e.printStackTrace()

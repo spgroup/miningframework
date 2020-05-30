@@ -54,6 +54,11 @@ final class BuildRequester {
         return "https://travis-ci.com/${projectOwnerName}/${project.getName()}/builds/${buildID}"
     }
 
+    /**
+     * ATTENTION!!
+     * When executing this method (getBuildAttribute()) through "S3MMiningModule",
+     * the call always returns status 403 and the system is in an infinite loop until interrupted by a Stackoverflow.     *
+     **/
     static String getBuildAttribute(Project project, String attribute, String branchName) {
         String url = "https://api.travis-ci.com/repo/${projectOwnerName}%2F${project.getName()}/branch/${branchName}"
         HttpURLConnection connection = new URL(url).openConnection() as HttpURLConnection

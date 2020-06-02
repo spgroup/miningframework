@@ -10,7 +10,7 @@ class Scenario {
     private String className;
     private String methodSignature;
     private String commitSHA;
-    private String hasBuild;
+    private boolean hasBuild;
 
     private String scenarioDirectory;
 

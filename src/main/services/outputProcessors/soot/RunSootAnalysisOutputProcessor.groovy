@@ -40,6 +40,8 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             List<Scenario> sootScenarios = ScenarioReader.read(outputPath, RESULTS_FILE_PATH);
 
             for (scenario in sootScenarios) {
+                println(scenario.getHasBuild())
+                println(scenario.getCommitSHA())
                 if (scenario.getHasBuild()) {
                     println "Running soot scenario ${scenario.toString()}"
                     List<String> results = [];

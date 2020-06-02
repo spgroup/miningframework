@@ -44,7 +44,7 @@ def export_csv():
                     soot_reverse_writer.writerows(result_reverse)
 
 def read_output(output_path):
-    with open(output_path + "/data/results-with-builds.csv", "r") as output_file:
+    with open(output_path + "/data/results-with-build-information.csv", "r") as output_file:
         return list(DictReader(output_file, delimiter=";"))
 
 def parse_modifications(modifications):

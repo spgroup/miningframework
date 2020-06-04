@@ -18,6 +18,7 @@ import main.util.FileTransformations
 class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
 
     static protected final MAVEN_BUILD_WITH_ALL_DEPENDENCIES = 'mvn clean compile assembly:single'
+    static protected final GRADLE_BUILD_WITH_ALL_DEPENDENCIES = './gradlew fatJar'
 
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
@@ -31,20 +32,23 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
     private void setupEnvironment(Project project, MergeCommit mergeCommit, String commit, ArrayList<String> codeTransformationInfo, String branch, String parameters) {
         String branchName = commit.take(5) + branch
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
-        
+        FileTransformations transformations = new FileTransformations()
+
         File travisFile = new File("${project.getPath()}/.travis.yml")
         String[] ownerAndName = getRemoteProjectOwnerAndName(project)
         travisFile.delete()
         BuildSystem buildSystem = getBuildSystem(project)
         for (code in codeTransformationInfo){
             for (file in FileManager.findLocalFileOfChangedClass(code[6], code[4], mergeCommit.getSHA())){
-                FileTransformations.executeCodeTransformations(file.toString().replace("[","").replace("]",""))
-                parameters += ", \"${file}\""
+                transformations.executeCodeTransformations(file.toString().replace("[","").replace("]","")).waitFor()
+                parameters += ", \"${file.toString().split(project.getPath()+"/")[1]}\""
             }
         }
                         
         if (buildSystem == BuildSystem.Maven) {
             sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, MAVEN_BUILD_WITH_ALL_DEPENDENCIES, parameters)
+        }else if (buildSystem == BuildSystem.Gradle) {
+        	sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, GRADLE_BUILD_WITH_ALL_DEPENDENCIES, parameters)
         }
     }
 
@@ -72,7 +76,19 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
                 finalString = concatenateNewMavenFileContents(first_pom_content_part, pluginAllDependenciesWithoutBuildSection, second_pom_content_part)
             }
 
-            writeNewMavenFile(mavenFile, finalString)
+            writeNewBuildManagerFile(mavenFile, finalString)
+        }
+    }
+
+    private addPluginOnGradleFile(Project project) {
+        File gradleFile = new File("${project.getPath()}/build.gradle")
+        String pluginAllDependenciesWithoutBuildSection = "apply plugin: \'java\'\ntask fatJar(type: Jar) {\n\tmanifest {\n        attributes \'Implementation-Title\': \'Gradle Jar File Example\',  \n        \t\'Implementation-Version\': version,\n        \t\'Main-Class\': \'com.mkyong.DateUtils\'\n    }\n    baseName = project.name + \'-all\'\n    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }\n    with jar\n}"
+        
+        if(gradleFile.exists()){
+            String finalString = new File("${project.getPath()}/build.gradle").text
+            finalString += pluginAllDependenciesWithoutBuildSection
+            
+            writeNewBuildManagerFile(gradleFile, finalString)
         }
     }
 
@@ -80,10 +96,10 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
         return first_part + second_part + third_part
     }
 
-    private writeNewMavenFile(File mavenFile, String newMavenFileContent) {
-        PrintWriter writer = new PrintWriter(mavenFile);
+    private writeNewBuildManagerFile(File buildManagerFile, String newBuildManagerContent) {
+        PrintWriter writer = new PrintWriter(buildManagerFile);
         writer.print("");
-        writer.print(newMavenFileContent)
+        writer.print(newBuildManagerContent)
         writer.close();
     }
 
@@ -95,6 +111,7 @@ class BuildRequesterSemanticConflictDynamicImpl extends BuildRequester {
             addPluginOnPomFile(project)
             return BuildSystem.Maven
         } else if (gradleFile.exists()) {
+        	addPluginOnGradleFile(project)
             return BuildSystem.Gradle
         } else {
             return BuildSystem.None

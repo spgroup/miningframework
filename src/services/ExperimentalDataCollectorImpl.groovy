@@ -81,16 +81,21 @@ class ExperimentalDataCollectorImpl implements DataCollector {
 
     private void saveMergeScenarioFiles(Project project, MergeCommit mergeCommit, String classFilePath, String filePath) {
         String outputPath = arguments.getOutputPath()
-        
-        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/${classFilePath}/"
+        String fileName = classFilePath.substring(classFilePath.lastIndexOf('/') + 1)
+        String path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/transformed/"
         File results = new File(path)
         if(!results.exists())
             results.mkdirs()
 
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getLeftSHA(), "${path}/left.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${path}/right.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${path}/base.java")
-        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${path}/merge.java")
+        path = "${outputPath}/files/${project.getName()}/${mergeCommit.getSHA()}/source/"
+        File source = new File(path)
+        if(!source.exists())
+            source.mkdirs()
+
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getLeftSHA(), "${path}/${fileName}_left.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${path}/${fileName}_right.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${path}/${fileName}_base.java")
+        FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${path}/${fileName}_merge.java")
     }
 
     private void storeModifiedAttributesAndMethods(Project project, MergeCommit mergeCommit, String className,

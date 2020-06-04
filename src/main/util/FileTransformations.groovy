@@ -2,10 +2,10 @@ package main.util
 
 import main.util.ProcessRunner
 
-public final class FileTransformations {
+public class FileTransformations {
 
-    public static void executeCodeTransformations(String fileName) throws IOException {
-        Process codeTransformations = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'code-transformations.jar', fileName)
+    static public Process executeCodeTransformations(String fileName) throws IOException {
+        return ProcessRunner.runProcess('dependencies', 'java', '-jar', 'code-transformations.jar', fileName)
     }
 
 }

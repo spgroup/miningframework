@@ -33,6 +33,7 @@ def fetchJars(inputPath, outputPath, token):
     tokenUser = get_github_user(token)[LOGIN]
     parsedInput = read_input(inputPath)
     parsedOutput = read_output(outputPath)
+    resultsForMerge = organize_merge_and_commits(outputPath)
     newResultsFile = []
 
     for project in parsedInput:
@@ -52,22 +53,23 @@ def fetchJars(inputPath, outputPath, token):
             try:
                 if (release[NAME].startswith(RELEASE_PREFIX)):
                     commitSHA = release[NAME].replace(RELEASE_PREFIX, '')
-                    print ("Downloading " + commitSHA )
-                    try:
-                        downloadPath = mount_download_path(outputPath, projectName, commitSHA)
-                        print("Download Path - " + downloadPath + " \n")
-                        downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
-                        download_file(downloadUrl, downloadPath, commitSHA)
-                        jars_build_commits[commitSHA] = downloadPath
-                        if (commitSHA in parsedOutput):
-                            newResultsFile.append(parsedOutput[commitSHA])
-                            untar_and_remove_file(downloadPath)
-                        print (downloadPath + ' is ready')
-                    except Exception as e: 
-                        print(e)
+                    related_merge = check_for_commit_jar_download(resultsForMerge, commitSHA)
+                    if (related_merge != ""):
+                        print ("Downloading " + commitSHA )
+                        try:
+                            downloadPath = mount_download_path(outputPath, projectName, related_merge   )
+                            print("Download Path - " + downloadPath + " \n")
+                            downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
+                            download_file(downloadUrl, downloadPath, commitSHA)
+                            jars_build_commits[commitSHA] = downloadPath
+                            if (commitSHA in parsedOutput):
+                                newResultsFile.append(parsedOutput[commitSHA])
+                                untar_and_remove_file(downloadPath)
+                            print (downloadPath + ' is ready')
+                        except Exception as e: 
+                            print(e)
             except Exception as e: 
                 print(e)
-        remove_commit_files_without_builds (outputPath, projectName)
 
     try:
         with open(outputPath + "/data/results-with-builds.csv", 'w') as outputFile:
@@ -114,7 +116,7 @@ def find_project_jar_for_SHA(jars_build_commits, values, point):
         general_path = jars_build_commits[values[point]]
         for root, dirs, files in os.walk(general_path[:-13]):
             for file in files:
-                if file.endswith("jar-with-dependencies.jar"):
+                if file.endswith(".jar"):
                     path_jar += local_path + os.path.join(root, file).replace("\n","")+":"
     except Exception as e:
         print(e)    
@@ -131,6 +133,17 @@ def read_output(outputPath):
     except Exception as e:
         print(e)
 
+def organize_merge_and_commits(outputPath):
+    try:
+        fo = open(outputPath + "/data/results.csv")
+        file = fo.read()
+        fo.close()
+
+        fileOutLines = file.split("\n")
+        return parse_output_merge_and_commits(fileOutLines)
+    except Exception as e:
+        print(e)
+
 def parse_output(lines):
     result = {}
     for line in lines[1:]:
@@ -138,6 +151,26 @@ def parse_output(lines):
         if (len (cells) > 1):
             result[cells[1]] = line
     return result
+
+def parse_output_merge_and_commits(lines):
+    result = {}
+    for line in lines[1:]:
+        cells = line.split(";")
+        if (len (cells) > 1):
+            result[cells[1]] = [cells[2], cells[3], cells[4]]
+    return result
+
+def check_for_commit_jar_download(listMerges, commit):
+    for oneMergeKey in listMerges:
+        if (commit[:7] == oneMergeKey[:7]):
+            return oneMergeKey+"/transformed/merge"
+        elif (commit[:7] == listMerges[oneMergeKey][0][:7]):
+            return oneMergeKey+"/transformed/left"
+        elif (commit[:7] == listMerges[oneMergeKey][1][:7]):
+            return oneMergeKey+"/transformed/right"
+        elif(commit[:7] == listMerges[oneMergeKey][2][:7]):
+            return oneMergeKey+"/transformed/base"
+    return ""
 
 def read_input(inputPath):
     f = open(inputPath, "r")
@@ -200,7 +233,7 @@ def mount_download_path(outputPath, project_name, commitSHA):
 def untar_and_remove_file(downloadPath): 
     downloadDir = downloadPath.replace('result.tar.gz', '')
     subprocess.call(['mkdir', downloadDir + 'build'])
-    subprocess.call(['tar', '-xf', downloadPath, '-C', downloadDir + '/build', ])
+    subprocess.call(['tar', '-xf', downloadPath, '-C', downloadDir])
     subprocess.call(['rm', downloadPath])
     
 def get_builds_and_wait(project):
@@ -226,7 +259,7 @@ def get_builds_and_wait(project):
 
 
 def get_travis_project_builds(project):
-    return requests.get(TRAVIS_API + '/repos/' + project + '/builds').json()
+    return requests.get(TRAVIS_API + '/repos/' + project).json()
 
 def get_github_user(token):
     return requests.get(GITHUB_API + '/user', headers=get_headers(token)).json()
@@ -248,7 +281,7 @@ def remove_commit_files_without_builds (outputPath, projectName):
 
         for directory in commit_dirs:
             commit_dir = files_path + directory
-            build_dir = commit_dir + "/build"
+            build_dir = commit_dir
 
             if (not os.path.exists(build_dir)):
                 shutil.rmtree(commit_dir)

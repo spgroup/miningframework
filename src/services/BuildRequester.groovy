@@ -22,8 +22,7 @@ abstract class BuildRequester implements DataCollector {
     abstract protected BuildSystem getBuildSystem (Project project);
 
     protected Process commitChanges(Project project, String message, String parameters) {
-        ProcessRunner.runProcess(project.getPath(), "git", "add", ".").waitFor()
-
+    	ProcessRunner.runProcess(project.getPath(), "git", "add", ".").waitFor()
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
@@ -60,12 +59,12 @@ abstract class BuildRequester implements DataCollector {
         println "${project.getName()} - Build requesting finished!"
     }
 
-    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem, String mavenBuildCommand) {
+    static protected getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem, String buildManagerCommand) {
         String buildCommand = "";
         if (buildSystem == BuildSystem.Maven) {
-            buildCommand = mavenBuildCommand
+            buildCommand = buildManagerCommand
         } else if (buildSystem == BuildSystem.Gradle) {
-            buildCommand = GRADLE_BUILD
+            buildCommand = buildManagerCommand
         }
     
         String trimmedProjectName = projectName.replace('\n', '')
@@ -86,8 +85,7 @@ before_deploy:
     - tar -zcvf result.tar.gz *
 deploy:
   provider: releases
-  api_key:
-    secure: \$GITHUB_TOKEN
+  api_key: \$GITHUB_TOKEN
   file: result.tar.gz
   name: fetchjar-${commitSha}
   file_glob: true

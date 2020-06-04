@@ -82,7 +82,6 @@ def fetch_jars(input_path, output_path, token):
                     scenario.update({ "has_build": "true" if has_build else "false" })
                     new_results_file.append(scenario)
 
-                remove_commit_files_without_builds (output_path, project_name)
             except Exception as e:
                 print ("Error fetching builds for project " + project_name + ": " + str(e))
         

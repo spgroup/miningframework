@@ -22,6 +22,7 @@ class InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter implements 
         filteredScenarios = new File(arguments.getOutputPath() + "/data/filtered_scenarios.csv");
 
         if (!filteredScenarios.exists()) {
+            filteredScenarios.mkdirs()
             filteredScenarios << "project,merge commit,filter reason\n"
         }
     }

@@ -1,11 +1,10 @@
-package main.arguments
+package arguments
 
-import services.MiningModule
+import injectors.StaticAnalysisConflictsDetectionModule
 
 class Arguments {
     
     private String inputPath
-    private String inputCommitPairs
     private String outputPath
     private String sinceDate
     private String untilDate
@@ -16,12 +15,12 @@ class Arguments {
     private int numOfThreads
     private boolean keepProjects
 
-    Arguments() {
+    Arguments() { // set the default values for all parameters
         isHelp = false
         sinceDate = ''
         untilDate = ''
         outputPath = 'output'
-        injector = MiningModule
+        injector = StaticAnalysisConflictsDetectionModule
         resultsRemoteRepositoryURL = ''
         accessKey = ''
         numOfThreads = 1
@@ -34,10 +33,6 @@ class Arguments {
 
     void setInputPath(String inputPath) {
         this.inputPath = inputPath
-    }
-
-    void setInputCommitPairs(String inputCommitPairs) {
-        this.inputCommitPairs = inputCommitPairs
     }
 
     void setOutputPath(String outputPath) {
@@ -78,10 +73,6 @@ class Arguments {
     
     String getInputPath() {
         return inputPath
-    }
-
-    String getInputCommitPairs() {
-        return inputCommitPairs
     }
 
     String getOutputPath() {

@@ -1,8 +1,6 @@
-package main.util
+package util
 
-import main.project.*
-import java.net.HttpURLConnection
-import main.exception.TravisHelperException
+import exception.TravisHelperException
 
 class TravisHelper {
 
@@ -11,57 +9,30 @@ class TravisHelper {
     
     TravisHelper(String accessKey) {
         String url = "${API_URL}/auth/github"
-        HttpURLConnection request = HttpHelper.requestToApi(url, "POST")
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_POST)
         def body = [github_token: accessKey]
-        
-        HttpHelper.sendJsonBody(request, body)
+        HttpHelper.sendJsonBody(connection, body)
 
-        String responseMessage = request.getResponseMessage()
-
-        if (responseMessage != 'OK') {
-            throw new TravisHelperException('An error ocurred getting travis token')
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new TravisHelperException('An error occurred getting travis token')
         }
-        def result = HttpHelper.responseToJSON(request.getInputStream())
+        def result = HttpHelper.responseToJSON(connection.getInputStream())
 
         this.token = result.access_token
     }
 
-    public Map getProject(String owner, String projectName) {
+    Object getProject(String owner, String projectName) {
         String url = "${API_URL}/repos/${owner}/${projectName}"
-        HttpURLConnection request = HttpHelper.requestToApi(url, "GET", this.token)
-        String responseMessage = request.getResponseMessage()
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_GET, this.token)
 
-        if (responseMessage != 'OK') {
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new TravisHelperException("An error ocurred trying to get ${projectName} project in travis")
         }
 
-        return HttpHelper.responseToJSON(request.getInputStream())
+        return HttpHelper.responseToJSON(connection.getInputStream())
     }
 
-    private Map getUser() {
-        String url = "${API_URL}/users"
-        HttpURLConnection request = HttpHelper.requestToApi(url, "GET", this.token)
-        String responseMessage = request.getResponseMessage()
-
-        if (responseMessage != 'OK') {
-            throw new TravisHelperException("An error ocurred trying to get ${projectName} project in travis")
-        }
-
-        return HttpHelper.responseToJSON(request.getInputStream())
-    }
-
-    public void sync() {
-        println "Trying to sync travis account..."
-        String url = "${API_URL}/users/sync"
-        HttpURLConnection request = HttpHelper.requestToApi(url, "POST", this.token)
-        String responseMessage = request.getResponseMessage()
-
-        if (responseMessage != 'OK' && responseMessage != "Conflict") {
-            throw new TravisHelperException("An error ocurred trying to sync: ${responseMessage}")
-        }
-    }
-
-    public void syncAndWait() {
+    void syncAndWait() {
         sync()
         waitSync()
     }
@@ -75,29 +46,48 @@ class TravisHelper {
         }
     }
 
-    public void enableTravis(Integer travisRepoId)  {
-        String url = "${API_URL}/hooks"
-        HttpURLConnection request = HttpHelper.requestToApi(url, "PUT", this.token)
-        def body = [hook: [ id: travisRepoId, active: true ]]
+    void sync() {
+        println "Trying to sync travis account..."
+        String url = "${API_URL}/users/sync"
+        HttpURLConnection request = HttpHelper.requestToApi(url, HttpHelper.METHOD_POST, this.token)
+        String responseMessage = request.getResponseMessage()
 
-        HttpHelper.sendJsonBody(request, body)
-
-        String requestMessage = request.getResponseMessage()
-        if (requestMessage != 'OK') {
-            throw new TravisHelperException("An error ocurred trying to enable travis a project")
+        if (responseMessage != HttpURLConnection.HTTP_OK && responseMessage != HttpURLConnection.HTTP_CONFLICT) {
+            throw new TravisHelperException("An error ocurred trying to sync: ${responseMessage}")
         }
     }
 
-    public void addEnvironmentVariable(Integer travisRepoId, String key, String value) {
+    private Object getUser() {
+        String url = "${API_URL}/users"
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_GET, this.token)
+
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new TravisHelperException("An error occurred trying to get user in travis")
+        }
+
+        return HttpHelper.responseToJSON(connection.getInputStream())
+    }
+
+    void enableTravis(Integer travisRepoId)  {
+        String url = "${API_URL}/hooks"
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_PUT, this.token)
+        def body = [hook: [ id: travisRepoId, active: true ]]
+
+        HttpHelper.sendJsonBody(connection, body)
+
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new TravisHelperException("An error occurred trying to enable travis a project")
+        }
+    }
+
+    void addEnvironmentVariable(Integer travisRepoId, String key, String value) {
         String url = "${API_URL}/settings/env_vars?repository_id=${travisRepoId}"
-        HttpURLConnection request = HttpHelper.requestToApi(url, "POST", this.token)
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_POST, this.token)
         def body = [env_var: [ name: key, value: value, public: false ]]
 
-        HttpHelper.sendJsonBody(request, body)
-
-        String requestMessage = request.getResponseMessage()
-        if (requestMessage != 'OK') {
-            throw new TravisHelperException("An error ocurred trying to enable travis a project")
+        HttpHelper.sendJsonBody(connection, body)
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new TravisHelperException("An error occurred trying to add env var to travis project")
         }
     }
 

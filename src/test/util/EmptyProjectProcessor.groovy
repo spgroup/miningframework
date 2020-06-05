@@ -1,8 +1,8 @@
-package test.util
+package util
 
-import main.interfaces.ProjectProcessor
+import interfaces.ProjectProcessor
 
-import main.project.*
+import project.*
 
 class EmptyProjectProcessor implements ProjectProcessor {
 

@@ -1,32 +1,25 @@
-package main.util
+package util
 
-import java.net.URL
-import java.net.UnknownHostException
-import java.net.HttpURLConnection
-import groovy.json.*
-import java.util.Base64
-import main.exception.HttpException
+import exception.HttpException
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 
 class HttpHelper {
 
-    public static responseToJSON(InputStream resInputStream) {
-        def br = new BufferedReader(new InputStreamReader(resInputStream));
-        return (new JsonSlurper()).parseText(br.getText())
-    }
-    
-    public static String convertToUTF8(String string) {
-        return new String(Base64.getMimeDecoder().decode(string))
+    public final static String METHOD_GET = "GET"
+    public final static String METHOD_POST = "POST"
+    public final static String METHOD_PUT = "PUT"
+
+    static Object responseToJSON(InputStream resInputStream) {
+        def bufferedReader = new BufferedReader(new InputStreamReader(resInputStream))
+        return (new JsonSlurper()).parseText(bufferedReader.getText())
     }
 
-    public static String convertToBase64(String string) {
-        return new String(Base64.getMimeEncoder().encode(string.getBytes("UTF-8")))
-    }
-
-    public static jsonToString(Map json) {
+    static jsonToString(Map json) {
         return JsonOutput.toJson(json)
     }
 
-    public static void sendJsonBody(HttpURLConnection request, Map body) {
+    static void sendJsonBody(HttpURLConnection request, Map body) {
         request.setRequestProperty("Content-type", "application/json")
         request.setDoOutput(true)
 
@@ -34,34 +27,26 @@ class HttpHelper {
         printStream.println(jsonToString(body))
     }
 
-    public static HttpURLConnection requestToApi(String url, String method, String token) {
+    static HttpURLConnection requestToApi(String url, String method, String token) {
         try {
-            def request = new URL(url).openConnection();
-            if (token.length() > 0) {
+            def request = new URL(url).openConnection()
+            if (token != null && token.length() > 0) {
                 request.setRequestProperty("Authorization", getAuthorizationHeader(token))
             }
             request.setRequestMethod(method)
             return request
         } catch (IOException e) {
-            throw new HttpException("Error sending the HTTP request")
+            throw new HttpException("Error sending the HTTP request: " + e.message)
         } catch (UnknownHostException e) {
             throw new HttpException("Unable to find request Host")
         }
     }
 
-    public static HttpURLConnection requestToApi(String url, String method) {
-        try {
-            def request = new URL(url).openConnection();
-            request.setRequestMethod(method)
-            return request
-        } catch (IOException e) {
-            throw new HttpException("Error sending the HTTP request")
-        } catch (UnknownHostException e) {
-            throw new HttpException("Unable to find request Host")
-        }
+    static HttpURLConnection requestToApi(String url, String method) {
+        return HttpHelper.requestToApi(url, method, null);
     }
-    
-    public static String getAuthorizationHeader(String token) {
+
+    static String getAuthorizationHeader(String token) {
         return "token ${token}"
     }
 

@@ -1,7 +1,7 @@
-package main.project
+package project
 
-import main.util.ProcessRunner
-import main.exception.UnexpectedOutputException
+import util.ProcessRunner
+import exception.UnexpectedOutputException
 
 import java.util.regex.Pattern
 import java.util.regex.Matcher
@@ -63,10 +63,6 @@ class Project {
         if(mergeCommits.isEmpty())
             println "No merge commits."
         return mergeCommits
-    }
-
-    public ArrayList<CommitPair> getCommitPairs(String pathCommitPairs, String projectName){
-        return InputParser.getCommitPairsByProject(pathCommitPairs, projectName)
     }
 
     private String getSHA(String[] informations) {

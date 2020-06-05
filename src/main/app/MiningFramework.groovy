@@ -1,20 +1,14 @@
-package main.app
+package app
 
-@Grab('com.google.inject:guice:4.2.2')
-import com.google.inject.*
-import java.io.File
-import java.util.ArrayList
+import com.google.inject.Inject
+
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 
-import main.arguments.*
-import main.project.*
-import main.interfaces.*
-import main.util.*
-import main.exception.InvalidArgsException
-import main.exception.UnstagedChangesException
-import main.exception.UnexpectedPostScriptException
-import main.exception.NoAccessKeyException
+import arguments.*
+import project.*
+import interfaces.*
+import exception.UnstagedChangesException
 
 class MiningFramework {
 
@@ -22,68 +16,43 @@ class MiningFramework {
    
     private Set<DataCollector> dataCollectors
     private CommitFilter commitFilter
-    private ProjectProcessor projectProcessor
-    private OutputProcessor outputProcessor
+    private Set<ProjectProcessor> projectProcessors
+    private Set<OutputProcessor> outputProcessors
 
     static public Arguments arguments
     private final String LOCAL_PROJECT_PATH = 'clonedRepositories'
-    private final String LOCAL_RESULTS_REPOSITORY_PATH = System.getProperty('user.home')
-    
+
     @Inject
-    public MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter, ProjectProcessor projectProcessor, OutputProcessor outputProcessor) {
+    MiningFramework(Set<DataCollector> dataCollectors, CommitFilter commitFilter,
+                    Set<ProjectProcessor> projectProcessors, Set<OutputProcessor> outputProcessor) {
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
-        this.projectProcessor = projectProcessor
-        this.outputProcessor = outputProcessor
+        this.projectProcessors = projectProcessors
+        this.outputProcessors = outputProcessor
     }
 
-    static main(args) {
-        ArgsParser argsParser = new ArgsParser()
+    void start() {
         try {
-            Arguments appArguments = argsParser.parse(args)
-            
-            if (appArguments.isHelp()) {
-                argsParser.printHelp()
-            } else {
-                Class injectorClass = appArguments.getInjector()
-                Injector injector = Guice.createInjector(injectorClass.newInstance())
-                MiningFramework framework = injector.getInstance(MiningFramework.class)
+            println "#### MINING STARTED ####"
 
-                framework.setArguments(appArguments)
-
-                FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
-            
-                printStartAnalysis()                
-
-                String inputPath = arguments.getInputPath()
-                
-                ArrayList<Project> projectList = InputParser.getProjectList(inputPath)
-
-                framework.setProjectList(projectList)
-                framework.start()
-
-                printFinishAnalysis()
-
+            for (ProjectProcessor projectProcessor : projectProcessors) {
+                projectList = projectProcessor.processProjects(projectList)
             }
-    
-        } catch (InvalidArgsException e) {
-            println e.message
-            println 'Run the miningframework with --help to see the possible arguments'
-        } catch (UnstagedChangesException | UnexpectedPostScriptException | NoAccessKeyException e) {
-            println e.message
+
+            BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
+            
+            Thread [] workers = createAndStartMiningWorkers (projectQueue)
+
+            waitForMiningWorkers(workers)
+
+            for (OutputProcessor outputProcessor : outputProcessors) {
+                outputProcessor.processOutput()
+            }
+
+            println "#### MINING FINISHED ####"
+        } catch (UnstagedChangesException e) { // framework defined errors
+            println e.message;
         }
-    }
-
-    public void start() {
-        projectList = processProjects(projectList)
-
-        BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)
-        
-        Thread [] workers = createAndStartMiningWorkers (projectQueue)
-
-        waitForMiningWorkers(workers)
-
-        processOutput()
     }
 
     BlockingQueue<Project> populateProjectsQueue(List<Project> projectList) {
@@ -97,7 +66,7 @@ class MiningFramework {
     }
 
     Thread [] createAndStartMiningWorkers (BlockingQueue<Project> projectQueue) {
-        int numOfThreads = arguments.getNumOfThreads()
+        int numOfThreads = arguments.getNumOfThreads() > projectQueue.size() ? projectQueue.size() : arguments.getNumOfThreads()
         
         Thread [] workers = new Thread[numOfThreads]
         
@@ -116,29 +85,12 @@ class MiningFramework {
         }
     }
 
-    private ArrayList<Project> processProjects(ArrayList<Project> projects) {
-        return projectProcessor.processProjects(projects)
-    }
-
-    private void processOutput() {
-        outputProcessor.processOutput()
-    }
-
-    public void setProjectList(ArrayList<Project> projectList) {
+    void setProjectList(ArrayList<Project> projectList) {
         this.projectList = projectList
     }
 
     void setArguments(Arguments arguments) {
         this.arguments = arguments
-    }
-
-
-    static void printStartAnalysis() {
-        println "#### MINING STARTED ####\n"
-    }
-
-    static void printFinishAnalysis() {
-        println "#### MINING FINISHED ####"
     }
 
 }

@@ -1,6 +1,6 @@
 package main.util
 
-import main.util.ProcessRunner
+import util.ProcessRunner
 
 public class FileTransformations {
 

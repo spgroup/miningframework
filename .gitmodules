@@ -1,9 +1,9 @@
-[submodule "test_repositories/deletions"]
-	path = test_repositories/deletions
-	url = https://github.com/rafaelmotaalves/deletions
 [submodule "test_repositories/sameline"]
 	path = test_repositories/sameline
 	url = https://github.com/rafaelmotaalves/sameline
 [submodule "test_repositories/mergeconflict"]
 	path = test_repositories/mergeconflict
 	url = https://github.com/rafaelmotaalves/mergeconflict
+[submodule "test_repositories/commitfilter"]
+	path = test_repositories/commitfilter
+	url = https://github.com/rafaelmotaalves/commitfilter

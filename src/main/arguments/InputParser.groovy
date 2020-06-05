@@ -1,10 +1,10 @@
-package main.arguments
+package arguments
 
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
-import static groovy.io.FileType.DIRECTORIES
+import exception.InvalidArgsException
+import project.*
+
 import static com.xlson.groovycsv.CsvParser.parseCsv
-
-import main.project.*;
+import static groovy.io.FileType.DIRECTORIES
 
 class InputParser {
 
@@ -21,16 +21,17 @@ class InputParser {
 
             if (lineMap.containsKey("name")) {
                 String name = line["name"]
-                
+
                 projectList.add(new Project(name, path))
             } else {
                 projectList.add(new Project(path))
             }
         }
-
+        if(projectList.size() == 0) throw new InvalidArgsException('The input file cannot be processed')
         return projectList
     }
 
+    @Deprecated
     private static ArrayList<Project> getProjects(String directoryName, String directoryPath) {
         ArrayList<Project> projectList = new ArrayList<Project>()
 
@@ -48,23 +49,4 @@ class InputParser {
         return projectList
     }
 
-    private static ArrayList<CommitPair> getCommitPairsByProject(String commitPairFilePath, String projectName) {
-        ArrayList<CommitPair> commitPairs = new ArrayList<CommitPair>()
-
-        String commitPairFile = new File(commitPairFilePath).getText()
-        def iterator = parseCsv(commitPairFile)
-        
-        for (line in iterator) {
-            if (line[0] == projectName) {
-                if (line[4] != "" && line[5] != ""){
-                    CommitPair commitPair = new CommitPair(line[2], line[3], line[4], line[5])
-                    commitPairs.add(commitPair)
-                }else{
-                    CommitPair commitPair = new CommitPair(line[2], line[3])
-                    commitPairs.add(commitPair)
-                }
-            }
-        }
-        return commitPairs
-    }
 } 

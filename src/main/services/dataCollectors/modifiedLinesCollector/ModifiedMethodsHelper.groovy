@@ -19,6 +19,22 @@ class ModifiedMethodsHelper {
     private DiffJParser modifiedMethodsParser = new DiffJParser();
     private MethodModifiedLinesMatcher modifiedMethodsMatcher = new MethodModifiedLinesMatcher();
 
+    public Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
+        File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
+        File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
+
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, false);
+        List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
+
+        targetFile.delete()
+        ancestorFile.delete()
+
+        Map<String, int[]> parsedDiffJResult = modifiedMethodsParser.parse(diffJOutput);
+        List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
+
+        return modifiedMethodsMatcher.matchModifiedMethodsAndLines(parsedDiffJResult, parsedTextualDiffResult);
+    }
+
     public Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA, boolean isDefaultDiffJ) {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)

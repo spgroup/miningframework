@@ -102,9 +102,8 @@ class MiningWorker implements Runnable {
 
         Process process = ProcessRunner.startProcess(builder)
         process.waitFor()
-  
-        project.setPath(target)
 
+        project.setPath(target)
     }
 
 

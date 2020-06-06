@@ -48,5 +48,4 @@ class InputParser {
 
         return projectList
     }
-
 } 

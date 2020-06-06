@@ -6,14 +6,11 @@ import exception.UnexpectedOutputException
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
-import main.arguments.*
-
 class Project {
     
     private String name
     private String path
     private boolean remote
-    private String full_local_path
     static private Pattern REMOTE_REPO_PATTERN = Pattern.compile("((http|https):\\/\\/)?.+.com\\/.+\\/.+")
 
     public Project(String name, String path) {
@@ -124,14 +121,6 @@ class Project {
 
     public void setRemote(boolean remote) {
         this.remote = remote
-    }
-
-    public String getFullLocalPath(){
-        return this.full_local_path
-    }
-
-    public void setFullLocalPath(String full_local_path){
-        this.full_local_path = full_local_path
     }
 
     public String[] getOwnerAndName() {

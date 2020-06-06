@@ -129,8 +129,7 @@ final class FileManager {
             return directoryPath+"/build/classes"
         }else{
             return directoryPath
-        }
-        
+        }    
     }
 
     static List findLocalFileOfChangedClass(String project, String className, String commit){

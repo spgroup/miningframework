@@ -14,7 +14,7 @@ import static app.MiningFramework.arguments
 /**
  * @requires: that a diffj cli is in the dependencies folder and that diff (textual diff tool) is installed
  * @provides: a [outputPath]/data/results.csv file with the following format:
- * project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions
+ * project;merge commit;left commit;right commit;base commit;className;method;empty_diff_base_left;empty_diff_base_right;empty_diff_base_merge
  */
 class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorAbstract {
     

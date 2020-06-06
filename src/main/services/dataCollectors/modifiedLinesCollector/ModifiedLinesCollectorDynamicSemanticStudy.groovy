@@ -16,14 +16,9 @@ import static app.MiningFramework.arguments
  * @provides: a [outputPath]/data/results.csv file with the following format:
  * project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions
  */
-class ModifiedLinesCollectorDynamicSemanticStudy implements DataCollector {
-
-    private File experimentalDataFile;
-    private File experimentalDataFileWithLinks;
-
-    private ModifiedMethodsHelper modifiedMethodsHelper = new ModifiedMethodsHelper();
-    private RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();
-    private boolean defaulDiffJ = false;
+class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorAbstract {
+    
+    protected boolean defaulDiffJ = false;
 
     void collectData(Project project, MergeCommit mergeCommit) {
         createOutputFiles(arguments.getOutputPath())
@@ -33,7 +28,7 @@ class ModifiedLinesCollectorDynamicSemanticStudy implements DataCollector {
             // get merge revision modified methods
             Set<ModifiedMethod> allModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA(), defaulDiffJ)
             // get methods modified by both left and right revisions
-            Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, filePath);
+            Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, filePath, defaulDiffJ);
 
             boolean fileHasMutuallyModifiedMethods = !mutuallyModifiedMethods.isEmpty()
             if (fileHasMutuallyModifiedMethods) {
@@ -66,48 +61,10 @@ class ModifiedLinesCollectorDynamicSemanticStudy implements DataCollector {
 
 
         }
-        println "${project.getName()} - ModifiedLinesCollector collection finished"
+        println "${project.getName()} - ModifiedLinesCollectorDynamicSemanticStudy collection finished"
     }
 
-    private void collectMethodData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
-        ModifiedMethod leftMethod = leftAndRightMethods.getV1();
-        ModifiedMethod rightMethod = leftAndRightMethods.getV2();
-
-        Set<Integer> leftAddedLines = new HashSet<Integer>();
-        Set<Integer> leftDeletedLines = new HashSet<Integer>();
-        Set<Integer> rightAddedLines = new HashSet<Integer>();
-        Set<Integer> rightDeletedLines = new HashSet<Integer>();
-
-        // for each modified line in merge
-        for (def mergeLine : mergeMethod.getModifiedLines()) {
-            // if it is at left's modified lines add it to left list
-            if (leftMethod.getModifiedLines().contains(mergeLine)) {
-                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
-                    leftDeletedLines.add(mergeLine.getNumber());
-                } else {
-                    leftAddedLines.add(mergeLine.getNumber());
-                }
-            }
-            // if it is at rights's modified lines add it to right list
-            if (rightMethod.getModifiedLines().contains(mergeLine)) {
-                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
-                    rightDeletedLines.add(mergeLine.getNumber());
-                } else {
-                    rightAddedLines.add(mergeLine.getNumber());
-                }
-            }
-        }
-
-        // prints results to a csv file
-        printResults(project, mergeCommit, className, mergeMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
-    }
-
-    private void createOutputFiles(String outputPath) {
-        createExperimentalDataDir(outputPath)
-        createExperimentalDataFiles(outputPath)
-    }
-
-    private void createExperimentalDataFiles(String outputPath) {
+    void createExperimentalDataFiles(String outputPath) {
         this.experimentalDataFile = new File(outputPath + "/data/results.csv")
         if (!experimentalDataFile.exists()) {
             this.experimentalDataFile << 'project;merge commit;left commit;right commit;base commit;className;method;empty_diff_base_left;empty_diff_base_right;empty_diff_base_merge\n'
@@ -115,14 +72,6 @@ class ModifiedLinesCollectorDynamicSemanticStudy implements DataCollector {
 
         if (arguments.isPushCommandActive()) {
             this.experimentalDataFileWithLinks = new File("${outputPath}/data/result-links.csv");
-        }
-    }
-
-    private void createExperimentalDataDir(String outputPath) {
-        File experimentalDataDir = new File(outputPath + '/data')
-
-        if (!experimentalDataDir.exists()) {
-            experimentalDataDir.mkdirs()
         }
     }
 
@@ -138,37 +87,11 @@ class ModifiedLinesCollectorDynamicSemanticStudy implements DataCollector {
 
     }
 
-    protected String addMergeCommitInfoIntoOutputFile(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
+    private String addMergeCommitInfoIntoOutputFile(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
                       HashSet<Integer> leftAddedLines, HashSet<Tuple2> leftDeletedLines, HashSet<Integer> rightAddedLines,
                       HashSet<Tuple2> rightDeletedLines){
         ArrayList<Boolean> emptyDiffsByParents = MergeHelper.checkForEmptyDiffByParents(project, mergeCommit, className)
         return "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${mergeCommit.getAncestorSHA()};${className};\"${modifiedDeclarationSignature.replace(",","|")}\";${emptyDiffsByParents[0]};${emptyDiffsByParents[1]};${emptyDiffsByParents[2]}\n"
-    }
-
-    private Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
-        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-
-        return leftModifiedFiles.intersect(rightModifiedFiles)
-    }
-
-    private Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath) {
-        Set<ModifiedMethod> leftModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), defaulDiffJ)
-        Set<ModifiedMethod> rightModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), defaulDiffJ)
-        return intersectAndBuildMap(leftModifiedMethods, rightModifiedMethods)
-    }
-
-    Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersectAndBuildMap(Set<ModifiedMethod> leftModifiedMethods, Set<ModifiedMethod> rightModifiedMethods) {
-        Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
-
-        for(leftMethod in leftModifiedMethods) {
-            for(rightMethod in rightModifiedMethods) {
-                if(leftMethod == rightMethod) {
-                    intersection.put(leftMethod.getSignature(), new Tuple2(leftMethod, rightMethod))
-                }
-            }
-        }
-
-        return intersection
-    }    
+    } 
+    
 }

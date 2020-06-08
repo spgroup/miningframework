@@ -1,6 +1,10 @@
 project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions
+jsoup;ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3;org.jsoup.nodes.Document;encoder;[376, 377, 378, 379, 380, 381];[];[376, 377, 378, 379, 380, 381];[]
+jsoup;ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3;org.jsoup.nodes.Document;charset(Charset);[433];[];[433];[]
 jsoup;7ba0ee75547878ddccc5ab50777b67c712aa73e4;org.jsoup.helper.HttpConnection;data(String);[];[];[];[]
+jsoup;e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f;org.jsoup.select.QueryParser;byTag();[226, 218, 219, 220, 221, 222];[];[225];[]
 jsoup;a8b6982de98ff76ef254031d7152fff57f6bf941;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);[584, 585, 586];[590];[544, 547];[]
+jsoup;fee4762322f85a1109edd75ccb67f38cf5008c80;org.jsoup.helper.HttpConnection;createConnection(Connection.Request);[609, 610, 611, 612, 613, 614];[];[617];[]
 jsoup;3f7d2c71dbbbb289c684f339874eed8ac2747fa0;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);[456];[];[483, 484, 485];[]
 jsoup;821b021a1e5fc75719c71ae5ea84157d770c1a9d;org.jsoup.helper.DataUtil;getCharsetFromContentType(String);[181];[];[181];[]
 jsoup;a44e18aa3c1fcd25a68a5965f9490d8f7d026509;org.jsoup.nodes.TextNode;outerHtmlHead(StringBuilder, int, Document.OutputSettings);[94];[];[98];[]

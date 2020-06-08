@@ -19,10 +19,11 @@ class InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter implements 
     private File filteredScenarios = null;
 
     void createLogFileIfDoesntExist() {
-        filteredScenarios = new File(arguments.getOutputPath() + "/data/filtered_scenarios.csv");
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        filteredScenarios = new File(dataFolder.getAbsolutePath() + "/filtered_scenarios.csv");
 
         if (!filteredScenarios.exists()) {
-            filteredScenarios.mkdirs()
+            dataFolder.mkdirs()
             filteredScenarios << "project,merge commit,filter reason\n"
         }
     }
@@ -43,12 +44,6 @@ class InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter implements 
         boolean hasMutuallyModifiedMethods = mutuallyModifiedFilter.applyFilter(project, mergeCommit);
         if (!hasMutuallyModifiedMethods) {
             addFilteredLog(project, mergeCommit, "no mutually modified methods")
-            return false;
-        }
-
-        boolean doesNotHaveMergeConflict = textualConflictFilter.applyFilter(project, mergeCommit);
-        if (!doesNotHaveMergeConflict) {
-            addFilteredLog(project, mergeCommit, "textual merge conflict")
             return false;
         }
 

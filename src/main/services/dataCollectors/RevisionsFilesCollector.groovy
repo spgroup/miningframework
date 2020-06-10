@@ -37,7 +37,7 @@ class RevisionsFilesCollector implements DataCollector {
     private File createRevisionsFolderIfItDoesntExist (Project project, MergeCommit mergeCommit, String filePath) {
         String classFilePath = getClassFilePath(project, mergeCommit, filePath);
         
-        String revisionsFolderPath = "${arguments.getOutputPath()}/files/${project.getName()}/${mergeCommit.getSHA()}/${classFilePath}/";
+        String revisionsFolderPath = "${arguments.getOutputPath()}/files/${project.getName()}/${mergeCommit.getSHA()}/source/${classFilePath}/";
         File revisionsFolder = new File(revisionsFolderPath);
         if(!revisionsFolder.exists()) {
             revisionsFolder.mkdirs()

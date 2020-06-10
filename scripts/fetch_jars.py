@@ -114,6 +114,8 @@ def process_project(data, token_user_name):
 
 def download_build(project_name, commit_sha, release):
     scenario_path = mount_scenario_path(project_name, commit_sha)
+
+    print(fetch_jars)
     
     print ("Downloading")
     if path.exists(scenario_path):

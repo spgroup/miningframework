@@ -36,11 +36,11 @@ class Scenario {
     }
 
     String getLinesFilePath () {
-        return "${this.scenarioDirectory}/soot.csv"
+        return "${this.scenarioDirectory}/changed-methods/${className}/${methodSignature}/left-right-lines.csv"
     }
 
     String getLinesReverseFilePath () {
-        return "${this.scenarioDirectory}/soot-reverse.csv"
+        return "${this.scenarioDirectory}/changed-methods/${className}/${methodSignature}/right-left-lines.csv"
     }
     
     String getClassPath() {

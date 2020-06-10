@@ -2,8 +2,10 @@
 
 import sys
 from csv import DictReader, writer
+import os
 
 CLASS_NAME = "className"
+METHOD = "method"
 LEFT_MODIFICATIONS = "left modifications"
 RIGHT_MODIFICATIONS = "right modifications"
 COMMIT_SHA = "merge commit"
@@ -37,13 +39,19 @@ def export_csv():
                     result_reverse.append([class_name, "sink", line])
 
             if result:
-                with open(base_path + "/soot.csv", "w") as soot, open(base_path + "/soot-reverse.csv", "w") as soot_reverse:
+                class_method_folder = base_path + "/changed-methods/" + scenario[CLASS_NAME] + "/" + scenario[METHOD]
+
+                if not os.path.exists(class_method_folder):
+                    os.makedirs(class_method_folder)
+
+                with open(class_method_folder + "/left-right-lines.csv", "w") as soot, open(class_method_folder + "/right-left-lines.csv", "w") as soot_reverse:
                     soot_writer = writer(soot, delimiter=",")
                     soot_reverse_writer = writer(soot_reverse, delimiter=",")
 
-                    if result:
-                        soot_writer.writerows(result)
-                        soot_reverse_writer.writerows(result_reverse)
+                    soot_writer.writerows(result)
+                    soot_reverse_writer.writerows(result_reverse)
+
+
 
 def read_output(output_path):
     with open(output_path + "/data/results-with-build-information.csv", "r") as output_file:

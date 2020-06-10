@@ -53,6 +53,13 @@ class ConflictDetectionAlgorithm {
         String result;
         println "Using jar at " + classPath
 
+        File inputFile = new File(filePath);
+
+        if (!inputFile.exists()) {
+            println "This scenario has no changes";
+            return "false";
+        }
+
         Process sootProcess = runProcess(filePath, classPath);
 
         boolean executionCompleted = true;

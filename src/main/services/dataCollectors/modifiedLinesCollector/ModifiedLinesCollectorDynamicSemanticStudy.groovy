@@ -7,6 +7,7 @@ import util.FileManager
 import services.dataCollectors.RevisionsFilesCollector
 import util.TypeNameHelper
 import util.MergeHelper
+import util.MergeScenarioDiff
 
 import static app.MiningFramework.arguments
 
@@ -19,6 +20,7 @@ import static app.MiningFramework.arguments
 class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorAbstract {
     
     protected boolean defaulDiffJ = false;
+    protected String localPathRevisions = ""
 
     void collectData(Project project, MergeCommit mergeCommit) {
         createOutputFiles(arguments.getOutputPath())
@@ -37,7 +39,7 @@ class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorA
 
                 // calling a data collector here because in this specific case we only need
                 // revisions for the cases where there are mutually modified methods in this class
-                revisionsCollector.collectDataFromFile(project, mergeCommit, filePath);
+                localPathRevisions = revisionsCollector.collectDataFromFile(project, mergeCommit, filePath);
                 revisionsCollector.createBuildFolderIfItDoesntExist(project, mergeCommit, "original")
                 revisionsCollector.createBuildFolderIfItDoesntExist(project, mergeCommit, "transformed")
 
@@ -67,7 +69,7 @@ class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorA
     void createExperimentalDataFiles(String outputPath) {
         this.experimentalDataFile = new File(outputPath + "/data/results.csv")
         if (!experimentalDataFile.exists()) {
-            this.experimentalDataFile << 'project;merge commit;left commit;right commit;base commit;className;method;empty_diff_base_left;empty_diff_base_right;empty_diff_base_merge\n'
+            this.experimentalDataFile << 'project;merge commit;left commit;right commit;base commit;className;method;empty_diff_base_left;empty_diff_base_right;empty_diff_base_merge;parent_contributions_preserved\n'
         }
 
         if (arguments.isPushCommandActive()) {
@@ -90,8 +92,9 @@ class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorA
     private String addMergeCommitInfoIntoOutputFile(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
                       HashSet<Integer> leftAddedLines, HashSet<Tuple2> leftDeletedLines, HashSet<Integer> rightAddedLines,
                       HashSet<Tuple2> rightDeletedLines){
-        ArrayList<Boolean> emptyDiffsByParents = MergeHelper.checkForEmptyDiffByParents(project, mergeCommit, className)
-        return "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${mergeCommit.getAncestorSHA()};${className};\"${modifiedDeclarationSignature.replace(",","|")}\";${emptyDiffsByParents[0]};${emptyDiffsByParents[1]};${emptyDiffsByParents[2]}\n"
+        ArrayList<Boolean> emptyDiffsByParents = MergeScenarioDiff.checkForEmptyDiffByParents(project, mergeCommit, className)
+        boolean preservedParentContributions = MergeHelper.areParentContributionsPreserved(project, mergeCommit, className, localPathRevisions)
+        return "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${mergeCommit.getAncestorSHA()};${className};\"${modifiedDeclarationSignature.replace(",","|")}\";${emptyDiffsByParents[0]};${emptyDiffsByParents[1]};${emptyDiffsByParents[2]};${preservedParentContributions}\n"
     } 
     
 }

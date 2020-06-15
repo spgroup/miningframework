@@ -3,10 +3,10 @@ package util
 import project.*
 import java.util.regex.Pattern
 import java.util.regex.Matcher
+import org.apache.commons.io.FileUtils;
 
 class MergeHelper {
     private static String CONFLICT_INDICATOR = "(CONFLICT)|(CONFLITO)"
-    private static String options = "--ignore-cr-at-eol --ignore-all-space --ignore-blank-lines --ignore-space-change"
 
     static public boolean hasMergeConflict (Project project, MergeCommit mergeCommit) {
         Process mergeSimulation = replayMergeScenario(project, mergeCommit)
@@ -37,73 +37,28 @@ class MergeHelper {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
     }
 
-    public static ArrayList<Boolean> checkForEmptyDiffByParents(Project project, MergeCommit mergeCommit, String className) {
-        ArrayList<Boolean> diffStatesByParents = new ArrayList<Boolean>();
-        
-        diffStatesByParents.add(performDiffAnalysisByParents(project, options, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), className))
-        diffStatesByParents.add(performDiffAnalysisByParents(project, options, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), className))
-        diffStatesByParents.add(checkForEmptyDiff(project, mergeCommit))
-        
-        return diffStatesByParents
-    }
-
-    private static boolean checkForEmptyDiff(Project project, MergeCommit mergeCommit) {
-        Process diffAnalysis = performDiffAnalysisDeffault(project, mergeCommit, options)
-        boolean result = diffAnalysis.getText() == ""
-        
-        Process returnToMaster = returnToMaster(project)
-        returnToMaster.waitFor()
+    static public boolean areParentContributionsPreserved (Project project, MergeCommit mergeCommit, String fileName, String localRevisionFiles) {
+        Process mergeSimulation = replayMergeScenario(project, mergeCommit)
+        mergeSimulation.waitFor()
     
-        return result
-    }
-
-    private static Process performDiffAnalysisDeffault(Project project, MergeCommit mergeCommit, String optionsDiff) {
-        Process checkoutLeft = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', mergeCommit.getLeftSHA())
-        checkoutLeft.waitFor()
-
-        return ProcessRunner.runProcess(project.getPath(), 'git', 'diff', mergeCommit.getRightSHA(), optionsDiff)   
-    }
-
-    private static Boolean performDiffAnalysisByParents(Project project, String optionsDiff, String parentOne, String parentTwo, className) {
-        String localPathClass = localPathClassForDiff(getListFilesChanged(project, parentOne, parentTwo), className)
-        
-        Process checkoutParentOne = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', parentOne)
-        checkoutParentOne.waitFor()
-
-        return ProcessRunner.runProcess(project.getPath(), 'git', 'diff', parentTwo, optionsDiff+" "+localPathClass).getText() == ""   
-    }
-
-    private static String[] getListFilesChanged (Project project, String parentOne, String parentTwo) {
-        //Process diffAnalysis 
-        Process checkoutParentOne = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', parentOne)
-        checkoutParentOne.waitFor()
-
-        Process diffAnalysis = ProcessRunner.runProcess(project.getPath(), 'git', 'diff', parentTwo, "--name-only")
-        String[] filesList = diffAnalysis.getText().split("\n")
-     
+        boolean isThereDifference = isThereDiffBetweenFiles(project, fileName, localRevisionFiles)
         Process returnToMaster = returnToMaster(project)
         returnToMaster.waitFor()
 
-        return filesList
+        return isThereDifference
     }
 
-    private static String localPathClassForDiff(String[] filesList, String className) {
-        String newClassName = className.replaceAll("\\.","/")
-        filesList.each{value ->
-            if (value.contains(newClassName)){
-                return value
-            }
-        }
-        return ""
+    static private boolean isThereDiffBetweenFiles(Project project, String fileName, String localRevisionFiles) {
+        File fileOriginalRepo = new File(findFileByName(fileName, project.getPath()))
+        File fileReplayMerge = new File(findFileByName("merge", localRevisionFiles))
+        
+        return FileUtils.contentEquals(fileOriginalRepo, fileReplayMerge)
     }
 
-    private static boolean getLocalPathForChangedClass(HashMap<String, Boolean> localChangedFiles, String reportChangedClass) {
-        localChangedFiles.each{value, key ->
-            if (value.include(reportChangedClass.replaceAll(".","/"))){
-                return true
-            }
-        }
-        return false
+    
+    static private String findFileByName(String fileName, String pathToSearchOn) {
+        def file = new FileNameByRegexFinder().getFileNames(pathToSearchOn, /${fileName}\.java/)[0]
+        return file.toString()
     }
 
 }

@@ -11,10 +11,9 @@ import static app.MiningFramework.arguments
  *  Combines the output of IsInCommitListFilter, MutuallyModifiedMethodsCommitFilter
  *  and TextualConflictFilter with and clauses
  */
-class InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter implements CommitFilter {
+class InCommitListMutuallyModifiedMethodsFilter implements CommitFilter {
     private CommitFilter commitListFilter = new IsInCommitListFilter();
     private CommitFilter mutuallyModifiedFilter = new MutuallyModifiedMethodsCommitFilter();
-    private CommitFilter textualConflictFilter = new TextualConflictFilter();
 
     private File filteredScenarios = null;
 
@@ -44,12 +43,6 @@ class InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter implements 
         boolean hasMutuallyModifiedMethods = mutuallyModifiedFilter.applyFilter(project, mergeCommit);
         if (!hasMutuallyModifiedMethods) {
             addFilteredLog(project, mergeCommit, "no mutually modified methods")
-            return false;
-        }
-
-        boolean passMergeConflictFilter = textualConflictFilter.applyFilter(project, mergeCommit)
-        if (!passMergeConflictFilter) {
-            addFilteredLog(project, mergeCommit, "textual merge conflict")
             return false;
         }
 

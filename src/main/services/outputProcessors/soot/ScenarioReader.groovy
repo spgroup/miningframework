@@ -18,8 +18,9 @@ class ScenarioReader {
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
             String scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA);
+            boolean hasBuild = line["has_build"] == "true"
 
-            def scenario = new Scenario(projectName, classPathName, methodSignature, commitSHA, scenarioDirectory);
+            def scenario = new Scenario(projectName, classPathName, methodSignature, commitSHA, scenarioDirectory, hasBuild);
 
             result.add(scenario)
         }

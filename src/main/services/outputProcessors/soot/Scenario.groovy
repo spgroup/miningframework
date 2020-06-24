@@ -10,15 +10,21 @@ class Scenario {
     private String className;
     private String methodSignature;
     private String commitSHA;
+    private boolean hasBuild;
 
     private String scenarioDirectory;
 
-    Scenario(projectName, className, methodSignature, commitSHA, scenarioDirectory) {
+    Scenario(projectName, className, methodSignature, commitSHA, scenarioDirectory, hasBuild) {
         this.projectName = projectName;
         this.className = className;
         this.methodSignature = methodSignature;
         this.commitSHA = commitSHA;
         this.scenarioDirectory = scenarioDirectory;
+        this.hasBuild = hasBuild;
+    }
+    
+    boolean getHasBuild() {
+        return this.hasBuild;
     }
 
     String getCommitSHA () {
@@ -30,15 +36,15 @@ class Scenario {
     }
 
     String getLinesFilePath () {
-        return "${this.scenarioDirectory}/soot.csv"
+        return "${this.scenarioDirectory}/changed-methods/${className}/${methodSignature}/left-right-lines.csv"
     }
 
     String getLinesReverseFilePath () {
-        return "${this.scenarioDirectory}/soot-reverse.csv"
+        return "${this.scenarioDirectory}/changed-methods/${className}/${methodSignature}/right-left-lines.csv"
     }
     
     String getClassPath() {
-        File file = new File("${this.scenarioDirectory}/build");
+        File file = new File("${this.scenarioDirectory}/original-without-dependencies/merge");
         File[] buildJars = file.listFiles()
 
         String buildJarPath = getJarThatHasClass(buildJars)
@@ -50,10 +56,13 @@ class Scenario {
 
     private String getJarThatHasClass(File[] buildJars) {
         File resultJar = null;
-        for (int i = 0 ; i < buildJars.length && resultJar == null; i++) {
-            boolean classIsInJar = JarHelper.classExistsInJarFile(buildJars[i], this.className)
-            if (classIsInJar) {
-                resultJar = buildJars[i]
+
+        if (buildJars != null) {
+            for (int i = 0 ; i < buildJars.length && resultJar == null; i++) {
+                boolean classIsInJar = JarHelper.classExistsInJarFile(buildJars[i], this.className)
+                if (classIsInJar) {
+                    resultJar = buildJars[i]
+                }
             }
         }
 

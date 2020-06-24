@@ -45,7 +45,6 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
 
 
     private void setupEnvironmentForBranchWithTransformations(Project project, MergeCommit mergeCommit, String commit, ArrayList<String> codeTransformationInfo, String branch, String version) {
-        //initialSetupBranchCreation(commit, project, branch)
 
         String branchName = commit.take(5) + branch
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
@@ -65,7 +64,6 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
     }
 
     private void setupEnvironmentForBranchWithoutTransformations(Project project, MergeCommit mergeCommit, String commit, String branch, String version) {
-        //initialSetupBranchCreation(commit, project, branch)
         String branchName = commit.take(5) + branch
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
         File travisFile = new File("${project.getPath()}/.travis.yml")
@@ -73,15 +71,6 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
         travisFile.delete()
         BuildSystem buildSystem = getBuildSystem(project)
         sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, version)            
-    }
-
-    private void initialSetupBranchCreation(String commit, Project project, String branch) {
-        String branchName = commit.take(5) + branch
-        checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
-        File travisFile = new File("${project.getPath()}/.travis.yml")
-        String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-        travisFile.delete()
-        BuildSystem buildSystem = getBuildSystem(project)
     }
 
     protected void sendNewBuildRequest(Project project, File travisFile, String[] ownerAndName, BuildSystem buildSystem, String commit, String branchName, String version){

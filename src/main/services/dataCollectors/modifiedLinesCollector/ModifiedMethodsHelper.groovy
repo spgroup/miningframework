@@ -12,18 +12,21 @@ import util.ProcessRunner
  * fully removed or changed
  */
 class ModifiedMethodsHelper {
-    static final String DEFAULT_DIFF="diffj.jar"
-    static final String DIFF_WITH_RETURN_INFO="diffj-method-return-info.jar"
-
+    
+    private String diffJOption;
     private TextualDiffParser textualDiffParser = new TextualDiffParser();
     private DiffJParser modifiedMethodsParser = new DiffJParser();
     private MethodModifiedLinesMatcher modifiedMethodsMatcher = new MethodModifiedLinesMatcher();
+
+    public ModifiedMethodsHelper(String diffj) {
+        this.diffJOption = diffj
+    }
 
     public Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, false);
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
 
         targetFile.delete()
@@ -35,36 +38,12 @@ class ModifiedMethodsHelper {
         return modifiedMethodsMatcher.matchModifiedMethodsAndLines(parsedDiffJResult, parsedTextualDiffResult);
     }
 
-    public Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA, boolean isDefaultDiffJ) {
-        File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
-        File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
-
-        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, isDefaultDiffJ);
-        List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
-
-        targetFile.delete()
-        ancestorFile.delete()
-
-        Map<String, int[]> parsedDiffJResult = modifiedMethodsParser.parse(diffJOutput);
-        List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
-
-        return modifiedMethodsMatcher.matchModifiedMethodsAndLines(parsedDiffJResult, parsedTextualDiffResult);
-    }
-
-    private List<String> runDiffJ(File ancestorFile, File targetFile, boolean isDefaultDiffJ) {
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', getDiffJOption(isDefaultDiffJ), "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
+    private List<String> runDiffJ(File ancestorFile, File targetFile) {
+        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
         def output = reader.readLines()
         reader.close()
         return output
-    }
-
-    private String getDiffJOption(boolean isDefaultDiffJ) {
-        if (isDefaultDiffJ) {
-            return DEFAULT_DIFF;
-        }else{
-            return DIFF_WITH_RETURN_INFO;
-        }
     }
 
     private List<String> runTextualDiff (File ancestorFile, File targetFile) {

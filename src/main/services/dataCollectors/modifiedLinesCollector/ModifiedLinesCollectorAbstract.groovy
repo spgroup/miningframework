@@ -20,9 +20,8 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     protected File experimentalDataFile;
     protected File experimentalDataFileWithLinks;
 
-    protected ModifiedMethodsHelper modifiedMethodsHelper = new ModifiedMethodsHelper();
+    protected ModifiedMethodsHelper modifiedMethodsHelper;
     protected RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();
-    protected boolean defaulDiffJ = true;
 
     abstract def void collectData(Project project, MergeCommit mergeCommit)
 
@@ -81,9 +80,9 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         return leftModifiedFiles.intersect(rightModifiedFiles)
     }
 
-    protected Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath, boolean isDefaultDiffJ) {
-        Set<ModifiedMethod> leftModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), isDefaultDiffJ)
-        Set<ModifiedMethod> rightModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), isDefaultDiffJ)
+    protected Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath) {
+        Set<ModifiedMethod> leftModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+        Set<ModifiedMethod> rightModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         return intersectAndBuildMap(leftModifiedMethods, rightModifiedMethods)
     }
 

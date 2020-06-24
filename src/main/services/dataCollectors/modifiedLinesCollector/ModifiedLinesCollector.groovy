@@ -17,15 +17,19 @@ import static app.MiningFramework.arguments
  */
 class ModifiedLinesCollector extends ModifiedLinesCollectorAbstract {
 
+    public ModifiedLinesCollector() {
+        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar");
+    }
+
     void collectData(Project project, MergeCommit mergeCommit) {
         createOutputFiles(arguments.getOutputPath())
         Set<String> mutuallyModifiedFiles = getFilesModifiedByBothParents(project, mergeCommit);
 
         for (String filePath : mutuallyModifiedFiles) {
             // get merge revision modified methods
-            Set<ModifiedMethod> allModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA(), defaulDiffJ)
+            Set<ModifiedMethod> allModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
             // get methods modified by both left and right revisions
-            Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, filePath, defaulDiffJ);
+            Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> mutuallyModifiedMethods = getMutuallyModifiedMethods(project, mergeCommit, filePath);
 
             boolean fileHasMutuallyModifiedMethods = !mutuallyModifiedMethods.isEmpty()
             if (fileHasMutuallyModifiedMethods) {

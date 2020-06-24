@@ -42,7 +42,7 @@ class RevisionsFilesCollector implements DataCollector {
         return createDirectory(project, mergeCommit, classFilePath)
     }
 
-    public File createBuildFolderIfItDoesntExist (Project project, MergeCommit mergeCommit, String directoryName) {
+    public void createBuildFolderIfItDoesntExist (Project project, MergeCommit mergeCommit, String directoryName) {
         createDirectory(project, mergeCommit, directoryName)
     }
 

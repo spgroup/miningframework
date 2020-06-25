@@ -1,11 +1,14 @@
 package integration
 
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.Assert
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
-
+@Ignore
+// This test suit is currently being ignored because this commitFilter is not being
+// used by the current implementation
 public class TextualConflictFilterTest {
 
     @Test

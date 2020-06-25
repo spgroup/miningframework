@@ -2,12 +2,15 @@
 
 import sys
 from csv import DictReader, writer
+import os
 
 CLASS_NAME = "className"
+METHOD = "method"
 LEFT_MODIFICATIONS = "left modifications"
 RIGHT_MODIFICATIONS = "right modifications"
 COMMIT_SHA = "merge commit"
 PROJECT_NAME = "project"
+HAS_BUILD = "has_build"
 
 output_path = sys.argv[1].rstrip("/") # get output path passed as cli argument
 def export_csv():
@@ -17,34 +20,41 @@ def export_csv():
     for scenario in scenarios:
         base_path = get_scenario_base_path(scenario)
 
-        left_modifications = parse_modifications(scenario[LEFT_MODIFICATIONS])
-        right_modifications = parse_modifications(scenario[RIGHT_MODIFICATIONS])
-        class_name = scenario[CLASS_NAME]
+        if scenario[HAS_BUILD] == "true":
+            left_modifications = parse_modifications(scenario[LEFT_MODIFICATIONS])
+            right_modifications = parse_modifications(scenario[RIGHT_MODIFICATIONS])
+            class_name = scenario[CLASS_NAME]
 
-        result = []
-        result_reverse = []
+            result = []
+            result_reverse = []
 
-        for line in left_modifications:
-            if line not in right_modifications:
-                result.append([class_name, "sink", line])
-                result_reverse.append([class_name, "source", line])
+            for line in left_modifications:
+                if line not in right_modifications:
+                    result.append([class_name, "sink", line])
+                    result_reverse.append([class_name, "source", line])
 
-        for line in right_modifications:
-            if line not in left_modifications:
-                result.append([class_name, "source", line])
-                result_reverse.append([class_name, "sink", line])
+            for line in right_modifications:
+                if line not in left_modifications:
+                    result.append([class_name, "source", line])
+                    result_reverse.append([class_name, "sink", line])
 
-        if result:
-            with open(base_path + "/soot.csv", "w") as soot, open(base_path + "/soot-reverse.csv", "w") as soot_reverse:
-                soot_writer = writer(soot, delimiter=",")
-                soot_reverse_writer = writer(soot_reverse, delimiter=",")
+            if result:
+                class_method_folder = base_path + "/changed-methods/" + scenario[CLASS_NAME] + "/" + scenario[METHOD]
 
-                if result:
+                if not os.path.exists(class_method_folder):
+                    os.makedirs(class_method_folder)
+
+                with open(class_method_folder + "/left-right-lines.csv", "w") as soot, open(class_method_folder + "/right-left-lines.csv", "w") as soot_reverse:
+                    soot_writer = writer(soot, delimiter=",")
+                    soot_reverse_writer = writer(soot_reverse, delimiter=",")
+
                     soot_writer.writerows(result)
                     soot_reverse_writer.writerows(result_reverse)
 
+
+
 def read_output(output_path):
-    with open(output_path + "/data/results-with-builds.csv", "r") as output_file:
+    with open(output_path + "/data/results-with-build-information.csv", "r") as output_file:
         return list(DictReader(output_file, delimiter=";"))
 
 def parse_modifications(modifications):

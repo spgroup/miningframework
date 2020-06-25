@@ -6,9 +6,8 @@ import interfaces.CommitFilter
 import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
-import services.commitFilters.InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter
+import services.commitFilters.InCommitListMutuallyModifiedMethodsFilter
 import services.dataCollectors.BuildRequester
-import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
 import services.outputProcessors.GenerateSootInputFilesOutputProcessor
@@ -25,7 +24,7 @@ public class FileTestModule extends AbstractModule {
         dataCollectorBinder.addBinding().to(StatisticsCollector.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)
 
-        bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter.class)
+        bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(FilterNonExistentProjectsProcessor.class)

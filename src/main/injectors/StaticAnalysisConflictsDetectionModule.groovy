@@ -11,6 +11,7 @@ import interfaces.ProjectProcessor
 import services.commitFilters.InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter
 import services.dataCollectors.BuildRequester
 import services.dataCollectors.BuildRequesterDynamicSemanticStudy
+import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollectorDynamicSemanticStudy
@@ -29,7 +30,8 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)
         dataCollectorBinder.addBinding().to(StatisticsCollector.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)
-
+        dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
+        
         bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)

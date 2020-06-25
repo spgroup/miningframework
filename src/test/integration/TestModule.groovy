@@ -4,8 +4,7 @@ import interfaces.DataCollector
 import interfaces.CommitFilter
 import interfaces.ProjectProcessor
 import interfaces.OutputProcessor
-import services.commitFilters.InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter
-import services.dataCollectors.MergeConflictCollector
+import services.commitFilters.InCommitListMutuallyModifiedMethodsFilter
 import services.dataCollectors.StatisticsCollector
 import util.*
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
@@ -21,7 +20,7 @@ public class TestModule extends AbstractModule {
 
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class);
         dataCollectorBinder.addBinding().to(StatisticsCollector.class);
-        bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsTextualConflictCommitFilter.class)
+        bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(EmptyProjectProcessor.class)

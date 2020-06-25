@@ -27,8 +27,8 @@ class BuildRequester implements DataCollector {
         None
     }
 
-    static private final MAVEN_BUILD = 'mvn package -DskipTests'
-    static private final GRADLE_BUILD = './gradlew build -x test'
+    static private final MAVEN_BUILD = 'mvn -DskipTests=true package'
+    static private final GRADLE_BUILD = './gradlew assemble testClasses'
 
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {

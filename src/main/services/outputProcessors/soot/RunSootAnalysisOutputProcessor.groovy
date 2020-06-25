@@ -12,7 +12,7 @@ import static app.MiningFramework.arguments
  */
 class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
-    private final String RESULTS_FILE_PATH = "/data/results-with-builds.csv"
+    private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
 
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
             // dataflow: direct dependency between contributions, intraprocedural and without transitivity
@@ -40,21 +40,22 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             List<Scenario> sootScenarios = ScenarioReader.read(outputPath, RESULTS_FILE_PATH);
 
             for (scenario in sootScenarios) {
+                if (scenario.getHasBuild()) {
+                    println "Running soot scenario ${scenario.toString()}"
+                    List<String> results = [];
 
-                println "Running soot scenario ${scenario.toString()}"
-                List<String> results = [];
-
-                for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
-                    String algorithmResult
-                    try {
-                        algorithmResult = algorithm.run(scenario);
-                    } catch (ClassNotFoundInJarException e) {
-                        println e.getMessage()
-                        algorithmResult = "error"
+                    for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
+                        String algorithmResult
+                        try {
+                            algorithmResult = algorithm.run(scenario);
+                        } catch (ClassNotFoundInJarException e) {
+                            println e.getMessage()
+                            algorithmResult = "error"
+                        }
+                        results.add(algorithmResult)
                     }
-                    results.add(algorithmResult)
+                    sootResultsFile << "${scenario.toString()};${results.join(";")}\n"
                 }
-                sootResultsFile << "${scenario.toString()};${results.join(";")}\n"
             }
         }
     }

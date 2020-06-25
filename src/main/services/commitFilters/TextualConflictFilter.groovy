@@ -9,6 +9,13 @@ import util.MergeHelper
 class TextualConflictFilter implements CommitFilter {
     @Override
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return !MergeHelper.hasMergeConflict(project, mergeCommit)
+
+        boolean hasMergeConflict = MergeHelper.hasMergeConflict(project, mergeCommit)
+
+        if (hasMergeConflict) {
+            println project.getName() + " " + mergeCommit.getSHA() + " filtered because of a textual merge conflict"
+        }
+
+        return !hasMergeConflict
     }
 }

@@ -15,14 +15,12 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
 
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
-            // dataflow: direct dependency between contributions, intraprocedural and without transitivity
-            new NonCommutativeConflictDetectionAlgorithm("dataflow"),
             // tainted: direct dependency between contributions, intraprocedural and with transitivity
             new NonCommutativeConflictDetectionAlgorithm("tainted"),
             // svfa: direct dependency between contributions, interprocedural and  with transitivity
             new NonCommutativeConflictDetectionAlgorithm("svfa", 30),
-            // confluence: indirect dependency between contributions, intraprocedural and without transitivity
-            new ConflictDetectionAlgorithm("confluence")
+            // confluence: indirect dependency between contributions, intraprocedural and with transitivity
+            new ConflictDetectionAlgorithm("confluence-tainted")
     ]
 
     void processOutput () {
@@ -49,8 +47,12 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
                         try {
                             algorithmResult = algorithm.run(scenario);
                         } catch (ClassNotFoundInJarException e) {
+                            // indicates that the class doesnt exist on the generated build
                             println e.getMessage()
-                            algorithmResult = "error"
+                            algorithmResult = "not-found"
+                            if (algorithmResult instanceof NonCommutativeConflictDetectionAlgorithm) {
+                                algorithmResult = "not-found;not-found"
+                            }
                         }
                         results.add(algorithmResult)
                     }

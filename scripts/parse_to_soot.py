@@ -24,6 +24,7 @@ def export_csv():
             left_modifications = parse_modifications(scenario[LEFT_MODIFICATIONS])
             right_modifications = parse_modifications(scenario[RIGHT_MODIFICATIONS])
             class_name = scenario[CLASS_NAME]
+            method = scenario[METHOD]
 
             result = []
             result_reverse = []
@@ -39,7 +40,8 @@ def export_csv():
                     result_reverse.append([class_name, "sink", line])
 
             if result:
-                class_method_folder = base_path + "/changed-methods/" + scenario[CLASS_NAME] + "/" + scenario[METHOD]
+                class_method_folder = base_path + "/changed-methods/" + class_name + "/" + method
+                class_method_folder = class_method_folder.replace(" ", "")
 
                 if not os.path.exists(class_method_folder):
                     os.makedirs(class_method_folder)

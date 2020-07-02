@@ -22,8 +22,9 @@ The examples illustrated above correspond to some of the implementations we prov
 
 * This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 3.0.x or newer to use the framework and start mining projects.
 
-* For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Travis CI, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
+* For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Travis CI, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. You may need to install dependencies for Python scripts. Once you have Python 3 installed, run `pip3 install -r requirements.txt` at the root of the project. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
 
+* If you are using Windows, you will need to install [DiffUtils](http://gnuwin32.sourceforge.net/packages/diffutils.htm) manually. That done, add the installation directory to PATH in your environment variables.
 
 ## Instantiating or extending the framework
 
@@ -51,7 +52,8 @@ So, to select the interface implementations you want to use in your desired inst
 You can run the framework by including the [src](https://github.com/spgroup/miningframework/blob/master/src) directory in the classpath and executing `src/main/app/Main.groovy`. This project uses [Gradle](https://gradle.org/) as its build system, so we will be using Gradle tasks to execute all framework's operations.
 
 This can be done by configuring an IDE or executing the following command in a terminal:
-* Windows/Linux/Mac: `./gradlew run --args="[options] [input] [output]"`
+* Linux/Mac: `./gradlew run --args="[options] [input] [output]"`
+* Windows: `.\gradlew run --args="[options] [input] [output]"`
 
 `[input]` is the path to a CSV file containing the list of projects to be analyzed (like [projects.csv](https://github.com/spgroup/miningframework/blob/master/projects.csv)), one project per line. The list can contain external projects to be downloaded by the framework (the path field should be an URL to a git project hosted in the cloud), or local projects (the path field should refer to a local directory).
 
@@ -64,7 +66,8 @@ This can be done by configuring an IDE or executing the following command in a t
 > If you intend to use the framework multithreading option, be aware of the need to synchronize the access to output files or state manipulated by the implementations of the framework variability points.
 
 > For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
-    * Windows/Linux/Mac: `./gradlew run --args="--access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput"`
+>   * Linux/Mac: `./gradlew run --args="--access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput"`
+>   * Windows: `.\gradlew run --args="--access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput"`
 
 > For the used variability point implementation, the provided GitHub [personal access token](https://github.com/settings/tokens) (opt for repo scope) should be associated with a GitHub account also registered in [Travis](https://travis-ci.org/). Forks will be created for each project, the builds will be generated via Travis, and deployed to the forks as GitHub releases.
 

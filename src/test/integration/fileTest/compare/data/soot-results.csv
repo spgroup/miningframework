@@ -1,1 +1,2 @@
+# This results were produced by soot-analysis v0.0.7
 project;class;method;merge commit;left right tainted;right left tainted;left right svfa;right left svfa;confluence-tainted

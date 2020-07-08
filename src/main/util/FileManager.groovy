@@ -22,6 +22,19 @@ final class FileManager {
         return modifiedFiles
     }
 
+    public static Set<String> getModifiedFilesLocalOption(Project project, String pathCommitOne, String pathCommitTwo) {
+        def command = "diff -qr "+pathCommitOne+" "+pathCommitTwo
+        def proc = command.execute()
+        Set<String> modifiedFiles = new HashSet<String>()
+        String[] lines = proc.in.text.toString().split("\n")
+        for(int i=0; i < lines.size(); i++){
+            if(lines[i].toString().contains('.java')){
+                modifiedFiles.add(lines[i].toString().findAll(pathCommitOne+"[/a-zA-Z0-9.]*.java")[0].toString().split(pathCommitOne+"/")[-1])
+            }
+        }
+        return modifiedFiles
+    }
+    
     public static File copyFile(Project project, String path, String SHA) {
         Process gitCatFile = ProcessRunner.runProcess(project.getPath(), 'git', 'cat-file', '-p', "${SHA}:${path}")    
         
@@ -90,5 +103,47 @@ final class FileManager {
         file << sb.toString()
 
         return file
+    }
+
+    static File getFileLocal(String filePath, String commitSHA, String directoryPath) {
+        File gitCatFile = new File(directoryPath+"/"+filePath)
+
+        StringBuilder sb = new StringBuilder()
+        File file = File.createTempFile("${commitSHA}", ".java")
+        file.deleteOnExit()
+
+        gitCatFile.eachLine {
+            sb.append(it)
+            sb.append("\n")
+        }
+
+        file << sb.toString()
+
+        return file
+    }
+
+    public static String findLocalClassFilesDirectory(String directoryPath) {
+        if (Files.exists(Paths.get(directoryPath+"/target/classes"))){
+            return directoryPath+"/target/classes"
+        }else if (Files.exists(Paths.get(directoryPath+"/build/classes"))){
+            return directoryPath+"/build/classes"
+        }else{
+            return directoryPath
+        }    
+    }
+
+    static List findLocalFileOfChangedClass(String project, String className, String commit){
+        
+        List filesPath=[]
+        File fileDir=new File(project)
+        String newClassName = className.replaceAll('\\.','\\/')
+        fileDir.eachDirRecurse() { dir ->  
+            dir.eachFileMatch(~/.*.java/) { file ->  
+                if (file.path.contains(newClassName+".java")){
+                    filesPath.add(file.path  )
+                }
+            }  
+        }
+        return filesPath
     }
 }

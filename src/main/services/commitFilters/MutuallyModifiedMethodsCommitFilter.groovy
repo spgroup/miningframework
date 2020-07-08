@@ -14,7 +14,7 @@ import java.util.stream.Collectors
  */
 class MutuallyModifiedMethodsCommitFilter implements CommitFilter {
 
-    private modifiedMethodsHelper = new ModifiedMethodsHelper();
+    private modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar");
 
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
         return containsMutuallyModifiedMethods(project, mergeCommit)

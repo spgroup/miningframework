@@ -32,12 +32,29 @@ class RevisionsFilesCollector implements DataCollector {
         FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${revisionsFolder.getAbsolutePath()}/right.java")
         FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${revisionsFolder.getAbsolutePath()}/base.java")
         FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${revisionsFolder.getAbsolutePath()}/merge.java")     
+
+        return revisionsFolder
     }
 
     private File createRevisionsFolderIfItDoesntExist (Project project, MergeCommit mergeCommit, String filePath) {
         String classFilePath = getClassFilePath(project, mergeCommit, filePath);
         
         String revisionsFolderPath = "${arguments.getOutputPath()}/files/${project.getName()}/${mergeCommit.getSHA()}/source/${classFilePath}/";
+        File revisionsFolder = new File(revisionsFolderPath);
+        if(!revisionsFolder.exists()) {
+            revisionsFolder.mkdirs()
+        }
+
+        return revisionsFolder
+    }
+
+    public void createBuildFolderIfItDoesntExist (Project project, MergeCommit mergeCommit, String directoryName) {
+        createDirectory(project, mergeCommit, directoryName)
+    }
+
+    private File createDirectory(Project project, MergeCommit mergeCommit, String directoryName) {
+        String revisionsFolderPath = "${arguments.getOutputPath()}/files/${project.getName()}/${mergeCommit.getSHA()}/${directoryName}/";
+
         File revisionsFolder = new File(revisionsFolderPath);
         if(!revisionsFolder.exists()) {
             revisionsFolder.mkdirs()

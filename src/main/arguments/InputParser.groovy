@@ -1,7 +1,7 @@
 package arguments
 
 import exception.InvalidArgsException
-import project.Project
+import project.*
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import static groovy.io.FileType.DIRECTORIES

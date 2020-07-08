@@ -3,6 +3,7 @@ package util
 import project.*
 import java.util.regex.Pattern
 import java.util.regex.Matcher
+import org.apache.commons.io.FileUtils;
 
 class MergeHelper {
     private static String CONFLICT_INDICATOR = "(CONFLICT)|(CONFLITO)"
@@ -34,6 +35,30 @@ class MergeHelper {
         resetChanges.waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')
+    }
+
+    static public boolean areParentContributionsPreserved (Project project, MergeCommit mergeCommit, String fileName, String localRevisionFiles) {
+        Process mergeSimulation = replayMergeScenario(project, mergeCommit)
+        mergeSimulation.waitFor()
+    
+        boolean isThereDifference = isThereDiffBetweenFiles(project, fileName, localRevisionFiles)
+        Process returnToMaster = returnToMaster(project)
+        returnToMaster.waitFor()
+
+        return isThereDifference
+    }
+
+    static private boolean isThereDiffBetweenFiles(Project project, String fileName, String localRevisionFiles) {
+        File fileOriginalRepo = new File(findFileByName(fileName, project.getPath()))
+        File fileReplayMerge = new File(findFileByName("merge", localRevisionFiles))
+        
+        return FileUtils.contentEquals(fileOriginalRepo, fileReplayMerge)
+    }
+
+    
+    static private String findFileByName(String fileName, String pathToSearchOn) {
+        def file = new FileNameByRegexFinder().getFileNames(pathToSearchOn, /${fileName}\.java/)[0]
+        return file.toString()
     }
 
 }

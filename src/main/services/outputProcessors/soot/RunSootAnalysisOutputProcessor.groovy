@@ -14,13 +14,15 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
 
+    private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.0.7")
+
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
             // tainted: direct dependency between contributions, intraprocedural and with transitivity
-            new NonCommutativeConflictDetectionAlgorithm("tainted"),
+            new NonCommutativeConflictDetectionAlgorithm("tainted", sootWrapper),
             // svfa: direct dependency between contributions, interprocedural and  with transitivity
-            new NonCommutativeConflictDetectionAlgorithm("svfa", 30),
+            new NonCommutativeConflictDetectionAlgorithm("svfa", sootWrapper, 30),
             // confluence: indirect dependency between contributions, intraprocedural and with transitivity
-            new ConflictDetectionAlgorithm("confluence-tainted")
+            new ConflictDetectionAlgorithm("confluence-tainted", sootWrapper)
     ]
 
     void processOutput () {
@@ -69,6 +71,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             sootResultsFile.delete()
         }
 
+        sootResultsFile << sootWrapper.getSootAnalysisVersionDisclaimer();
         sootResultsFile << buildCsvHeader();
     
         return sootResultsFile

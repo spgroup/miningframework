@@ -15,15 +15,18 @@ class ConflictDetectionAlgorithm {
 
     private String name;
     private Long timeout;
+    private SootAnalysisWrapper sootWrapper;
 
-    ConflictDetectionAlgorithm(String name) {
+    ConflictDetectionAlgorithm(String name, SootAnalysisWrapper sootWrapper) {
         this.name = name
         this.timeout = null;
+        this.sootWrapper = sootWrapper;
     }
 
-    ConflictDetectionAlgorithm(String name, long timeout) {
+    ConflictDetectionAlgorithm(String name, SootAnalysisWrapper sootWrapper, long timeout) {
         this.name = name;
         this.timeout = timeout;
+        this.sootWrapper = sootWrapper;
     }
 
     String getName() {
@@ -60,7 +63,7 @@ class ConflictDetectionAlgorithm {
             return "false";
         }
 
-        Process sootProcess = runProcess(filePath, classPath);
+        Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.name);
 
         boolean executionCompleted = true;
         if (timeout != null) {
@@ -82,12 +85,7 @@ class ConflictDetectionAlgorithm {
         return result;
     }
 
-    private Process runProcess (String inputFilePath, String classPath) {
-        return ProcessRunner
-                .runProcess(".", "java", "-jar" ,"dependencies/soot-analysis.jar", "-csv", inputFilePath, "-cp", classPath, "-mode", this.name)
-    }
-
-    private String hasSootFlow (Process sootProcess) {
+    private String hasSootFlow(Process sootProcess) {
         String result = "error"
 
         sootProcess.getInputStream().eachLine {

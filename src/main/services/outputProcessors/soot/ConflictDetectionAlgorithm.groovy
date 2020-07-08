@@ -45,11 +45,15 @@ class ConflictDetectionAlgorithm {
     }
 
     String run (Scenario scenario) {
-        println "Running ${toString()}"
-        String filePath = scenario.getLinesFilePath()
-        String classPath = scenario.getClassPath()
+        try {
+            println "Running ${toString()}"
+            String filePath = scenario.getLinesFilePath()
+            String classPath = scenario.getClassPath()
 
-        return runAndReportResult(filePath, classPath);
+            return runAndReportResult(filePath, classPath);
+        } catch (ClassNotFoundInJarException e) {
+            return "not-found"
+        }
     }
 
     private String runAndReportResult (String filePath, String classPath) {

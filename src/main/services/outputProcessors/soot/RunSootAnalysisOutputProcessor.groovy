@@ -20,7 +20,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             // tainted: direct dependency between contributions, intraprocedural and with transitivity
             new NonCommutativeConflictDetectionAlgorithm("tainted", sootWrapper),
             // svfa: direct dependency between contributions, interprocedural and  with transitivity
-            new NonCommutativeConflictDetectionAlgorithm("svfa", sootWrapper, 30),
+            new NonCommutativeConflictDetectionAlgorithm("svfa", sootWrapper, 120),
             // confluence: indirect dependency between contributions, intraprocedural and with transitivity
             new ConflictDetectionAlgorithm("confluence-tainted", sootWrapper)
     ]

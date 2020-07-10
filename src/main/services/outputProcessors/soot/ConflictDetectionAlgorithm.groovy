@@ -14,17 +14,20 @@ import java.util.concurrent.TimeUnit
 class ConflictDetectionAlgorithm {
 
     private String name;
+    private String mode;
     private Long timeout;
     private SootAnalysisWrapper sootWrapper;
 
-    ConflictDetectionAlgorithm(String name, SootAnalysisWrapper sootWrapper) {
+    ConflictDetectionAlgorithm(String name, String mode,  SootAnalysisWrapper sootWrapper) {
         this.name = name
+        this.mode = mode;
         this.timeout = null;
         this.sootWrapper = sootWrapper;
     }
 
-    ConflictDetectionAlgorithm(String name, SootAnalysisWrapper sootWrapper, long timeout) {
+    ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
         this.name = name;
+        this.mode = mode;
         this.timeout = timeout;
         this.sootWrapper = sootWrapper;
     }
@@ -67,7 +70,7 @@ class ConflictDetectionAlgorithm {
             return "false";
         }
 
-        Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.name);
+        Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.mode);
 
         boolean executionCompleted = true;
         if (timeout != null) {

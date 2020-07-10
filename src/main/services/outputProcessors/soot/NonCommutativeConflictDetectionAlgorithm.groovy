@@ -13,12 +13,12 @@ package services.outputProcessors.soot
  */
 class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorithm {
 
-    NonCommutativeConflictDetectionAlgorithm(String name, SootAnalysisWrapper sootWrapper) {
-        super(name, sootWrapper)
+    NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper) {
+        super(name, mode, sootWrapper)
     }
 
-    NonCommutativeConflictDetectionAlgorithm(String name, SootAnalysisWrapper sootWrapper, long timeout) {
-        super(name, sootWrapper, timeout)
+    NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
+        super(name, mode, sootWrapper, timeout)
     }
 
     @Override

@@ -8,7 +8,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 import org.junit.BeforeClass
+import org.junit.Assert
 
+import java.io.FileNotFoundException
 import app.MiningFramework
 import project.*
 import arguments.*
@@ -28,7 +30,14 @@ public class TestSuite {
         
         Map<String, String> outputMethods = new HashMap<String, String>();
         Map<String, String> outputCommits = new HashMap<String, String>();
-        String output = new File('src/test/integration/output/data/results.csv').getText()
+
+        String output = "";
+        try {
+            output = new File('src/test/integration/output/data/results.csv').getText();
+        } catch (FileNotFoundException e) {
+            Assert.fail("Error: Could not find any scenarios on the results.csv file");
+        }
+
         def iterator = parseCsv(output, separator:';')
         for (line in iterator) {
             outputMethods.put(line[3], "${line[4]} ${line[5]} ${line[6]} ${line[7]}")

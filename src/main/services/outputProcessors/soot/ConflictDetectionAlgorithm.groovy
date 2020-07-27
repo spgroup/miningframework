@@ -14,16 +14,22 @@ import java.util.concurrent.TimeUnit
 class ConflictDetectionAlgorithm {
 
     private String name;
+    private String mode;
     private Long timeout;
+    private SootAnalysisWrapper sootWrapper;
 
-    ConflictDetectionAlgorithm(String name) {
+    ConflictDetectionAlgorithm(String name, String mode,  SootAnalysisWrapper sootWrapper) {
         this.name = name
+        this.mode = mode;
         this.timeout = null;
+        this.sootWrapper = sootWrapper;
     }
 
-    ConflictDetectionAlgorithm(String name, long timeout) {
+    ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
         this.name = name;
+        this.mode = mode;
         this.timeout = timeout;
+        this.sootWrapper = sootWrapper;
     }
 
     String getName() {
@@ -42,11 +48,15 @@ class ConflictDetectionAlgorithm {
     }
 
     String run (Scenario scenario) {
-        println "Running ${toString()}"
-        String filePath = scenario.getLinesFilePath()
-        String classPath = scenario.getClassPath()
+        try {
+            println "Running ${toString()}"
+            String filePath = scenario.getLinesFilePath()
+            String classPath = scenario.getClassPath()
 
-        return runAndReportResult(filePath, classPath);
+            return runAndReportResult(filePath, classPath);
+        } catch (ClassNotFoundInJarException e) {
+            return "not-found"
+        }
     }
 
     private String runAndReportResult (String filePath, String classPath) {
@@ -60,7 +70,7 @@ class ConflictDetectionAlgorithm {
             return "false";
         }
 
-        Process sootProcess = runProcess(filePath, classPath);
+        Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.mode);
 
         boolean executionCompleted = true;
         if (timeout != null) {
@@ -82,12 +92,7 @@ class ConflictDetectionAlgorithm {
         return result;
     }
 
-    private Process runProcess (String inputFilePath, String classPath) {
-        return ProcessRunner
-                .runProcess(".", "java", "-jar" ,"dependencies/soot-analysis.jar", "-csv", inputFilePath, "-cp", classPath, "-mode", this.name)
-    }
-
-    private String hasSootFlow (Process sootProcess) {
+    private String hasSootFlow(Process sootProcess) {
         String result = "error"
 
         sootProcess.getInputStream().eachLine {

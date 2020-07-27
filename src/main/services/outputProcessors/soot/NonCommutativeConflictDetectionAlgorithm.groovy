@@ -13,12 +13,12 @@ package services.outputProcessors.soot
  */
 class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorithm {
 
-    NonCommutativeConflictDetectionAlgorithm(String name) {
-        super(name)
+    NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper) {
+        super(name, mode, sootWrapper)
     }
 
-    NonCommutativeConflictDetectionAlgorithm(String name, long timeout) {
-        super(name, timeout)
+    NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
+        super(name, mode, sootWrapper, timeout)
     }
 
     @Override
@@ -28,16 +28,21 @@ class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorith
 
     @Override
     String run (Scenario scenario) {
-        String filePath = scenario.getLinesFilePath()
-        String classPath = scenario.getClassPath()
-        String filePathReverse = scenario.getLinesReverseFilePath()
+        try {
+            String filePath = scenario.getLinesFilePath()
+            String classPath = scenario.getClassPath()
+            String filePathReverse = scenario.getLinesReverseFilePath()
 
-        println "Running left right " + toString();
-        String leftRightResult = super.runAndReportResult(filePath, classPath)
-        println "Running right left " + toString();
-        String rightLeftResult = super.runAndReportResult(filePathReverse, classPath)
+            println "Running left right " + toString();
+            String leftRightResult = super.runAndReportResult(filePath, classPath)
+            println "Running right left " + toString();
+            String rightLeftResult = super.runAndReportResult(filePathReverse, classPath)
 
-        return "${leftRightResult};${rightLeftResult}";
+            return "${leftRightResult};${rightLeftResult}";
+        } catch (ClassNotFoundInJarException e) {
+            return "not-found;not-found"
+        }
+
     }
 
     @Override

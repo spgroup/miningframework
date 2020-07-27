@@ -1,1 +1,2 @@
-project;class;method;merge commit;left right dataflow;right left dataflow;left right tainted;right left tainted;left right svfa;right left svfa;confluence
+# This results were produced by soot-analysis v0.0.7
+project;class;method;merge commit;left right DF Intra;right left DF Intra;left right DF Inter;right left DF Inter;Confluence Intra

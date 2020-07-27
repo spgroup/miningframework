@@ -14,15 +14,15 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
 
+    private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.0.7")
+
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
-            // dataflow: direct dependency between contributions, intraprocedural and without transitivity
-            new NonCommutativeConflictDetectionAlgorithm("dataflow"),
             // tainted: direct dependency between contributions, intraprocedural and with transitivity
-            new NonCommutativeConflictDetectionAlgorithm("tainted"),
+            new NonCommutativeConflictDetectionAlgorithm("DF Intra","tainted", sootWrapper),
             // svfa: direct dependency between contributions, interprocedural and  with transitivity
-            new NonCommutativeConflictDetectionAlgorithm("svfa", 30),
-            // confluence: indirect dependency between contributions, intraprocedural and without transitivity
-            new ConflictDetectionAlgorithm("confluence")
+            new NonCommutativeConflictDetectionAlgorithm("DF Inter","svfa", sootWrapper, 120),
+            // confluence: indirect dependency between contributions, intraprocedural and with transitivity
+            new ConflictDetectionAlgorithm("Confluence Intra","confluence-tainted", sootWrapper)
     ]
 
     void processOutput () {
@@ -45,13 +45,8 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
                     List<String> results = [];
 
                     for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
-                        String algorithmResult
-                        try {
-                            algorithmResult = algorithm.run(scenario);
-                        } catch (ClassNotFoundInJarException e) {
-                            println e.getMessage()
-                            algorithmResult = "error"
-                        }
+                        String algorithmResult = algorithm.run(scenario);
+
                         results.add(algorithmResult)
                     }
                     sootResultsFile << "${scenario.toString()};${results.join(";")}\n"
@@ -67,6 +62,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             sootResultsFile.delete()
         }
 
+        sootResultsFile << sootWrapper.getSootAnalysisVersionDisclaimer();
         sootResultsFile << buildCsvHeader();
     
         return sootResultsFile

@@ -22,7 +22,7 @@ def main():
     result_with_build_info = read_csv(results_with_build_info_csv, SEMI_COLON)
 
     def compare_merge_dataset_soot_results(a, b):
-        return a["merge commit"] == b["Commit"]
+        return a["merge commit"] == b["Commit"] and a["class"] == b["Class"] and a["method"] == b["Declaration"].replace("|", ",")
 
     def compare_soot_results_result_with_build_info(a, b):
         return a["merge commit"] == b["merge commit"] and a["method"] == b["method"] and a["class"] == b["className"]

@@ -10,8 +10,8 @@ SEMI_COLON = ";"
 
 RESULTS_FILE_NAME = "static-analysis-results.csv"
 
-BLANK_FIELDS = ["Changes by Left", "Changes by Right",
-                "KDiff Screenshot", "DF Exist", "CF Exist", "OA Exist", "Researcher"]
+BLANK_FIELDS = ["Summary of changes made by left", "Summary of changes made by right",
+                "Manual analysis of DF", "Manual analysis of CF", "Manual analysis of OA", "Researcher responsible for the manual analysis"]
 
 
 def main():
@@ -48,9 +48,10 @@ def add_blank_fields(scenario, blank_fields):
 def include_wanted_fields(scenario):
     return {
         "Project": scenario["project"],
-        "Commit": scenario["merge commit"],
-        "ClassName": scenario["class"],
-        "Method": scenario["method"],
+        "Merge Commit": scenario["merge commit"],
+        "Class Name": scenario["class"],
+        "Method or field declaration changed by the two merged branches": scenario["method"],
+        "Original Sample": scenario.get("Sample", ""),
         "left right DF Intra": scenario.get("left right DF Intra", ""),
         "right left DF Intra": scenario.get("right left DF Intra", ""),
         "left right DF Inter": scenario.get("left right DF Inter", ""),
@@ -58,10 +59,9 @@ def include_wanted_fields(scenario):
         "OA Intra": scenario.get("OA Intra", ""),
         "Confluence Intra": scenario.get("Confluence Intra", ""),
         "Confluence Inter": scenario.get("Confluence Inter", ""),
-        "Sample": scenario.get("Sample", ""),
         "Locally Observable Interference": scenario.get("Locally Observable Interference", "") if scenario.get("Manually Analyzed", "") == "Yes" else "",
-        "Left Changed Lines": scenario["left modifications"],
-        "Right Changed Lines": scenario["right modifications"],
+        "Lines in the merge commit with changes made by left": scenario["left modifications"],
+        "Lines in the merge commit with changes made by right": scenario["right modifications"],
     }
 
 

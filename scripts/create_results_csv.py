@@ -10,8 +10,8 @@ SEMI_COLON = ";"
 
 RESULTS_FILE_NAME = "static-analysis-results.csv"
 
-BLANK_FIELDS = ["Summary of changes made by left", "Summary of changes made by right",
-                "Manual analysis of DF", "Manual analysis of CF", "Manual analysis of OA", "Researcher responsible for the manual analysis"]
+BLANK_FIELDS = ["Summary of changes made by left", "Summary of changes made by right", "Locally Observable Interference Description",
+                "Manual analysis of DF", "Manual analysis of CF", "Manual analysis of OA", "Researchers responsible for the manual analysis", "Modifications on Merge"]
 
 
 def main():

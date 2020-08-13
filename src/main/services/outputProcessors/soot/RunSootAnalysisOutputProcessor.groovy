@@ -14,15 +14,14 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
 
-    private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.0.7")
+    private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.1.0")
 
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
-            // tainted: direct dependency between contributions, intraprocedural and with transitivity
-            new NonCommutativeConflictDetectionAlgorithm("DF Intra","tainted", sootWrapper),
-            // svfa: direct dependency between contributions, interprocedural and  with transitivity
-            new NonCommutativeConflictDetectionAlgorithm("DF Inter","svfa", sootWrapper, 120),
-            // confluence: indirect dependency between contributions, intraprocedural and with transitivity
-            new ConflictDetectionAlgorithm("Confluence Intra","confluence-tainted", sootWrapper)
+            new NonCommutativeConflictDetectionAlgorithm("DF Intra","svfa-intraprocedural", sootWrapper, 120),
+            new NonCommutativeConflictDetectionAlgorithm("DF Inter","svfa-interprocedural", sootWrapper, 120),
+            new ConflictDetectionAlgorithm("Confluence Intra","svfa-confluence-intraprocedural", sootWrapper, 240),
+            new ConflictDetectionAlgorithm("Confluence Inter", "svfa-confluence-interprocedural", sootWrapper, 240),
+            new ConflictDetectionAlgorithm("OA Intra", "overriding", sootWrapper, 120)
     ]
 
     void processOutput () {

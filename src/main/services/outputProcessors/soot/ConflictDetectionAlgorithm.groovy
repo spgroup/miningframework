@@ -72,17 +72,32 @@ class ConflictDetectionAlgorithm {
 
         Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.mode);
 
+        // this is needed because if th waitFor command is called without reading the output
+        // in some executions the output buffer might get full and block the process
+        // so we execute both the output reading and the process waiting in parallel
+        Thread processOutputThread = new Thread(new Runnable() {
+            @Override
+            void run() {
+                result = hasSootFlow(sootProcess);
+            }
+        })
+        processOutputThread.start(); // start processing the output
+
         boolean executionCompleted = true;
         if (timeout != null) {
+            // wait for the execution to end setting a timeout
             executionCompleted = sootProcess.waitFor(timeout, TimeUnit.SECONDS)
         }
 
-        if (executionCompleted) {
-            result = hasSootFlow(sootProcess);
-        } else {
-            println "Execution exceeded timeout: " + timeout + " seconds";
+        // if the timeout has been reached
+        if (!executionCompleted) {
+            processOutputThread.interrupt(); // cancel the output reading thread
+            print ("Execution exceeded the timeout of " + timeout + " seconds")
             result = "timeout";
+        } else {
+            processOutputThread.join();
         }
+
 
         // force destroy process
         // if we don't use this command some processes will keep running and consuming a lot of memory

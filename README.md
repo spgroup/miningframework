@@ -15,8 +15,6 @@ We basically have variability points (hot spots) for
 We also have a number of implementations for such variability points, so that one can reuse or adapt them as needed for instantiating the framework.
 The examples illustrated above correspond to some of the implementations we provide here.
 
-This project, in its current implementation of the OutputProcessor, depends on [conflict static analysis](https://github.com/spgroup/conflict-static-analysis) to carry out studies involving statistical analysis. It uses the CLI to execute all scenarios collected with build with the conflict static analysis algorithms.
-
 ## Getting Started
 * Fork and clone the project. If you want to run the project tests, you must clone the repository with the recursive option:
  ``` git clone --recursive https://github.com/spgroup/miningframework ```
@@ -24,6 +22,8 @@ This project, in its current implementation of the OutputProcessor, depends on [
 * This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 3.0.x or newer to use the framework and start mining projects.
 
 * For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Travis CI, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. You may need to install dependencies for Python scripts. Once you have Python 3 installed, run `pip3 install -r requirements.txt` at the root of the project. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
+
+* For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also need [conflict static analysis](https://github.com/spgroup/conflict-static-analysis), which implements the SOOT static analyses mentioned above. The  class OutputProcessorImpl basically invokes the CLI provided by the [conflict static analysis](https://github.com/spgroup/conflict-static-analysis) to execute a number of conflict static analysis algorithms.
 
 * If you are using Windows, you will need to install [DiffUtils](http://gnuwin32.sourceforge.net/packages/diffutils.htm) manually. That done, add the installation directory to PATH in your environment variables.
 

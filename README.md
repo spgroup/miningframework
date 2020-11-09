@@ -15,6 +15,7 @@ We basically have variability points (hot spots) for
 We also have a number of implementations for such variability points, so that one can reuse or adapt them as needed for instantiating the framework.
 The examples illustrated above correspond to some of the implementations we provide here.
 
+This project, in its current implementation of the OutputProcessor, depends on [conflict static analysis](https://github.com/spgroup/conflict-static-analysis) to carry out studies involving statistical analysis. It uses the CLI to execute all scenarios collected with build with the conflict static analysis algorithms.
 
 ## Getting Started
 * Fork and clone the project. If you want to run the project tests, you must clone the repository with the recursive option:

@@ -1,2 +1,2 @@
-# This results were produced by soot-analysis v0.1.0
+# This results were produced by soot-analysis v0.2.1-SNAPSHOT
 project;class;method;merge commit;left right DF Intra;right left DF Intra;left right DF Inter;right left DF Inter;Confluence Intra;Confluence Inter;OA Intra

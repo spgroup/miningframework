@@ -1,19 +1,12 @@
-package services.dataCollectors
+package services.dataCollectors.buildRequester
 
-@Grab('com.xlson.groovycsv:groovycsv:1.3')
+
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
-import java.io.File 
-import groovy.util.NodeBuilder
-import interfaces.DataCollector
 import project.*
-import util.TravisHelper
-import util.GithubHelper
-import util.ProcessRunner
-import exception.TravisHelperException
 import util.FileManager
 import static app.MiningFramework.arguments
-import main.util.FileTransformations
+import util.FileTransformations
 
 class BuildRequesterDynamicSemanticStudy extends BuildRequester {
 
@@ -50,9 +43,8 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
         FileTransformations transformations = new FileTransformations()
 
-        File travisFile = new File("${project.getPath()}/.travis.yml")
-        String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-        travisFile.delete()
+        File configurationFile = ciPlatform.getConfigurationFile(project)
+        configurationFile.delete()
         BuildSystem buildSystem = getBuildSystem(project)
         for (code in codeTransformationInfo){
             for (file in FileManager.findLocalFileOfChangedClass(project.getPath(), code[4], mergeCommit.getSHA())){
@@ -60,21 +52,20 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
             }
         }
 
-        sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, version)            
+        sendNewBuildRequest(project, configurationFile, buildSystem, commit, branchName, version)
     }
 
     private void setupEnvironmentForBranchWithoutTransformations(Project project, MergeCommit mergeCommit, String commit, String branch, String version) {
         String branchName = commit.take(5) + branch
         checkoutCommitAndCreateBranch(project, branchName, commit).waitFor()
-        File travisFile = new File("${project.getPath()}/.travis.yml")
-        String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-        travisFile.delete()
+        File configurationFile = ciPlatform.getConfigurationFile(project)
+        configurationFile.delete()
         BuildSystem buildSystem = getBuildSystem(project)
-        sendNewBuildRequest(project, travisFile, ownerAndName, buildSystem, commit, branchName, version)            
+        sendNewBuildRequest(project, configurationFile, buildSystem, commit, branchName, version)
     }
 
-    protected void sendNewBuildRequest(Project project, File travisFile, String[] ownerAndName, BuildSystem buildSystem, String commit, String branchName, String version){
-        travisFile << getNewTravisFile("${version}-${commit}", ownerAndName[0], ownerAndName[1], buildSystem)
+    protected void sendNewBuildRequest(Project project, File configurationFile, BuildSystem buildSystem, String commit, String branchName, String version){
+        configurationFile << ciPlatform.generateConfiguration(project, "${version}-${commit}", getBuildCommand(buildSystem))
         commitChanges(project, "'Trigger build #${commit}'").waitFor()
         pushBranch(project, branchName).waitFor()
         goBackToMaster(project).waitFor()

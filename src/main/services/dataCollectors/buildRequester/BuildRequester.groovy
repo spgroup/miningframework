@@ -1,7 +1,10 @@
-package services.dataCollectors
+package services.dataCollectors.buildRequester
 
+import com.google.inject.Inject
 import interfaces.DataCollector
 import project.*
+import services.util.ci.CIPlatform
+import services.util.ci.TravisPlatform
 import util.GithubHelper
 import util.ProcessRunner
 
@@ -18,8 +21,12 @@ import static app.MiningFramework.arguments
  * and pushes it to the project, triggering a travis build, that will deploy the jars to the github repository's releases section
  */
 class BuildRequester implements DataCollector {
+    private CIPlatform ciPlatform
 
-    static private final FILE_NAME = '.travis.yml'
+    @Inject
+    BuildRequester(CIPlatform ciPlatform) {
+        this.ciPlatform = ciPlatform
+    }
 
     enum BuildSystem {
         Maven,
@@ -30,7 +37,7 @@ class BuildRequester implements DataCollector {
     static private final MAVEN_BUILD = 'mvn -DskipTests=true package'
     static private final GRADLE_BUILD = './gradlew assemble testClasses'
 
-    public void collectData(Project project, MergeCommit mergeCommit) {
+    void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
             String[] ownerAndName = getRemoteProjectOwnerAndName(project)
             String projectOwner = ownerAndName[0]
@@ -41,13 +48,15 @@ class BuildRequester implements DataCollector {
 
                 checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
                 
-                File travisFile = getTravisFile(project)
-                travisFile.delete()
+                File configurationFile = ciPlatform.getConfigurationFile(project)
+                configurationFile.delete()
                 BuildSystem buildSystem = getBuildSystem(project)
 
                 if (buildSystem != BuildSystem.None) {
-                    travisFile << getNewTravisFile(mergeCommit.getSHA(), ownerAndName[0], ownerAndName[1], buildSystem)
-                    commitChanges(project, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
+                    String buildCommand = getBuildCommand(buildSystem)
+
+                    configurationFile << ciPlatform.generateConfiguration(project, mergeCommit.getSHA(), buildCommand)
+                    commitChanges(project, configurationFile, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
                     pushBranch(project, branchName).waitFor()
                     
                     goBackToMaster(project).waitFor()
@@ -59,10 +68,6 @@ class BuildRequester implements DataCollector {
         } else {
             println "${project.getName()} - Build requesting skiped: access key not provided"
         }
-    }
-
-    private File getTravisFile(Project project) {
-        return new File("${project.getPath()}/${FILE_NAME}")
     }
 
     private String generateBranchName(MergeCommit mergeCommit) {
@@ -92,6 +97,17 @@ class BuildRequester implements DataCollector {
         }
     }
 
+    private String getBuildCommand(BuildSystem buildSystem) {
+        switch (buildSystem) {
+            case BuildSystem.Maven:
+                return MAVEN_BUILD
+            case BuildSystem.Gradle:
+                return GRADLE_BUILD
+            default:
+                return ""
+        }
+    }
+
     static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
         return ProcessRunner
             .runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha)
@@ -117,52 +133,14 @@ class BuildRequester implements DataCollector {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'push', 'origin', branchName)
     }
 
-    static private Process commitChanges(Project project, String message) {
-        ProcessRunner.runProcess(project.getPath(), "git", "add", ".travis.yml").waitFor()
+    static private Process commitChanges(Project project, File file, String message) {
+        ProcessRunner.runProcess(project.getPath(), "git", "add", file.getAbsolutePath()).waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
     }
 
-
     static private String getCurrentTimestamp() {
         return new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
-    }
-
-    static private getNewTravisFile(String commitSha, String owner, String projectName, BuildSystem buildSystem) {
-        String buildCommand = "";
-        if (buildSystem == BuildSystem.Maven) {
-            buildCommand = MAVEN_BUILD
-        } else if (buildSystem == BuildSystem.Gradle) {
-            buildCommand = GRADLE_BUILD
-        }
-    
-        String trimmedProjectName = projectName.replace('\n', '')
-        return """
-sudo: required
-language: java
-
-jdk:
-  - openjdk8
-
-script:
-  - ${buildCommand}
-
-before_deploy:
-    - mkdir MiningBuild
-    - find . -name '*.jar' -exec cp {} ./MiningBuild \\;
-    - cd /home/travis/build/${owner}/${trimmedProjectName}/MiningBuild
-    - tar -zcvf result.tar.gz *
-deploy:
-  provider: releases
-  api_key: \$GITHUB_TOKEN
-  file: result.tar.gz
-  name: fetchjar-${commitSha}
-  file_glob: true
-  overwrite: false
-  skip_cleanup: true
-  on:
-    all_branches: true 
-            """
     }
 
 }

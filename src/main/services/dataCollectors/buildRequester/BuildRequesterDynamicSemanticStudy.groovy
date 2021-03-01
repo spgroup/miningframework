@@ -1,5 +1,6 @@
 package services.dataCollectors.buildRequester
 
+import services.util.ci.CIPlatform
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
@@ -14,6 +15,10 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
     static private final GRADLE_BUILD = './gradlew fatJar'
     static private final BRANCH_NAME_WITH_TRANFORMATIONS = '_build_branch_with_all_dependencies_and_tranformations'
     static private final BRANCH_NAME_WITHOUT_TRANFORMATIONS = '_build_branch_with_all_dependencies_and_no_tranformations'
+
+    BuildRequesterDynamicSemanticStudy(CIPlatform ciPlatform) {
+        super(ciPlatform)
+    }
 
     public void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {

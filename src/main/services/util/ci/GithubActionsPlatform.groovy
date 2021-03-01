@@ -1,10 +1,15 @@
 package services.util.ci
 
 import project.Project
+import util.GithubHelper
+
+import static app.MiningFramework.arguments
 
 class GithubActionsPlatform implements CIPlatform {
     private static final FILE_NAME = ".github/workflows/build.yaml"
     private static final JAVA_VERSION = "1.8"
+
+    private GithubHelper githubHelper
 
     @Override
     void enableProject(Project project) {
@@ -61,4 +66,5 @@ jobs:
                 asset_content_type: application/gzip
 """
     }
+
 }

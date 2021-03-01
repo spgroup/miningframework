@@ -36,8 +36,8 @@ class ForkAndEnableCIProcessor implements ProjectProcessor {
             for (project in projects) {
                 if (project.isRemote()) {
                     def forkedProject = githubHelper.fork(project)
-                    String path = "${githubHelper.URL}/${forkedProject.full_name}"
-                    Project projectFork = new Project(project.getName(), path)
+                    String forkPath = "${githubHelper.URL}/${forkedProject.full_name}"
+                    Project projectFork = new Project(project.getName(), forkPath)
 
                     try {
                         ciPlatform.enableProject(projectFork)

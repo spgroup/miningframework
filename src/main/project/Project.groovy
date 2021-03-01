@@ -10,17 +10,23 @@ class Project {
     
     private String name
     private String path
+    private String url
     private boolean remote
     static private Pattern REMOTE_REPO_PATTERN = Pattern.compile("((http|https):\\/\\/)?.+.com\\/.+\\/.+")
 
-    public Project(String name, String path) {
+    Project(String name, String path) {
         this.name = name
         this.path = path
         
         this.remote = checkIfPathIsUrl(path)
+        if (this.remote) {
+            this.url = this.path
+        } else {
+            this.url = null
+        }
     }
 
-    public Project(String path) {
+    Project(String path) {
         this.path = path
 
         this.remote = checkIfPathIsUrl(path)   
@@ -34,7 +40,7 @@ class Project {
         return matcher.find()
     }
 
-    public ArrayList<MergeCommit> getMergeCommits(String sinceDate, String untilDate) {
+    ArrayList<MergeCommit> getMergeCommits(String sinceDate, String untilDate) {
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
         
         Process gitLog = constructAndRunGitLog(sinceDate, untilDate)
@@ -99,38 +105,50 @@ class Project {
         return ProcessRunner.startProcess(gitLogBuilder)
     }
 
-    public String getName() {
+    String getName() {
         return name
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name
     }
 
-    public String getPath() {
+    String getPath() {
         return path
-    }   
+    }
 
-    public void setPath(String path) {
+    void setPath(String path) {
         this.path = path
     }
 
-    public boolean isRemote() {
+    boolean isRemote() {
         return remote
     }
 
-    public void setRemote(boolean remote) {
-        this.remote = remote
+    String getRemoteUrl() {
+        if (remote && checkIfPathIsUrl(this.path)) {
+            return this.path
+        } else if (remote) {
+            Process gitProcess = ProcessRunner.runProcess(this.path, "git", "config", "--get", "remote.origin.url")
+            String gitProcessText = gitProcess.getText()
+
+            return gitProcessText.trim()
+        }
+        return null
     }
 
-    public String[] getOwnerAndName() {
-        String[] splitedPath = this.path.split("/");
-        String projectName = splitedPath[splitedPath.length - 1]
-        
-        if (remote) {
-            String projectOwner = splitedPath[splitedPath.length - 2]
+    String[] getOwnerAndName() {
+        String remoteUrl = this.getRemoteUrl()
+        if (remoteUrl != null) {
+            String[] splitPath = this.remoteUrl.split("/");
+            String projectName = splitPath[splitPath.length - 1]
+            String projectOwner = splitPath[splitPath.length - 2]
+
             return [projectOwner, projectName]
         } else {
+            String[] splitPath = this.path.split("/")
+            String projectName = splitPath[splitPath.length - 1]
+
             return ["local", projectName]
         }
     }

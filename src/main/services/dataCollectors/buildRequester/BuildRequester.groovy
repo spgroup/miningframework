@@ -4,7 +4,6 @@ import com.google.inject.Inject
 import interfaces.DataCollector
 import project.*
 import services.util.ci.CIPlatform
-import services.util.ci.TravisPlatform
 import util.GithubHelper
 import util.ProcessRunner
 
@@ -39,15 +38,11 @@ class BuildRequester implements DataCollector {
 
     void collectData(Project project, MergeCommit mergeCommit) {
         if (arguments.providedAccessKey()) {
-            String[] ownerAndName = getRemoteProjectOwnerAndName(project)
-            String projectOwner = ownerAndName[0]
-            String projectName = ownerAndName[1]
-
-            if (!buildAlreadyExists(projectOwner, projectName, mergeCommit)) {
+            if (!buildAlreadyExists(project, mergeCommit)) {
                 String branchName = generateBranchName(mergeCommit)
 
                 checkoutCommitAndCreateBranch(project, branchName, mergeCommit.getSHA()).waitFor()
-                
+
                 File configurationFile = ciPlatform.getConfigurationFile(project)
                 configurationFile.delete()
                 BuildSystem buildSystem = getBuildSystem(project)
@@ -57,6 +52,7 @@ class BuildRequester implements DataCollector {
 
                     configurationFile.getParentFile().mkdirs()
                     configurationFile << ciPlatform.generateConfiguration(project, mergeCommit.getSHA(), buildCommand)
+
                     commitChanges(project, configurationFile, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
                     pushBranch(project, branchName).waitFor()
                     
@@ -75,10 +71,10 @@ class BuildRequester implements DataCollector {
         return mergeCommit.getSHA().take(5) + "_build_branch_${getCurrentTimestamp()}"
     }
 
-    private boolean buildAlreadyExists(String projectOwner, String projectName, MergeCommit mergeCommit) {
+    private boolean buildAlreadyExists(Project project, MergeCommit mergeCommit) {
         GithubHelper githubHelper = new GithubHelper(arguments.getAccessKey())
 
-        def releases = githubHelper.getRepositoryReleases(projectOwner, projectName);
+        def releases = githubHelper.getRepositoryReleases(project);
 
         def mergeCommitRelease = releases.find { release -> release.name.endsWith(mergeCommit.getSHA()) }
 
@@ -113,18 +109,6 @@ class BuildRequester implements DataCollector {
         return ProcessRunner
             .runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha)
     }
-
-    static private String[] getRemoteProjectOwnerAndName(Project project) {
-        String remoteUrl = getRemoteUrl(project)
-        String[] splitedValues = remoteUrl.split('/')
-        return [splitedValues[splitedValues.size() - 2], splitedValues[splitedValues.size() - 1]]
-    }
-
-    static private String getRemoteUrl(Project project) {
-        String remoteUrl = ProcessRunner.runProcess(project.getPath(), 'git', 'config', '--get', 'remote.origin.url').getText()
-
-        return remoteUrl.trim()
-    } 
 
     static private Process goBackToMaster(Project project) {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', 'master')

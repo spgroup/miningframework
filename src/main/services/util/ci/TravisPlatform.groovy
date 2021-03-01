@@ -2,7 +2,6 @@ package services.util.ci
 
 import exception.TravisHelperException
 import project.Project
-import util.TravisHelper
 
 import static app.MiningFramework.arguments
 

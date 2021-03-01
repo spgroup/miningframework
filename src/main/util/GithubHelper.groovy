@@ -47,6 +47,22 @@ class GithubHelper {
         return result
     }
 
+    void enableActions(Project project) {
+        if (project.isRemote()) {
+            String[] projectOwnerAndName = project.getOwnerAndName()
+            String projectOwner = projectOwnerAndName[0]
+            String projectName = projectOwnerAndName[1]
+
+            String url = getRepoApiUrl(projectOwner, projectName) + "/enable"
+            print(url)
+            HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_POST, this.accessKey)
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_ACCEPTED) {
+                throw new GithubHelperException("Http request returned an error ${connection.getResponseMessage()}")
+            }
+        }
+    }
+
 
     Object fork (Project project) {
         def result = null;

@@ -7,7 +7,9 @@ class GithubActionsPlatform implements CIPlatform {
     private static final JAVA_VERSION = "1.8"
 
     @Override
-    void enableProject(Project project) {}
+    void enableProject(Project project) {
+        // github doesn't require that the project be enabled
+    }
 
     @Override
     File getConfigurationFile(Project project) {
@@ -36,19 +38,20 @@ jobs:
             - name: Generate tar
               run: |
                 mkdir MiningBuild
-                find . -name '*.jar' -exec cp {} ./MiningBuild \\;
-                tar -zcvf result.tar.gz ./MiningBuild/*
+                find . -name '*.jar' -exec cp {} . \\;
+                tar -zcvf result.tar.gz *.jar
             - name: Create release
               id: create_release
               uses: actions/create-release@v1
               env:
                 GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
               with:
+                tag_name: \${{ github.ref }}
                 release_name: fetchjar-${identifier}
                 draft: false
             - name: Upload jar
               id: upload-release-jar
-              uses: actions/upload-release-assets@v1
+              uses: actions/upload-release-asset@v1
               env:
                 GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
               with:

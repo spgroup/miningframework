@@ -19,6 +19,7 @@ import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
 import services.projectProcessors.FilterNonExistentProjectsProcessor
 import services.projectProcessors.ForkAndEnableCIProcessor
 import services.util.ci.CIPlatform
+import services.util.ci.GithubActionsPlatform
 import services.util.ci.TravisPlatform
 
 class StaticAnalysisConflictsDetectionModule extends AbstractModule {
@@ -43,7 +44,7 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
         outputProcessorBinder.addBinding().to(GenerateSootInputFilesOutputProcessor.class)
         outputProcessorBinder.addBinding().to(RunSootAnalysisOutputProcessor.class)
 
-        bind(CIPlatform.class).to(TravisPlatform.class)
+        bind(CIPlatform.class).to(GithubActionsPlatform.class)
     }
 
 }

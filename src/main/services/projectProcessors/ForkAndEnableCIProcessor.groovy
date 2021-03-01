@@ -4,7 +4,6 @@ import com.google.inject.Inject
 import interfaces.ProjectProcessor
 import project.*
 import services.util.ci.CIPlatform
-import services.util.ci.TravisPlatform
 import util.*
 
 import static app.MiningFramework.arguments

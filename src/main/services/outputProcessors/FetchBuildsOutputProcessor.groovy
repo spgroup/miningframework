@@ -27,7 +27,7 @@ class FetchBuildsOutputProcessor implements  OutputProcessor {
     }
     private void fetchBuildsScript (String inputPath, String outputPath, String token) {
         println "Running fetch_jars script"
-        ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, FETCH_JARS_PATH, inputPath, outputPath, token)
+        ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, FETCH_JARS_PATH, inputPath, outputPath, token, "github")
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
 
         Process process = ProcessRunner.startProcess(builder)

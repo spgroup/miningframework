@@ -1,6 +1,7 @@
-package util
+package services.util.ci
 
 import exception.TravisHelperException
+import util.HttpHelper
 
 class TravisHelper {
 

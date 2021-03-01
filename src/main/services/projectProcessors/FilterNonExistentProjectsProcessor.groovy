@@ -1,5 +1,6 @@
 package services.projectProcessors
 
+import exception.GithubHelperException
 import interfaces.ProjectProcessor
 import project.Project
 import util.GithubHelper

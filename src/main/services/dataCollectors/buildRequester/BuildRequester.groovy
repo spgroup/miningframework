@@ -55,6 +55,7 @@ class BuildRequester implements DataCollector {
                 if (buildSystem != BuildSystem.None) {
                     String buildCommand = getBuildCommand(buildSystem)
 
+                    configurationFile.getParentFile().mkdirs()
                     configurationFile << ciPlatform.generateConfiguration(project, mergeCommit.getSHA(), buildCommand)
                     commitChanges(project, configurationFile, "'Trigger build #${mergeCommit.getSHA()}'").waitFor()
                     pushBranch(project, branchName).waitFor()

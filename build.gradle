@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 
 apply plugin: 'application'
 
-mainClassName = 'app.Main'
+mainClassName = System.getProperty("mainClass") ?: "app.Main"
 
 repositories {
    mavenCentral()

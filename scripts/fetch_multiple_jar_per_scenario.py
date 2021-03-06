@@ -49,8 +49,6 @@ def fetchJars(inputPath, outputPath, token):
         githubProject = tokenUser + '/' + projectName
         print (projectName)        
 
-        get_builds_and_wait(githubProject)
-
         releases = get_github_releases(token, githubProject)
         version_options = [RELEASE_PREFIX_ORIGINAL, RELEASE_PREFIX_TRANSFORMED]
         for version_option in version_options:
@@ -251,27 +249,6 @@ def untar_and_remove_file(downloadPath):
     subprocess.call(['mkdir', downloadDir + 'build'])
     subprocess.call(['tar', '-xf', downloadPath, '-C', downloadDir])
     subprocess.call(['rm', downloadPath])
-    
-def get_builds_and_wait(project):
-    has_pendent = True
-    filtered_builds = []
-    try:
-        while (has_pendent):
-            builds = get_travis_project_builds(project)
-            filtered_builds = filter (lambda x: not x["branch"].startswith("untagged"), builds)
-            
-            has_pendent = False
-            for build in filtered_builds:
-                print (build["state"])
-                has_pendent = has_pendent or (build["state"] != "finished")
-        
-            if (has_pendent):
-                print ("Waiting 30 seconds")
-                time.sleep(30)
-    except Exception as e:
-        print ("Not available build for commit ",e)
-
-    return filtered_builds
 
 
 def get_travis_project_builds(project):

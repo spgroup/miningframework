@@ -15,6 +15,7 @@ import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
 import services.outputProcessors.FetchBuildsOutputProcessor
 import services.outputProcessors.GenerateSootInputFilesOutputProcessor
+import services.outputProcessors.WaitForBuildsOutputProcessor
 import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
 import services.projectProcessors.FilterNonExistentProjectsProcessor
 import services.projectProcessors.ForkAndEnableCIProcessor
@@ -40,6 +41,7 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
         projectProcessorBinder.addBinding().to(ForkAndEnableCIProcessor.class)
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
+        outputProcessorBinder.addBinding().to(WaitForBuildsOutputProcessor.class)
         outputProcessorBinder.addBinding().to(FetchBuildsOutputProcessor.class)
         outputProcessorBinder.addBinding().to(GenerateSootInputFilesOutputProcessor.class)
         outputProcessorBinder.addBinding().to(RunSootAnalysisOutputProcessor.class)

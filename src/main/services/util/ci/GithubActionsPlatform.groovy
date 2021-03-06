@@ -8,7 +8,7 @@ import static app.MiningFramework.arguments
 class GithubActionsPlatform implements CIPlatform {
     private static final FILE_NAME = ".github/workflows/build.yaml"
     private static final JAVA_VERSION = "1.8"
-
+    private static final POOLING_FREQUENCY = 10000
     private GithubHelper githubHelper
 
     @Override
@@ -67,4 +67,21 @@ jobs:
 """
     }
 
+    @Override
+    void waitForBuilds(Project project) {
+        this.githubHelper = new GithubHelper(arguments.getAccessKey())
+
+        boolean hasPendent = true
+        while (hasPendent) {
+            List<Object> workflows = this.githubHelper.getWorkFlowRuns(project)
+
+            hasPendent = workflows.stream().any(
+                    workflow -> workflow.conclusion == null
+            ).toBoolean()
+
+            if (hasPendent) {
+                sleep(POOLING_FREQUENCY)
+            }
+        }
+    }
 }

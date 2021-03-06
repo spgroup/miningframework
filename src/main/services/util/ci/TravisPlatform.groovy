@@ -8,6 +8,7 @@ import static app.MiningFramework.arguments
 class TravisPlatform implements CIPlatform  {
     static private final FILE_NAME = '.travis.yml'
     static private final ENABLE_MAX_RETRIES = 50
+    private static final POOLING_FREQUENCY = 10000
 
     private TravisHelper travisHelper;
 
@@ -76,5 +77,30 @@ deploy:
   on:
     all_branches: true 
             """
+    }
+
+    @Override
+    void waitForBuilds(Project project) {
+        if (travisHelper == null) {
+            travisHelper = new TravisHelper(arguments.getAccessKey())
+        }
+
+        boolean hasPendent = true
+
+        while (hasPendent) {
+            List<Object> builds = travisHelper.getBuilds(project)
+
+            hasPendent = builds.stream()
+                    .filter(
+                            build -> !((String) build.branch).startsWith("untagged"))
+                    .any(
+                            build -> ((String) build.state) != "finished"
+                    ).toBoolean()
+
+            if (hasPendent) {
+                sleep(POOLING_FREQUENCY)
+            }
+        }
+
     }
 }

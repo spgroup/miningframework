@@ -17,11 +17,12 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
 
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
-            new NonCommutativeConflictDetectionAlgorithm("DF Intra","svfa-intraprocedural", sootWrapper, 120),
-            new NonCommutativeConflictDetectionAlgorithm("DF Inter","svfa-interprocedural", sootWrapper, 120),
-            new ConflictDetectionAlgorithm("Confluence Intra","svfa-confluence-intraprocedural", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, 120),
+            new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, 120),
+            new ConflictDetectionAlgorithm("Confluence Intra", "svfa-confluence-intraprocedural", sootWrapper, 240),
             new ConflictDetectionAlgorithm("Confluence Inter", "svfa-confluence-interprocedural", sootWrapper, 240),
-            new ConflictDetectionAlgorithm("OA Intra", "overriding", sootWrapper, 120)
+            new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, 120),
+            new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, 120)
     ]
 
     void processOutput () {

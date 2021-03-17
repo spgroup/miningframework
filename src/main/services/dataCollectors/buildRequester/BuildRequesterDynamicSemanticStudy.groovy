@@ -4,6 +4,7 @@ import services.util.ci.CIPlatform
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
+import com.google.inject.Inject
 import project.*
 import util.FileManager
 import static app.MiningFramework.arguments
@@ -16,6 +17,7 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
     static private final BRANCH_NAME_WITH_TRANFORMATIONS = '_build_branch_with_all_dependencies_and_tranformations'
     static private final BRANCH_NAME_WITHOUT_TRANFORMATIONS = '_build_branch_with_all_dependencies_and_no_tranformations'
 
+    @Inject
     BuildRequesterDynamicSemanticStudy(CIPlatform ciPlatform) {
         super(ciPlatform)
     }
@@ -70,8 +72,9 @@ class BuildRequesterDynamicSemanticStudy extends BuildRequester {
     }
 
     protected void sendNewBuildRequest(Project project, File configurationFile, BuildSystem buildSystem, String commit, String branchName, String version){
+        configurationFile.getParentFile().mkdirs()
         configurationFile << ciPlatform.generateConfiguration(project, "${version}-${commit}", getBuildCommand(buildSystem))
-        commitChanges(project, "'Trigger build #${commit}'").waitFor()
+        commitChanges(project, configurationFile, "'Trigger build #${commit}'").waitFor()
         pushBranch(project, branchName).waitFor()
         goBackToMaster(project).waitFor()
         println "${project.getName()} - Build requesting finished!"

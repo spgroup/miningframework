@@ -20,7 +20,7 @@ import static app.MiningFramework.arguments
  * and pushes it to the project, triggering a travis build, that will deploy the jars to the github repository's releases section
  */
 class BuildRequester implements DataCollector {
-    private CIPlatform ciPlatform
+    protected CIPlatform ciPlatform
 
     @Inject
     BuildRequester(CIPlatform ciPlatform) {
@@ -94,7 +94,7 @@ class BuildRequester implements DataCollector {
         }
     }
 
-    private String getBuildCommand(BuildSystem buildSystem) {
+    protected String getBuildCommand(BuildSystem buildSystem) {
         switch (buildSystem) {
             case BuildSystem.Maven:
                 return MAVEN_BUILD
@@ -105,7 +105,7 @@ class BuildRequester implements DataCollector {
         }
     }
 
-    static private Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
+    static protected Process checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
         return ProcessRunner
             .runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha)
     }
@@ -118,7 +118,7 @@ class BuildRequester implements DataCollector {
         return ProcessRunner.runProcess(project.getPath(), 'git', 'push', 'origin', branchName)
     }
 
-    static private Process commitChanges(Project project, File file, String message) {
+    static protected Process commitChanges(Project project, File file, String message) {
         ProcessRunner.runProcess(project.getPath(), "git", "add", file.getAbsolutePath()).waitFor()
 
         return ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")

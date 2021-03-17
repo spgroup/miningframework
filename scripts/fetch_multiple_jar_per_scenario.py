@@ -73,7 +73,7 @@ def fetchJars(inputPath, outputPath, token):
                                 downloadUrl = release[ASSETS][0][DOWNLOAD_URL]
                                 download_file(downloadUrl, downloadPath, commitSHA, version_option)
                                 #jars_build_commits[commitSHA+""+version_option] = downloadPath
-                                if (commitSHA in parsedOutput):
+                                if (commitSHA in parsedOutput and version_option == RELEASE_PREFIX_ORIGINAL):
                                     newResultsFile.append(parsedOutput[commitSHA])
                                     untar_and_remove_file(downloadPath)
                                 print (downloadPath + ' is ready')
@@ -87,14 +87,13 @@ def fetchJars(inputPath, outputPath, token):
             outputFile.write("project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n")
             outputFile.write("\n".join(newResultsFile))
             outputFile.close()
-
         output_for_semantic_conflict_study(outputPath, jars_build_commits)
     except Exception as e:
         print(e)
 
 def output_for_semantic_conflict_study(outputPath, jars_build_commits):
     new_output = ""
-    with open(outputPath+"/data/results.csv", 'r') as file:
+    with open(outputPath+"/data/results-with-builds.csv", 'r') as file:
         reader = csv.reader(file)
         count = False
         for row in reader:

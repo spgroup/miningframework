@@ -7,7 +7,7 @@ This is a framework for mining and analyzing git projects.
 We focus on analyzing merge commits, although this could be easily changed to analyze any kind of commit.
 
 We basically have variability points (hot spots) for 
-* preprocessing the set of projects to be analyzed (like forking projects and enabling Travis CI services for such forks)
+* preprocessing the set of projects to be analyzed (like forking projects)
 * filtering the set of merge commits in such projects (like for focusing only on merge commits with parents that involve changes to the same method)
 * collecting experimental data from each merge commit (like revisions of the files declaring the method that was changed in both parents, commit hashes, line numbers of the changes in each parent, overall statistics about the merge commit, result of replaying the merge operation with different tools, etc.)
 * postprocessing the collected experimental data (like aggregating and summarizing data, or any kind of operation that is more expensive to perform in a per merge commit basis, such as downloading generated ".jar" files for each merge revision, merging spreadsheets created by different data collectors, etc.), after all projects have been analyzed

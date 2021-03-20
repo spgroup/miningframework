@@ -1,5 +1,5 @@
 # Mining Framework
-[![Build Status](https://travis-ci.org/rafaelmotaalves/miningframework.svg?branch=master)](https://travis-ci.org/rafaelmotaalves/miningframework)
+[![Java CI](https://github.com/spgroup/miningframework/actions/workflows/build.yaml/badge.svg)](https://github.com/spgroup/miningframework/actions/workflows/build.yaml)
 
 
 This is a framework for mining and analyzing git projects.

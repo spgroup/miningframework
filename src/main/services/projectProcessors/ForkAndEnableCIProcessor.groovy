@@ -11,7 +11,7 @@ import static app.MiningFramework.arguments
 /**
  * @requires: that the projects passed are on github, that the access key was passed and that
  * the ci platform is enabled for the github account
- * @provides: forks the passed github projects and enables them on travis with the access key as a environment
+ * @provides: forks the passed github projects and enables them on tbe CI platform with the access key as an environment
  * variable, returns the projects with the path updated to the fork url
  * */
 class ForkAndEnableCIProcessor implements ProjectProcessor {

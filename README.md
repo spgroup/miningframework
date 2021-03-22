@@ -1,5 +1,5 @@
 # Mining Framework
-[![Build Status](https://travis-ci.org/rafaelmotaalves/miningframework.svg?branch=master)](https://travis-ci.org/rafaelmotaalves/miningframework)
+[![Java CI](https://github.com/spgroup/miningframework/actions/workflows/build.yaml/badge.svg)](https://github.com/spgroup/miningframework/actions/workflows/build.yaml)
 
 
 This is a framework for mining and analyzing git projects.
@@ -7,10 +7,10 @@ This is a framework for mining and analyzing git projects.
 We focus on analyzing merge commits, although this could be easily changed to analyze any kind of commit.
 
 We basically have variability points (hot spots) for 
-* preprocessing the set of projects to be analyzed (like forking projects and enabling Travis CI services for such forks)
+* preprocessing the set of projects to be analyzed (like forking projects)
 * filtering the set of merge commits in such projects (like for focusing only on merge commits with parents that involve changes to the same method)
 * collecting experimental data from each merge commit (like revisions of the files declaring the method that was changed in both parents, commit hashes, line numbers of the changes in each parent, overall statistics about the merge commit, result of replaying the merge operation with different tools, etc.)
-* postprocessing the collected experimental data (like aggregating and summarizing data, or any kind of operation that is more expensive to perform in a per merge commit basis, such as downloading Travis CI ".jar" files for each merge revision, merging spreadsheets created by different data collectors, etc.), after all projects have been analyzed
+* postprocessing the collected experimental data (like aggregating and summarizing data, or any kind of operation that is more expensive to perform in a per merge commit basis, such as downloading generated ".jar" files for each merge revision, merging spreadsheets created by different data collectors, etc.), after all projects have been analyzed
 
 We also have a number of implementations for such variability points, so that one can reuse or adapt them as needed for instantiating the framework.
 The examples illustrated above correspond to some of the implementations we provide here.
@@ -21,7 +21,7 @@ The examples illustrated above correspond to some of the implementations we prov
 
 * This project uses [Apache Groovy](http://groovy-lang.org/). You have to install version 3.0.x or newer to use the framework and start mining projects.
 
-* For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Travis CI, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. You may need to install dependencies for Python scripts. Once you have Python 3 installed, run `pip3 install -r requirements.txt` at the root of the project. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
+* For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also have to install [Python](https://www.python.org/) version 3.7.x or newer. This is needed for a script that fetches build files from Github, and another script that converts collected data to a format that is used by the SOOT static analyses invoked by this instantiation. You may need to install dependencies for Python scripts. Once you have Python 3 installed, run `pip3 install -r requirements.txt` at the root of the project. If you don't wish to use this specific implementation of the postprocessing variability point, there is no need to install Python.
 
 * For one of the implementation of the postprocessing variability point ([OutputProcessorImpl](https://github.com/spgroup/miningframework/tree/master/src/services/OutputProcessorImpl.groovy)), you also need [conflict static analysis](https://github.com/spgroup/conflict-static-analysis), which implements the SOOT static analyses mentioned above. The  class OutputProcessorImpl basically invokes the CLI provided by the [conflict static analysis](https://github.com/spgroup/conflict-static-analysis) to execute a number of conflict static analysis algorithms.
 
@@ -69,8 +69,6 @@ This can be done by configuring an IDE or executing the following command in a t
 > For example, for running the study we use as an example to illustrate the variability points at the beginning of the page, we invoke the following command at the project top folder: 
 >   * Linux/Mac: `./gradlew run --args="--access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput"`
 >   * Windows: `.\gradlew run --args="--access-key github-personal-access-token --threads 2 ./projects.csv SOOTAnalysisOutput"`
-
-> For the used variability point implementation, the provided GitHub [personal access token](https://github.com/settings/tokens) (opt for repo scope) should be associated with a GitHub account also registered in [Travis](https://travis-ci.org/). Forks will be created for each project, the builds will be generated via Travis, and deployed to the forks as GitHub releases.
 
 > The CLI has the following help page:
 ```

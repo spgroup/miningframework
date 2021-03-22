@@ -1,6 +1,8 @@
-package util
+package services.util.ci
 
 import exception.TravisHelperException
+import project.Project
+import util.HttpHelper
 
 class TravisHelper {
 
@@ -91,4 +93,15 @@ class TravisHelper {
         }
     }
 
+    Object getBuilds(Project project) {
+        String[] projectOwnerAndName = project.getOwnerAndName()
+        String url =  "${API_URL}/repo/${projectOwnerAndName[0]}/${projectOwnerAndName[1]}/builds"
+        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_GET, this.token)
+
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            throw new TravisHelperException("An error occurred trying to get builds in travis")
+        }
+
+        return HttpHelper.responseToJSON(connection.getInputStream())
+    }
 }

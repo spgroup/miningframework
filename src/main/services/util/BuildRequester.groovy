@@ -6,7 +6,7 @@ import project.Project
 import util.GithubHelper
 import util.Handlers
 import util.HttpHelper
-import util.TravisHelper
+import services.util.ci.TravisHelper
 
 import java.nio.file.Files
 import java.nio.file.Path

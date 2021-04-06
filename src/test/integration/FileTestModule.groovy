@@ -7,17 +7,20 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.InCommitListMutuallyModifiedMethodsFilter
-import services.dataCollectors.BuildRequester
+import services.dataCollectors.buildRequester.BuildRequester
 import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
 import services.outputProcessors.GenerateSootInputFilesOutputProcessor
 import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
 import services.projectProcessors.FilterNonExistentProjectsProcessor
+import services.util.ci.CIPlatform
+import services.util.ci.TravisPlatform
 
 public class FileTestModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        bind(CIPlatform.class).to(TravisPlatform.class)
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
         dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)

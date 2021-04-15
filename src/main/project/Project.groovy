@@ -53,11 +53,15 @@ class Project {
                 String[] informations = it.split('-') // <commit hash>-<parents hash>
                 String SHA = getSHA(informations)
                 String[] parentsSHA = getParentsSHA(informations)
-                String ancestorSHA = getCommonAncestor(SHA, parentsSHA)
 
-                MergeCommit mergeCommit = new MergeCommit(SHA, parentsSHA, ancestorSHA)
-                mergeCommits.add(mergeCommit)
-
+                try {
+                    String ancestorSHA = getCommonAncestor(SHA, parentsSHA)
+                    MergeCommit mergeCommit = new MergeCommit(SHA, parentsSHA, ancestorSHA)
+                    mergeCommits.add(mergeCommit)
+                } catch (UnexpectedOutputException e) {
+                    println "Skipping merge commit ${SHA}"
+                    println e.message
+                }
             } else {
                 throw new UnexpectedOutputException('Git log returned an unexpected output. Could not retrieve merge commits.', '<commit hash>-<parents hash>', it)
             }
@@ -79,11 +83,17 @@ class Project {
     private String getCommonAncestor(mergeCommitSHA, parentsSHA) {
         Process gitMergeBase = constructAndRunGitMergeBase(mergeCommitSHA, parentsSHA)
         def expectedOutput = ~/[0-9a-z]{7,}/
-        gitMergeBase.getInputStream().eachLine {
-            if (it ==~ expectedOutput)
-                return it
-            else
-                throw new UnexpectedOutputException('Git merge-base returned an unexpected output. Could not retrieve the ancestor commit.', '<commit hash>', it)
+
+        String actualOutput = gitMergeBase.getText().trim()
+        if (actualOutput.isEmpty())
+            throw new UnexpectedOutputException('Git merge-base didn\'t return any output. Could not retrieve the ancestor commit.', '<commit hash>', actualOutput)
+        else {
+            actualOutput.eachLine {
+                if (it ==~ expectedOutput)
+                    return it
+                else
+                    throw new UnexpectedOutputException('Git merge-base returned an unexpected output. Could not retrieve the ancestor commit.', '<commit hash>', it)
+            }
         }
     }
 

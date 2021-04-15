@@ -9,12 +9,14 @@ import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 
 import services.commitFilters.InCommitListMutuallyModifiedMethodsFilter
+import services.commitFilters.InCommitListMutuallyModifiedStaticBlocksFilter
 import services.dataCollectors.BuildRequester
 import services.dataCollectors.BuildRequesterDynamicSemanticStudy
 import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
 import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollectorDynamicSemanticStudy
+import services.dataCollectors.modifiedLinesCollector.ModifiedLinesStaticBlockCollector
 import services.outputProcessors.FetchBuildsOutputProcessor
 import services.outputProcessors.GenerateSootInputFilesOutputProcessor
 import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
@@ -27,12 +29,12 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
-        dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)
+        dataCollectorBinder.addBinding().to(ModifiedLinesStaticBlockCollector.class)
         dataCollectorBinder.addBinding().to(StatisticsCollector.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)
         dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
         
-        bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsFilter.class)
+        bind(CommitFilter.class).to(InCommitListMutuallyModifiedStaticBlocksFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(FilterNonExistentProjectsProcessor.class)

@@ -20,6 +20,7 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     protected File experimentalDataFile;
     protected File experimentalDataFileWithLinks;
 
+    protected ModifiedStaticBlocksHelper modifiedStaticBlocksHelper;
     protected ModifiedMethodsHelper modifiedMethodsHelper;
     protected RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();
 
@@ -27,7 +28,7 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
 
     abstract def void createExperimentalDataFiles(String outputPath)
 
-    protected void collectMethodData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
+    protected void collectorData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
         ModifiedMethod leftMethod = leftAndRightMethods.getV1();
         ModifiedMethod rightMethod = leftAndRightMethods.getV2();
 
@@ -84,6 +85,12 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         Set<ModifiedMethod> leftModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
         Set<ModifiedMethod> rightModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         return intersectAndBuildMap(leftModifiedMethods, rightModifiedMethods)
+    }
+
+    protected Map<String, Tuple2<ModifiedMethod, ModifiedStaticBlock>> getMutuallyModifiedStaticBlocks(Project project, MergeCommit mergeCommit, String filePath) {
+        Set<ModifiedMethod> leftModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
+        Set<ModifiedMethod> rightModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
+        return intersectAndBuildMap(leftModifiedStaticBlocks, rightModifiedStaticBlocks )
     }
 
     protected Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersectAndBuildMap(Set<ModifiedMethod> leftModifiedMethods, Set<ModifiedMethod> rightModifiedMethods) {

@@ -51,7 +51,7 @@ class ModifiedLinesCollector extends ModifiedLinesCollectorAbstract {
                     // because the other way we would have to search the all methods list for each iteration to get merge
                     // revision method
                     if (methodWasModifiedByBothParents) {
-                        collectMethodData(leftAndRightMethods, method, project, mergeCommit, className)
+                        collectorData(leftAndRightMethods, method, project, mergeCommit, className)
                     }
 
                 }

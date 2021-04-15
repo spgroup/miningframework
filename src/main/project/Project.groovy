@@ -85,16 +85,10 @@ class Project {
         def expectedOutput = ~/[0-9a-z]{7,}/
 
         String actualOutput = gitMergeBase.getText().trim()
-        if (actualOutput.isEmpty())
-            throw new UnexpectedOutputException('Git merge-base didn\'t return any output. Could not retrieve the ancestor commit.', '<commit hash>', actualOutput)
-        else {
-            actualOutput.eachLine {
-                if (it ==~ expectedOutput)
-                    return it
-                else
-                    throw new UnexpectedOutputException('Git merge-base returned an unexpected output. Could not retrieve the ancestor commit.', '<commit hash>', it)
-            }
-        }
+        if (actualOutput ==~ expectedOutput)
+            return actualOutput
+        else
+            throw new UnexpectedOutputException('Git merge-base returned an unexpected output. Could not retrieve the ancestor commit.', '<commit hash>', actualOutput)
     }
 
     private Process constructAndRunGitMergeBase(String mergeCommitSHA, String[] parentsSHA) {

@@ -31,7 +31,7 @@ class S3MRunner {
 
         // To extend the analysis for other handlers, clone and modify the following conditional.
         if (handlers.contains(Handlers.Renaming)) {
-            runS3M(leftFile, baseFile, rightFile, 'CT.java', Handlers.Renaming, '-hmcrdov')
+            runS3M(leftFile, baseFile, rightFile, 'CT.java', Handlers.Renaming, '-hmcrd', 'true')
             runS3M(leftFile, baseFile, rightFile, 'SF.java', Handlers.Renaming, '-r', 'SAFE')
             runS3M(leftFile, baseFile, rightFile, 'MM.java', Handlers.Renaming, '-r', 'MERGE')
             runS3M(leftFile, baseFile, rightFile, 'KB.java', Handlers.Renaming, '-r', 'BOTH')

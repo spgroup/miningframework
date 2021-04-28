@@ -22,15 +22,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2967648e-b582-4077-9e67-9510ed9d75f1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesStaticBlockCollector.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projects.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/injectors/StaticAnalysisConflictsDetectionModule.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/injectors/StaticAnalysisConflictsDetectionModule.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollector.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollector.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorAbstract.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorAbstract.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorDynamicSemanticStudy.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorDynamicSemanticStudy.groovy" afterDir="false" />
-    </list>
+    <list default="true" id="2967648e-b582-4077-9e67-9510ed9d75f1" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -60,12 +52,15 @@
     <setting file="file://$PROJECT_DIR$/src/main/util/FileManager.groovy" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1ieHuJcKGueDFW5kntZSVEPuNm1" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="JavaClassFindUsagesOptions.isDerivedClasses" value="true" />
     <property name="JavaClassFindUsagesOptions.isMethodsUsages" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
@@ -73,6 +68,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
     <property name="show.unlinked.gradle.project.popup" value="true" />
   </component>
   <component name="RecentsManager">
@@ -83,7 +79,7 @@
       <recent name="C:\UFPE\miningframework\src\main\services\dataCollectors\modifiedLinesCollector" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -99,8 +95,24 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MiningWorker" type="GroovyScriptRunConfiguration" factoryName="Groovy" temporary="true">
+      <module name="miningframework.main" />
+      <setting name="path" value="file://$PROJECT_DIR$/src/main/app/MiningWorker.groovy" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="./projects.csv SOOTAnalysisOutput" />
+      <setting name="workDir" value="file://$PROJECT_DIR$/src/main/app" />
+      <setting name="debug" value="false" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Groovy.MiningWorker" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Groovy.MiningWorker" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
@@ -128,59 +140,78 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="223" y="0" width="1089" height="824" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1617811130185">
+    <state x="223" y="0" width="1089" height="824" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1619145403061">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="0" width="1089" height="824" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1617811130185" />
+    <state x="223" y="0" width="1089" height="824" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1619145403061" />
     <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser" timestamp="1618335844266">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1618335844266" />
-    <state x="524" y="115" key="#xdebugger.evaluate" timestamp="1618520485936">
+    <state x="528" y="281" width="481" height="267" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1619304762828">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="524" y="115" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1618520485936" />
-    <state width="708" height="656" key="DebuggerActiveHint" timestamp="1618520519372">
+    <state x="528" y="281" width="481" height="267" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1536.824@0.0.1536.824" timestamp="1619304762828" />
+    <state x="524" y="115" key="#xdebugger.evaluate" timestamp="1619188388393">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="708" height="656" key="DebuggerActiveHint/0.0.1536.824@0.0.1536.824" timestamp="1618520519372" />
-    <state width="1493" height="223" key="GridCell.Tab.0.bottom" timestamp="1618520567076">
+    <state x="524" y="115" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1619188388393" />
+    <state width="708" height="656" key="DebuggerActiveHint" timestamp="1619452188950">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state width="1493" height="223" key="GridCell.Tab.0.center" timestamp="1618520567076">
+    <state width="708" height="656" key="DebuggerActiveHint/0.0.1536.824@0.0.1536.824" timestamp="1619452188950" />
+    <state x="548" y="154" key="FileChooserDialogImpl" timestamp="1619145337071">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state width="1493" height="223" key="GridCell.Tab.0.left" timestamp="1618520567076">
+    <state x="548" y="154" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1619145337071" />
+    <state width="1493" height="223" key="GridCell.Tab.0.bottom" timestamp="1619488657092">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state width="1493" height="223" key="GridCell.Tab.0.right" timestamp="1618520567076">
+    <state width="1493" height="223" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state width="1493" height="223" key="GridCell.Tab.0.center" timestamp="1619488657092">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state width="1493" height="223" key="GridCell.Tab.1.bottom" timestamp="1618520567076">
+    <state width="1493" height="223" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state width="1493" height="223" key="GridCell.Tab.0.left" timestamp="1619488657092">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state width="1493" height="223" key="GridCell.Tab.1.center" timestamp="1618520567076">
+    <state width="1493" height="223" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state width="1493" height="223" key="GridCell.Tab.0.right" timestamp="1619488657092">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state width="1493" height="223" key="GridCell.Tab.1.left" timestamp="1618520567076">
+    <state width="1493" height="223" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state width="1493" height="223" key="GridCell.Tab.1.bottom" timestamp="1619488657092">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state width="1493" height="223" key="GridCell.Tab.1.right" timestamp="1618520567076">
+    <state width="1493" height="223" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state width="1493" height="223" key="GridCell.Tab.1.center" timestamp="1619488657092">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1618520567076" />
-    <state x="478" y="145" width="777" height="558" key="find.popup" timestamp="1618519832659">
+    <state width="1493" height="223" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state width="1493" height="223" key="GridCell.Tab.1.left" timestamp="1619488657092">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="478" y="145" width="777" height="558" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1618519832659" />
+    <state width="1493" height="223" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state width="1493" height="223" key="GridCell.Tab.1.right" timestamp="1619488657092">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="223" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1619488657092" />
+    <state x="277" y="57" key="SettingsEditor" timestamp="1619145093614">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="277" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1619145093614" />
+    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1619444875195">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1619444875195" />
+    <state x="478" y="145" width="998" height="592" key="find.popup" timestamp="1619542726032">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="478" y="145" width="998" height="592" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1619542726032" />
     <state width="600" height="428" key="javadoc.popup" timestamp="1618428200832">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -210,11 +241,6 @@
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorAbstract.groovy</url>
-          <line>101</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/DiffJParser.groovy</url>
           <line>79</line>
           <option name="timeStamp" value="28" />
@@ -226,13 +252,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/app/MiningWorker.groovy</url>
-          <line>54</line>
+          <line>53</line>
           <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/InCommitListMutuallyModifiedStaticBlocksFilter.groovy</url>
-          <line>43</line>
-          <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedMethodsCommitFilter.groovy</url>
@@ -246,58 +267,63 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/app/MiningWorker.groovy</url>
-          <line>51</line>
+          <line>50</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/app/MiningWorker.groovy</url>
-          <line>63</line>
+          <line>62</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlocksHelper.groovy</url>
-          <line>35</line>
-          <option name="timeStamp" value="67" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/RevisionsFilesCollector.groovy</url>
+          <line>30</line>
+          <option name="timeStamp" value="81" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlocksHelper.groovy</url>
-          <line>49</line>
-          <option name="timeStamp" value="69" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy</url>
+          <line>29</line>
+          <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlocksHelper.groovy</url>
-          <line>58</line>
-          <option name="timeStamp" value="70" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/StatisticsCollector.groovy</url>
+          <line>22</line>
+          <option name="timeStamp" value="86" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/StaticBlockModifiedLinesMatcher.groovy</url>
-          <line>8</line>
-          <option name="timeStamp" value="72" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorAbstract.groovy</url>
+          <line>102</line>
+          <option name="timeStamp" value="92" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedStaticBlocksCommitFilter.groovy</url>
-          <line>47</line>
-          <option name="timeStamp" value="74" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy</url>
+          <line>33</line>
+          <option name="timeStamp" value="93" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/StaticBlockModifiedLinesMatcher.groovy</url>
-          <line>52</line>
-          <option name="timeStamp" value="76" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy</url>
+          <line>45</line>
+          <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/StaticBlockModifiedLinesMatcher.groovy</url>
-          <line>53</line>
-          <option name="timeStamp" value="77" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy</url>
+          <line>61</line>
+          <option name="timeStamp" value="103" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/StaticBlockModifiedLinesMatcher.groovy</url>
-          <line>56</line>
-          <option name="timeStamp" value="78" />
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy</url>
+          <line>84</line>
+          <option name="timeStamp" value="104" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedStaticBlocksCommitFilter.groovy</url>
-          <line>35</line>
-          <option name="timeStamp" value="79" />
+          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/InCommitListMutuallyModifiedStaticBlocksFilter.groovy</url>
+          <line>42</line>
+          <option name="timeStamp" value="108" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesStaticBlockCollector.groovy</url>
+          <line>50</line>
+          <option name="timeStamp" value="109" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

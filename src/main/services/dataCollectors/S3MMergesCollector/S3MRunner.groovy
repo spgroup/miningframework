@@ -23,6 +23,12 @@ class S3MRunner {
         mergeScenarios.parallelStream()
                 .forEach(mergeScenario -> runHandlerVariants(mergeScenario, handlers))
     }
+    static void collectS3MResult(String mergeScenario ) {
+        Path fileMergeScenario = Paths.get(mergeScenario);
+        List<Handlers> handlers = new ArrayList<Handlers>();
+        handlers.add(Handlers.InitializationBlocks);
+        runHandlerVariants(fileMergeScenario, handlers)
+    }
 
     private static void runHandlerVariants(Path mergeScenario, List<Handlers> handlers) {
         Path leftFile = getInvolvedFile(mergeScenario, 'left')
@@ -36,9 +42,13 @@ class S3MRunner {
             runS3M(leftFile, baseFile, rightFile, 'MM.java', Handlers.Renaming, '-r', 'MERGE')
             runS3M(leftFile, baseFile, rightFile, 'KB.java', Handlers.Renaming, '-r', 'BOTH')
         }
+        if (handlers.contains(Handlers.InitializationBlocks)){
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,  mergeScenario.toString() +  '\\leo_HIB.java',  '-hib', 'true');
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,mergeScenario.toString() + '\\leo_HIBMB.java', '-hibmb', 'true');
+        }
     }
 
-    private static void runS3M(Path leftFile, Path baseFile, Path rightFile, String outputFileName, Handlers handler, String... additionalParameters) {
+    private static void runS3M(Path leftFile, Path baseFile, Path rightFile, String outputFileName, Handlers handler, String additionalParameters) {
         Process S3M = ProcessRunner.startProcess(buildS3MProcess(leftFile, baseFile, rightFile, outputFileName, handler, additionalParameters))
         S3M.getInputStream().eachLine {
             //println it
@@ -48,6 +58,14 @@ class S3MRunner {
         renameUnstructuredMergeFile(baseFile.getParent(), handler.name(), outputFileName)
     }
 
+    private static void run3MInicializedDeclaration(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handler, String additionalParameters) {
+        Process S3M = ProcessRunner.startProcess(buildS3MProcessInizalizedDeclaration(leftFile, baseFile, rightFile, outputFileName, handler, additionalParameters))
+
+        S3M.getInputStream().eachLine {
+            println it
+        }
+        S3M.waitFor()
+    }
     private static void renameUnstructuredMergeFile(Path mergeScenario, String handlerName, String outputFileName) {
         Path currentUnstructuredMergeFile = mergeScenario.resolve(handlerName).resolve("${outputFileName}.merge")
         Path renamedUnstructuredMergeFile = mergeScenario.resolve("textual.java")
@@ -59,6 +77,17 @@ class S3MRunner {
         List<String> parameters = buildS3MParameters(leftFile, baseFile, rightFile, outputFileName, handler.name(), additionalParameters)
         S3M.command().addAll(parameters)
         return S3M
+    }
+    private static ProcessBuilder buildS3MProcessInizalizedDeclaration(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String additionalParameters) {
+        ProcessBuilder S3M = ProcessRunner.buildProcess(getParentAsString(S3M_PATH))
+        List<String> parameters = buildS3MParametersBasic(leftFile, baseFile, rightFile, outputFileName, handlerName, additionalParameters)
+        S3M.command().addAll(parameters)
+        return  S3M
+    }
+
+    private static List<String> buildS3MParametersBasic(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String additionalParameters) {
+        List<String> parameters = ['java', '-jar', getNameAsString(S3M_PATH), leftFile.toString(), baseFile.toString(), rightFile.toString(), '-o', outputFileName, handlerName,'true']
+        return parameters
     }
 
     private static List<String> buildS3MParameters(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String... additionalParameters) {

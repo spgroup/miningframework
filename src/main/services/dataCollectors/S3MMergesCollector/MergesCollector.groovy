@@ -16,7 +16,7 @@ class MergesCollector implements DataCollector {
         List<Path> mergeScenarios = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
         println 'Collected merge scenarios'
 
-        S3MRunner.collectS3MResults(mergeScenarios, [Handlers.Renaming])
+        .collectS3MResults(mergeScenarios, [Handlers.Renaming])
         println 'Collected S3M results'
 
         MergeCommitSummary summary = DataAnalyser.analyseScenarios(project, mergeCommit, mergeScenarios)

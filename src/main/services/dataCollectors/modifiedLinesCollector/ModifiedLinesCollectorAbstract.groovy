@@ -90,9 +90,23 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     protected Map<String, Tuple2<ModifiedMethod, ModifiedStaticBlock>> getMutuallyModifiedStaticBlocks(Project project, MergeCommit mergeCommit, String filePath) {
         Set<ModifiedMethod> leftModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
         Set<ModifiedMethod> rightModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
-        return intersectAndBuildMap(leftModifiedStaticBlocks, rightModifiedStaticBlocks )
+        return intersectAndBuildMapStaticBlock(leftModifiedStaticBlocks, rightModifiedStaticBlocks )
     }
 
+
+    protected Map<String, Tuple2<ModifiedStaticBlock, ModifiedStaticBlock>> intersectAndBuildMapStaticBlock(Set<ModifiedStaticBlock> leftModifiedStaticBlocks, Set<ModifiedStaticBlock> rightModifiedStaticBlocks) {
+        Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
+
+        for(leftStaticBlock in leftModifiedStaticBlocks) {
+            for(rightStaticBlock in rightModifiedStaticBlocks) {
+                if(leftStaticBlock == rightStaticBlock) {
+                    intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
+                }
+            }
+        }
+
+        return intersection
+    }
     protected Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersectAndBuildMap(Set<ModifiedMethod> leftModifiedMethods, Set<ModifiedMethod> rightModifiedMethods) {
         Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
 

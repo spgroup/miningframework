@@ -39,7 +39,7 @@ class ModifiedLinesStaticBlockCollector extends ModifiedLinesCollectorAbstract {
 
                 for (def staticBlock : allModifiedStaticBlocks) {
                     // get left and right staticBlock for the specific merge staticBlock
-                    Tuple2<ModifiedStaticBlock, ModifiedStaticBlock> leftAndRightStaticBlocks = mutuallyModifiedStaticBlocks[method.getSignature()];
+                    Tuple2<ModifiedStaticBlock, ModifiedStaticBlock> leftAndRightStaticBlocks = mutuallyModifiedStaticBlocks[staticBlock.getIdentifier()];
                     // if its null than this static block wasn't modified by both left and right
 
                     boolean staticBlockWasModifiedByBothParents = leftAndRightStaticBlocks != null

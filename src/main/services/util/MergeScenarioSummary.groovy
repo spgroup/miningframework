@@ -33,8 +33,8 @@ class MergeScenarioSummary {
 
         this.differenceBetweenConflictSets = [
                 CTConflicts == SFConflicts,
-                CTConflicts == SFConflicts,
-                CTConflicts == SFConflicts,
+                CTConflicts == MMConflicts,
+                CTConflicts == KBConflicts,
                 SFConflicts == MMConflicts,
                 SFConflicts == KBConflicts,
                 MMConflicts == KBConflicts

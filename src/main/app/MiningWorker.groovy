@@ -10,6 +10,8 @@ import interfaces.*
 import exception.UnstagedChangesException
 import util.*
 
+import services.util.Utils;
+
 class MiningWorker implements Runnable {
 
     private Set<DataCollector> dataCollectors
@@ -37,7 +39,7 @@ class MiningWorker implements Runnable {
                     checkForUnstagedChanges(project);
                 }
 
-                List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+                def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
                 for (mergeCommit in mergeCommits) {
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {
@@ -50,6 +52,8 @@ class MiningWorker implements Runnable {
                         e.printStackTrace();
                     }
                 }
+
+                updateSkippedCommitsSpreadsheet(project, skipped)
 
                 if (arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
@@ -133,5 +137,15 @@ class MiningWorker implements Runnable {
         }
 
         FileManager.delete(new File(targetPath))
+    }
+
+    private void updateSkippedCommitsSpreadsheet(Project project, List<String> skipped) {
+        String spreadsheetName = 'skipped-merge-commits'
+        String spreadsheetHeader = 'project,merge commit'
+
+        File spreadsheet = FileManager.createSpreadsheet(Utils.getOutputPath(), spreadsheetName, spreadsheetHeader)
+        skipped.each { mergeCommit ->
+            FileManager.appendLineToFile(spreadsheet, "${project.getName()},${mergeCommit}")
+        }
     }
 }

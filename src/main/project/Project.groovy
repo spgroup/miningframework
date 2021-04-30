@@ -40,7 +40,8 @@ class Project {
         return matcher.find()
     }
 
-    ArrayList<MergeCommit> getMergeCommits(String sinceDate, String untilDate) {
+    List getMergeCommits(String sinceDate, String untilDate) {
+        ArrayList<String> skipped = new ArrayList<String>()
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
         
         Process gitLog = constructAndRunGitLog(sinceDate, untilDate)
@@ -61,6 +62,7 @@ class Project {
                 } catch (UnexpectedOutputException e) {
                     println "Skipping merge commit ${SHA}"
                     println e.message
+                    skipped.add(SHA)
                 }
             } else {
                 throw new UnexpectedOutputException('Git log returned an unexpected output. Could not retrieve merge commits.', '<commit hash>-<parents hash>', it)
@@ -69,7 +71,7 @@ class Project {
         
         if(mergeCommits.isEmpty())
             println "No merge commits."
-        return mergeCommits
+        return [mergeCommits, skipped]
     }
 
     private String getSHA(String[] informations) {

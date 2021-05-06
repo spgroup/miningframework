@@ -61,6 +61,39 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         printResults(project, mergeCommit, className, mergeMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
     }
 
+    protected void collectorData(Tuple2<ModifiedStaticBlock, ModifiedStaticBlock> leftAndRightStaticBlocks, ModifiedStaticBlock mergeStaticBlock, Project project, MergeCommit mergeCommit, String className) {
+        ModifiedStaticBlock leftStaticBlock = leftAndRightStaticBlocks.getV1();
+        ModifiedStaticBlock rightStaticBlock = leftAndRightStaticBlocks.getV2();
+
+        Set<Integer> leftAddedLines = new HashSet<Integer>();
+        Set<Integer> leftDeletedLines = new HashSet<Integer>();
+        Set<Integer> rightAddedLines = new HashSet<Integer>();
+        Set<Integer> rightDeletedLines = new HashSet<Integer>();
+
+        // for each modified line in merge
+        for (def mergeLine : mergeStaticBlock.getModifiedLines()) {
+            // if it is at left's modified lines add it to left list
+            if (leftStaticBlock.getModifiedLines().contains(mergeLine)) {
+                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
+                    leftDeletedLines.add(mergeLine.getNumber());
+                } else {
+                    leftAddedLines.add(mergeLine.getNumber());
+                }
+            }
+            // if it is at rights's modified lines add it to right list
+            if (rightStaticBlock.getModifiedLines().contains(mergeLine)) {
+                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
+                    rightDeletedLines.add(mergeLine.getNumber());
+                } else {
+                    rightAddedLines.add(mergeLine.getNumber());
+                }
+            }
+        }
+
+        // prints results to a csv file
+        printResults(project, mergeCommit, className, mergeStaticBlock.getIdentifier(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
+    }
+
     protected void createOutputFiles(String outputPath) {
         createExperimentalDataDir(outputPath)
         createExperimentalDataFiles(outputPath)
@@ -120,5 +153,15 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
 
         return intersection
     }
+    private synchronized void printResults(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
+                                           HashSet<Integer> leftAddedLines, HashSet<Integer> leftDeletedLines, HashSet<Integer> rightAddedLines,
+                                           HashSet<Integer> rightDeletedLines) {
 
+        experimentalDataFile << "${project.getName()};${mergeCommit.getSHA()};${className};${modifiedDeclarationSignature};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
+
+        // Add links.
+        if(arguments.isPushCommandActive())
+            addLinks(project.getName(), mergeCommit.getSHA(), className, modifiedDeclarationSignature, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines, arguments.getResultsRemoteRepositoryURL())
+
+    }
 }

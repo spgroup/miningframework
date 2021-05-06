@@ -4,8 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StaticBlockModifiedLinesMatcher {
-    private String CONST_INITIALIZER_DECLARATION = "static";
-    Set<ModifiedStaticBlock> matchModifiedStaticBlocksASTLines(Map<Integer, String> collectionsStaticBlocks, List<ModifiedLine> modifiedLines) {
+    private String CONST_INITIALIZER_DECLARATION = "static-";
+    Set<ModifiedStaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocks, List<ModifiedLine> modifiedLines) {
         def staticBlockSet = new HashSet<ModifiedStaticBlock>();
 
         if (collectionsStaticBlocks.entrySet().size() > 0) {
@@ -14,7 +14,7 @@ public class StaticBlockModifiedLinesMatcher {
                 String blockedStatic = initializerDeclaration.getValue();
 
                 def lineSet = new HashSet<ModifiedLine>();
-                def diffLineText = findModifiedLineByText(blockedStatic, modifiedLines);
+                def diffLineText = findModifiedLineByText(identifier,blockedStatic, modifiedLines);
 
                 if (diffLineText != null) {
                     lineSet.add(diffLineText);
@@ -48,10 +48,11 @@ public class StaticBlockModifiedLinesMatcher {
 
         return staticBlockSet;
     }
-    public ModifiedLine findModifiedLineByText(String blockedStatic, List<ModifiedLine> modifiedLines) {
+    public ModifiedLine findModifiedLineByText(String keyBlockedStatic , String blockedStatic, List<ModifiedLine> modifiedLines) {
         for (def modifiedLine: modifiedLines) {
             if (Pattern.compile(modifiedLine.getContent(),Pattern.LITERAL).matcher(blockedStatic).find()) {
-                return modifiedLine;
+                if(findModifiedLineByNumber(keyBlockedStatic, modifiedLines))
+                   return modifiedLine;
             }
         }
         return null;
@@ -63,6 +64,20 @@ public class StaticBlockModifiedLinesMatcher {
             }
         }
         return null;
+    }
+    public int getBeginIdentifier(String keyLineNumber){
+        return Integer.parseInt(keyLineNumber.split("-")[1]);
+    }
+    public int getEndIdentifier(String keyLineNumber){
+        return Integer.parseInt(keyLineNumber.split("-")[2]);
+    }
+    public boolean findModifiedLineByNumber(String lineNumberBeginEnd, List<ModifiedLine> modifiedLines) {
+        for (def modifiedLine: modifiedLines) {
+            if (modifiedLine.getNumber() >= getBeginIdentifier(lineNumberBeginEnd) && modifiedLine.getNumber() <= getEndIdentifier(lineNumberBeginEnd) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

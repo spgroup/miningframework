@@ -43,8 +43,8 @@ class S3MRunner {
             runS3M(leftFile, baseFile, rightFile, 'KB.java', Handlers.Renaming, '-r', 'BOTH')
         }
         if (handlers.contains(Handlers.InitializationBlocks)){
-            run3MInicializedDeclaration(leftFile, baseFile, rightFile,  mergeScenario.toString() +  '\\leo_HIB.java',  '-hib', 'true');
-            run3MInicializedDeclaration(leftFile, baseFile, rightFile,mergeScenario.toString() + '\\leo_HIBMB.java', '-hibmb', 'true');
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,  mergeScenario.toString() +  '\\staticBlockHIB.java',  '-hib', 'true');
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,mergeScenario.toString() + '\\staticBlockHIBMB.java', '-hibmb', 'true');
         }
     }
 

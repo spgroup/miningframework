@@ -45,20 +45,25 @@ class ModifiedStaticBlocksHelper {
 
         return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(staticBlockedASTFile, parsedTextualDiffResult);
     }
-    private Map<Integer,String> parsedASTAllStaticBlock(File file){
+    private Map<String,String> parsedASTAllStaticBlock(File file){
         JavaParser javaParser = new JavaParser();
-        def result = new HashMap<int, String>();
-        int count = 0;
+        def result = new HashMap<String, String>();
+
         CompilationUnit compilationUnit = javaParser.parse(file).getResult().get();
         compilationUnit.stream().forEach(staticBlocked -> {
             if(staticBlocked instanceof InitializerDeclaration) {
-                result.put(count,staticBlocked?.getBody()?.asBlockStmt()?.toString())
-                count++;
+                int begin = staticBlocked?.getRange().get().begin.line
+                int end = staticBlocked?.getRange().get().end.line
+                result.put(convertStrIntIdentifier(begin, end),staticBlocked?.getBody()?.asBlockStmt()?.toString())
             }
         });
         return result;
     }
-    private boolean  verifyMatchModifiedStaticBlo
+    private String convertStrIntIdentifier(int begin, int end){
+        return String.valueOf(begin) + "-" + String.valueOf(end)
+    }
+
+
     private List<String> runDiffJ(File ancestorFile, File targetFile) {
         printRunDiffJ(ancestorFile,targetFile );
         Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())

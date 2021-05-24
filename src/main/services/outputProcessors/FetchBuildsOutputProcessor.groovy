@@ -2,6 +2,7 @@ package services.outputProcessors
 
 import exception.ExternalScriptException
 import interfaces.OutputProcessor
+import services.util.FetchBuildsScript
 import util.ProcessRunner
 
 import static app.MiningFramework.arguments
@@ -13,9 +14,13 @@ import static app.MiningFramework.arguments
  * [outputPath]/files/[projectName]/[commitSha]/build/ also creates a [outputPath]/data/results-with-builds.csv file
  * that has only the scenarios that the builds were generated
  */
-class FetchBuildsOutputProcessor implements  OutputProcessor {
+class FetchBuildsOutputProcessor implements OutputProcessor {
+    private final String FETCH_JARS_PATH
     private final String SCRIPT_RUNNER = "python3"
-    private final String FETCH_JARS_PATH = "./scripts/fetch_jars.py"
+
+    FetchBuildsOutputProcessor(FetchBuildsScript script) {
+        this.FETCH_JARS_PATH = script.getScriptPath()
+    }
 
     @Override
     void processOutput() {

@@ -22,6 +22,7 @@ import services.projectProcessors.ForkAndEnableCIProcessor
 import services.util.ci.CIPlatform
 import services.util.ci.GithubActionsPlatform
 import services.util.ci.TravisPlatform
+import services.util.FetchBuildsScript
 
 class StaticAnalysisConflictsDetectionModule extends AbstractModule {
 
@@ -42,7 +43,10 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(WaitForBuildsOutputProcessor.class)
-        outputProcessorBinder.addBinding().to(FetchBuildsOutputProcessor.class)
+
+        FetchBuildsOutputProcessor fetchBuildsOutputProcessor = new FetchBuildsOutputProcessor(FetchBuildsScript.SingleBuildPerScenario)
+        outputProcessorBinder.addBinding().toInstance(fetchBuildsOutputProcessor)
+
         outputProcessorBinder.addBinding().to(GenerateSootInputFilesOutputProcessor.class)
         outputProcessorBinder.addBinding().to(RunSootAnalysisOutputProcessor.class)
 

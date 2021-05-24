@@ -22,6 +22,8 @@ import services.projectProcessors.ForkAndEnableCIProcessor
 import services.util.ci.CIPlatform
 import services.util.ci.GithubActionsPlatform
 
+import services.util.FetchBuildsScript
+
 class DynamicAnalysisConflictsDetectionModule extends AbstractModule {
 
     @Override
@@ -39,7 +41,9 @@ class DynamicAnalysisConflictsDetectionModule extends AbstractModule {
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(WaitForBuildsOutputProcessor.class)
-        outputProcessorBinder.addBinding().to(FetchBuildsOutputProcessor.class)
+
+        FetchBuildsOutputProcessor fetchBuildsOutputProcessor = new FetchBuildsOutputProcessor(FetchBuildsScript.MultipleBuildsPerScenario)
+        outputProcessorBinder.addBinding().toInstance(fetchBuildsOutputProcessor)
         
         bind(CIPlatform.class).to(GithubActionsPlatform.class)
     }

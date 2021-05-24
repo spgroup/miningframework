@@ -7,7 +7,7 @@ enum FetchBuildsScript {
     private final String SCRIPT_PATH
 
     private FetchBuildsScript(String SCRIPT_PATH) {
-        this.SCRIPT_PATH = SCRIPT_PATH
+        this.SCRIPT_PATH = "./scripts/${SCRIPT_PATH}.py"
     }
 
     String getScriptPath() {

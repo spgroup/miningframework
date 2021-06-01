@@ -146,4 +146,16 @@ final class FileManager {
         }
         return filesPath
     }
+
+    static synchronized File createSpreadsheet(Path path, String name, String header) {
+        File spreadsheet = path.resolve("${name}.csv").toFile()
+        if (!spreadsheet.exists())
+            appendLineToFile(spreadsheet, header)
+
+        return spreadsheet
+    }
+
+    static synchronized void appendLineToFile(File file, String line) {
+        file << "${line}\n"
+    }
 }

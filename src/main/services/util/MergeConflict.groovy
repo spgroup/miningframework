@@ -18,6 +18,7 @@ class MergeConflict {
     public static MINE_CONFLICT_MARKER = "<<<<<<<MINE"
     public static YOURS_CONFLICT_MARKER = ">>>>>>>YOURS"
     public static CHANGE_CONFLICT_MARKER = "======="
+    public static SIMPLE_CONFLICT_MARKER = "<<<<<<<"
 
     private String left
     private String right
@@ -72,6 +73,18 @@ class MergeConflict {
             }
         }
         return mergeConflicts
+    }
+
+    public static int getConflictsNumber(Path file) {
+        int conflictCount = 0
+        Iterator<String> mergeCodeLines = FileUtils.readLines(file.toFile(), Charset.defaultCharset()).iterator()
+        while (mergeCodeLines.hasNext()) {
+            String line = mergeCodeLines.next()
+            if (line.startsWith(SIMPLE_CONFLICT_MARKER)) {
+                conflictCount += 1
+            }
+        }
+        return conflictCount
     }
 
 }

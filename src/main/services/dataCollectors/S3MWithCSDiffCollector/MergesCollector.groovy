@@ -8,20 +8,25 @@ import util.TextualMergeStrategy
 
 import java.nio.file.Path
 
-class S3MWithCSDiffCollector implements DataCollector {
+class MergesCollector implements DataCollector {
+
+    public static final List<TextualMergeStrategy> strategies = [
+        TextualMergeStrategy.ConsecutiveLines,
+        TextualMergeStrategy.CSDiff,
+        TextualMergeStrategy.CSDiffAndDiff3,
+        TextualMergeStrategy.Diff3
+    ]
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
         List<Path> mergeScenarios = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
         println 'Collected merge scenarios'
 
-        List<TextualMergeStrategy> textualMergeStrategies = [
-            TextualMergeStrategy.Diff3,
-            TextualMergeStrategy.CSDiff
-        ]
-
-        S3MRunner.collectS3MResults(mergeScenarios, textualMergeStrategies)
+        S3MRunner.collectS3MResults(mergeScenarios, strategies)
         println 'Collected S3M results'
+
+        MergeCommitSummary summary = DataAnalyser.analyseScenarios(mergeScenarios)
+        println 'Summarized collected data'
     }
 
 }

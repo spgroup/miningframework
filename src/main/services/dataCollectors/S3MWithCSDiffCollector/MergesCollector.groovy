@@ -11,10 +11,10 @@ import java.nio.file.Path
 class MergesCollector implements DataCollector {
 
     public static final List<TextualMergeStrategy> strategies = [
-        TextualMergeStrategy.ConsecutiveLines,
+        TextualMergeStrategy.Diff3,
         TextualMergeStrategy.CSDiff,
         TextualMergeStrategy.CSDiffAndDiff3,
-        TextualMergeStrategy.Diff3
+        TextualMergeStrategy.ConsecutiveLines
     ]
 
     @Override
@@ -27,6 +27,9 @@ class MergesCollector implements DataCollector {
 
         MergeCommitSummary summary = DataAnalyser.analyseScenarios(mergeScenarios)
         println 'Summarized collected data'
+
+        SpreadsheetBuilder.buildSpreadsheets(project, mergeCommit, summary)
+        println 'Built spreadsheets'
     }
 
 }

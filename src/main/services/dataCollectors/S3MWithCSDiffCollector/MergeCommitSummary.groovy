@@ -43,7 +43,14 @@ class MergeCommitSummary {
 
     @Override
     String toString() {
-        // TODO: Fill in here
+        List<String> values = [ Integer.toString(this.numberOfModifiedFiles) ]
+        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
+            values.add(Integer.toString(this.numberOfConflicts.get(strategy)))
+        }
+
+        values.add(Boolean.toString(this.strategiesHaveSameOutputs))
+        values.add(Boolean.toString(this.strategiesHaveSameConflicts))
+        return values.join(',')
     }
 
 }

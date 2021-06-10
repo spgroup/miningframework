@@ -50,33 +50,37 @@ class SpreadsheetBuilder {
 
     private static List<String> getGlobalSpreadsheetHeaders() {
         List<String> headers = [ 'project', 'merge commit', 'number of modified files' ]
-        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            headers.add("number of ${strategy.name()} conflicts")
+
+        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
+        for (String approach: mergeApproaches) {
+            headers.add("number of ${approach} conflicts")
         }
 
-        headers.addAll('strategies have same outputs', 'strategies have same conflicts')
+        headers.addAll('approaches have same outputs', 'approaches have same conflicts')
         return headers
     }
 
     private static List<String> getCommitSpreadsheetHeaders() {
         List<String> headers = [ 'project', 'merge commit', 'file' ]
-        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            headers.add("number of ${strategy.name()} conflicts")
+
+        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
+        for (String approach: mergeApproaches) {
+            headers.add("number of ${approach} conflicts")
         }
 
-        for (int i = 0; i < MergesCollector.strategies.size(); i++) {
-            TextualMergeStrategy strategy1 = MergesCollector.strategies[i]
-            for (int j = i + 1; j < MergesCollector.strategies.size(); j++) {
-                TextualMergeStrategy strategy2 = MergesCollector.strategies[j]
-                headers.add("${strategy1.name()} output = ${strategy2.name()} output")
+        for (int i = 0; i < mergeApproaches.size(); i++) {
+            String approach1 = mergeApproaches[i]
+            for (int j = i + 1; j < mergeApproaches.size(); j++) {
+                String approach2 = mergeApproaches[j]
+                headers.add("${approach1} output = ${approach2} output")
             }
         }
 
-        for (int i = 0; i < MergesCollector.strategies.size(); i++) {
-            TextualMergeStrategy strategy1 = MergesCollector.strategies[i]
-            for (int j = i + 1; j < MergesCollector.strategies.size(); j++) {
-                TextualMergeStrategy strategy2 = MergesCollector.strategies[j]
-                headers.add("${strategy1.name()} conflicts = ${strategy2.name()} conflicts")
+        for (int i = 0; i < mergeApproaches.size(); i++) {
+            String approach1 = mergeApproaches[i]
+            for (int j = i + 1; j < mergeApproaches.size(); j++) {
+                String approach2 = mergeApproaches[j]
+                headers.add("${approach1} conflicts = ${approach2} conflicts")
             }
         }
 

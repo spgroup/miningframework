@@ -5,21 +5,22 @@ import util.TextualMergeStrategy
 class MergeCommitSummary {
 
     int numberOfModifiedFiles
-    Map<TextualMergeStrategy, Integer> numberOfConflicts
-    boolean strategiesHaveSameOutputs
-    boolean strategiesHaveSameConflicts
+    Map<String, Integer> numberOfConflicts
+    boolean approachesHaveSameOutputs
+    boolean approachesHaveSameConflicts
     List<MergeScenarioSummary> mergeScenarioSummaries
 
     MergeCommitSummary() {
         this.numberOfModifiedFiles = 0
-
         this.numberOfConflicts = [:]
-        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            this.numberOfConflicts.put(strategy, 0)
+
+        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
+        for (String approach: mergeApproaches) {
+            this.numberOfConflicts.put(approach, 0)
         }
 
-        this.strategiesHaveSameOutputs = true
-        this.strategiesHaveSameConflicts = true
+        this.approachesHaveSameOutputs = true
+        this.approachesHaveSameConflicts = true
         this.mergeScenarioSummaries = []
     }
 
@@ -27,29 +28,32 @@ class MergeCommitSummary {
         this.numberOfModifiedFiles++
         addConflicts(mergeScenarioSummary)
 
-        this.strategiesHaveSameOutputs &= mergeScenarioSummary.strategiesHaveSameOutputs()
-        this.strategiesHaveSameConflicts &= mergeScenarioSummary.strategiesHaveSameConflicts()
+        this.approachesHaveSameOutputs &= mergeScenarioSummary.approachesHaveSameOutputs()
+        this.approachesHaveSameConflicts &= mergeScenarioSummary.approachesHaveSameConflicts()
 
         this.mergeScenarioSummaries.add(mergeScenarioSummary)
     }
 
     private void addConflicts(MergeScenarioSummary mergeScenarioSummary) {
-        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            int currentNumberOfConflicts = this.numberOfConflicts.get(strategy)
-            int additionalNumberOfConflicts = mergeScenarioSummary.numberOfConflicts.get(strategy)
-            this.numberOfConflicts.put(strategy, currentNumberOfConflicts + additionalNumberOfConflicts)
+        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
+        for (String approach: mergeApproaches) {
+            int currentNumberOfConflicts = this.numberOfConflicts.get(approach)
+            int additionalNumberOfConflicts = mergeScenarioSummary.numberOfConflicts.get(approach)
+            this.numberOfConflicts.put(approach, currentNumberOfConflicts + additionalNumberOfConflicts)
         }
     }
 
     @Override
     String toString() {
         List<String> values = [ Integer.toString(this.numberOfModifiedFiles) ]
-        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            values.add(Integer.toString(this.numberOfConflicts.get(strategy)))
+        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
+
+        for (String approach: mergeApproaches) {
+            values.add(Integer.toString(this.numberOfConflicts.get(approach)))
         }
 
-        values.add(Boolean.toString(this.strategiesHaveSameOutputs))
-        values.add(Boolean.toString(this.strategiesHaveSameConflicts))
+        values.add(Boolean.toString(this.approachesHaveSameOutputs))
+        values.add(Boolean.toString(this.approachesHaveSameConflicts))
         return values.join(',')
     }
 

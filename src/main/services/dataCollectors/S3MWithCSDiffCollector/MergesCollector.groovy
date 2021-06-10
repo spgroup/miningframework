@@ -12,9 +12,7 @@ class MergesCollector implements DataCollector {
 
     public static final List<TextualMergeStrategy> strategies = [
         TextualMergeStrategy.Diff3,
-        TextualMergeStrategy.CSDiff,
-        TextualMergeStrategy.CSDiffAndDiff3,
-        TextualMergeStrategy.ConsecutiveLines
+        TextualMergeStrategy.CSDiff
     ]
 
     @Override
@@ -30,6 +28,16 @@ class MergesCollector implements DataCollector {
 
         SpreadsheetBuilder.buildSpreadsheets(project, mergeCommit, summary)
         println 'Built spreadsheets'
+    }
+
+    public static List<String> getMergeApproaches() {
+        List<String> mergeApproaches = [ 'Textual' ]
+        for (TextualMergeStrategy strategy: strategies) {
+            mergeApproaches.add(strategy.name())
+        }
+
+        mergeApproaches.add('Actual')
+        return mergeApproaches
     }
 
 }

@@ -12,7 +12,9 @@ class MergesCollector implements DataCollector {
 
     static final List<TextualMergeStrategy> strategies = [
         TextualMergeStrategy.Diff3,
-        TextualMergeStrategy.CSDiff
+        TextualMergeStrategy.CSDiff,
+        TextualMergeStrategy.ConsecutiveLines,
+        TextualMergeStrategy.CSDiffAndDiff3
     ]
 
     static final List<String> mergeApproaches = getMergeApproaches()

@@ -20,7 +20,7 @@ class S3MRunner {
      * @param textualMergeStrategies
      */
     static void collectS3MResults(List<Path> mergeScenarios, List<TextualMergeStrategy> textualMergeStrategies) {
-        mergeScenarios.parallelStream().forEach(
+        mergeScenarios.stream().forEach(
             mergeScenario -> runDifferentStrategies(mergeScenario, textualMergeStrategies)
         )
     }

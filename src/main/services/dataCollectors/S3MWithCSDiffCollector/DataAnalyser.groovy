@@ -11,7 +11,7 @@ class DataAnalyser {
     }
 
     private static void buildCommitSummary(MergeCommitSummary summary, List<Path> mergeScenarios) {
-        mergeScenarios.stream().map(MergeScenarioSummary::new).forEach(summary::addMergeSummary)
+        mergeScenarios.stream().map(MergeScenarioSummary::new).forEach(summary::addMergeScenarioSummary)
     }
 
 }

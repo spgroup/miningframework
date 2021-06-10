@@ -19,54 +19,15 @@ class MergeScenarioSummary {
 
     MergeScenarioSummary(Path mergeScenarioPath) {
         this.mergeScenarioPath = Utils.getOutputPath().resolve(mergeScenarioPath)
-
-        Map<String, Path> mergePaths = [:]
-        mergePaths.put("Textual", getTextualMergeOutputPath())
-        mergePaths.put("Actual", getActualMergeOutputPath())
-
-        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            mergePaths.put(strategy.name(), getMergeOutputPath(strategy))
-        }
-
-        this.numberOfConflicts = [:]
-        Map<String, String> outputs = [:]
-        Map<String, Set<MergeConflict>> conflicts = [:]
-
-        mergePaths.each { name, path ->
-            Set<MergeConflict> currentConflicts = getMergeConflicts(path)
-            this.numberOfConflicts.put(name, currentConflicts.size())
-            conflicts.put(name, currentConflicts)
-            outputs.put(name, getMergeOutput(path))
-        }
-
-        this.sameOutputs = [:]
-        this.sameConflicts = [:]
-
-        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-        for (int i = 0; i < mergeApproaches.size(); i++) {
-            String approach1 = mergeApproaches[i]
-            this.sameOutputs.put(approach1, [:])
-            this.sameConflicts.put(approach1, [:])
-
-            for (int j = i + 1; j < mergeApproaches.size(); j++) {
-                String approach2 = mergeApproaches[j]
-
-                String output1 = StringUtils.deleteWhitespace(outputs.get(approach1))
-                String output2 = StringUtils.deleteWhitespace(outputs.get(approach2))
-                this.sameOutputs.get(approach1).put(approach2, output1 == output2)
-
-                Set<MergeConflict> conflicts1 = conflicts.get(approach1)
-                Set<MergeConflict> conflicts2 = conflicts.get(approach2)
-                this.sameConflicts.get(approach1).put(approach2, conflicts1 == conflicts2)
-            }
-        }
+        compareMergeApproaches()
     }
 
     boolean approachesHaveSameOutputs() {
-        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-        for (int i = 0; i < mergeApproaches.size(); i++) {
-            for (int j = i + 1; j < mergeApproaches.size(); j++) {
-                if (!this.sameOutputs.get(mergeApproaches[i]).get(mergeApproaches[j])) {
+        for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
+            String approach1 = MergesCollector.mergeApproaches[i]
+            for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
+                String approach2 = MergesCollector.mergeApproaches[j]
+                if (!this.sameOutputs.get(approach1).get(approach2)) {
                     return false;
                 }
             }
@@ -76,10 +37,11 @@ class MergeScenarioSummary {
     }
 
     boolean approachesHaveSameConflicts() {
-        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-        for (int i = 0; i < mergeApproaches.size(); i++) {
-            for (int j = i + 1; j < mergeApproaches.size(); j++) {
-                if (!this.sameConflicts.get(mergeApproaches[i]).get(mergeApproaches[j])) {
+        for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
+            String approach1 = MergesCollector.mergeApproaches[i]
+            for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
+                String approach2 = MergesCollector.mergeApproaches[j]
+                if (!this.sameConflicts.get(approach1).get(approach2)) {
                     return false;
                 }
             }
@@ -88,12 +50,48 @@ class MergeScenarioSummary {
         return true;
     }
 
-    private String getMergeOutput(Path mergePath) {
-        return mergePath.getText()
+    private void compareMergeApproaches() {
+        Map<String, Path> mergePaths = getMergeOutputPaths()
+        Map<String, String> mergeOutputs = getMergeOutputs(mergePaths)
+        Map<String, Set<MergeConflict>> mergeConflicts = getMergeConflicts(mergePaths)
+
+        this.numberOfConflicts = [:]
+        mergeConflicts.each { approach, conflicts ->
+            this.numberOfConflicts.put(approach, conflicts.size())
+        }
+
+        this.sameOutputs = [:]
+        this.sameConflicts = [:]
+
+        for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
+            String approach1 = MergesCollector.mergeApproaches[i]
+            this.sameOutputs.put(approach1, [:])
+            this.sameConflicts.put(approach1, [:])
+
+            for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
+                String approach2 = MergesCollector.mergeApproaches[j]
+
+                String output1 = StringUtils.deleteWhitespace(mergeOutputs.get(approach1))
+                String output2 = StringUtils.deleteWhitespace(mergeOutputs.get(approach2))
+                this.sameOutputs.get(approach1).put(approach2, output1 == output2)
+
+                Set<MergeConflict> conflicts1 = mergeConflicts.get(approach1)
+                Set<MergeConflict> conflicts2 = mergeConflicts.get(approach2)
+                this.sameConflicts.get(approach1).put(approach2, conflicts1 == conflicts2)
+            }
+        }
     }
 
-    private Set<MergeConflict> getMergeConflicts(Path mergePath) {
-        return MergeConflict.extractMergeConflicts(mergePath)
+    private Map<String, Path> getMergeOutputPaths() {
+        Map<String, Path> mergePaths = [:]
+        mergePaths.put("Textual", getTextualMergeOutputPath())
+        mergePaths.put("Actual", getActualMergeOutputPath())
+
+        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
+            mergePaths.put(strategy.name(), getMergeStrategyOutputPath(strategy))
+        }
+
+        return mergePaths
     }
 
     private Path getTextualMergeOutputPath() {
@@ -104,33 +102,59 @@ class MergeScenarioSummary {
         return this.mergeScenarioPath.resolve(MERGE_FILE_NAME)
     }
 
-    private Path getMergeOutputPath(TextualMergeStrategy strategy) {
+    private Path getMergeStrategyOutputPath(TextualMergeStrategy strategy) {
         return this.mergeScenarioPath.resolve(strategy.name()).resolve(MERGE_FILE_NAME)
+    }
+
+    private Map<String, String> getMergeOutputs(Map<String, Path> mergePaths) {
+        Map<String, String> outputs = [:]
+        mergePaths.each { approach, mergePath ->
+            String output = getMergeOutput(mergePath)
+            outputs.put(approach, output)
+        }
+
+        return outputs
+    }
+
+    private String getMergeOutput(Path mergePath) {
+        return mergePath.getText()
+    }
+
+    private Map<String, Set<MergeConflict>> getMergeConflicts(Map<String, Path> mergePaths) {
+        Map<String, Set<MergeConflict>> conflicts = [:]
+        mergePaths.each { approach, mergePath ->
+            Set<MergeConflict> currentConflicts = getMergeConflicts(mergePath)
+            conflicts.put(approach, currentConflicts)
+        }
+
+        return conflicts
+    }
+
+    private Set<MergeConflict> getMergeConflicts(Path mergePath) {
+        return MergeConflict.extractMergeConflicts(mergePath)
     }
 
     @Override
     String toString() {
         List<String> values = [ this.mergeScenarioPath.getFileName() ]
-        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-
-        for (String approach: mergeApproaches) {
+        for (String approach: MergesCollector.mergeApproaches) {
             values.add(Integer.toString(this.numberOfConflicts.get(approach)))
         }
 
-        for (int i = 0; i < mergeApproaches.size(); i++) {
-            String approach1 = mergeApproaches[i]
-            for (int j = i + 1; j < mergeApproaches.size(); j++) {
-                String approach2 = mergeApproaches[j]
+        for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
+            String approach1 = MergesCollector.mergeApproaches[i]
+            for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
+                String approach2 = MergesCollector.mergeApproaches[j]
 
                 boolean sameOutput = this.sameOutputs.get(approach1).get(approach2)
                 values.add(Boolean.toString(sameOutput))
             }
         }
 
-        for (int i = 0; i < mergeApproaches.size(); i++) {
-            String approach1 = mergeApproaches[i]
-            for (int j = i + 1; j < mergeApproaches.size(); j++) {
-                String approach2 = mergeApproaches[j]
+        for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
+            String approach1 = MergesCollector.mergeApproaches[i]
+            for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
+                String approach2 = MergesCollector.mergeApproaches[j]
 
                 boolean sameConflict = this.sameConflicts.get(approach1).get(approach2)
                 values.add(Boolean.toString(sameConflict))

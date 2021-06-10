@@ -10,10 +10,12 @@ import java.nio.file.Path
 
 class MergesCollector implements DataCollector {
 
-    public static final List<TextualMergeStrategy> strategies = [
+    static final List<TextualMergeStrategy> strategies = [
         TextualMergeStrategy.Diff3,
         TextualMergeStrategy.CSDiff
     ]
+
+    static final List<String> mergeApproaches = getMergeApproaches()
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
@@ -30,7 +32,7 @@ class MergesCollector implements DataCollector {
         println 'Built spreadsheets'
     }
 
-    public static List<String> getMergeApproaches() {
+    private static List<String> getMergeApproaches() {
         List<String> mergeApproaches = [ 'Textual' ]
         for (TextualMergeStrategy strategy: strategies) {
             mergeApproaches.add(strategy.name())

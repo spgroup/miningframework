@@ -14,8 +14,7 @@ class MergeCommitSummary {
         this.numberOfModifiedFiles = 0
         this.numberOfConflicts = [:]
 
-        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-        for (String approach: mergeApproaches) {
+        for (String approach: MergesCollector.mergeApproaches) {
             this.numberOfConflicts.put(approach, 0)
         }
 
@@ -24,7 +23,7 @@ class MergeCommitSummary {
         this.mergeScenarioSummaries = []
     }
 
-    void addMergeSummary(MergeScenarioSummary mergeScenarioSummary) {
+    void addMergeScenarioSummary(MergeScenarioSummary mergeScenarioSummary) {
         this.numberOfModifiedFiles++
         addConflicts(mergeScenarioSummary)
 
@@ -35,8 +34,7 @@ class MergeCommitSummary {
     }
 
     private void addConflicts(MergeScenarioSummary mergeScenarioSummary) {
-        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-        for (String approach: mergeApproaches) {
+        for (String approach: MergesCollector.mergeApproaches) {
             int currentNumberOfConflicts = this.numberOfConflicts.get(approach)
             int additionalNumberOfConflicts = mergeScenarioSummary.numberOfConflicts.get(approach)
             this.numberOfConflicts.put(approach, currentNumberOfConflicts + additionalNumberOfConflicts)
@@ -46,9 +44,7 @@ class MergeCommitSummary {
     @Override
     String toString() {
         List<String> values = [ Integer.toString(this.numberOfModifiedFiles) ]
-        List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-
-        for (String approach: mergeApproaches) {
+        for (String approach: MergesCollector.mergeApproaches) {
             values.add(Integer.toString(this.numberOfConflicts.get(approach)))
         }
 

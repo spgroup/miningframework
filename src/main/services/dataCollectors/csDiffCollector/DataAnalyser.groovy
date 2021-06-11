@@ -14,12 +14,12 @@ import java.nio.file.Path
 class DataAnalyser {
 
     /**
-     * Analyses each merge scenario's directories after S3M has run. It constructs a {@link MergeScenarioSummary} for each
-     * merge scenario and a global {@link MergeCommitSummary} for each merge commit.
-     * @param project
-     * @param mergeCommit
-     * @param mergeScenarios
-     * @return a summary of results of the merge commit
+     * Analyses each merge scenario's directories after CSDiff has run.
+     * It constructs a {@link CSDiffMergeScenarioSummary} for each
+     * merge scenario and a global {@link CSDiffMergeCommitSummary} for each merge commit.
+     *
+     * @param mergeScenarios to be analyzed
+     * @return a summary of the results of the merge commit
      */
     static CSDiffMergeCommitSummary analyseScenarios(List<Path> mergeScenarios) {
         CSDiffMergeCommitSummary summary = new CSDiffMergeCommitSummary()

@@ -21,17 +21,17 @@ class MergesCollector implements DataCollector {
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
-        List<Path> mergeScenarios = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
-        println 'Collected merge scenarios'
+        List<Path> filesQuadruplePaths = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
+        println 'Collected files quadruples'
 
-        S3MRunner.collectS3MResults(mergeScenarios, strategies)
+        S3MRunner.collectS3MResults(filesQuadruplePaths, strategies)
         println 'Collected S3M results'
 
-        MergeCommitSummary summary = DataAnalyser.analyseScenarios(mergeScenarios)
+        List<MergeSummary> summaries = DataAnalyser.analyseMerges(filesQuadruplePaths)
         println 'Summarized collected data'
 
-        SpreadsheetBuilder.buildSpreadsheets(project, mergeCommit, summary)
-        println 'Built spreadsheets'
+        SpreadsheetBuilder.updateSpreadsheet(project, mergeCommit, summaries)
+        println 'Updated spreadsheet'
     }
 
     private static List<String> getMergeApproaches() {

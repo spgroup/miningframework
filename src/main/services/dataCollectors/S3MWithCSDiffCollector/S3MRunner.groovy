@@ -1,91 +1,79 @@
 package services.dataCollectors.S3MWithCSDiffCollector
 
+import services.util.MergeToolRunner
 import util.ProcessRunner
 import util.TextualMergeStrategy
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 
-class S3MRunner {
+class S3MRunner extends MergeToolRunner {
 
-    static final Path S3M_PATH = Paths.get('dependencies/s3m.jar')
+    private static final String MERGE_FILE_NAME = 'merge.java'
+    private static final Path S3M_PATH = Paths.get('dependencies/s3m.jar')
 
     /**
      * Runs S3M for each merge scenario and each textual merge strategy. Stores the result at the same directory
      * the merge scenario is located, using a subdirectory for each textual merge strategy.
      *
-     * @param mergeScenarios
+     * @param filesQuadruplePaths
      * @param textualMergeStrategies
      */
-    static void collectS3MResults(List<Path> mergeScenarios, List<TextualMergeStrategy> textualMergeStrategies) {
-        mergeScenarios.stream().forEach(
-            mergeScenario -> runDifferentStrategies(mergeScenario, textualMergeStrategies)
-        )
-    }
-
-    private static void runDifferentStrategies(Path mergeScenario, List<TextualMergeStrategy> textualMergeStrategies) {
-        Path leftFile = getInvolvedFile(mergeScenario, 'left')
-        Path baseFile = getInvolvedFile(mergeScenario, 'base')
-        Path rightFile = getInvolvedFile(mergeScenario, 'right')
-
-        for (TextualMergeStrategy textualMergeStrategy: textualMergeStrategies) {
-            runS3M(leftFile, baseFile, rightFile, 'merge.java', textualMergeStrategy)
+    void collectResults(List<Path> filesQuadruplePaths) {
+        filesQuadruplePaths.each { filesQuadruplePath ->
+            runDifferentStrategies(filesQuadruplePath)
         }
     }
 
-    private static Path getInvolvedFile(Path mergeScenario, String fileName) {
-        return mergeScenario.resolve("${fileName}.java").toAbsolutePath()
+    private void runDifferentStrategies(Path filesQuadruplePath) {
+        Path leftFile = getContributionFile(filesQuadruplePath, 'left')
+        Path baseFile = getContributionFile(filesQuadruplePath, 'base')
+        Path rightFile = getContributionFile(filesQuadruplePath, 'right')
+
+        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
+            runS3M(leftFile, baseFile, rightFile, strategy)
+        }
     }
 
-    private static void runS3M(Path leftFile, Path baseFile, Path rightFile, String outputFileName, TextualMergeStrategy textualMergeStrategy) {
-        ProcessBuilder processBuilder = buildS3MProcess(leftFile, baseFile, rightFile, outputFileName, textualMergeStrategy)
+    private void runS3M(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
+        ProcessBuilder processBuilder = buildS3MProcess(leftFile, baseFile, rightFile, strategy)
         Process process = ProcessRunner.startProcess(processBuilder)
         process.getInputStream().eachLine{}
         process.waitFor()
-
-        renameUnstructuredMergeFile(baseFile.getParent(), textualMergeStrategy, outputFileName)
     }
 
-    private static ProcessBuilder buildS3MProcess(Path leftFile, Path baseFile, Path rightFile, String outputFileName, TextualMergeStrategy textualMergeStrategy) {
+    private ProcessBuilder buildS3MProcess(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
         ProcessBuilder processBuilder = ProcessRunner.buildProcess(getParentAsString(S3M_PATH))
-        List<String> parameters = buildS3MParameters(leftFile, baseFile, rightFile, outputFileName, textualMergeStrategy)
+        List<String> parameters = buildS3MParameters(leftFile, baseFile, rightFile, strategy)
 
         processBuilder.command().addAll(parameters)
         return processBuilder
     }
 
-    private static List<String> buildS3MParameters(Path leftFile, Path baseFile, Path rightFile, String outputFileName, TextualMergeStrategy textualMergeStrategy) {
+    private List<String> buildS3MParameters(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
         List<String> parameters = ['java', '-jar', getFileNameAsString(S3M_PATH)]
         parameters.addAll(leftFile.toString(), baseFile.toString(), rightFile.toString())
 
-        Path outputPath = getOutputPath(baseFile.getParent(), textualMergeStrategy, outputFileName)
+        Path outputPath = getOutputPath(baseFile.getParent(), strategy)
         parameters.addAll('-o', outputPath.toString())
 
-        parameters.addAll('-c', 'false', '-u', '-l', 'false')
-        parameters.addAll('-tms', textualMergeStrategy.getCommandLineOption())
+        parameters.addAll('-c', 'false', '-l', 'false')
+        parameters.addAll('-tms', strategy.getCommandLineOption())
 
         return parameters
     }
 
-    private static String getParentAsString(Path path) {
+    private String getParentAsString(Path path) {
         return path.getParent().toString()
     }
 
-    private static String getFileNameAsString(Path path) {
+    private String getFileNameAsString(Path path) {
         return path.getFileName().toString()
     }
 
-    private static Path getOutputPath(Path mergeScenario, TextualMergeStrategy textualMergeStrategy, String fileName) {
-        return mergeScenario.resolve(textualMergeStrategy.name()).resolve(fileName)
-    }
-
-    private static void renameUnstructuredMergeFile(Path mergeScenario, TextualMergeStrategy textualMergeStrategy, String outputFileName) {
-        String textualMergeStrategyName = textualMergeStrategy.name()
-        Path currentUnstructuredMergeFile = mergeScenario.resolve(textualMergeStrategyName).resolve("${outputFileName}.merge")
-        Path renamedUnstructuredMergeFile = mergeScenario.resolve("textual.java")
-        Files.move(currentUnstructuredMergeFile, renamedUnstructuredMergeFile, StandardCopyOption.REPLACE_EXISTING)
+    private Path getOutputPath(Path filesQuadruplePath, TextualMergeStrategy strategy) {
+        return filesQuadruplePath.resolve(strategy.name()).resolve(MERGE_FILE_NAME)
     }
 
 }

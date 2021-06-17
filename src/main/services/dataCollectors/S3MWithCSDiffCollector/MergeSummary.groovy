@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils
 class MergeSummary {
 
     private static final String MERGE_FILE_NAME = "merge.java"
-    private static final String TEXTUAL_MERGE_FILE_NAME = "textual.java"
 
     // Path with the base, left, right and merge files involved in the merge
     Path filesQuadruplePath
@@ -70,7 +69,7 @@ class MergeSummary {
     }
 
     private Path getTextualMergeOutputPath() {
-        return this.filesQuadruplePath.resolve(TEXTUAL_MERGE_FILE_NAME)
+        return this.filesQuadruplePath.resolve("Diff3").resolve(MERGE_FILE_NAME)
     }
 
     private Path getActualMergeOutputPath() {
@@ -78,7 +77,12 @@ class MergeSummary {
     }
 
     private Path getMergeStrategyOutputPath(TextualMergeStrategy strategy) {
-        return this.filesQuadruplePath.resolve(strategy.name()).resolve(MERGE_FILE_NAME)
+        String mergeFileName = getMergeStrategyOutputFileName(strategy)
+        return this.filesQuadruplePath.resolve("S3M").resolve(mergeFileName)
+    }
+
+    private String getMergeStrategyOutputFileName(TextualMergeStrategy strategy) {
+        return "${strategy.name()}.java"
     }
 
     private Map<String, String> getMergeOutputs(Map<String, Path> mergeOutputPaths) {

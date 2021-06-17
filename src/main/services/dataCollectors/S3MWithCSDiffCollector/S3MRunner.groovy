@@ -10,70 +10,43 @@ import java.nio.file.Paths
 
 class S3MRunner extends MergeToolRunner {
 
-    private static final String MERGE_FILE_NAME = 'merge.java'
     private static final Path S3M_PATH = Paths.get('dependencies/s3m.jar')
 
-    /**
-     * Runs S3M for each merge scenario and each textual merge strategy. Stores the result at the same directory
-     * the merge scenario is located, using a subdirectory for each textual merge strategy.
-     *
-     * @param filesQuadruplePaths
-     * @param textualMergeStrategies
-     */
-    void collectResults(List<Path> filesQuadruplePaths) {
-        filesQuadruplePaths.each { filesQuadruplePath ->
-            runDifferentStrategies(filesQuadruplePath)
-        }
+    S3MRunner(String mergeToolName) {
+        this.mergeToolName = mergeToolName
     }
 
-    private void runDifferentStrategies(Path filesQuadruplePath) {
-        Path leftFile = getContributionFile(filesQuadruplePath, 'left')
-        Path baseFile = getContributionFile(filesQuadruplePath, 'base')
-        Path rightFile = getContributionFile(filesQuadruplePath, 'right')
-
+    protected void runTool(Path leftFile, Path baseFile, Path rightFile) {
         for (TextualMergeStrategy strategy: MergesCollector.strategies) {
             runS3M(leftFile, baseFile, rightFile, strategy)
         }
     }
 
     private void runS3M(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
-        ProcessBuilder processBuilder = buildS3MProcess(leftFile, baseFile, rightFile, strategy)
-        Process process = ProcessRunner.startProcess(processBuilder)
-        process.getInputStream().eachLine{}
-        process.waitFor()
+        ProcessBuilder processBuilder = buildProcess(leftFile, baseFile, rightFile, strategy)
+        runProcess(processBuilder)
     }
 
-    private ProcessBuilder buildS3MProcess(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
-        ProcessBuilder processBuilder = ProcessRunner.buildProcess(getParentAsString(S3M_PATH))
-        List<String> parameters = buildS3MParameters(leftFile, baseFile, rightFile, strategy)
+    private ProcessBuilder buildProcess(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
+        String processDirectory = S3M_PATH.getParent().toString()
+        ProcessBuilder processBuilder = ProcessRunner.buildProcess(processDirectory)
+        List<String> parameters = buildParameters(leftFile, baseFile, rightFile, strategy)
 
         processBuilder.command().addAll(parameters)
         return processBuilder
     }
 
-    private List<String> buildS3MParameters(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
-        List<String> parameters = ['java', '-jar', getFileNameAsString(S3M_PATH)]
+    private List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
+        List<String> parameters = ['java', '-jar', S3M_PATH.getFileName().toString()]
         parameters.addAll(leftFile.toString(), baseFile.toString(), rightFile.toString())
 
-        Path outputPath = getOutputPath(baseFile.getParent(), strategy)
+        Path outputPath = getOutputPath(baseFile.getParent(), strategy.name())
         parameters.addAll('-o', outputPath.toString())
 
         parameters.addAll('-c', 'false', '-l', 'false')
         parameters.addAll('-tms', strategy.getCommandLineOption())
 
         return parameters
-    }
-
-    private String getParentAsString(Path path) {
-        return path.getParent().toString()
-    }
-
-    private String getFileNameAsString(Path path) {
-        return path.getFileName().toString()
-    }
-
-    private Path getOutputPath(Path filesQuadruplePath, TextualMergeStrategy strategy) {
-        return filesQuadruplePath.resolve(strategy.name()).resolve(MERGE_FILE_NAME)
     }
 
 }

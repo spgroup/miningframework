@@ -11,17 +11,12 @@ import java.nio.file.Path
 
 class MergesCollector implements DataCollector {
 
-    private static final List<MergeToolRunner> mergeToolRunners
-
     static final List<TextualMergeStrategy> strategies
     static final List<String> mergeApproaches
 
-    static {
-        mergeToolRunners = [
-            new Diff3Runner('Diff3'),
-            new S3MRunner('S3M')
-        ]
+    private static final List<MergeToolRunner> mergeToolRunners
 
+    static {
         // Textual merge strategies used to run S3M
         strategies = [
             TextualMergeStrategy.Diff3,
@@ -37,6 +32,12 @@ class MergesCollector implements DataCollector {
         }
 
         mergeApproaches.add('Actual')
+
+        // All merge tool runners
+        mergeToolRunners = [ new Diff3Runner() ]
+        for (TextualMergeStrategy strategy: strategies) {
+            mergeToolRunners.add(new S3MRunner(strategy))
+        }
     }
 
     @Override
@@ -46,8 +47,9 @@ class MergesCollector implements DataCollector {
 
         for (MergeToolRunner runner: mergeToolRunners) {
             runner.collectResults(filesQuadruplePaths)
-            println "Collected ${runner.getMergeToolName()} results"
         }
+
+        println "Collected merge results"
 
         List<MergeSummary> summaries = DataAnalyser.analyseMerges(filesQuadruplePaths)
         println 'Summarized collected data'

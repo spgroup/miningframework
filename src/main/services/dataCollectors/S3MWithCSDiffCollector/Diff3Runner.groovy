@@ -12,34 +12,29 @@ class Diff3Runner extends MergeToolRunner {
 
     private static final String MERGE_FILE_NAME = "merge"
 
-    Diff3Runner(String mergeToolName) {
-        this.mergeToolName = mergeToolName
+    Diff3Runner() {
+        this.mergeToolName = 'Diff3'
     }
 
-    protected void runTool(Path leftFile, Path baseFile, Path rightFile) {
-        ProcessBuilder processBuilder = buildProcess(leftFile, baseFile, rightFile)
-        runProcess(processBuilder)
-
-        Path outputPath = getOutputPath(baseFile.getParent(), MERGE_FILE_NAME)
-        MergeConflict.removeBaseFromConflicts(outputPath)
-    }
-
-    private ProcessBuilder buildProcess(Path leftFile, Path baseFile, Path rightFile) {
-        List<String> parameters = buildParameters(leftFile, baseFile, rightFile)
-
+    protected ProcessBuilder buildProcess(Path leftFile, Path baseFile, Path rightFile) {
+        Path filesQuadruplePath = baseFile.getParent()
+        Path outputPath = getOutputPath(filesQuadruplePath, MERGE_FILE_NAME)
+        
         ProcessBuilder processBuilder = new ProcessBuilder()
-        processBuilder.command().addAll(parameters)
-
-        Path outputPath = getOutputPath(baseFile.getParent(), MERGE_FILE_NAME)
         processBuilder.redirectOutput(outputPath.toFile())
 
         return processBuilder
     }
 
-    private List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile) {
+    protected List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile) {
         List<String> parameters = ['diff3', '-L', 'MINE', '-L', 'BASE', '-L', 'YOURS', '-m']
         parameters.addAll(leftFile.toString(), baseFile.toString(), rightFile.toString())
         return parameters
+    }
+
+    protected void processOutput(Path filesQuadruplePath) {
+        Path outputPath = getOutputPath(filesQuadruplePath, MERGE_FILE_NAME)
+        MergeConflict.removeBaseFromConflicts(outputPath)
     }
 
 }

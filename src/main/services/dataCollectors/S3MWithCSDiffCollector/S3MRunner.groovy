@@ -12,35 +12,26 @@ class S3MRunner extends MergeToolRunner {
 
     private static final Path S3M_PATH = Paths.get('dependencies/s3m.jar')
 
-    S3MRunner(String mergeToolName) {
-        this.mergeToolName = mergeToolName
+    private TextualMergeStrategy strategy
+
+    S3MRunner(TextualMergeStrategy strategy) {
+        this.mergeToolName = 'S3M'
+        this.strategy = strategy
     }
 
-    protected void runTool(Path leftFile, Path baseFile, Path rightFile) {
-        for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            runS3M(leftFile, baseFile, rightFile, strategy)
-        }
-    }
-
-    private void runS3M(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
-        ProcessBuilder processBuilder = buildProcess(leftFile, baseFile, rightFile, strategy)
-        runProcess(processBuilder)
-    }
-
-    private ProcessBuilder buildProcess(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
+    protected ProcessBuilder buildProcess(Path leftFile, Path baseFile, Path rightFile) {
         String processDirectory = S3M_PATH.getParent().toString()
-        ProcessBuilder processBuilder = ProcessRunner.buildProcess(processDirectory)
-        List<String> parameters = buildParameters(leftFile, baseFile, rightFile, strategy)
-
-        processBuilder.command().addAll(parameters)
-        return processBuilder
+        return ProcessRunner.buildProcess(processDirectory)
     }
 
-    private List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile, TextualMergeStrategy strategy) {
-        List<String> parameters = ['java', '-jar', S3M_PATH.getFileName().toString()]
+    protected List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile) {
+        String jarFileName = S3M_PATH.getFileName().toString()
+        List<String> parameters = ['java', '-jar', jarFileName]
         parameters.addAll(leftFile.toString(), baseFile.toString(), rightFile.toString())
 
-        Path outputPath = getOutputPath(baseFile.getParent(), strategy.name())
+        String mergeFileName = strategy.name()
+        Path filesQuadruplePath = baseFile.getParent()
+        Path outputPath = getOutputPath(filesQuadruplePath, mergeFileName)
         parameters.addAll('-o', outputPath.toString())
 
         parameters.addAll('-c', 'false', '-l', 'false')
@@ -48,5 +39,7 @@ class S3MRunner extends MergeToolRunner {
 
         return parameters
     }
+
+    protected void processOutput(Path filesQuadruplePath) {}
 
 }

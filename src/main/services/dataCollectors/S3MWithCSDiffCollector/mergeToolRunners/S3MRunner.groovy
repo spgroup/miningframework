@@ -1,4 +1,4 @@
-package services.dataCollectors.S3MWithCSDiffCollector
+package services.dataCollectors.S3MWithCSDiffCollector.mergeToolRunners
 
 import services.util.MergeToolRunner
 import util.ProcessRunner
@@ -39,7 +39,5 @@ class S3MRunner extends MergeToolRunner {
 
         return parameters
     }
-
-    protected void processOutput(Path filesQuadruplePath) {}
 
 }

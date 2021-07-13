@@ -35,9 +35,6 @@ abstract class MergeToolRunner {
         Process process = ProcessRunner.startProcess(processBuilder)
         process.getInputStream().eachLine{}
         process.waitFor()
-
-        Path filesQuadruplePath = baseFile.getParent()
-        processOutput(filesQuadruplePath)
     }
 
     protected Path getOutputPath(Path filesQuadruplePath, String mergeFileName) {
@@ -46,6 +43,5 @@ abstract class MergeToolRunner {
 
     protected abstract ProcessBuilder buildProcess(Path leftFile, Path baseFile, Path rightFile)
     protected abstract List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile)
-    protected abstract void processOutput(Path filesQuadruplePath)
 
 }

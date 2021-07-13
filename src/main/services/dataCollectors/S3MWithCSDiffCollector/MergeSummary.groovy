@@ -58,18 +58,24 @@ class MergeSummary {
 
     private Map<String, Path> getMergeOutputPaths() {
         Map<String, Path> mergeOutputPaths = [:]
-        mergeOutputPaths.put("Textual", getTextualMergeOutputPath())
+        mergeOutputPaths.put("Diff3", getDiff3MergeOutputPath())
+        mergeOutputPaths.put("GitMergeFile", getGitMergeFileOutputPath())
         mergeOutputPaths.put("Actual", getActualMergeOutputPath())
 
         for (TextualMergeStrategy strategy: MergesCollector.strategies) {
-            mergeOutputPaths.put(strategy.name(), getMergeStrategyOutputPath(strategy))
+            String key = "S3M${strategy.name()}"
+            mergeOutputPaths.put(key, getMergeStrategyOutputPath(strategy))
         }
 
         return mergeOutputPaths
     }
 
-    private Path getTextualMergeOutputPath() {
+    private Path getDiff3MergeOutputPath() {
         return this.filesQuadruplePath.resolve("Diff3").resolve(MERGE_FILE_NAME)
+    }
+
+    private Path getGitMergeFileOutputPath() {
+        return this.filesQuadruplePath.resolve("GitMergeFile").resolve(MERGE_FILE_NAME)
     }
 
     private Path getActualMergeOutputPath() {

@@ -3,6 +3,7 @@ package services.dataCollectors.S3MWithCSDiffCollector
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
+import services.dataCollectors.S3MWithCSDiffCollector.mergeToolRunners.*
 import services.util.MergeToolRunner
 import util.TextualMergeStrategy
 
@@ -20,15 +21,16 @@ class MergesCollector implements DataCollector {
         strategies = [ TextualMergeStrategy.CSDiff ]
 
         // All merge approaches
-        mergeApproaches = [ 'Textual' ]
+        mergeApproaches = [ 'Diff3', 'GitMergeFile' ]
         for (TextualMergeStrategy strategy: strategies) {
-            mergeApproaches.add(strategy.name())
+            String key = "S3M${strategy.name()}"
+            mergeApproaches.add(key)
         }
 
         mergeApproaches.add('Actual')
 
         // All merge tool runners
-        mergeToolRunners = [ new Diff3Runner() ]
+        mergeToolRunners = [ new Diff3Runner(), new GitMergeFileRunner() ]
         for (TextualMergeStrategy strategy: strategies) {
             mergeToolRunners.add(new S3MRunner(strategy))
         }

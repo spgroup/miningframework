@@ -1,12 +1,10 @@
-package services.dataCollectors.S3MWithCSDiffCollector
+package services.dataCollectors.S3MWithCSDiffCollector.mergeToolRunners
 
 import util.ProcessRunner
 import services.util.MergeConflict
 import services.util.MergeToolRunner
 
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 
 class Diff3Runner extends MergeToolRunner {
 
@@ -27,14 +25,9 @@ class Diff3Runner extends MergeToolRunner {
     }
 
     protected List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile) {
-        List<String> parameters = ['diff3', '-L', 'MINE', '-L', 'BASE', '-L', 'YOURS', '-m']
+        List<String> parameters = ['diff3', '-E', '-L', 'MINE', '-L', 'BASE', '-L', 'YOURS', '-m']
         parameters.addAll(leftFile.toString(), baseFile.toString(), rightFile.toString())
         return parameters
-    }
-
-    protected void processOutput(Path filesQuadruplePath) {
-        Path outputPath = getOutputPath(filesQuadruplePath, MERGE_FILE_NAME)
-        MergeConflict.removeBaseFromConflicts(outputPath)
     }
 
 }

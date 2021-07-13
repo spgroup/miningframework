@@ -4,7 +4,7 @@ import interfaces.CommitFilter
 import project.MergeCommit
 import project.Project
 
-public class MutuallyModifiedFilesCommitFilter implements CommitFilter {
+public class NonFastForwardMergeCommitFilter implements CommitFilter {
     private CommitFilter hasMergeScenarioFilter = new S3MCommitFilter()
 
     @Override

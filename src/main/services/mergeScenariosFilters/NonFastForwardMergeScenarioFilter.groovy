@@ -13,7 +13,16 @@ class NonFastForwardMergeScenarioFilter {
         Path baseFile = getInvolvedFile(mergeScenario, 'base')
         Path rightFile = getInvolvedFile(mergeScenario, 'right')
 
-        return leftFile.getText() != baseFile.getText() && rightFile.getText() != baseFile.getText()
+        if (leftFile.getText() == baseFile.getText())
+            return false
+
+        if (rightFile.getText() == baseFile.getText())
+            return false
+
+        if (leftFile.getText() == rightFile.getText())
+            return false
+
+        return true
     }
 
     private static Path getInvolvedFile(Path mergeScenario, String fileName) {

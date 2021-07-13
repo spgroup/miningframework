@@ -3,7 +3,6 @@ package services.dataCollectors.S3MWithCSDiffCollector
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
-import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 import services.util.MergeToolRunner
 import util.TextualMergeStrategy
 
@@ -18,12 +17,7 @@ class MergesCollector implements DataCollector {
 
     static {
         // Textual merge strategies used to run S3M
-        strategies = [
-            TextualMergeStrategy.Diff3,
-            TextualMergeStrategy.CSDiff,
-            TextualMergeStrategy.ConsecutiveLines,
-            TextualMergeStrategy.CSDiffAndDiff3
-        ]
+        strategies = [ TextualMergeStrategy.CSDiff ]
 
         // All merge approaches
         mergeApproaches = [ 'Textual' ]
@@ -42,7 +36,7 @@ class MergesCollector implements DataCollector {
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
-        List<Path> filesQuadruplePaths = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
+        List<Path> filesQuadruplePaths = FilesQuadruplesCollector.collectFilesQuadruples(project, mergeCommit)
         println 'Collected files quadruples'
 
         for (MergeToolRunner runner: mergeToolRunners) {

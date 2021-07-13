@@ -5,7 +5,7 @@ import com.google.inject.AbstractModule
 import com.google.inject.multibindings.Multibinder
 
 import interfaces.*
-import services.commitFilters.S3MCommitFilter
+import services.commitFilters.MutuallyModifiedFilesCommitFilter
 import services.dataCollectors.S3MWithCSDiffCollector.MergesCollector
 import services.projectProcessors.DummyProjectProcessor
 import services.outputProcessors.EmptyOutputProcessor
@@ -23,7 +23,7 @@ class S3MWithCSDiffMiningModule extends AbstractModule {
         Multibinder<OutputProcessor> outputProcessorsBinder = Multibinder.newSetBinder(binder(), OutputProcessor)
         outputProcessorsBinder.addBinding().to(EmptyOutputProcessor)
 
-        bind(CommitFilter).to(S3MCommitFilter)
+        bind(CommitFilter).to(MutuallyModifiedFilesCommitFilter)
     }
 
 }

@@ -3,32 +3,58 @@ package services.commitFilters
 import interfaces.CommitFilter
 import project.MergeCommit
 import project.Project
+import util.ProcessRunner
 
-public class MutuallyModifiedFilesCommitFilter implements CommitFilter {
-    private CommitFilter hasMergeScenarioFilter = new S3MCommitFilter()
+import java.util.stream.Collectors
+
+class MutuallyModifiedFilesCommitFilter implements CommitFilter {
 
     @Override
-    public boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return hasMergeScenarioFilter.applyFilter(project, mergeCommit) &&
-                containsMutuallyModifiedFiles(mergeCommit)
+    boolean applyFilter(Project project, MergeCommit mergeCommit) {
+        List<String> leftFilePaths = getModifiedJavaFilePaths(project, mergeCommit, mergeCommit.getLeftSHA())
+        List<String> rightFilePaths = getModifiedJavaFilePaths(project, mergeCommit, mergeCommit.getRightSHA())
+        return !leftFilePaths.disjoint(rightFilePaths)
     }
 
-    private static boolean containsMutuallyModifiedFiles(MergeCommit mergeCommit) {
-        if (mergeCommit.getAncestorSHA() == null) {
-            /**
-             * Some merge scenarios don't return an valid ancestor SHA this check prevents
-             * unexpected crashes
-             */
-            return false
-        }
-        boolean containsMutuallyModifiedFiles = mergeCommit.getAncestorSHA() != mergeCommit.getLeftSHA() &&
-                mergeCommit.getAncestorSHA() != mergeCommit.getRightSHA() &&
-                mergeCommit.getLeftSHA() != mergeCommit.getRightSHA()
+    static List<String> getModifiedJavaFilePaths(Project project, MergeCommit mergeCommit, String commitSHA) {
+        List<String> parameters = [ 'git', 'diff-tree', '--no-commit-id', '--name-status', '-r' ]
+        parameters.addAll(mergeCommit.getAncestorSHA(), commitSHA)
 
-        if (!containsMutuallyModifiedFiles) {
-            println 'removed ' + mergeCommit.getSHA()
-        }
+        ProcessBuilder processBuilder = ProcessRunner.buildProcess(project.getPath())
+        processBuilder.command().addAll(parameters)
 
-        return containsMutuallyModifiedFiles
+        Process process = ProcessRunner.startProcess(processBuilder)
+        List<String> files = process.getInputStream().readLines()
+
+        return files.stream()
+            .filter(line -> MutuallyModifiedFilesCommitFilter::isModifiedFile(getFileStatus(line)))
+            .map(MutuallyModifiedFilesCommitFilter::getFilePath)
+            .filter(MutuallyModifiedFilesCommitFilter::isJavaFile)
+            .collect(Collectors.toList())
     }
+
+    private static char getFileStatus(String diffTreeOutputLine) {
+        return diffTreeOutputLine.charAt(0)
+    }
+
+    private static boolean isModifiedFile(char fileStatus) {
+        // File was added, modified or renamed
+        switch (fileStatus) {
+            case 'A':
+            case 'M':
+            case 'R':
+                return true
+            default:
+                return false
+        }
+    }
+
+    private static String getFilePath(String diffTreeOutputLine) {
+        return diffTreeOutputLine.substring(1).trim()
+    }
+
+    private static boolean isJavaFile(String filePath) {
+        return filePath.endsWith('.java')
+    }
+
 }

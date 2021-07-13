@@ -7,8 +7,7 @@ import interfaces.CommitFilter
 import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
-import services.commitFilters.MutuallyModifiedFilesCommitFilter
-import services.commitFilters.S3MCommitFilter
+import services.commitFilters.NonFastForwardMergeCommitFilter
 import services.dataCollectors.csDiffCollector.CSDiffCollector
 import services.outputProcessors.EmptyOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
@@ -26,7 +25,7 @@ class CSDiffModule extends AbstractModule {
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(EmptyOutputProcessor.class)
 
-        bind(CommitFilter.class).to(MutuallyModifiedFilesCommitFilter.class)
+        bind(CommitFilter.class).to(NonFastForwardMergeCommitFilter.class)
     }
 
 }

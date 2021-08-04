@@ -6,6 +6,9 @@ import services.commitFilters.MutuallyModifiedFilesCommitFilter
 import services.util.Utils
 import util.ProcessRunner
 
+import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.StaticJavaParser
+
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
@@ -28,11 +31,18 @@ class FilesQuadruplesCollector {
     private static Path saveFilesQuadruple(Project project, MergeCommit mergeCommit, String filePath) {
         Path filesQuadruplePath = Utils.commitFilesPath(project, mergeCommit).resolve(filePath)
         filesQuadruplePath.toFile().mkdirs()
-
-        saveFile(filesQuadruplePath, 'left', getFileContent(project, mergeCommit.getLeftSHA(), filePath))
-        saveFile(filesQuadruplePath, 'base', getFileContent(project, mergeCommit.getAncestorSHA(), filePath))
-        saveFile(filesQuadruplePath, 'right', getFileContent(project, mergeCommit.getRightSHA(), filePath))
-        saveFile(filesQuadruplePath, 'merge', getFileContent(project, mergeCommit.getSHA(), filePath))
+		
+		String leftContent = getFileContent(project, mergeCommit.getLeftSHA(), filePath)
+		saveFile(filesQuadruplePath, 'left', removeComments(leftContent))
+		
+		String baseContent = getFileContent(project, mergeCommit.getAncestorSHA(), filePath)
+		saveFile(filesQuadruplePath, 'base', removeComments(baseContent))
+		
+		String rightContent = getFileContent(project, mergeCommit.getRightSHA(), filePath)
+		saveFile(filesQuadruplePath, 'right', removeComments(rightContent))
+		
+		String mergeContent = getFileContent(project, mergeCommit.getSHA(), filePath)
+		saveFile(filesQuadruplePath, 'merge', removeComments(mergeContent))
 
         return filesQuadruplePath
     }
@@ -47,6 +57,12 @@ class FilesQuadruplesCollector {
 
         return fileContent.toString()
     }
+	
+	private static String removeComments(String content) {
+		StaticJavaParser.getConfiguration().setAttributeComments(false)
+		CompilationUnit compilationUnit = StaticJavaParser.parse(content)
+		return compilationUnit.toString()
+	}
 
     private static void saveFile(Path filesQuadruplePath, String fileName, String fileContent) {
         Path filePath = filesQuadruplePath.resolve("${fileName}.java")

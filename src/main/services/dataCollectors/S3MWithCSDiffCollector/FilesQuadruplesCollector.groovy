@@ -7,6 +7,7 @@ import services.util.Utils
 import util.ProcessRunner
 
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ParseProblemException
 import com.github.javaparser.StaticJavaParser
 
 import java.nio.file.Files
@@ -31,20 +32,34 @@ class FilesQuadruplesCollector {
     private static Path saveFilesQuadruple(Project project, MergeCommit mergeCommit, String filePath) {
         Path filesQuadruplePath = Utils.commitFilesPath(project, mergeCommit).resolve(filePath)
         filesQuadruplePath.toFile().mkdirs()
-		
-		String leftContent = getFileContent(project, mergeCommit.getLeftSHA(), filePath)
-		saveFile(filesQuadruplePath, 'left', removeComments(leftContent))
-		
-		String baseContent = getFileContent(project, mergeCommit.getAncestorSHA(), filePath)
-		saveFile(filesQuadruplePath, 'base', removeComments(baseContent))
-		
-		String rightContent = getFileContent(project, mergeCommit.getRightSHA(), filePath)
-		saveFile(filesQuadruplePath, 'right', removeComments(rightContent))
-		
-		String mergeContent = getFileContent(project, mergeCommit.getSHA(), filePath)
-		saveFile(filesQuadruplePath, 'merge', removeComments(mergeContent))
+
+        for (String fileName: [ 'left', 'base', 'right', 'merge' ]) {
+            String commitSHA = getCommitSHA(mergeCommit, fileName)
+            String fileContent = getFileContent(project, commitSHA, filePath)
+
+            try {
+                fileContent = removeComments(fileContent)
+                saveFile(filesQuadruplePath, fileName, fileContent)
+            } catch (ParseProblemException e) {
+                println "Couldn't parse ${fileName} file in ${filePath}"
+                saveFile(filesQuadruplePath, fileName, fileContent)
+            }
+        }
 
         return filesQuadruplePath
+    }
+
+    private static String getCommitSHA(MergeCommit mergeCommit, String fileName) {
+        switch (fileName) {
+            case 'left':
+                return mergeCommit.getLeftSHA()
+            case 'base':
+                return mergeCommit.getAncestorSHA()
+            case 'right':
+                return mergeCommit.getRightSHA()
+            default:
+                return mergeCommit.getSHA()
+        }
     }
 
     private static String getFileContent(Project project, String commitSHA, String filePath) {
@@ -58,11 +73,11 @@ class FilesQuadruplesCollector {
         return fileContent.toString()
     }
 	
-	private static String removeComments(String content) {
-		StaticJavaParser.getConfiguration().setAttributeComments(false)
-		CompilationUnit compilationUnit = StaticJavaParser.parse(content)
-		return compilationUnit.toString()
-	}
+    private static String removeComments(String fileContent) throws ParseProblemException {
+        StaticJavaParser.getConfiguration().setAttributeComments(false)
+        CompilationUnit compilationUnit = StaticJavaParser.parse(fileContent)
+        return compilationUnit.toString()
+    }
 
     private static void saveFile(Path filesQuadruplePath, String fileName, String fileContent) {
         Path filePath = filesQuadruplePath.resolve("${fileName}.java")

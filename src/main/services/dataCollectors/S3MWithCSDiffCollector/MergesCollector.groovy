@@ -11,29 +11,34 @@ import java.nio.file.Path
 
 class MergesCollector implements DataCollector {
 
+    private static final Map<String, MergeToolRunner> approachToRunner
+
     static final List<TextualMergeStrategy> strategies
     static final List<String> mergeApproaches
 
-    private static final List<MergeToolRunner> mergeToolRunners
-
     static {
+        // Merge tool runner associated to each merge approach
+        approachToRunner = [
+            'Diff3': new Diff3Runner(),
+            'GitMergeFile': new GitMergeFileRunner()
+        ]
+
+        for (TextualMergeStrategy strategy: TextualMergeStrategy.values()) {
+            String key = "S3M${strategy.name()}"
+            approachToRunner[key] = new S3MRunner(strategy)
+        }
+
         // Textual merge strategies used to run S3M
-        strategies = [ TextualMergeStrategy.CSDiff ]
+        strategies = [ TextualMergeStrategy.CSDiff, TextualMergeStrategy.Diff3 ]
 
         // All merge approaches
-        mergeApproaches = [ 'Diff3', 'GitMergeFile' ]
+        mergeApproaches = [ 'Diff3' ]
         for (TextualMergeStrategy strategy: strategies) {
             String key = "S3M${strategy.name()}"
             mergeApproaches.add(key)
         }
 
         mergeApproaches.add('Actual')
-
-        // All merge tool runners
-        mergeToolRunners = [ new Diff3Runner(), new GitMergeFileRunner() ]
-        for (TextualMergeStrategy strategy: strategies) {
-            mergeToolRunners.add(new S3MRunner(strategy))
-        }
     }
 
     @Override
@@ -41,8 +46,11 @@ class MergesCollector implements DataCollector {
         List<Path> filesQuadruplePaths = FilesQuadruplesCollector.collectFilesQuadruples(project, mergeCommit)
         println 'Collected files quadruples'
 
-        for (MergeToolRunner runner: mergeToolRunners) {
-            runner.collectResults(filesQuadruplePaths)
+        for (String approach: mergeApproaches) {
+            if (approach != 'Actual') {
+                MergeToolRunner runner = approachToRunner[approach]
+                runner.collectResults(filesQuadruplePaths)
+            }
         }
 
         println "Collected merge results"

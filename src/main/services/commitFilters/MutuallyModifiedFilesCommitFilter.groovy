@@ -38,15 +38,7 @@ class MutuallyModifiedFilesCommitFilter implements CommitFilter {
     }
 
     private static boolean isModifiedFile(char fileStatus) {
-        // File was added, modified or renamed
-        switch (fileStatus) {
-            case 'A':
-            case 'M':
-            case 'R':
-                return true
-            default:
-                return false
-        }
+        return fileStatus == 'M'
     }
 
     private static String getFilePath(String diffTreeOutputLine) {

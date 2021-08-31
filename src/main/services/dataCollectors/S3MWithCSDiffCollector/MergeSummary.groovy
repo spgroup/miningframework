@@ -19,7 +19,7 @@ class MergeSummary {
     Map<String, Map<String, Boolean>> approachesHaveSameConflicts
 
     MergeSummary(Path filesQuadruplePath) {
-        this.filesQuadruplePath = Utils.getOutputPath().resolve(filesQuadruplePath)
+        this.filesQuadruplePath = filesQuadruplePath
         compareMergeApproaches()
     }
 
@@ -30,7 +30,7 @@ class MergeSummary {
 
         this.numberOfConflictsPerApproach = [:]
         mergeConflicts.each { approach, conflicts ->
-            this.numberOfConflictsPerApproach.put(approach, conflicts.size())
+            this.numberOfConflictsPerApproach[approach] = conflicts.size()
         }
 
         this.approachesHaveSameOutputs = [:]
@@ -38,33 +38,33 @@ class MergeSummary {
 
         for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
             String approach1 = MergesCollector.mergeApproaches[i]
-            this.approachesHaveSameOutputs.put(approach1, [:])
-            this.approachesHaveSameConflicts.put(approach1, [:])
+            this.approachesHaveSameOutputs[approach1] = [:]
+            this.approachesHaveSameConflicts[approach1] = [:]
 
             for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
                 String approach2 = MergesCollector.mergeApproaches[j]
 
                 // Merge outputs are compared disregarding whitespaces
-                String output1 = StringUtils.deleteWhitespace(mergeOutputs.get(approach1))
-                String output2 = StringUtils.deleteWhitespace(mergeOutputs.get(approach2))
-                this.approachesHaveSameOutputs.get(approach1).put(approach2, output1 == output2)
+                String output1 = StringUtils.deleteWhitespace(mergeOutputs[approach1])
+                String output2 = StringUtils.deleteWhitespace(mergeOutputs[approach2])
+                this.approachesHaveSameOutputs[approach1][approach2] = output1 == output2
 
-                Set<MergeConflict> conflicts1 = mergeConflicts.get(approach1)
-                Set<MergeConflict> conflicts2 = mergeConflicts.get(approach2)
-                this.approachesHaveSameConflicts.get(approach1).put(approach2, conflicts1 == conflicts2)
+                Set<MergeConflict> conflicts1 = mergeConflicts[approach1]
+                Set<MergeConflict> conflicts2 = mergeConflicts[approach2]
+                this.approachesHaveSameConflicts[approach1][approach2] = conflicts1 == conflicts2
             }
         }
     }
 
     private Map<String, Path> getMergeOutputPaths() {
         Map<String, Path> mergeOutputPaths = [:]
-        mergeOutputPaths.put("Diff3", getDiff3MergeOutputPath())
-        mergeOutputPaths.put("GitMergeFile", getGitMergeFileOutputPath())
-        mergeOutputPaths.put("Actual", getActualMergeOutputPath())
+        mergeOutputPaths["Diff3"] = getDiff3MergeOutputPath()
+        mergeOutputPaths["GitMergeFile"] = getGitMergeFileOutputPath()
+        mergeOutputPaths["Actual"] = getActualMergeOutputPath()
 
         for (TextualMergeStrategy strategy: MergesCollector.strategies) {
             String key = "S3M${strategy.name()}"
-            mergeOutputPaths.put(key, getMergeStrategyOutputPath(strategy))
+            mergeOutputPaths[key] = getMergeStrategyOutputPath(strategy)
         }
 
         return mergeOutputPaths
@@ -93,9 +93,10 @@ class MergeSummary {
 
     private Map<String, String> getMergeOutputs(Map<String, Path> mergeOutputPaths) {
         Map<String, String> outputs = [:]
-        mergeOutputPaths.each { approach, mergeOutputPath ->
+        MergesCollector.mergeApproaches.each { approach ->
+            Path mergeOutputPath = mergeOutputPaths[approach]
             String output = getMergeOutput(mergeOutputPath)
-            outputs.put(approach, output)
+            outputs[approach] = output
         }
 
         return outputs
@@ -107,9 +108,10 @@ class MergeSummary {
 
     private Map<String, Set<MergeConflict>> getMergeConflicts(Map<String, Path> mergeOutputPaths) {
         Map<String, Set<MergeConflict>> conflicts = [:]
-        mergeOutputPaths.each { approach, mergeOutputPath ->
+        MergesCollector.mergeApproaches.each { approach ->
+            Path mergeOutputPath = mergeOutputPaths[approach]
             Set<MergeConflict> currentConflicts = getMergeConflicts(mergeOutputPath)
-            conflicts.put(approach, currentConflicts)
+            conflicts[approach] = currentConflicts
         }
 
         return conflicts
@@ -123,7 +125,7 @@ class MergeSummary {
     String toString() {
         List<String> values = [ this.filesQuadruplePath.getFileName() ]
         for (String approach: MergesCollector.mergeApproaches) {
-            values.add(Integer.toString(this.numberOfConflictsPerApproach.get(approach)))
+            values.add(Integer.toString(this.numberOfConflictsPerApproach[approach]))
         }
 
         for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
@@ -131,7 +133,7 @@ class MergeSummary {
             for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
                 String approach2 = MergesCollector.mergeApproaches[j]
 
-                boolean sameOutput = this.approachesHaveSameOutputs.get(approach1).get(approach2)
+                boolean sameOutput = this.approachesHaveSameOutputs[approach1][approach2]
                 values.add(Boolean.toString(sameOutput))
             }
         }
@@ -141,7 +143,7 @@ class MergeSummary {
             for (int j = i + 1; j < MergesCollector.mergeApproaches.size(); j++) {
                 String approach2 = MergesCollector.mergeApproaches[j]
 
-                boolean sameConflict = this.approachesHaveSameConflicts.get(approach1).get(approach2)
+                boolean sameConflict = this.approachesHaveSameConflicts[approach1][approach2]
                 values.add(Boolean.toString(sameConflict))
             }
         }

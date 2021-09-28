@@ -18,6 +18,7 @@ class MergeConflict {
     public static MINE_CONFLICT_MARKER = "<<<<<<<MINE"
     public static YOURS_CONFLICT_MARKER = ">>>>>>>YOURS"
     public static CHANGE_CONFLICT_MARKER = "======="
+    public static SIMPLE_CONFLICT_MARKER = "<<<<<<<"
 
     private String left
     private String right
@@ -51,11 +52,11 @@ class MergeConflict {
             String line = mergeCodeLines.next()
 
             /* See the following conditionals as a state machine. */
-            if (StringUtils.deleteWhitespace(line).contains(MINE_CONFLICT_MARKER) && conflictArea == ConflictArea.None) {
+            if (StringUtils.deleteWhitespace(line).startsWith(MINE_CONFLICT_MARKER) && conflictArea == ConflictArea.None) {
                 conflictArea = ConflictArea.Left
-            } else if (StringUtils.deleteWhitespace(line).contains(CHANGE_CONFLICT_MARKER) && conflictArea == ConflictArea.Left) {
+            } else if (StringUtils.deleteWhitespace(line).startsWith(CHANGE_CONFLICT_MARKER) && conflictArea == ConflictArea.Left) {
                 conflictArea = ConflictArea.Right
-            } else if (StringUtils.deleteWhitespace(line).contains(YOURS_CONFLICT_MARKER) && conflictArea == ConflictArea.Right) {
+            } else if (StringUtils.deleteWhitespace(line).startsWith(YOURS_CONFLICT_MARKER) && conflictArea == ConflictArea.Right) {
                 mergeConflicts.add(new MergeConflict(leftConflictingContent.toString(), rightConflictingContent.toString()))
                 conflictArea = ConflictArea.None
             } else {
@@ -72,6 +73,18 @@ class MergeConflict {
             }
         }
         return mergeConflicts
+    }
+
+    public static int getConflictsNumber(Path file) {
+        int conflictCount = 0
+        Iterator<String> mergeCodeLines = FileUtils.readLines(file.toFile(), Charset.defaultCharset()).iterator()
+        while (mergeCodeLines.hasNext()) {
+            String line = mergeCodeLines.next()
+            if (line.startsWith(SIMPLE_CONFLICT_MARKER)) {
+                conflictCount += 1
+            }
+        }
+        return conflictCount
     }
 
 }

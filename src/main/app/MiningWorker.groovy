@@ -40,7 +40,7 @@ class MiningWorker implements Runnable {
                 List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
                 for (mergeCommit in mergeCommits) {
                     try {
-                        if(
+                       /* if(
                         mergeCommit.getSHA().equals("4753091384ea51c56cc09a0f96666ea9a4c2e03e") ||
                         mergeCommit.getSHA().equals("041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146") ||
                         mergeCommit.getSHA().equals("56f158694a3533de50bea5889ad892a80242612a") ||
@@ -48,13 +48,13 @@ class MiningWorker implements Runnable {
                         mergeCommit.getSHA().equals("706aa7ad95f9461b58afb480dab6441b861fd24d")
 
                         )
-                        {
+                        { */
                             if (commitFilter.applyFilter(project, mergeCommit)) {
                                println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
                                 runDataCollectors(project, mergeCommit)
                             }
-                        }
+                        //}
                     } catch (Exception e) {
                         println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
                         e.printStackTrace();

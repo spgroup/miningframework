@@ -23,85 +23,439 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2967648e-b582-4077-9e67-9510ed9d75f1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/left.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/merge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/right.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/left.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/merge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/right.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/staticBlockHIB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/staticBlockHIB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/staticBlockHIBMB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/cli/CliProtocol/staticBlockHIBMB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/left.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/merge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/right.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/staticBlockHIB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/staticBlockHIB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/staticBlockHIBMB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/model/Jenkins/staticBlockHIBMB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/left.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/merge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/right.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/staticBlockHIB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/staticBlockHIB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/staticBlockHIBMB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol/staticBlockHIBMB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/left.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/merge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/right.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/staticBlockHIB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/staticBlockHIB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/staticBlockHIBMB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/staticBlockHIBMB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/left.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/merge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/right.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/base.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/left.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/merge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/right.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/staticBlockHIB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/staticBlockHIB.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/staticBlockHIBMB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/56f158694a3533de50bea5889ad892a80242612a/source/hudson/cli/CliProtocol/staticBlockHIBMB.java.merge" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/AntClassLoader/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/model/HealthReport/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/0bd065f3d180a1e0bcf7febb3213e72450d324f3/source/hudson/tools/JDKInstaller/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/hudson/model/RunParameterDefinition/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/1203b091902526620775a3e3603a245b81ed46b4/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/32376946b8e97468837f737054933612f21182d4/source/DefaultFilePathFilter/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/411f2c80b47bdb9b8c76f783b381237eb81b2fe5/source/hudson/PluginWrapperTest/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/jenkins/slaves/JnlpSlaveAgentProtocol3/base_alice" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/DetachedPluginsUtil/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/681386990da25f95ba31911a88fcae213723d254/source/hudson/model/UpdateCenter/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/model/ComputerSet/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/6efee2875ce58a46588067c127e7883ab63b127f/source/hudson/util/StreamTaskListener/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8991d8a6482909a9dd0627c568e63e02d1beb7f7/source/jenkins/security/ConfidentialStoreRule/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/8b2f795dc8fa4cb9c8d3e1faf1f2a735802873e0/source/hudson/PluginWrapperTest/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/hudson/model/Queue/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/93375d53f19a3301e8a0ea480be352ef1aa6f384/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a3bf6f932fc2e7c4eb6728423dff1ac5e100344f/source/hudson/util/ProcessTree/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/AntClassLoader/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/SecureRequester/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/HealthReport/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/model/Items/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/tools/JDKInstaller/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/hudson/util/IOUtils/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/a621099bf1a9082b115c173a9d9416e8027db298/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/c25b345460d2bc3fd1ed649777a332221b8c38e0/source/hudson/cli/CLIActionTest/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/AntClassLoader/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/SecureRequester/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/HealthReport/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/model/Items/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/hudson/util/IOUtils/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/jenkins/ClassLoaderReflectionToolkit/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/ccbe96227f934ae311714fb9d16f38534966538d/source/org/jvnet/hudson/test/HudsonTestCase/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/AntClassLoader/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/OldDataMonitorTest/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/PluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/model/HealthReport/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/d049840bcc6478edb09d43d409303bf5787d32d2/source/hudson/tools/JDKInstaller/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/hudson/model/RunParameterDefinition/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/de1b368aaa2f7476772e0f0849667c8f73a41fbb/source/org/jvnet/hudson/test/TestPluginManager/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/ColumnType/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/Table/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/420b4e147c9dff449209f332155e66df108982bf/source/com/tightdb/generator/CodeGenProcessor/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/709da6b9466c4d8850a4cabea53637b4bb82708e/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/StandardRealmObjectSchema/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/internal/ObjectServerFacade/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/86c8fa5e63ac2166f2805495a605b4873daa40af/source/io/realm/processor/RealmJsonTypeHelper/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/bbc2f506e0e477ccc404c123094008e48d446d86/source/io/realm/processor/RealmSourceCodeGenerator/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/da21c0e578a879624f1535f02484df2d1750576a/source/io/realm/BaseRealm/staticBlockHIBMB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/staticBlockHIB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/staticBlockHIB.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/staticBlockHIBMB.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/files/realm-java/f034db6a3357b79d1eec6806e47ce52931dbf33e/source/ObjectServerFacade/staticBlockHIBMB.java.merge" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/leo_HIB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/leo_HIB.java.merge" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/leo_HIBMB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/leo_HIBMB.java.merge" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146/source/org/jvnet/hudson/test/HudsonTestCase/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/leo_HIB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/leo_HIB.java.merge" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/leo_HIBMB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/leo_HIBMB.java.merge" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/files/jenkins/4753091384ea51c56cc09a0f96666ea9a4c2e03e/source/hudson/model/Run/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/filtered_scenarios.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/filtered_scenarios.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorAbstract.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesCollectorAbstract.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/StatisticsCollector.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/StatisticsCollector.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesStaticBlockCollector.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesStaticBlockCollector.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlock.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlock.groovy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlocksHelper.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlocksHelper.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/StaticBlockModifiedLinesMatcher.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/StaticBlockModifiedLinesMatcher.groovy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,78 +581,14 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state x="223" y="0" width="1089" height="824" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1619145403061">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1632841706925">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="0" width="1089" height="824" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1619145403061" />
-    <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser" timestamp="1618335844266">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1632841706925" />
+    <state x="449" y="148" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1632842399134">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1618335844266" />
-    <state x="528" y="281" width="555" height="267" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1619655073747">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="528" y="281" width="555" height="267" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1536.824@0.0.1536.824" timestamp="1619655073747" />
-    <state x="524" y="115" key="#xdebugger.evaluate" timestamp="1620059182087">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="524" y="115" key="#xdebugger.evaluate/0.0.1536.824@0.0.1536.824" timestamp="1620059182087" />
-    <state width="708" height="656" key="DebuggerActiveHint" timestamp="1620059161097">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="708" height="656" key="DebuggerActiveHint/0.0.1536.824@0.0.1536.824" timestamp="1620059161097" />
-    <state x="548" y="154" key="FileChooserDialogImpl" timestamp="1619145337071">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="548" y="154" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1619145337071" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1620066748450">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1620066748450" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1620066748450">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1620066748450" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1620066748450">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1620066748450" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1620066748450">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1620066748450" />
-    <state width="1493" height="223" key="GridCell.Tab.1.bottom" timestamp="1620061152599">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1620061152599" />
-    <state width="1493" height="223" key="GridCell.Tab.1.center" timestamp="1620061152599">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1620061152599" />
-    <state width="1493" height="223" key="GridCell.Tab.1.left" timestamp="1620061152599">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1620061152599" />
-    <state width="1493" height="223" key="GridCell.Tab.1.right" timestamp="1620061152599">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="223" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1620061152599" />
-    <state x="277" y="57" key="SettingsEditor" timestamp="1619997286888">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="277" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1619997286888" />
-    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1620051459591">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1620051459591" />
-    <state x="478" y="145" width="998" height="592" key="find.popup" timestamp="1620056848473">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="478" y="145" width="998" height="592" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1620056848473" />
-    <state width="600" height="428" key="javadoc.popup" timestamp="1618428200832">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="600" height="428" key="javadoc.popup/0.0.1536.824@0.0.1536.824" timestamp="1618428200832" />
+    <state x="449" y="148" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1536.824@0.0.1536.824" timestamp="1632842399134" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -334,11 +624,6 @@
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/app/MiningWorker.groovy</url>
-          <line>54</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedMethodsCommitFilter.groovy</url>
           <line>19</line>
           <option name="timeStamp" value="36" />
@@ -347,11 +632,6 @@
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/DiffJParser.groovy</url>
           <line>46</line>
           <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/app/MiningWorker.groovy</url>
-          <line>51</line>
-          <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/app/MiningWorker.groovy</url>
@@ -369,11 +649,6 @@
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/StatisticsCollector.groovy</url>
-          <line>22</line>
-          <option name="timeStamp" value="86" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/S3MMergesCollector/S3MRunner.groovy</url>
           <line>33</line>
           <option name="timeStamp" value="93" />
@@ -384,23 +659,13 @@
           <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/InCommitListMutuallyModifiedStaticBlocksFilter.groovy</url>
-          <line>42</line>
-          <option name="timeStamp" value="108" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedLinesStaticBlockCollector.groovy</url>
           <line>50</line>
           <option name="timeStamp" value="109" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/StatisticsCollector.groovy</url>
-          <line>28</line>
-          <option name="timeStamp" value="110" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlocksHelper.groovy</url>
-          <line>68</line>
+          <line>87</line>
           <option name="timeStamp" value="115" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -418,6 +683,11 @@
           <line>159</line>
           <option name="timeStamp" value="126" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/modifiedLinesCollector/ModifiedStaticBlocksHelper.groovy</url>
+          <line>64</line>
+          <option name="timeStamp" value="127" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
@@ -425,5 +695,10 @@
         <PinnedItemInfo parentTag="java.io.BufferedInputStream" memberName="in" />
       </pinned-members>
     </pin-to-top-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/miningframework$Main.ic" NAME="Main Coverage Results" MODIFIED="1622597644746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>app.*</FILTER>
+    </SUITE>
   </component>
 </project>

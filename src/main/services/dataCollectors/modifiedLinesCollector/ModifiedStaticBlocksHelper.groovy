@@ -1,5 +1,6 @@
 package services.dataCollectors.modifiedLinesCollector
 
+import project.MergeCommit
 import project.Project
 import util.FileManager
 import util.ProcessRunner
@@ -36,7 +37,8 @@ class ModifiedStaticBlocksHelper {
         Map<Integer, String> staticBlockedASTFile = parsedASTAllStaticBlock(targetFile);
        // List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
-
+        if(staticBlockedASTFile?.size() >0)
+        createDataFilesExperimentalStaticBlock(project,targetFile.path ,staticBlockedASTFile?.size())
         //Map<String, int[]> parsedDiffJResult = modifiedStaticBlocksParser.parse(diffJOutput);
         List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
 
@@ -45,18 +47,35 @@ class ModifiedStaticBlocksHelper {
 
         return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(staticBlockedASTFile, parsedTextualDiffResult);
     }
+
+    void createDataFilesExperimentalStaticBlock(Project project,String hash, int qtdStaticBlock) {
+
+        File experimentalDataFile = new File("C:/UFPE/data/results-StaticBlock.csv")
+        if (!experimentalDataFile.exists()) {
+            experimentalDataFile << 'project; hash; static\n'
+        }
+
+        experimentalDataFile << "${project.getName()};${hash};${qtdStaticBlock}\n"
+    }
     private Map<String,String> parsedASTAllStaticBlock(File file){
         JavaParser javaParser = new JavaParser();
         def result = new HashMap<String, String>();
-
-        CompilationUnit compilationUnit = javaParser.parse(file).getResult().get();
-        compilationUnit.stream().forEach(staticBlocked -> {
-            if(staticBlocked instanceof InitializerDeclaration) {
-                int begin = staticBlocked?.getRange().get().begin.line
-                int end = staticBlocked?.getRange().get().end.line
-                result.put(convertStrIntIdentifier(begin, end),staticBlocked?.getBody()?.asBlockStmt()?.toString())
-            }
-        });
+       if(file !=null) {
+           try {
+               CompilationUnit compilationUnit = javaParser.parse(file).getResult().get();
+               if (compilationUnit != null) {
+                   compilationUnit.stream().forEach(staticBlocked -> {
+                       if (staticBlocked instanceof InitializerDeclaration) {
+                           int begin = staticBlocked?.getRange().get().begin.line
+                           int end = staticBlocked?.getRange().get().end.line
+                           result.put(convertStrIntIdentifier(begin, end), staticBlocked?.getBody()?.asBlockStmt()?.toString())
+                       }
+                   });
+               }
+           }catch(Exception e){
+               println e
+           }
+       }
         return result;
     }
     private String convertStrIntIdentifier(int begin, int end){

@@ -63,7 +63,7 @@ class ModifiedLinesStaticBlockCollector extends ModifiedLinesCollectorAbstract {
     void createExperimentalDataFiles(String outputPath) {
         this.experimentalDataFile = new File(outputPath + "/data/results.csv")
         if (!experimentalDataFile.exists()) {
-            this.experimentalDataFile << 'project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions\n'
+            this.experimentalDataFile << 'project;merge commit;className;staticBlock;left modifications;left deletions;right modifications;right deletions\n'
         }
 
         if (arguments.isPushCommandActive()) {

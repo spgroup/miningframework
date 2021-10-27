@@ -39,7 +39,6 @@ def export_csv():
 
             if result:
                 class_method_folder = base_path + "/changed-methods/" + class_name + "/" + method
-                class_method_folder = class_method_folder.replace(" ", "")
 
                 if not os.path.exists(class_method_folder):
                     os.makedirs(class_method_folder)

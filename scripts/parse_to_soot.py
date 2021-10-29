@@ -30,18 +30,15 @@ def export_csv():
             result_reverse = []
 
             for line in left_modifications:
-                if line not in right_modifications:
-                    result.append([class_name, "sink", line])
-                    result_reverse.append([class_name, "source", line])
+                result.append([class_name, "sink", line])
+                result_reverse.append([class_name, "source", line])
 
             for line in right_modifications:
-                if line not in left_modifications:
-                    result.append([class_name, "source", line])
-                    result_reverse.append([class_name, "sink", line])
+                result.append([class_name, "source", line])
+                result_reverse.append([class_name, "sink", line])
 
             if result:
                 class_method_folder = base_path + "/changed-methods/" + class_name + "/" + method
-                class_method_folder = class_method_folder.replace(" ", "")
 
                 if not os.path.exists(class_method_folder):
                     os.makedirs(class_method_folder)

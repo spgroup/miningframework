@@ -14,6 +14,8 @@ class Arguments {
     private String accessKey
     private int numOfThreads
     private boolean keepProjects
+    private String syntacticSeparators
+    private String fileExtension
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -25,6 +27,8 @@ class Arguments {
         accessKey = ''
         numOfThreads = 1
         keepProjects = false
+        syntacticSeparators = '{ } ( ) ; ,'
+        fileExtension = 'java'
     }
 
     void setNumOfThreads (int numOfThreads) {
@@ -67,6 +71,14 @@ class Arguments {
         this.keepProjects = true;
     }
 
+    void setFileExtension(String fileExt) {
+        this.fileExtension = fileExt
+    }
+
+    void setLanguageSyntacticSeparators(String separators) {
+        this.syntacticSeparators = separators
+    }
+
     int getNumOfThreads() {
         return this.numOfThreads
     }
@@ -105,6 +117,14 @@ class Arguments {
 
     String getAccessKey() {
         return accessKey
+    }
+
+    String getFileExtension() {
+        return fileExtension
+    }
+
+    String getLanguageSyntacticSeparators() {
+        return syntacticSeparators
     }
 
     boolean providedAccessKey() {

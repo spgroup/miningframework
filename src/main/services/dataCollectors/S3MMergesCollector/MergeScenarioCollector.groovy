@@ -9,6 +9,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 
+import static app.MiningFramework.arguments
+
 /**
  * Class responsible for collecting and storing eligible merge scenarios (modified from base java files).
  */

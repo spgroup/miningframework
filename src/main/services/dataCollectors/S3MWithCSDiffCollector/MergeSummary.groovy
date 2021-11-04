@@ -58,6 +58,7 @@ class MergeSummary {
 
     private Map<String, Path> getMergeOutputPaths() {
         Map<String, Path> mergeOutputPaths = [:]
+        mergeOutputPaths["CSDiff"] = getCSDiffMergeOutputPath()
         mergeOutputPaths["Diff3"] = getDiff3MergeOutputPath()
         mergeOutputPaths["GitMergeFile"] = getGitMergeFileOutputPath()
         mergeOutputPaths["Actual"] = getActualMergeOutputPath()
@@ -68,6 +69,10 @@ class MergeSummary {
         }
 
         return mergeOutputPaths
+    }
+
+    private Path getCSDiffMergeOutputPath() {
+        return this.filesQuadruplePath.resolve("CSDiff").resolve(MERGE_FILE_NAME)
     }
 
     private Path getDiff3MergeOutputPath() {

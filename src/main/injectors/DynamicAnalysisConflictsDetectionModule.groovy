@@ -9,31 +9,29 @@ import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 
 import services.commitFilters.InCommitListMutuallyModifiedMethodsFilter
-import services.dataCollectors.buildRequester.BuildRequester
-import services.dataCollectors.MergeConflictCollector
-import services.dataCollectors.StatisticsCollector
-import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
+
+import services.dataCollectors.buildRequester.BuildRequesterDynamicSemanticStudy
+import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollectorDynamicSemanticStudy
+
 import services.outputProcessors.FetchBuildsOutputProcessor
-import services.outputProcessors.GenerateSootInputFilesOutputProcessor
 import services.outputProcessors.WaitForBuildsOutputProcessor
-import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
+
 import services.projectProcessors.FilterNonExistentProjectsProcessor
 import services.projectProcessors.ForkAndEnableCIProcessor
+
 import services.util.ci.CIPlatform
 import services.util.ci.GithubActionsPlatform
-import services.util.ci.TravisPlatform
+
 import services.util.FetchBuildsScript
 
-class StaticAnalysisConflictsDetectionModule extends AbstractModule {
+class DynamicAnalysisConflictsDetectionModule extends AbstractModule {
 
     @Override
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
-        dataCollectorBinder.addBinding().to(ModifiedLinesCollector.class)
-        dataCollectorBinder.addBinding().to(StatisticsCollector.class)
-        dataCollectorBinder.addBinding().to(BuildRequester.class)
-        dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
+        dataCollectorBinder.addBinding().to(ModifiedLinesCollectorDynamicSemanticStudy.class)
+        dataCollectorBinder.addBinding().to(BuildRequesterDynamicSemanticStudy.class)
         
         bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsFilter.class)
 
@@ -44,12 +42,9 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(WaitForBuildsOutputProcessor.class)
 
-        FetchBuildsOutputProcessor fetchBuildsOutputProcessor = new FetchBuildsOutputProcessor(FetchBuildsScript.SingleBuildPerScenario)
+        FetchBuildsOutputProcessor fetchBuildsOutputProcessor = new FetchBuildsOutputProcessor(FetchBuildsScript.MultipleBuildsPerScenario)
         outputProcessorBinder.addBinding().toInstance(fetchBuildsOutputProcessor)
-
-        outputProcessorBinder.addBinding().to(GenerateSootInputFilesOutputProcessor.class)
-        outputProcessorBinder.addBinding().to(RunSootAnalysisOutputProcessor.class)
-
+        
         bind(CIPlatform.class).to(GithubActionsPlatform.class)
     }
 

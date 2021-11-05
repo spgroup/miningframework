@@ -8,7 +8,6 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.NonFastForwardMergeCommitFilter
-import services.commitFilters.S3MCommitFilter
 import services.dataCollectors.csDiffCollector.CSDiffCollector
 import services.outputProcessors.EmptyOutputProcessor
 import services.projectProcessors.DummyProjectProcessor

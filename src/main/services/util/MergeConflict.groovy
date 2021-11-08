@@ -12,10 +12,12 @@ class MergeConflict {
     enum ConflictArea {
         None,
         Left,
+        Base,
         Right
     }
 
     public static MINE_CONFLICT_MARKER = "<<<<<<<MINE"
+    public static BASE_CONFLICT_MARKER = "|||||||"
     public static YOURS_CONFLICT_MARKER = ">>>>>>>YOURS"
     public static CHANGE_CONFLICT_MARKER = "======="
     public static SIMPLE_CONFLICT_MARKER = "<<<<<<<"
@@ -73,6 +75,32 @@ class MergeConflict {
             }
         }
         return mergeConflicts
+    }
+
+    static void removeBaseFromConflicts(Path file) {
+        Iterator<String> mergeCodeLines = FileUtils.readLines(file.toFile(), Charset.defaultCharset()).iterator()
+
+        List<String> newMergeCodeLines = []
+        ConflictArea conflictArea = ConflictArea.None
+
+        while (mergeCodeLines.hasNext()) {
+            String line = mergeCodeLines.next()
+            if (StringUtils.deleteWhitespace(line).startsWith(MINE_CONFLICT_MARKER)) {
+                conflictArea = ConflictArea.Left
+            } else if (StringUtils.deleteWhitespace(line).startsWith(BASE_CONFLICT_MARKER)) {
+                conflictArea = ConflictArea.Base
+            } else if (StringUtils.deleteWhitespace(line).startsWith(CHANGE_CONFLICT_MARKER)) {
+                conflictArea = ConflictArea.Right
+            } else if (StringUtils.deleteWhitespace(line).startsWith(YOURS_CONFLICT_MARKER)) {
+                conflictArea = ConflictArea.None
+            }
+
+            if (conflictArea != ConflictArea.Base) {
+                newMergeCodeLines.add(line)
+            }
+        }
+
+        FileUtils.writeLines(file.toFile(), newMergeCodeLines)
     }
 
     public static int getConflictsNumber(Path file) {

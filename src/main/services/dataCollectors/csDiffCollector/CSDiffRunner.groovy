@@ -43,9 +43,6 @@ public class CSDiffRunner {
     }
 
     private static List<String> buildCSDiffParameters(String languageSeparators, Path leftFile, Path baseFile, Path rightFile) {
-        String outputPathFileName = getOutputPath(baseFile.getParent(), "csdiff").toString()
-        String diff3PathFileName = getOutputPath(baseFile.getParent(), "diff3").toString()
-
         List<String> parameters = ['bash', getNameAsString(CS_DIFF_PATH), String.format("-s \"%s\"", languageSeparators), leftFile.toString(), baseFile.toString(), rightFile.toString()]
 
         return parameters

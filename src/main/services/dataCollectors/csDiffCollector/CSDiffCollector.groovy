@@ -6,6 +6,7 @@ import project.Project
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 import services.mergeScenariosFilters.NonFastForwardMergeScenarioFilter
 import services.util.CSDiffMergeCommitSummary
+import static app.MiningFramework.arguments
 
 import java.nio.file.Path
 
@@ -18,7 +19,9 @@ class CSDiffCollector implements DataCollector {
 
         List<Path> filteredMergeScenarios = NonFastForwardMergeScenarioFilter.applyFilter(mergeScenarios)
 
-        CSDiffRunner.collectCSDiffResults(filteredMergeScenarios)
+        String separators = arguments.getLanguageSyntacticSeparators()
+        println "Starting CSDiffRunner with the following separators: \"${separators}\""
+        CSDiffRunner.collectCSDiffResults(filteredMergeScenarios, separators)
         println 'Collected CS Diff Results'
 
         CSDiffMergeCommitSummary summary = DataAnalyser.analyseScenarios(filteredMergeScenarios)

@@ -15,9 +15,9 @@ class CSDiffMergeScenarioSummary {
     Boolean hasDifferenceFromGitMergeToActualMerge
 
     CSDiffMergeScenarioSummary(Path mergeScenario) {
-        Integer gitMergeConflictsNumber = getMergeConflictsNumber(mergeScenario, "git_merge.java")
-        Integer mergeConflictsNumber = getMergeConflictsNumber(mergeScenario, "diff3.java")
-        Integer cSDiffConflictsNumber = getMergeConflictsNumber(mergeScenario, "csdiff.java")
+        Integer gitMergeConflictsNumber = getMergeConflictsNumber(mergeScenario, "git_merge")
+        Integer mergeConflictsNumber = getMergeConflictsNumber(mergeScenario, "diff3")
+        Integer cSDiffConflictsNumber = getMergeConflictsNumber(mergeScenario, "csdiff")
 
         this.mergeScenario = Utils.getOutputPath().relativize(mergeScenario)
 
@@ -27,11 +27,10 @@ class CSDiffMergeScenarioSummary {
                 gitMergeConflictsNumber
         ]
 
-        String gitMergeText = getFileText(mergeScenario, "git_merge.java")
-        String mergeText = getFileText(mergeScenario, "diff3.java")
-        String csDiffText = getFileText(mergeScenario, "csdiff.java")
-
-        String actualMergeText = getFileText(mergeScenario, "merge.java")
+        String gitMergeText = getFileText(mergeScenario, "git_merge")
+        String mergeText = getFileText(mergeScenario, "diff3")
+        String csDiffText = getFileText(mergeScenario, "csdiff")
+        String actualMergeText = getFileText(mergeScenario, "merge")
 
         this.hasDifferenceBetweenMergeResults = hasDifferenceModuloWhitespace(mergeText, csDiffText)
 
@@ -60,12 +59,12 @@ class CSDiffMergeScenarioSummary {
     }
 
     private static Integer getMergeConflictsNumber(Path mergeScenario, String toResolve) {
-        Path mergeFile = mergeScenario.resolve(toResolve)
+        Path mergeFile = mergeScenario.resolve(Utils.getfileNameWithExtension(toResolve))
         return MergeConflict.getConflictsNumber(mergeFile)
     }
 
     private static String getFileText(Path mergeScenario, String toResolve) {
-        Path mergeFile = mergeScenario.resolve(toResolve)
+        Path mergeFile = mergeScenario.resolve(Utils.getfileNameWithExtension(toResolve))
         return mergeFile.getText()
     }
 

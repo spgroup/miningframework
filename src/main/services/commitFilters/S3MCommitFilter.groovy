@@ -19,7 +19,7 @@ class S3MCommitFilter implements CommitFilter {
 
         return modifiedFiles.stream()
                 .filter(MergeScenarioCollector::isModifiedFile)
-                .filter(MergeScenarioCollector::isJavaFile)
+                .filter(MergeScenarioCollector::isRequiredFileFormat)
                 .count() > 0
     }
 }

@@ -110,7 +110,7 @@ eval ${sedCommandYourFile}
 
 # Runs diff3 against the tokenized inputs, generating a tokenized merged file
 midMergedFile="${parentFolder}/mid_merged${fileExt}"
-diff3 -m "${myFile}_temp${fileExt}" "${oldFile}_temp${fileExt}" "${yourFile}_temp${fileExt}" > $midMergedFile
+diff3 -E -m "${myFile}_temp${fileExt}" "${oldFile}_temp${fileExt}" "${yourFile}_temp${fileExt}" > $midMergedFile
 
 # Removes the tokenized input files
 rm "${myFile}_temp${fileExt}"

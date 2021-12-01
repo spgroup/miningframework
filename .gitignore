@@ -6,6 +6,16 @@ results.csv
 /build/
 .gradle
 /build/
+	 
+.idea/gradle.xml
+.idea/workspace.xml
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/workspace.xml
+.idea/
+clonedRepositories/
+.gitignore
+
 
 # Ignore Gradle GUI config
 gradle-app.setting

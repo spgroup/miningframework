@@ -2,13 +2,15 @@ package services.dataCollectors.modifiedLinesCollector
 
 /**
  * This class represents a staticBlock's difference from a base to commit to
- * another, it uses the identifier to identify it and has a list of the modified
+ * another, it uses the identifier(generated number) to identify it and has a list of the modified
  * lines from one commit to another
  */
 class ModifiedStaticBlock {
 
     private String identifier;
     private Set<ModifiedLine> modifiedLines;
+    private int quantidadeInializationBlock;
+
 
     ModifiedStaticBlock(String identifier, Set<ModifiedLine> lines) {
         this.identifier = identifier;

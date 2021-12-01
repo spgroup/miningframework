@@ -4,13 +4,12 @@ import project.MergeCommit
 import project.Project
 import util.FileManager
 import util.ProcessRunner
-
+import static app.MiningFramework.arguments;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 
-import static app.MiningFramework.arguments
 
 /**
  * This class uses a combination o two diffing tools to provide the necessary diff output
@@ -25,20 +24,23 @@ class ModifiedStaticBlocksHelper {
     private TextualDiffParser textualDiffParser = new TextualDiffParser();
     private DiffJParser modifiedStaticBlocksParser = new DiffJParser();
     private StaticBlockModifiedLinesMatcher modifiedStaticBlocksMatcher = new StaticBlockModifiedLinesMatcher();
+    private File filteredScenariosIniatilizationBlock = null;
 
     public ModifiedStaticBlocksHelper(String diffj) {
         this.diffJOption = diffj
     }
 
-    public Set<ModifiedStaticBlock> getModifiedStaticBlocks(Project project, String filePath, String ancestorSHA, String targetSHA) {
+    public Set<ModifiedStaticBlock> getModifiedStaticBlocks(Project project, String filePath, String ancestorSHA, String targetSHA,MergeCommit mergeCommit) {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        Map<Integer, String> staticBlockedASTFile = parsedASTAllStaticBlock(targetFile);
-       // List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
+        Map<Integer, String> ancestorIniatilizationBlockASTFile = parsedASTAllStaticBlock(ancestorFile)
+        Map<Integer, String> staticBlockedASTFile = parsedASTAllStaticBlock(targetFile)
+
+        // List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
-        if(staticBlockedASTFile?.size() >0)
-        createDataFilesExperimentalStaticBlock(project,targetFile.path ,staticBlockedASTFile?.size())
+       // if(staticBlockedASTFile?.size() >0)
+        createDataFilesExperimentalStaticBlock(project,ancestorSHA,targetSHA,filePath,mergeCommit,quantityInializationBlock(ancestorIniatilizationBlockASTFile,staticBlockedASTFile))
         //Map<String, int[]> parsedDiffJResult = modifiedStaticBlocksParser.parse(diffJOutput);
         List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
 
@@ -47,28 +49,35 @@ class ModifiedStaticBlocksHelper {
 
         return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(staticBlockedASTFile, parsedTextualDiffResult);
     }
-
-    void createDataFilesExperimentalStaticBlock(Project project,String hash, int qtdStaticBlock) {
-
-        File experimentalDataFile = new File("C:/UFPE/data/results-StaticBlock.csv")
-        if (!experimentalDataFile.exists()) {
-            experimentalDataFile << 'project; hash; static\n'
+   private int quantityInializationBlock(Map<Integer, String> ancestorIniatilizationBlockASTFile, Map<Integer, String> staticBlockedASTFile){
+       if(staticBlockedASTFile.size() >= ancestorIniatilizationBlockASTFile.size()){
+           return staticBlockedASTFile.size();
+       }else {
+           return ancestorIniatilizationBlockASTFile.size();
+       }
+   }
+   private void createDataFilesExperimentalStaticBlock(Project project,String sha, String ancestorSHA, String targetFile, MergeCommit mergeCommit,int qtdStaticBlock) {
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/results-Iniatilizationlock.csv")
+        if (!filteredScenariosIniatilizationBlock.exists()) {
+            filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static\n'
         }
 
-        experimentalDataFile << "${project.getName()};${hash};${qtdStaticBlock}\n"
+       filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${qtdStaticBlock}\n"
     }
     private Map<String,String> parsedASTAllStaticBlock(File file){
         JavaParser javaParser = new JavaParser();
-        def result = new HashMap<String, String>();
+        def result = new HashMap<int, String>();
        if(file !=null) {
            try {
                CompilationUnit compilationUnit = javaParser.parse(file).getResult().get();
                if (compilationUnit != null) {
+                   int i=1;
                    compilationUnit.stream().forEach(staticBlocked -> {
                        if (staticBlocked instanceof InitializerDeclaration) {
                            int begin = staticBlocked?.getRange().get().begin.line
                            int end = staticBlocked?.getRange().get().end.line
-                           result.put(convertStrIntIdentifier(begin, end), staticBlocked?.getBody()?.asBlockStmt()?.toString())
+                           result.put(convertStrIntIdentifier(i++ , begin , end) , staticBlocked?.getBody()?.asBlockStmt()?.toString())
                        }
                    });
                }
@@ -78,8 +87,8 @@ class ModifiedStaticBlocksHelper {
        }
         return result;
     }
-    private String convertStrIntIdentifier(int begin, int end){
-        return String.valueOf(begin) + "-" + String.valueOf(end)
+    private String convertStrIntIdentifier(int ident, int begin, int end){
+        return ident + ";" +String.valueOf(begin) + "-" + String.valueOf(end)
     }
 
 

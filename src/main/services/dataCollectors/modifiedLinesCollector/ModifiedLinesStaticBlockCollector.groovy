@@ -24,7 +24,7 @@ class ModifiedLinesStaticBlockCollector extends ModifiedLinesCollectorAbstract {
 
         for (String filePath : mutuallyModifiedFiles) {
             // get merge revision modified Static Blocks
-            Set<ModifiedStaticBlock> allModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA())
+            Set<ModifiedStaticBlock> allModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getSHA(),mergeCommit)
             // get staticBlock modified by both left and right revisions
             Map<String, Tuple2<ModifiedStaticBlock, ModifiedStaticBlock>> mutuallyModifiedStaticBlocks = getMutuallyModifiedStaticBlocks(project, mergeCommit, filePath);
 

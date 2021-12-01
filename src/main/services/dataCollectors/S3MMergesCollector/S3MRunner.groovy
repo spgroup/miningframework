@@ -1,5 +1,8 @@
 package services.dataCollectors.S3MMergesCollector
 
+import project.MergeCommit
+import project.Project
+import util.FileManager
 import util.Handlers
 import util.ProcessRunner
 import java.nio.file.Files
@@ -7,10 +10,13 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
+import static app.MiningFramework.arguments
+
 class S3MRunner {
 
     static final Path S3M_PATH = Paths.get("dependencies/s3m.jar")
-
+    static final String newHandlerOutput = "newHandlerOutput.java";
+    static final String oldHandlerOutput = "oldHandlerOutput.java";
     /**
      * Runs S3M for each merge scenario and for each handler. Store the results at the same directory
      * the merge scenario is located, in a directory for each handler.
@@ -43,11 +49,27 @@ class S3MRunner {
             runS3M(leftFile, baseFile, rightFile, 'KB.java', Handlers.Renaming, '-r', 'BOTH')
         }
         if (handlers.contains(Handlers.InitializationBlocks)){
-            run3MInicializedDeclaration(leftFile, baseFile, rightFile,  mergeScenario.toString() +  '\\staticBlockHIB.java',  '-hib', 'true');
-            run3MInicializedDeclaration(leftFile, baseFile, rightFile,mergeScenario.toString() + '\\staticBlockHIBMB.java', '-hibmb', 'true');
+            Path newHandlersOutputFile = getInvolvedFile(mergeScenario,newHandlerOutput);
+            Path oldHandlersOutputFile = getInvolvedFile(mergeScenario,oldHandlerOutput);
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,  newHandlersOutputFile.toString(),  '--handle-initialization-blocks', 'true');
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,oldHandlersOutputFile.toString(), '--handle-initialization-blocks', 'false');
+
+            List<String> resultDiff =  runTextualDiff(newHandlersOutputFile, oldHandlersOutputFile)
+            if(resultDiff !=null && resultDiff.size() > 0){
+                obtainResultsForProject(newHandlersOutputFile, oldHandlersOutputFile)
+            }else{
+                FileManager.delete(mergeScenario)
+            }
         }
     }
-
+    private static void obtainResultsForProject(Path newHandlersOutputFile, Path oldHandlersOutputFile) {
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/comparation_handlersFiles.csv")
+        if (!obtainResultsForProjects.exists()) {
+            obtainResultsForProjects << 'New Handlers; old Handlers; status\n'
+        }
+        obtainResultsForProjects  << "${newHandlersOutputFile.toString()};${oldHandlersOutputFile.toString()};1;\n"
+    }
     private static void runS3M(Path leftFile, Path baseFile, Path rightFile, String outputFileName, Handlers handler, String additionalParameters) {
         Process S3M = ProcessRunner.startProcess(buildS3MProcess(leftFile, baseFile, rightFile, outputFileName, handler, additionalParameters))
         S3M.getInputStream().eachLine {
@@ -86,7 +108,7 @@ class S3MRunner {
     }
 
     private static List<String> buildS3MParametersBasic(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String additionalParameters) {
-        List<String> parameters = ['java', '-jar', getNameAsString(S3M_PATH), leftFile.toString(), baseFile.toString(), rightFile.toString(), '-o', outputFileName, handlerName,'true']
+        List<String> parameters = ['java', '-jar', getNameAsString(S3M_PATH), leftFile.toString(), baseFile.toString(), rightFile.toString(), '-o', outputFileName, handlerName,additionalParameters]
         return parameters
     }
 
@@ -95,7 +117,27 @@ class S3MRunner {
         parameters.addAll(additionalParameters.toList())
         return parameters
     }
+    private List<String> runDiffJ(File newHandlersFile, File oldHandlersFile) {
+        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', 'diffj.jar', "--brief", newHandlersFile.getAbsolutePath(), oldHandlersFile.getAbsolutePath())
+        BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
 
+
+        def line = null;
+        while ((line = reader.readLine()) != null) {
+            println "${line}";
+        }
+        def output = reader.readLines()
+        reader.close();
+
+        return output
+    }
+    private static List<String> runTextualDiff(Path newHandlersFile, Path oldHandlersFile) {
+        Process textDiff = ProcessRunner.runProcess(".", "diff" ,newHandlersFile.toString(), oldHandlersFile.toString())
+        BufferedReader reader = new BufferedReader(new InputStreamReader(textDiff.getInputStream()))
+        def output = reader.readLines()
+        reader.close()
+        return output
+    }
     private static Path getOutputPath(Path mergeScenario, String handlerName, String fileName) {
         return mergeScenario.resolve(handlerName).resolve(fileName)
     }

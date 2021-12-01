@@ -121,8 +121,8 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     }
 
     protected Map<String, Tuple2<ModifiedMethod, ModifiedStaticBlock>> getMutuallyModifiedStaticBlocks(Project project, MergeCommit mergeCommit, String filePath) {
-        Set<ModifiedMethod> leftModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
-        Set<ModifiedMethod> rightModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
+        Set<ModifiedMethod> leftModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
+        Set<ModifiedMethod> rightModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
         return intersectAndBuildMapStaticBlock(leftModifiedStaticBlocks, rightModifiedStaticBlocks )
     }
 
@@ -131,10 +131,14 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
 
         for(leftStaticBlock in leftModifiedStaticBlocks) {
-            for(rightStaticBlock in rightModifiedStaticBlocks) {
-                if(leftStaticBlock == rightStaticBlock) {
-                    intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
+            if(rightModifiedStaticBlocks.size() > 0) {
+                for (rightStaticBlock in rightModifiedStaticBlocks) {
+                    if (leftStaticBlock == rightStaticBlock) {
+                        intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
+                    }
                 }
+            }else{
+                intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, leftStaticBlock))
             }
         }
 

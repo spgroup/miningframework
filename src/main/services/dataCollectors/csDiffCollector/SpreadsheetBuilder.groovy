@@ -11,7 +11,7 @@ import java.nio.file.Path
 
 class SpreadsheetBuilder {
     private static final String GLOBAL_SPREADSHEET_HEADER = 'project,merge commit,number of files modified for both branches,number of Merge files with conflicts,number of CSDiff files with conflicts, number of git merge files with conflicts,number of Merge conflicts,number of CSDiff conflicts,number of git merge conflicts,CSDiff and [diff3 -E -m] have the same outputs,actual merge and textual (diff3 -E -m) have same output,actual merge and csdiff have same output,actual merge and git merge have same output,notes,,,'
-    private static final String COMMIT_SPREADSHEET_HEADER = 'project,merge commit,file,number of Merge conflicts,number of CSDiff conflicts,Merge text = CSDiff text,Textual Text = Actual Merge Text,CSDiff Text = Actual Merge Text,Git Merge Text = Actual Merge Text'
+    private static final String COMMIT_SPREADSHEET_HEADER = 'project,merge commit,file,number of diff3 conflicts,number of CSDiff conflicts,number of git merge-file conflicts,diff3 -m -E result == CSDiff result?,diff3 -m -E result == final merge result?,CSDiff result == final merge result?,git merge-file result == final merge result?'
     private static final String SPREADSHEET_NAME = 'results.csv'
 
     /**

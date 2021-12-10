@@ -1,0 +1,2198 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2004-2010, Sun Microsystems, Inc., Kohsuke Kawaguchi,
+ * Erik Ramfelt, Koichi Fujikawa, Red Hat, Inc., Seiji Sogabe,
+ * Stephen Connolly, Tom Huybrechts, Yahoo! Inc., Alan Harder, CloudBees, Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package hudson.model;
+
+import hudson.ExtensionListView;
+import hudson.Functions;
+import hudson.Platform;
+import hudson.PluginManager;
+import hudson.cli.declarative.CLIResolver;
+import hudson.model.listeners.ItemListener;
+import hudson.slaves.ComputerListener;
+import hudson.util.CopyOnWriteList;
+import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
+import org.jvnet.hudson.reactor.ReactorException;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import java.io.File;
+import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+<<<<<<< MINE
+import static hudson.Util.fixEmpty;
+
+public class Hudson extends Jenkins {
+=======
+/**
+ * Root object of the system.
+ *
+ * @author Kohsuke Kawaguchi
+ */
+@ExportedBean
+public class Hudson extends Node implements ModifiableItemGroup<TopLevelItem>, StaplerProxy, StaplerFallback, ViewGroup, AccessControlled, DescriptorByNameOwner {
+    private transient final Queue queue;
+>>>>>>> YOURS
+
+    /**
+<<<<<<< MINE
+     * List of registered {@link hudson.model.listeners.ItemListener}s.
+=======
+     * Stores various objects scoped to {@link Hudson}.
+     */
+    public transient final Lookup lookup = new Lookup();
+
+    /**
+     * {@link Computer}s in this Hudson system. Read-only.
+     */
+    private transient final Map<Node,Computer> computers = new CopyOnWriteMap.Hash<Node,Computer>();
+
+    /**
+     * We update this field to the current version of Hudson whenever we save {@code config.xml}.
+     * This can be used to detect when an upgrade happens from one version to next.
+     *
+     * <p>
+     * Since this field is introduced starting 1.301, "1.0" is used to represent every version
+     * up to 1.300. This value may also include non-standard versions like "1.301-SNAPSHOT" or
+     * "?", etc., so parsing needs to be done with a care.
+     *
+     * @since 1.301
+     */
+    // this field needs to be at the very top so that other components can look at this value even during unmarshalling
+    private String version = "1.0";
+
+    /**
+     * Number of executors of the master node.
+     */
+    private int numExecutors = 2;
+
+    /**
+     * Job allocation strategy.
+     */
+    private Mode mode = Mode.NORMAL;
+
+    /**
+     * False to enable anyone to do anything.
+     * Left as a field so that we can still read old data that uses this flag.
+     *
+     * @see #authorizationStrategy
+     * @see #securityRealm
+     */
+    private Boolean useSecurity;
+
+    /**
+     * Controls how the
+     * <a href="http://en.wikipedia.org/wiki/Authorization">authorization</a>
+     * is handled in Hudson.
+     * <p>
+     * This ultimately controls who has access to what.
+     *
+     * Never null.
+     */
+    private volatile AuthorizationStrategy authorizationStrategy = AuthorizationStrategy.UNSECURED;
+
+    /**
+     * Controls a part of the
+     * <a href="http://en.wikipedia.org/wiki/Authentication">authentication</a>
+     * handling in Hudson.
+     * <p>
+     * Intuitively, this corresponds to the user database.
+     *
+     * See {@link HudsonFilter} for the concrete authentication protocol.
+     *
+     * Never null. Always use {@link #setSecurityRealm(SecurityRealm)} to
+     * update this field.
+     *
+     * @see #getSecurity()
+     * @see #setSecurityRealm(SecurityRealm)
+     */
+    private volatile SecurityRealm securityRealm = SecurityRealm.NO_AUTHENTICATION;
+
+    /**
+     * Message displayed in the top page.
+     */
+    private String systemMessage;
+
+    private MarkupFormatter markupFormatter;
+
+    /**
+     * Root directory of the system.
+     */
+    public transient final File root;
+
+    /**
+     * Where are we in the initialization?
+     */
+    private transient volatile InitMilestone initLevel = InitMilestone.STARTED;
+
+    /**
+     * All {@link Item}s keyed by their {@link Item#getName() name}s.
+     */
+    /*package*/ transient final Map<String,TopLevelItem> items = new CopyOnWriteMap.Tree<String,TopLevelItem>(CaseInsensitiveComparator.INSTANCE);
+
+    /**
+     * The sole instance.
+     */
+    private static Hudson theInstance;
+
+    private transient volatile boolean isQuietingDown;
+    private transient volatile boolean terminating;
+
+    private List<JDK> jdks = new ArrayList<JDK>();
+
+    private transient volatile DependencyGraph dependencyGraph;
+
+    /**
+     * Currently active Views tab bar.
+     */
+    private volatile ViewsTabBar viewsTabBar = new DefaultViewsTabBar();
+
+    /**
+     * Currently active My Views tab bar.
+     */
+    private volatile MyViewsTabBar myViewsTabBar = new DefaultMyViewsTabBar();
+
+    /**
+     * All {@link ExtensionList} keyed by their {@link ExtensionList#extensionType}.
+     */
+    private transient final Memoizer<Class,ExtensionList> extensionLists = new Memoizer<Class,ExtensionList>() {
+        public ExtensionList compute(Class key) {
+            return ExtensionList.create(Hudson.this,key);
+        }
+    };
+
+    /**
+     * All {@link DescriptorExtensionList} keyed by their {@link DescriptorExtensionList#describableType}.
+     */
+    private transient final Memoizer<Class,DescriptorExtensionList> descriptorLists = new Memoizer<Class,DescriptorExtensionList>() {
+        public DescriptorExtensionList compute(Class key) {
+            return DescriptorExtensionList.createDescriptorList(Hudson.this,key);
+        }
+    };
+
+    /**
+     * Active {@link Cloud}s.
+     */
+    public final CloudList clouds = new CloudList(this);
+
+    public static class CloudList extends DescribableList<Cloud,Descriptor<Cloud>> {
+        public CloudList(Hudson h) {
+            super(h);
+        }
+
+        public CloudList() {// needed for XStream deserialization
+        }
+
+        public Cloud getByName(String name) {
+            for (Cloud c : this)
+                if (c.name.equals(name))
+                    return c;
+            return null;
+        }
+
+        @Override
+        protected void onModified() throws IOException {
+            super.onModified();
+            Hudson.getInstance().trimLabels();
+        }
+    }
+
+    /**
+     * Set of installed cluster nodes.
+     * <p>
+     * We use this field with copy-on-write semantics.
+     * This field has mutable list (to keep the serialization look clean),
+     * but it shall never be modified. Only new completely populated slave
+     * list can be set here.
+     * <p>
+     * The field name should be really {@code nodes}, but again the backward compatibility
+     * prevents us from renaming.
+     */
+    private volatile NodeList slaves;
+
+    /**
+     * Quiet period.
+     *
+     * This is {@link Integer} so that we can initialize it to '5' for upgrading users.
+     */
+    /*package*/ Integer quietPeriod;
+
+    /**
+     * Global default for {@link AbstractProject#getScmCheckoutRetryCount()}
+     */
+    /*package*/ int scmCheckoutRetryCount;
+
+    /**
+     * {@link View}s.
+     */
+    private final CopyOnWriteArrayList<View> views = new CopyOnWriteArrayList<View>();
+
+    /**
+     * Name of the primary view.
+     * <p>
+     * Start with null, so that we can upgrade pre-1.269 data well.
+     * @since 1.269
+     */
+    private volatile String primaryView;
+
+    private transient final ViewGroupMixIn viewGroupMixIn = new ViewGroupMixIn(this) {
+        protected List<View> views() { return views; }
+        protected String primaryView() { return primaryView; }
+        protected void primaryView(String name) { primaryView=name; }
+    };
+
+
+    private transient final FingerprintMap fingerprintMap = new FingerprintMap();
+
+    /**
+     * Loaded plugins.
+     */
+    public transient final PluginManager pluginManager;
+
+    public transient volatile TcpSlaveAgentListener tcpSlaveAgentListener;
+
+    private transient UDPBroadcastThread udpBroadcastThread;
+
+    private transient DNSMultiCast dnsMultiCast;
+
+    /**
+     * List of registered {@link ItemListener}s.
+>>>>>>> YOURS
+     * @deprecated as of 1.286
+     */
+    private transient final CopyOnWriteList<ItemListener> itemListeners = ExtensionListView.createCopyOnWriteList(ItemListener.class);
+
+    /**
+    * List of registered {@link hudson.slaves.ComputerListener}s.
+     * @deprecated as of 1.286
+     */
+    private transient final CopyOnWriteList<ComputerListener> computerListeners = ExtensionListView.createCopyOnWriteList(ComputerListener.class);
+
+
+    @CLIResolver
+    public static Hudson getInstance() {
+        return (Hudson)Jenkins.getInstance();
+    }
+
+    public Hudson(File root, ServletContext context) throws IOException, InterruptedException, ReactorException {
+        this(root,context,null);
+    }
+
+    public Hudson(File root, ServletContext context, PluginManager pluginManager) throws IOException, InterruptedException, ReactorException {
+        super(root, context, pluginManager);
+    }
+
+    /**
+     * Gets all the installed {@link ItemListener}s.
+     *
+     * @deprecated as of 1.286.
+     *      Use {@link ItemListener#all()}.
+     */
+    public CopyOnWriteList<ItemListener> getJobListeners() {
+        return itemListeners;
+    }
+
+    /**
+     * Gets all the installed {@link ComputerListener}s.
+     *
+     * @deprecated as of 1.286.
+     *      Use {@link ComputerListener#all()}.
+     */
+    public CopyOnWriteList<ComputerListener> getComputerListeners() {
+        return computerListeners;
+    }
+
+    /**
+<<<<<<< MINE
+=======
+     * Gets the plugin object from its short name.
+     *
+     * <p>
+     * This allows URL <tt>hudson/plugin/ID</tt> to be served by the views
+     * of the plugin class.
+     */
+    public Plugin getPlugin(String shortName) {
+        PluginWrapper p = pluginManager.getPlugin(shortName);
+        if(p==null)     return null;
+        return p.getPlugin();
+    }
+
+    /**
+     * Gets the plugin object from its class.
+     *
+     * <p>
+     * This allows easy storage of plugin information in the plugin singleton without
+     * every plugin reimplementing the singleton pattern.
+     *
+     * @param clazz The plugin class (beware class-loader fun, this will probably only work
+     * from within the hpi that defines the plugin class, it may or may not work in other cases)
+     *
+     * @return The plugin instance.
+     */
+    @SuppressWarnings("unchecked")
+    public <P extends Plugin> P getPlugin(Class<P> clazz) {
+        PluginWrapper p = pluginManager.getPlugin(clazz);
+        if(p==null)     return null;
+        return (P) p.getPlugin();
+    }
+
+    /**
+     * Gets the plugin objects from their super-class.
+     *
+     * @param clazz The plugin class (beware class-loader fun)
+     *
+     * @return The plugin instances.
+     */
+    public <P extends Plugin> List<P> getPlugins(Class<P> clazz) {
+        List<P> result = new ArrayList<P>();
+        for (PluginWrapper w: pluginManager.getPlugins(clazz)) {
+            result.add((P)w.getPlugin());
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Synonym to {@link #getNodeDescription()}.
+     */
+    public String getSystemMessage() {
+        return systemMessage;
+    }
+
+    /**
+     * Gets the markup formatter used in the system.
+     *
+     * @return
+     *      never null.
+     * @since 1.391
+     */
+    public MarkupFormatter getMarkupFormatter() {
+        return markupFormatter!=null ? markupFormatter : RawHtmlMarkupFormatter.INSTANCE;
+    }
+
+    /**
+     * Sets the markup formatter used in the system globally.
+     *
+     * @since 1.391
+     */
+    public void setMarkupFormatter(MarkupFormatter f) {
+        this.markupFormatter = f;
+    }
+
+    /**
+     * Sets the system message.
+     */
+    public void setSystemMessage(String message) throws IOException {
+        this.systemMessage = message;
+        save();
+    }
+
+    public FederatedLoginService getFederatedLoginService(String name) {
+        for (FederatedLoginService fls : FederatedLoginService.all()) {
+            if (fls.getUrlName().equals(name))
+                return fls;
+        }
+        return null;
+    }
+
+    public List<FederatedLoginService> getFederatedLoginServices() {
+        return FederatedLoginService.all();
+    }
+
+    public Launcher createLauncher(TaskListener listener) {
+        return new LocalLauncher(listener).decorateFor(this);
+    }
+
+    private final transient Object updateComputerLock = new Object();
+
+    /**
+     * Updates {@link #computers} by using {@link #getSlaves()}.
+     *
+     * <p>
+     * This method tries to reuse existing {@link Computer} objects
+     * so that we won't upset {@link Executor}s running in it.
+     */
+    private void updateComputerList() throws IOException {
+        synchronized(updateComputerLock) {// just so that we don't have two code updating computer list at the same time
+            Map<String,Computer> byName = new HashMap<String,Computer>();
+            for (Computer c : computers.values()) {
+                if(c.getNode()==null)
+                    continue;   // this computer is gone
+                byName.put(c.getNode().getNodeName(),c);
+            }
+
+            Set<Computer> old = new HashSet<Computer>(computers.values());
+            Set<Computer> used = new HashSet<Computer>();
+
+            updateComputer(this, byName, used);
+            for (Node s : getNodes())
+                updateComputer(s, byName, used);
+
+            // find out what computers are removed, and kill off all executors.
+            // when all executors exit, it will be removed from the computers map.
+            // so don't remove too quickly
+            old.removeAll(used);
+            for (Computer c : old) {
+                c.kill();
+            }
+        }
+        getQueue().scheduleMaintenance();
+        for (ComputerListener cl : ComputerListener.all())
+            cl.onConfigurationChange();
+    }
+
+    private void updateComputer(Node n, Map<String,Computer> byNameMap, Set<Computer> used) {
+        Computer c;
+        c = byNameMap.get(n.getNodeName());
+        if (c!=null) {
+            c.setNode(n); // reuse
+        } else {
+            if(n.getNumExecutors()>0) {
+                computers.put(n,c=n.createComputer());
+                if (!n.holdOffLaunchUntilSave && AUTOMATIC_SLAVE_LAUNCH) {
+                    RetentionStrategy retentionStrategy = c.getRetentionStrategy();
+                    if (retentionStrategy != null) {
+                        // if there is a retention strategy, it is responsible for deciding to start the computer
+                        retentionStrategy.start(c);
+                    } else {
+                        // we should never get here, but just in case, we'll fall back to the legacy behaviour
+                        c.connect(true);
+                    }
+                }
+            }
+        }
+        used.add(c);
+    }
+
+    /*package*/ void removeComputer(Computer computer) {
+        for (Entry<Node, Computer> e : computers.entrySet()) {
+            if (e.getValue() == computer) {
+                computers.remove(e.getKey());
+                return;
+            }
+        }
+        throw new IllegalStateException("Trying to remove unknown computer");
+    }
+
+    public String getFullName() {
+        return "";
+    }
+
+    public String getFullDisplayName() {
+        return "";
+    }
+
+    /**
+     * Returns the transient {@link Action}s associated with the top page.
+     *
+     * <p>
+     * Adding {@link Action} is primarily useful for plugins to contribute
+     * an item to the navigation bar of the top page. See existing {@link Action}
+     * implementation for it affects the GUI.
+     *
+     * <p>
+     * To register an {@link Action}, implement {@link RootAction} extension point, or write code like
+     * {@code Hudson.getInstance().getActions().add(...)}.
+     *
+     * @return
+     *      Live list where the changes can be made. Can be empty but never null.
+     * @since 1.172
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
+
+    public List<Action> getViewActions() {
+        return getActions();
+    }
+
+    /**
+     * Gets just the immediate children of {@link Hudson}.
+     *
+     * @see #getAllItems(Class)
+     */
+    @Exported(name="jobs")
+    public List<TopLevelItem> getItems() {
+        List<TopLevelItem> viewableItems = new ArrayList<TopLevelItem>();
+        for (TopLevelItem item : items.values()) {
+            if (item.hasPermission(Item.READ))
+                viewableItems.add(item);
+        }
+
+        return viewableItems;
+    }
+
+    /**
+     * Returns the read-only view of all the {@link TopLevelItem}s keyed by their names.
+     * <p>
+     * This method is efficient, as it doesn't involve any copying.
+     *
+     * @since 1.296
+     */
+    public Map<String,TopLevelItem> getItemMap() {
+        return Collections.unmodifiableMap(items);
+    }
+
+    /**
+     * Gets just the immediate children of {@link Hudson} but of the given type.
+     */
+    public <T> List<T> getItems(Class<T> type) {
+        List<T> r = new ArrayList<T>();
+        for (TopLevelItem i : getItems())
+            if (type.isInstance(i))
+                 r.add(type.cast(i));
+        return r;
+    }
+
+    /**
+     * Gets all the {@link Item}s recursively in the {@link ItemGroup} tree
+     * and filter them by the given type.
+     */
+    public <T extends Item> List<T> getAllItems(Class<T> type) {
+        List<T> r = new ArrayList<T>();
+
+        Stack<ItemGroup> q = new Stack<ItemGroup>();
+        q.push(this);
+
+        while(!q.isEmpty()) {
+            ItemGroup<?> parent = q.pop();
+            for (Item i : parent.getItems()) {
+                if(type.isInstance(i)) {
+                    if (i.hasPermission(Item.READ))
+                        r.add(type.cast(i));
+                }
+                if(i instanceof ItemGroup)
+                    q.push((ItemGroup)i);
+            }
+        }
+
+        return r;
+    }
+
+    /**
+     * Gets all the items recursively.
+     *
+     * @since 1.402
+     */
+    public List<Item> getAllItems() {
+        return getAllItems(Item.class);
+    }
+
+    /**
+     * Gets the list of all the projects.
+     *
+     * <p>
+     * Since {@link Project} can only show up under {@link Hudson},
+     * no need to search recursively.
+     */
+    public List<Project> getProjects() {
+        return Util.createSubList(items.values(), Project.class);
+    }
+
+    /**
+     * Gets the names of all the {@link Job}s.
+     */
+    public Collection<String> getJobNames() {
+        List<String> names = new ArrayList<String>();
+        for (Job j : getAllItems(Job.class))
+            names.add(j.getFullName());
+        return names;
+    }
+
+    /**
+     * Gets the names of all the {@link TopLevelItem}s.
+     */
+    public Collection<String> getTopLevelItemNames() {
+        List<String> names = new ArrayList<String>();
+        for (TopLevelItem j : items.values())
+            names.add(j.getName());
+        return names;
+    }
+
+    public synchronized View getView(String name) {
+        return viewGroupMixIn.getView(name);
+    }
+
+    /**
+     * Gets the read-only list of all {@link View}s.
+     */
+    @Exported
+    public synchronized Collection<View> getViews() {
+        return viewGroupMixIn.getViews();
+    }
+
+    public void addView(View v) throws IOException {
+        viewGroupMixIn.addView(v);
+    }
+
+    public boolean canDelete(View view) {
+        return viewGroupMixIn.canDelete(view);
+    }
+
+    public synchronized void deleteView(View view) throws IOException {
+        viewGroupMixIn.deleteView(view);
+    }
+
+    public void onViewRenamed(View view, String oldName, String newName) {
+        viewGroupMixIn.onViewRenamed(view,oldName,newName);
+    }
+
+    /**
+     * Returns the primary {@link View} that renders the top-page of Hudson.
+     */
+    @Exported
+    public View getPrimaryView() {
+        return viewGroupMixIn.getPrimaryView();
+    }
+
+    public ViewsTabBar getViewsTabBar() {
+        return viewsTabBar;
+    }
+
+    public Hudson getItemGroup() {
+        return this;
+    }
+
+    public MyViewsTabBar getMyViewsTabBar() {
+        return myViewsTabBar;
+    }
+
+    /**
+     * Returns true if the current running Hudson is upgraded from a version earlier than the specified version.
+     *
+     * <p>
+     * This method continues to return true until the system configuration is saved, at which point
+     * {@link #version} will be overwritten and Hudson forgets the upgrade history.
+     *
+     * <p>
+     * To handle SNAPSHOTS correctly, pass in "1.N.*" to test if it's upgrading from the version
+     * equal or younger than N. So say if you implement a feature in 1.301 and you want to check
+     * if the installation upgraded from pre-1.301, pass in "1.300.*"
+     *
+     * @since 1.301
+     */
+    public boolean isUpgradedFromBefore(VersionNumber v) {
+        try {
+            return new VersionNumber(version).isOlderThan(v);
+        } catch (IllegalArgumentException e) {
+            // fail to parse this version number
+            return false;
+        }
+    }
+
+    /**
+     * Gets the read-only list of all {@link Computer}s.
+     */
+    public Computer[] getComputers() {
+        Computer[] r = computers.values().toArray(new Computer[computers.size()]);
+        Arrays.sort(r,new Comparator<Computer>() {
+            final Collator collator = Collator.getInstance();
+            public int compare(Computer lhs, Computer rhs) {
+                if(lhs.getNode()==Hudson.this)  return -1;
+                if(rhs.getNode()==Hudson.this)  return 1;
+                return collator.compare(lhs.getDisplayName(), rhs.getDisplayName());
+            }
+        });
+        return r;
+    }
+
+    /*package*/ Computer getComputer(Node n) {
+        return computers.get(n);
+    }
+
+    @CLIResolver
+    public Computer getComputer(@Argument(required=true,metaVar="NAME",usage="Node name") String name) {
+        if(name.equals("(master)"))
+            name = "";
+
+        for (Computer c : computers.values()) {
+            if(c.getName().equals(name))
+                return c;
+        }
+        return null;
+    }
+
+    /**
+     * @deprecated
+     *      UI method. Not meant to be used programatically.
+     */
+    public ComputerSet getComputer() {
+        return new ComputerSet();
+    }
+
+
+    /**
+     * Gets the label that exists on this system by the name.
+     *
+     * @return null if name is null.
+     * @see Label#parseExpression(String) (String)
+     */
+    public Label getLabel(String expr) {
+        if(expr==null)  return null;
+        while(true) {
+            Label l = labels.get(expr);
+            if(l!=null)
+                return l;
+
+            // non-existent
+            try {
+                labels.putIfAbsent(expr,Label.parseExpression(expr));
+            } catch (ANTLRException e) {
+                // laxly accept it as a single label atom for backward compatibility
+                return getLabelAtom(expr);
+            }
+        }
+    }
+
+    /**
+     * Returns the label atom of the given name.
+     */
+    public LabelAtom getLabelAtom(String name) {
+        if (name==null)  return null;
+
+        while(true) {
+            Label l = labels.get(name);
+            if(l!=null)
+                return (LabelAtom)l;
+
+            // non-existent
+            LabelAtom la = new LabelAtom(name);
+            if (labels.putIfAbsent(name, la)==null)
+                la.load();
+        }
+    }
+
+    /**
+     * Gets all the active labels in the current system.
+     */
+    public Set<Label> getLabels() {
+        Set<Label> r = new TreeSet<Label>();
+        for (Label l : labels.values()) {
+            if(!l.isEmpty())
+                r.add(l);
+        }
+        return r;
+    }
+
+    public Set<LabelAtom> getLabelAtoms() {
+        Set<LabelAtom> r = new TreeSet<LabelAtom>();
+        for (Label l : labels.values()) {
+            if(!l.isEmpty() && l instanceof LabelAtom)
+                r.add((LabelAtom)l);
+        }
+        return r;
+    }
+
+    public Queue getQueue() {
+        return queue;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return Messages.Hudson_DisplayName();
+    }
+
+    public List<JDK> getJDKs() {
+        if(jdks==null)
+            jdks = new ArrayList<JDK>();
+        return jdks;
+    }
+
+    /**
+     * Gets the JDK installation of the given name, or returns null.
+     */
+    public JDK getJDK(String name) {
+        if(name==null) {
+            // if only one JDK is configured, "default JDK" should mean that JDK.
+            List<JDK> jdks = getJDKs();
+            if(jdks.size()==1)  return jdks.get(0);
+            return null;
+        }
+        for (JDK j : getJDKs()) {
+            if(j.getName().equals(name))
+                return j;
+        }
+        return null;
+    }
+
+    /**
+>>>>>>> YOURS
+     * Gets the slave node of the give name, hooked under this Hudson.
+     *
+     * @deprecated
+     *      Use {@link #getNode(String)}. Since 1.252.
+     */
+    public Slave getSlave(String name) {
+        Node n = getNode(name);
+        if (n instanceof Slave)
+            return (Slave)n;
+        return null;
+    }
+
+    /**
+     * @deprecated
+     *      Use {@link #getNodes()}. Since 1.252.
+     */
+    public List<Slave> getSlaves() {
+        return (List)Collections.unmodifiableList(slaves);
+    }
+
+    /**
+     * Updates the slave list.
+     *
+     * @deprecated
+     *      Use {@link #setNodes(List)}. Since 1.252.
+     */
+    public void setSlaves(List<Slave> slaves) throws IOException {
+        setNodes(slaves);
+    }
+
+    /**
+<<<<<<< MINE
+=======
+     * Adds one more {@link Node} to Hudson.
+     */
+    public synchronized void addNode(Node n) throws IOException {
+        if(n==null)     throw new IllegalArgumentException();
+        ArrayList<Node> nl = new ArrayList<Node>(this.slaves);
+        if(!nl.contains(n)) // defensive check
+            nl.add(n);
+        setNodes(nl);
+    }
+
+    /**
+     * Removes a {@link Node} from Hudson.
+     */
+    public synchronized void removeNode(Node n) throws IOException {
+        Computer c = n.toComputer();
+        if (c!=null)
+            c.disconnect(OfflineCause.create(Messages._Hudson_NodeBeingRemoved()));
+
+        ArrayList<Node> nl = new ArrayList<Node>(this.slaves);
+        nl.remove(n);
+        setNodes(nl);
+    }
+
+    public void setNodes(List<? extends Node> nodes) throws IOException {
+        // make sure that all names are unique
+        Set<String> names = new HashSet<String>();
+        for (Node n : nodes)
+            if(!names.add(n.getNodeName()))
+                throw new IllegalArgumentException(n.getNodeName()+" is defined more than once");
+        this.slaves = new NodeList(nodes);
+        updateComputerList();
+        trimLabels();
+        save();
+    }
+
+    public DescribableList<NodeProperty<?>, NodePropertyDescriptor> getNodeProperties() {
+    	return nodeProperties;
+    }
+
+    public DescribableList<NodeProperty<?>, NodePropertyDescriptor> getGlobalNodeProperties() {
+    	return globalNodeProperties;
+    }
+
+    /**
+     * Resets all labels and remove invalid ones.
+     */
+    private void trimLabels() {
+        for (Iterator<Label> itr = labels.values().iterator(); itr.hasNext();) {
+            Label l = itr.next();
+            l.reset();
+            if(l.isEmpty())
+                itr.remove();
+        }
+    }
+
+    /**
+     * Binds {@link AdministrativeMonitor}s to URL.
+     */
+    public AdministrativeMonitor getAdministrativeMonitor(String id) {
+        for (AdministrativeMonitor m : administrativeMonitors)
+            if(m.id.equals(id))
+                return m;
+        return null;
+    }
+
+    public NodeDescriptor getDescriptor() {
+        return DescriptorImpl.INSTANCE;
+    }
+
+    public static final class DescriptorImpl extends NodeDescriptor {
+        @Extension
+        public static final DescriptorImpl INSTANCE = new DescriptorImpl();
+
+        public String getDisplayName() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isInstantiable() {
+            return false;
+        }
+
+        public FormValidation doCheckNumExecutors(@QueryParameter String value) {
+            return FormValidation.validateNonNegativeInteger(value);
+        }
+
+        // to route /descriptor/FQCN/xxx to getDescriptor(FQCN).xxx
+        public Object getDynamic(String token) {
+            return Hudson.getInstance().getDescriptor(token);
+        }
+    }
+
+    /**
+     * Gets the system default quiet period.
+     */
+    public int getQuietPeriod() {
+        return quietPeriod!=null ? quietPeriod : 5;
+    }
+
+    /**
+     * Gets the global SCM check out retry count.
+     */
+    public int getScmCheckoutRetryCount() {
+        return scmCheckoutRetryCount;
+    }
+
+
+
+    /**
+     * @deprecated
+     *      Why are you calling a method that always returns ""?
+     *      Perhaps you meant {@link #getRootUrl()}.
+     */
+    public String getUrl() {
+        return "";
+    }
+
+    @Override
+    public String getSearchUrl() {
+        return "";
+    }
+
+    @Override
+    public SearchIndexBuilder makeSearchIndex() {
+        return super.makeSearchIndex()
+            .add("configure", "config","configure")
+            .add("manage")
+            .add("log")
+            .add(getPrimaryView().makeSearchIndex())
+            .add(new CollectionSearchIndex() {// for computers
+                protected Computer get(String key) { return getComputer(key); }
+                protected Collection<Computer> all() { return computers.values(); }
+            })
+            .add(new CollectionSearchIndex() {// for users
+                protected User get(String key) { return User.get(key,false); }
+                protected Collection<User> all() { return User.getAll(); }
+            })
+            .add(new CollectionSearchIndex() {// for views
+                protected View get(String key) { return getView(key); }
+                protected Collection<View> all() { return views; }
+            });
+    }
+
+    public String getUrlChildPrefix() {
+        return "job";
+    }
+
+    /**
+     * Gets the absolute URL of Hudson,
+     * such as "http://localhost/hudson/".
+     *
+     * <p>
+     * This method first tries to use the manually configured value, then
+     * fall back to {@link StaplerRequest#getRootPath()}.
+     * It is done in this order so that it can work correctly even in the face
+     * of a reverse proxy.
+     *
+     * @return
+     *      This method returns null if this parameter is not configured by the user.
+     *      The caller must gracefully deal with this situation.
+     *      The returned URL will always have the trailing '/'.
+     * @since 1.66
+     * @see Descriptor#getCheckUrl(String)
+     * @see #getRootUrlFromRequest()
+     */
+    public String getRootUrl() {
+        // for compatibility. the actual data is stored in Mailer
+        String url = Mailer.descriptor().getUrl();
+        if(url!=null)   return url;
+
+        StaplerRequest req = Stapler.getCurrentRequest();
+        if(req!=null)
+            return getRootUrlFromRequest();
+        return null;
+    }
+
+    /**
+     * Gets the absolute URL of Hudson top page, such as "http://localhost/hudson/".
+     *
+     * <p>
+     * Unlike {@link #getRootUrl()}, which uses the manually configured value,
+     * this one uses the current request to reconstruct the URL. The benefit is
+     * that this is immune to the configuration mistake (users often fail to set the root URL
+     * correctly, especially when a migration is involved), but the downside
+     * is that unless you are processing a request, this method doesn't work.
+     *
+     * @since 1.263
+     */
+    public String getRootUrlFromRequest() {
+        StaplerRequest req = Stapler.getCurrentRequest();
+        StringBuilder buf = new StringBuilder();
+        buf.append(req.getScheme()+"://");
+        buf.append(req.getServerName());
+        if(req.getServerPort()!=80)
+            buf.append(':').append(req.getServerPort());
+        buf.append(req.getContextPath()).append('/');
+        return buf.toString();
+    }
+
+    public File getRootDir() {
+        return root;
+    }
+
+    public FilePath getWorkspaceFor(TopLevelItem item) {
+        return new FilePath(new File(item.getRootDir(), WORKSPACE_DIRNAME));
+    }
+
+    public FilePath getRootPath() {
+        return new FilePath(getRootDir());
+    }
+
+    @Override
+    public FilePath createPath(String absolutePath) {
+        return new FilePath((VirtualChannel)null,absolutePath);
+    }
+
+    public ClockDifference getClockDifference() {
+        return ClockDifference.ZERO;
+    }
+
+    /**
+     * For binding {@link LogRecorderManager} to "/log".
+     * Everything below here is admin-only, so do the check here.
+     */
+    public LogRecorderManager getLog() {
+        checkPermission(ADMINISTER);
+        return log;
+    }
+
+    /**
+     * A convenience method to check if there's some security
+     * restrictions in place.
+     */
+    @Exported
+    public boolean isUseSecurity() {
+        return securityRealm!=SecurityRealm.NO_AUTHENTICATION || authorizationStrategy!=AuthorizationStrategy.UNSECURED;
+    }
+
+    /**
+     * If true, all the POST requests to Hudson would have to have crumb in it to protect
+     * Hudson from CSRF vulnerabilities.
+     */
+    @Exported
+    public boolean isUseCrumbs() {
+        return crumbIssuer!=null;
+    }
+
+    /**
+     * Returns the constant that captures the three basic security modes
+     * in Hudson.
+     */
+    public SecurityMode getSecurity() {
+        // fix the variable so that this code works under concurrent modification to securityRealm.
+        SecurityRealm realm = securityRealm;
+
+        if(realm==SecurityRealm.NO_AUTHENTICATION)
+            return SecurityMode.UNSECURED;
+        if(realm instanceof LegacySecurityRealm)
+            return SecurityMode.LEGACY;
+        return SecurityMode.SECURED;
+    }
+
+    /**
+     * @return
+     *      never null.
+     */
+    public SecurityRealm getSecurityRealm() {
+        return securityRealm;
+    }
+
+    public void setSecurityRealm(SecurityRealm securityRealm) {
+        if(securityRealm==null)
+            securityRealm= SecurityRealm.NO_AUTHENTICATION;
+        this.securityRealm = securityRealm;
+        // reset the filters and proxies for the new SecurityRealm
+        try {
+            HudsonFilter filter = HudsonFilter.get(servletContext);
+            if (filter == null) {
+                // Fix for #3069: This filter is not necessarily initialized before the servlets.
+                // when HudsonFilter does come back, it'll initialize itself.
+                LOGGER.fine("HudsonFilter has not yet been initialized: Can't perform security setup for now");
+            } else {
+                LOGGER.fine("HudsonFilter has been previously initialized: Setting security up");
+                filter.reset(securityRealm);
+                LOGGER.fine("Security is now fully set up");
+            }
+        } catch (ServletException e) {
+            // for binary compatibility, this method cannot throw a checked exception
+            throw new AcegiSecurityException("Failed to configure filter",e) {};
+        }
+    }
+
+    public void setAuthorizationStrategy(AuthorizationStrategy a) {
+        if (a == null)
+            a = AuthorizationStrategy.UNSECURED;
+        authorizationStrategy = a;
+    }
+
+    public Lifecycle getLifecycle() {
+        return Lifecycle.get();
+    }
+
+    /**
+     * Returns {@link ExtensionList} that retains the discovered instances for the given extension type.
+     *
+     * @param extensionType
+     *      The base type that represents the extension point. Normally {@link ExtensionPoint} subtype
+     *      but that's not a hard requirement.
+     * @return
+     *      Can be an empty list but never null.
+     */
+    @SuppressWarnings({"unchecked"})
+    public <T> ExtensionList<T> getExtensionList(Class<T> extensionType) {
+        return extensionLists.get(extensionType);
+    }
+
+    /**
+     * Used to bind {@link ExtensionList}s to URLs.
+     *
+     * @since 1.349
+     */
+    public ExtensionList getExtensionList(String extensionType) throws ClassNotFoundException {
+        return getExtensionList(pluginManager.uberClassLoader.loadClass(extensionType));
+    }
+
+    /**
+     * Returns {@link ExtensionList} that retains the discovered {@link Descriptor} instances for the given
+     * kind of {@link Describable}.
+     *
+     * @return
+     *      Can be an empty list but never null.
+     */
+    @SuppressWarnings({"unchecked"})
+    public <T extends Describable<T>,D extends Descriptor<T>> DescriptorExtensionList<T,D> getDescriptorList(Class<T> type) {
+        return descriptorLists.get(type);
+    }
+
+    /**
+     * Returns the root {@link ACL}.
+     *
+     * @see AuthorizationStrategy#getRootACL()
+     */
+    @Override
+    public ACL getACL() {
+        return authorizationStrategy.getRootACL();
+    }
+
+    /**
+     * @return
+     *      never null.
+     */
+    public AuthorizationStrategy getAuthorizationStrategy() {
+        return authorizationStrategy;
+    }
+
+    /**
+     * Returns true if Hudson is quieting down.
+     * <p>
+     * No further jobs will be executed unless it
+     * can be finished while other current pending builds
+     * are still in progress.
+     */
+    public boolean isQuietingDown() {
+        return isQuietingDown;
+    }
+
+    /**
+     * Returns true if the container initiated the termination of the web application.
+     */
+    public boolean isTerminating() {
+        return terminating;
+    }
+
+    /**
+     * Gets the initialization milestone that we've already reached.
+     *
+     * @return
+     *      {@link InitMilestone#STARTED} even if the initialization hasn't been started, so that this method
+     *      never returns null.
+     */
+    public InitMilestone getInitLevel() {
+        return initLevel;
+    }
+
+    public void setNumExecutors(int n) throws IOException {
+        this.numExecutors = n;
+        save();
+    }
+
+    /**
+>>>>>>> YOURS
+     * @deprecated
+     *      Left only for the compatibility of URLs.
+     *      Should not be invoked for any other purpose.
+     */
+    public TopLevelItem getJob(String name) {
+        return getItem(name);
+    }
+
+    /**
+     * @deprecated
+     *      Used only for mapping jobs to URL in a case-insensitive fashion.
+     */
+    public TopLevelItem getJobCaseInsensitive(String name) {
+        String match = Functions.toEmailSafeString(name);
+        for(TopLevelItem item : getItems()) {
+            if(Functions.toEmailSafeString(item.getName()).equalsIgnoreCase(match)) {
+        return item;
+    }
+                }
+        return null;
+    }
+
+<<<<<<< MINE
+=======
+    public final <T extends Item> T getItem(String relativeName, Item context, Class<T> type) {
+        return getItem(relativeName,context!=null?context.getParent():null,type);
+    }
+
+    public File getRootDirFor(TopLevelItem child) {
+        return getRootDirFor(child.getName());
+    }
+
+    private File getRootDirFor(String name) {
+        return new File(new File(getRootDir(),"jobs"), name);
+    }
+
+    /**
+     * Gets the {@link Item} object by its full name.
+     * Full names are like path names, where each name of {@link Item} is
+     * combined by '/'.
+     *
+     * @return
+     *      null if either such {@link Item} doesn't exist under the given full name,
+     *      or it exists but it's no an instance of the given type.
+     */
+    public <T extends Item> T getItemByFullName(String fullName, Class<T> type) {
+        StringTokenizer tokens = new StringTokenizer(fullName,"/");
+        ItemGroup parent = this;
+
+        if(!tokens.hasMoreTokens()) return null;    // for example, empty full name.
+
+        while(true) {
+            Item item = parent.getItem(tokens.nextToken());
+            if(!tokens.hasMoreTokens()) {
+                if(type.isInstance(item))
+                    return type.cast(item);
+                else
+                    return null;
+            }
+
+            if(!(item instanceof ItemGroup))
+                return null;    // this item can't have any children
+
+            parent = (ItemGroup) item;
+        }
+    }
+
+    public Item getItemByFullName(String fullName) {
+        return getItemByFullName(fullName,Item.class);
+    }
+
+    /**
+     * Gets the user of the given name.
+     *
+     * @return
+     *      This method returns a non-null object for any user name, without validation.
+     */
+    public User getUser(String name) {
+        return User.get(name);
+    }
+
+    /**
+     * Creates a new job.
+     *
+     * @throws IllegalArgumentException
+     *      if the project of the given name already exists.
+     */
+    public synchronized TopLevelItem createProject( TopLevelItemDescriptor type, String name ) throws IOException {
+        return createProject(type, name, true);
+    }
+
+    /**
+     * Creates a new job.
+     * @param type Descriptor for job type
+     * @param name Name for job
+     * @param notify Whether to fire onCreated method for all ItemListeners
+     * @throws IllegalArgumentException
+     *      if a project of the give name already exists.
+     */
+    public synchronized TopLevelItem createProject( TopLevelItemDescriptor type, String name, boolean notify ) throws IOException {
+        return itemGroupMixIn.createProject(type,name,notify);
+    }
+
+    /**
+     * Overwrites the existing item by new one.
+     *
+     * <p>
+     * This is a short cut for deleting an existing job and adding a new one.
+     */
+    public synchronized void putItem(TopLevelItem item) throws IOException, InterruptedException {
+        String name = item.getName();
+        TopLevelItem old = items.get(name);
+        if (old ==item)  return; // noop
+
+        checkPermission(Item.CREATE);
+        if (old!=null)
+            old.delete();
+        items.put(name,item);
+        ItemListener.fireOnCreated(item);
+    }
+
+    /**
+     * Creates a new job.
+     *
+     * <p>
+     * This version infers the descriptor from the type of the top-level item.
+     *
+     * @throws IllegalArgumentException
+     *      if the project of the given name already exists.
+     */
+    public synchronized <T extends TopLevelItem> T createProject( Class<T> type, String name ) throws IOException {
+        return type.cast(createProject((TopLevelItemDescriptor)getDescriptor(type),name));
+    }
+
+    /**
+     * Called by {@link Job#renameTo(String)} to update relevant data structure.
+     * assumed to be synchronized on Hudson by the caller.
+     */
+    public void onRenamed(TopLevelItem job, String oldName, String newName) throws IOException {
+        items.remove(oldName);
+        items.put(newName,job);
+
+        for (View v : views)
+            v.onJobRenamed(job, oldName, newName);
+        save();
+    }
+
+    /**
+     * Called in response to {@link Job#doDoDelete(StaplerRequest, StaplerResponse)}
+     */
+    public void onDeleted(TopLevelItem item) throws IOException {
+        for (ItemListener l : ItemListener.all())
+            l.onDeleted(item);
+
+        items.remove(item.getName());
+        for (View v : views)
+            v.onJobRenamed(item, item.getName(), null);
+        save();
+    }
+
+    public FingerprintMap getFingerprintMap() {
+        return fingerprintMap;
+    }
+
+    // if no finger print matches, display "not found page".
+    public Object getFingerprint( String md5sum ) throws IOException {
+        Fingerprint r = fingerprintMap.get(md5sum);
+        if(r==null)     return new NoFingerprintMatch(md5sum);
+        else            return r;
+    }
+
+    /**
+     * Gets a {@link Fingerprint} object if it exists.
+     * Otherwise null.
+     */
+    public Fingerprint _getFingerprint( String md5sum ) throws IOException {
+        return fingerprintMap.get(md5sum);
+    }
+
+    /**
+     * The file we save our configuration.
+     */
+    private XmlFile getConfigFile() {
+        return new XmlFile(XSTREAM, new File(root,"config.xml"));
+    }
+
+    public int getNumExecutors() {
+        return numExecutors;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    public String getLabelString() {
+        return fixNull(label).trim();
+    }
+
+    @Override
+    public LabelAtom getSelfLabel() {
+        return getLabelAtom("master");
+    }
+
+    public Computer createComputer() {
+        return new MasterComputer();
+    }
+
+    private synchronized TaskBuilder loadTasks() throws IOException {
+        File projectsDir = new File(root,"jobs");
+        if(!projectsDir.isDirectory() && !projectsDir.mkdirs()) {
+            if(projectsDir.exists())
+                throw new IOException(projectsDir+" is not a directory");
+            throw new IOException("Unable to create "+projectsDir+"\nPermission issue? Please create this directory manually.");
+        }
+        File[] subdirs = projectsDir.listFiles(new FileFilter() {
+            public boolean accept(File child) {
+                return child.isDirectory() && Items.getConfigFile(child).exists();
+            }
+        });
+
+        TaskGraphBuilder g = new TaskGraphBuilder();
+        Handle loadHudson = g.requires(EXTENSIONS_AUGMENTED).attains(JOB_LOADED).add("Loading global config", new Executable() {
+            public void run(Reactor session) throws Exception {
+                XmlFile cfg = getConfigFile();
+                if (cfg.exists()) {
+                    // reset some data that may not exist in the disk file
+                    // so that we can take a proper compensation action later.
+                    primaryView = null;
+                    views.clear();
+
+                    // load from disk
+                    cfg.unmarshal(Hudson.this);
+                }
+
+                // if we are loading old data that doesn't have this field
+                if (slaves == null) slaves = new NodeList();
+
+                clouds.setOwner(Hudson.this);
+                items.clear();
+            }
+        });
+
+        for (final File subdir : subdirs) {
+            g.requires(loadHudson).attains(JOB_LOADED).notFatal().add("Loading job "+subdir.getName(),new Executable() {
+                public void run(Reactor session) throws Exception {
+                    TopLevelItem item = (TopLevelItem) Items.load(Hudson.this, subdir);
+                    items.put(item.getName(), item);
+                }
+            });
+        }
+
+        g.requires(JOB_LOADED).add("Finalizing set up",new Executable() {
+            public void run(Reactor session) throws Exception {
+                rebuildDependencyGraph();
+
+                {// recompute label objects - populates the labels mapping.
+                    for (Node slave : slaves)
+                        // Note that not all labels are visible until the slaves have connected.
+                        slave.getAssignedLabels();
+                    getAssignedLabels();
+                }
+
+                // initialize views by inserting the default view if necessary
+                // this is both for clean Hudson and for backward compatibility.
+                if(views.size()==0 || primaryView==null) {
+                    View v = new AllView(Messages.Hudson_ViewName());
+                    v.owner = Hudson.this;
+                    views.add(0,v);
+                    primaryView = v.getViewName();
+                }
+
+                // read in old data that doesn't have the security field set
+                if(authorizationStrategy==null) {
+                    if(useSecurity==null || !useSecurity)
+                        authorizationStrategy = AuthorizationStrategy.UNSECURED;
+                    else
+                        authorizationStrategy = new LegacyAuthorizationStrategy();
+                }
+                if(securityRealm==null) {
+                    if(useSecurity==null || !useSecurity)
+                        setSecurityRealm(SecurityRealm.NO_AUTHENTICATION);
+                    else
+                        setSecurityRealm(new LegacySecurityRealm());
+                } else {
+                    // force the set to proxy
+                    setSecurityRealm(securityRealm);
+                }
+
+                if(useSecurity!=null && !useSecurity) {
+                    // forced reset to the unsecure mode.
+                    // this works as an escape hatch for people who locked themselves out.
+                    authorizationStrategy = AuthorizationStrategy.UNSECURED;
+                    setSecurityRealm(SecurityRealm.NO_AUTHENTICATION);
+                }
+
+                // Initialize the filter with the crumb issuer
+                setCrumbIssuer(crumbIssuer);
+
+                // auto register root actions
+                for (Action a : getExtensionList(RootAction.class))
+                    if (!actions.contains(a)) actions.add(a);
+            }
+        });
+
+        return g;
+    }
+
+    /**
+     * Save the settings to a file.
+     */
+    public synchronized void save() throws IOException {
+        if(BulkChange.contains(this))   return;
+        getConfigFile().write(this);
+        SaveableListener.fireOnChange(this, getConfigFile());
+    }
+
+
+    /**
+     * Called to shut down the system.
+     */
+    public void cleanUp() {
+        Set<Future<?>> pending = new HashSet<Future<?>>();
+        terminating = true;
+        for( Computer c : computers.values() ) {
+            c.interrupt();
+            c.kill();
+            pending.add(c.disconnect(null));
+        }
+        if(udpBroadcastThread!=null)
+            udpBroadcastThread.shutdown();
+        if(dnsMultiCast!=null)
+            dnsMultiCast.close();
+        ExternalJob.reloadThread.interrupt();
+        Trigger.timer.cancel();
+        // TODO: how to wait for the completion of the last job?
+        Trigger.timer = null;
+        if(tcpSlaveAgentListener!=null)
+            tcpSlaveAgentListener.shutdown();
+
+        if(pluginManager!=null) // be defensive. there could be some ugly timing related issues
+            pluginManager.stop();
+
+        if(getRootDir().exists())
+            // if we are aborting because we failed to create JENKINS_HOME,
+            // don't try to save. Issue #536
+            getQueue().save();
+
+        threadPoolForLoad.shutdown();
+        for (Future<?> f : pending)
+            try {
+                f.get(10, TimeUnit.SECONDS);    // if clean up operation didn't complete in time, we fail the test
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;  // someone wants us to die now. quick!
+            } catch (ExecutionException e) {
+                LOGGER.log(Level.WARNING, "Failed to shut down properly",e);
+            } catch (TimeoutException e) {
+                LOGGER.log(Level.WARNING, "Failed to shut down properly",e);
+            }
+
+        LogFactory.releaseAll();
+
+        theInstance = null;
+    }
+
+    public Object getDynamic(String token) {
+        for (Action a : getActions()) {
+            String url = a.getUrlName();
+            if (url==null)  continue;
+            if (url.equals(token) || url.equals('/' + token))
+                return a;
+        }
+        for (Action a : getManagementLinks())
+            if(a.getUrlName().equals(token))
+                return a;
+        return null;
+    }
+
+
+//
+//
+// actions
+//
+//
+    /**
+     * Accepts submission from the configuration page.
+     */
+    public synchronized void doConfigSubmit( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException, FormException {
+        BulkChange bc = new BulkChange(this);
+        try {
+            checkPermission(ADMINISTER);
+
+            JSONObject json = req.getSubmittedForm();
+
+            // keep using 'useSecurity' field as the main configuration setting
+            // until we get the new security implementation working
+            // useSecurity = null;
+            if (json.has("use_security")) {
+                useSecurity = true;
+                JSONObject security = json.getJSONObject("use_security");
+                setSecurityRealm(SecurityRealm.all().newInstanceFromRadioList(security,"realm"));
+                setAuthorizationStrategy(AuthorizationStrategy.all().newInstanceFromRadioList(security, "authorization"));
+
+                if (security.has("markupFormatter")) {
+                    markupFormatter = req.bindJSON(MarkupFormatter.class,security.getJSONObject("markupFormatter"));
+                } else {
+                    markupFormatter = null;
+                }
+            } else {
+                useSecurity = null;
+                setSecurityRealm(SecurityRealm.NO_AUTHENTICATION);
+                authorizationStrategy = AuthorizationStrategy.UNSECURED;
+                markupFormatter = null;
+            }
+
+            if (json.has("csrf")) {
+            	JSONObject csrf = json.getJSONObject("csrf");
+                setCrumbIssuer(CrumbIssuer.all().newInstanceFromRadioList(csrf, "issuer"));
+            } else {
+            	setCrumbIssuer(null);
+            }
+
+            if (json.has("viewsTabBar")) {
+                viewsTabBar = req.bindJSON(ViewsTabBar.class,json.getJSONObject("viewsTabBar"));
+            } else {
+                viewsTabBar = new DefaultViewsTabBar();
+            }
+
+            if (json.has("myViewsTabBar")) {
+                myViewsTabBar = req.bindJSON(MyViewsTabBar.class,json.getJSONObject("myViewsTabBar"));
+            } else {
+                myViewsTabBar = new DefaultMyViewsTabBar();
+            }
+
+            primaryView = json.has("primaryView") ? json.getString("primaryView") : getViews().iterator().next().getViewName();
+
+            noUsageStatistics = json.has("usageStatisticsCollected") ? null : true;
+
+            {
+                String v = req.getParameter("slaveAgentPortType");
+                if(!isUseSecurity() || v==null || v.equals("random"))
+                    slaveAgentPort = 0;
+                else
+                if(v.equals("disable"))
+                    slaveAgentPort = -1;
+                else {
+                    try {
+                        slaveAgentPort = Integer.parseInt(req.getParameter("slaveAgentPort"));
+                    } catch (NumberFormatException e) {
+                        throw new FormException(Messages.Hudson_BadPortNumber(req.getParameter("slaveAgentPort")),"slaveAgentPort");
+                    }
+                }
+
+                // relaunch the agent
+                if(tcpSlaveAgentListener==null) {
+                    if(slaveAgentPort!=-1)
+                        tcpSlaveAgentListener = new TcpSlaveAgentListener(slaveAgentPort);
+                } else {
+                    if(tcpSlaveAgentListener.configuredPort!=slaveAgentPort) {
+                        tcpSlaveAgentListener.shutdown();
+                        tcpSlaveAgentListener = null;
+                        if(slaveAgentPort!=-1)
+                            tcpSlaveAgentListener = new TcpSlaveAgentListener(slaveAgentPort);
+                    }
+                }
+            }
+
+            numExecutors = json.getInt("numExecutors");
+            if(req.hasParameter("master.mode"))
+                mode = Mode.valueOf(req.getParameter("master.mode"));
+            else
+                mode = Mode.NORMAL;
+
+            label = json.optString("labelString","");
+
+            quietPeriod = json.getInt("quiet_period");
+
+            scmCheckoutRetryCount = json.getInt("retry_count");
+
+            systemMessage = Util.nullify(req.getParameter("system_message"));
+
+            jdks.clear();
+            jdks.addAll(req.bindJSONToList(JDK.class,json.get("jdks")));
+
+            boolean result = true;
+            for( Descriptor<?> d : Functions.getSortedDescriptorsForGlobalConfig() )
+                result &= configureDescriptor(req,json,d);
+
+            for( JSONObject o : StructuredForm.toList(json,"plugin"))
+                pluginManager.getPlugin(o.getString("name")).getPlugin().configure(req, o);
+
+            clouds.rebuildHetero(req,json, Cloud.all(), "cloud");
+
+            JSONObject np = json.getJSONObject("globalNodeProperties");
+            if (!np.isNullObject()) {
+                globalNodeProperties.rebuild(req, np, NodeProperty.for_(this));
+            }
+
+            version = VERSION;
+
+            save();
+            updateComputerList();
+            if(result)
+                rsp.sendRedirect(req.getContextPath()+'/');  // go to the top page
+            else
+                rsp.sendRedirect("configure"); // back to config
+        } finally {
+            bc.commit();
+        }
+    }
+
+    /**
+     * Gets the {@link CrumbIssuer} currently in use.
+     *
+     * @return null if none is in use.
+     */
+    public CrumbIssuer getCrumbIssuer() {
+        return crumbIssuer;
+    }
+
+    public void setCrumbIssuer(CrumbIssuer issuer) {
+        crumbIssuer = issuer;
+    }
+
+    public synchronized void doTestPost( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+        rsp.sendRedirect("foo");
+    }
+
+    private boolean configureDescriptor(StaplerRequest req, JSONObject json, Descriptor<?> d) throws FormException {
+        // collapse the structure to remain backward compatible with the JSON structure before 1.
+        String name = d.getJsonSafeClassName();
+        JSONObject js = json.has(name) ? json.getJSONObject(name) : new JSONObject(); // if it doesn't have the property, the method returns invalid null object.
+        json.putAll(js);
+        return d.configure(req, js);
+    }
+
+    /**
+     * Accepts submission from the configuration page.
+     */
+    public synchronized void doConfigExecutorsSubmit( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+        checkPermission(ADMINISTER);
+
+        BulkChange bc = new BulkChange(this);
+        try {
+            JSONObject json = req.getSubmittedForm();
+
+            setNumExecutors(Integer.parseInt(req.getParameter("numExecutors")));
+            if(req.hasParameter("master.mode"))
+                mode = Mode.valueOf(req.getParameter("master.mode"));
+            else
+                mode = Mode.NORMAL;
+
+            setNodes(req.bindJSONToList(Slave.class,json.get("slaves")));
+        } finally {
+            bc.commit();
+        }
+
+        rsp.sendRedirect(req.getContextPath() + '/');  // go to the top page
+    }
+
+    /**
+     * Accepts the new description.
+     */
+    public synchronized void doSubmitDescription( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+        getPrimaryView().doSubmitDescription(req, rsp);
+    }
+
+>>>>>>> YOURS
+    /**
+     * @deprecated as of 1.317
+     *      Use {@link #doQuietDown()} instead.
+     */
+    public synchronized void doQuietDown(StaplerResponse rsp) throws IOException, ServletException {
+        doQuietDown().generateResponse(null, rsp, this);
+    }
+
+<<<<<<< MINE
+=======
+    public synchronized HttpRedirect doQuietDown() throws IOException {
+        try {
+            return doQuietDown(false,0);
+        } catch (InterruptedException e) {
+            throw new AssertionError(); // impossible
+        }
+    }
+
+    @CLIMethod(name="quiet-down")
+    public HttpRedirect doQuietDown(
+            @Option(name="-block",usage="Block until the system really quiets down and no builds are running") @QueryParameter boolean block,
+            @Option(name="-timeout",usage="If non-zero, only block up to the specified number of milliseconds") @QueryParameter int timeout) throws InterruptedException, IOException {
+        synchronized (this) {
+            checkPermission(ADMINISTER);
+            isQuietingDown = true;
+        }
+        if (block) {
+            if (timeout > 0) timeout += System.currentTimeMillis();
+            while (isQuietingDown
+                   && (timeout <= 0 || System.currentTimeMillis() < timeout)
+                   && !RestartListener.isAllReady()) {
+                Thread.sleep(1000);
+            }
+        }
+        return new HttpRedirect(".");
+    }
+
+    @CLIMethod(name="cancel-quiet-down")
+    public synchronized HttpRedirect doCancelQuietDown() {
+        checkPermission(ADMINISTER);
+        isQuietingDown = false;
+        getQueue().scheduleMaintenance();
+        return new HttpRedirect(".");
+    }
+
+    /**
+     * Backward compatibility. Redirect to the thread dump.
+     */
+    public void doClassicThreadDump(StaplerResponse rsp) throws IOException, ServletException {
+        rsp.sendRedirect2("threadDump");
+    }
+
+    public synchronized TopLevelItem doCreateItem( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+        return itemGroupMixIn.createTopLevelItem(req, rsp);
+    }
+
+    /**
+     * Creates a new job from its configuration XML. The type of the job created will be determined by
+     * what's in this XML.
+     * @since 1.319
+     */
+    public TopLevelItem createProjectFromXML(String name, InputStream xml) throws IOException {
+        return itemGroupMixIn.createProjectFromXML(name, xml);
+    }
+
+    /**
+     * Copys a job.
+     *
+     * @param src
+     *      A {@link TopLevelItem} to be copied.
+     * @param name
+     *      Name of the newly created project.
+     * @return
+     *      Newly created {@link TopLevelItem}.
+     */
+    @SuppressWarnings({"unchecked"})
+    public <T extends TopLevelItem> T copy(T src, String name) throws IOException {
+        return itemGroupMixIn.copy(src, name);
+    }
+
+    // a little more convenient overloading that assumes the caller gives us the right type
+    // (or else it will fail with ClassCastException)
+    public <T extends AbstractProject<?,?>> T copy(T src, String name) throws IOException {
+        return (T)copy((TopLevelItem)src,name);
+    }
+
+    public synchronized void doCreateView( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException, FormException {
+        checkPermission(View.CREATE);
+        addView(View.create(req,rsp, this));
+    }
+
+    /**
+     * Check if the given name is suitable as a name
+     * for job, view, etc.
+     *
+     * @throws ParseException
+     *      if the given name is not good
+     */
+    public static void checkGoodName(String name) throws Failure {
+        if(name==null || name.length()==0)
+            throw new Failure(Messages.Hudson_NoName());
+
+        for( int i=0; i<name.length(); i++ ) {
+            char ch = name.charAt(i);
+            if(Character.isISOControl(ch)) {
+                throw new Failure(Messages.Hudson_ControlCodeNotAllowed(toPrintableName(name)));
+            }
+            if("?*/\\%!@#$^&|<>[]:;".indexOf(ch)!=-1)
+                throw new Failure(Messages.Hudson_UnsafeChar(ch));
+        }
+
+        // looks good
+    }
+
+    /**
+     * Makes sure that the given name is good as a job name.
+     * @return trimmed name if valid; throws ParseException if not
+     */
+    private String checkJobName(String name) throws Failure {
+        checkGoodName(name);
+        name = name.trim();
+        if(getItem(name)!=null)
+            throw new Failure(Messages.Hudson_JobAlreadyExists(name));
+        // looks good
+        return name;
+    }
+
+    private static String toPrintableName(String name) {
+        StringBuilder printableName = new StringBuilder();
+        for( int i=0; i<name.length(); i++ ) {
+            char ch = name.charAt(i);
+            if(Character.isISOControl(ch))
+                printableName.append("\\u").append((int)ch).append(';');
+            else
+                printableName.append(ch);
+        }
+        return printableName.toString();
+    }
+
+    /**
+     * Checks if the user was successfully authenticated.
+     *
+     * @see BasicAuthenticationFilter
+     */
+    public void doSecured( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+        if(req.getUserPrincipal()==null) {
+            // authentication must have failed
+            rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        // the user is now authenticated, so send him back to the target
+        String path = req.getContextPath()+req.getOriginalRestOfPath();
+        String q = req.getQueryString();
+        if(q!=null)
+            path += '?'+q;
+
+        rsp.sendRedirect2(path);
+    }
+
+    /**
+     * Called once the user logs in. Just forward to the top page.
+     */
+    public void doLoginEntry( StaplerRequest req, StaplerResponse rsp ) throws IOException {
+        if(req.getUserPrincipal()==null) {
+            rsp.sendRedirect2("noPrincipal");
+            return;
+        }
+
+        String from = req.getParameter("from");
+        if(from!=null && from.startsWith("/") && !from.equals("/loginError")) {
+            rsp.sendRedirect2(from);    // I'm bit uncomfortable letting users redircted to other sites, make sure the URL falls into this domain
+            return;
+        }
+
+        String url = AbstractProcessingFilter.obtainFullRequestUrl(req);
+        if(url!=null) {
+            // if the login redirect is initiated by Acegi
+            // this should send the user back to where s/he was from.
+            rsp.sendRedirect2(url);
+            return;
+        }
+
+        rsp.sendRedirect2(".");
+    }
+
+    /**
+     * Logs out the user.
+     */
+    public void doLogout( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+        securityRealm.doLogout(req, rsp);
+    }
+
+    /**
+     * Serves jar files for JNLP slave agents.
+     */
+    public Slave.JnlpJar getJnlpJars(String fileName) {
+        return new Slave.JnlpJar(fileName);
+    }
+
+    public Slave.JnlpJar doJnlpJars(StaplerRequest req) {
+        return new Slave.JnlpJar(req.getRestOfPath());
+    }
+
+>>>>>>> YOURS
+    /**
+     * RSS feed for log entries.
+     *
+     * @deprecated
+     *   As on 1.267, moved to "/log/rss..."
+     */
+    public void doLogRss( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+        String qs = req.getQueryString();
+        rsp.sendRedirect2("./log/rss"+(qs==null?"":'?'+qs));
+    }
+
+    /**
+     * @deprecated as of 1.294
+     *      Define your own check method, instead of relying on this generic one.
+     */
+    public void doFieldCheck(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
+        doFieldCheck(
+                fixEmpty(req.getParameter("value")),
+                fixEmpty(req.getParameter("type")),
+                fixEmpty(req.getParameter("errorText")),
+                fixEmpty(req.getParameter("warningText"))).generateResponse(req,rsp,this);
+    }
+
+    /**
+     * Checks if the value for a field is set; if not an error or warning text is displayed.
+     * If the parameter "value" is not set then the parameter "errorText" is displayed
+     * as an error text. If the parameter "errorText" is not set, then the parameter "warningText"
+     * is displayed as a warning text.
+     * <p>
+     * If the text is set and the parameter "type" is set, it will validate that the value is of the
+     * correct type. Supported types are "number, "number-positive" and "number-negative".
+     *
+     * @deprecated as of 1.324
+     *      Either use client-side validation (e.g. class="required number")
+     *      or define your own check method, instead of relying on this generic one.
+     */
+    public FormValidation doFieldCheck(@QueryParameter(fixEmpty=true) String value,
+                                       @QueryParameter(fixEmpty=true) String type,
+                                       @QueryParameter(fixEmpty=true) String errorText,
+                                       @QueryParameter(fixEmpty=true) String warningText) {
+        if (value == null) {
+            if (errorText != null)
+                return FormValidation.error(errorText);
+            if (warningText != null)
+                return FormValidation.warning(warningText);
+            return FormValidation.error("No error or warning text was set for fieldCheck().");
+        }
+
+        if (type != null) {
+            try {
+                if (type.equalsIgnoreCase("number")) {
+                    NumberFormat.getInstance().parse(value);
+                } else if (type.equalsIgnoreCase("number-positive")) {
+                    if (NumberFormat.getInstance().parse(value).floatValue() <= 0)
+                        return FormValidation.error(Messages.Hudson_NotAPositiveNumber());
+                } else if (type.equalsIgnoreCase("number-negative")) {
+                    if (NumberFormat.getInstance().parse(value).floatValue() >= 0)
+                        return FormValidation.error(Messages.Hudson_NotANegativeNumber());
+                }
+            } catch (ParseException e) {
+                return FormValidation.error(Messages.Hudson_NotANumber());
+            }
+        }
+
+        return FormValidation.ok();
+    }
+
+    /**
+     * @deprecated
+     *      Use {@link Functions#isWindows()}.
+     */
+    public static boolean isWindows() {
+        return File.pathSeparatorChar==';';
+    }
+
+    /**
+     * @deprecated
+     *      Use {@link hudson.Platform#isDarwin()}
+     */
+    public static boolean isDarwin() {
+        return Platform.isDarwin();
+    }
+
+    /**
+     * @deprecated since 2007-12-18.
+     *      Use {@link #checkPermission(hudson.security.Permission)}
+     */
+    public static boolean adminCheck() throws IOException {
+        return adminCheck(Stapler.getCurrentRequest(), Stapler.getCurrentResponse());
+    }
+
+    /**
+     * @deprecated since 2007-12-18.
+     *      Use {@link #checkPermission(hudson.security.Permission)}
+     */
+    public static boolean adminCheck(StaplerRequest req,StaplerResponse rsp) throws IOException {
+        if (isAdmin(req)) return true;
+
+        rsp.sendError(StaplerResponse.SC_FORBIDDEN);
+        return false;
+    }
+
+    /**
+     * Checks if the current user (for which we are processing the current request)
+     * has the admin access.
+     *
+     * @deprecated since 2007-12-18.
+     *      This method is deprecated when Hudson moved from simple Unix root-like model
+     *      of "admin gets to do everything, and others don't have any privilege" to more
+     *      complex {@link hudson.security.ACL} and {@link hudson.security.Permission} based scheme.
+     *
+     *      <p>
+     *      For a quick migration, use {@code Hudson.getInstance().getACL().hasPermission(Hudson.ADMINISTER)}
+     *      To check if the user has the 'administer' role in Hudson.
+     *
+     *      <p>
+     *      But ideally, your plugin should first identify a suitable {@link hudson.security.Permission} (or create one,
+     *      if appropriate), then identify a suitable {@link hudson.security.AccessControlled} object to check its permission
+     *      against.
+     */
+    public static boolean isAdmin() {
+        return Jenkins.getInstance().getACL().hasPermission(ADMINISTER);
+    }
+
+    /**
+     * @deprecated since 2007-12-18.
+     *      Define a custom {@link hudson.security.Permission} and check against ACL.
+     *      See {@link #isAdmin()} for more instructions.
+     */
+    public static boolean isAdmin(StaplerRequest req) {
+        return isAdmin();
+    }
+
+    static {
+        XSTREAM.alias("hudson",Hudson.class);
+    }
+
+    /**
+     * @deprecated  only here for backward comp
+     */
+    public static final class MasterComputer extends Jenkins.MasterComputer {
+        // no op
+    }
+
+    /**
+     * @deprecated  only here for backward comp
+     */
+    public static class CloudList extends Jenkins.CloudList {
+        // no op
+    }
+}

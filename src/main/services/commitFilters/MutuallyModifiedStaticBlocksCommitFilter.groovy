@@ -12,6 +12,7 @@ import static app.MiningFramework.arguments
 class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
     private modifiedStaticBlocksHelper = new ModifiedStaticBlocksHelper("diffj.jar");
+    private File filteredScenariosIniatilizationBlock = null;
 
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
         return containsMutuallyModifiedStaticBlocks(project, mergeCommit)
@@ -28,12 +29,21 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
-        obtainResultsForProject(project,mergeCommit,leftModifiedFiles, "files_all");
-        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
-        obtainResultsForProject(project,mergeCommit,mutuallyModifiedFiles, "mutuallyModifiedFiles");
+
+        Set<String> mutuallyModifiedFiles = null;
+       if(leftModifiedFiles.size() > 0){
+           mutuallyModifiedFiles  = new HashSet<String>(leftModifiedFiles)
+           mutuallyModifiedFiles.retainAll(rightModifiedFiles)
+           obtainResultsForProject(project,mergeCommit,leftModifiedFiles, "files_all");
+       }else{
+           mutuallyModifiedFiles  = new HashSet<String>(rightModifiedFiles)
+           mutuallyModifiedFiles.retainAll(leftModifiedFiles)
+           obtainResultsForProject(project,mergeCommit,leftModifiedFiles, "files_all");
+       }
+        obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "mutuallyModifiedFiles");
+
         for(file in mutuallyModifiedFiles) {
-           //if (file.contains("Jenkins")){
+        //   if (file.contains("JenkinsRule")){
                     //|| file.contains("ComputerSet") || file.contains("ProcessTree") || file.contains("StreamTaskListener")) {
 
             Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
@@ -41,12 +51,15 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
            // leftModifiedContextStaticBlocks.retainAll(rightModifiedModifiedContextStaticBlocks) // Intersection.
 
-            if(leftModifiedContextStaticBlocks.size() > 0 || rightModifiedModifiedContextStaticBlocks.size() >0 )
-                return true
-            //}
-        }
+            if(leftModifiedContextStaticBlocks.size() > 0 || rightModifiedModifiedContextStaticBlocks.size() >0 ){
+                createDataFilesExperimentalStaticBlock(project,mergeCommit,file, 1)
 
-        return true
+                return true
+             }
+        }
+       // }
+
+        return false
     }
 
     private Set<String> getModifiedContextStaticBlocks(Project project, String filePath, String ancestorSHA, String targetSHA, MergeCommit mergeCommit) {
@@ -63,5 +76,14 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
         }
         for(String path : leftModifiedFiles)
            obtainResultsForProjects  << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${path};\n"
+    }
+    private void createDataFilesExperimentalStaticBlock(Project project,MergeCommit mergeCommit, String targetFile, int qtdStaticBlock) {
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/results-Iniatilizationlock.csv")
+        if (!filteredScenariosIniatilizationBlock.exists()) {
+            filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static\n'
+        }
+
+        filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${targetFile};${qtdStaticBlock}\n"
     }
 }

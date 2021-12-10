@@ -58,13 +58,27 @@ class S3MRunner {
             if(resultDiff !=null && resultDiff.size() > 0){
                 obtainResultsForProject(newHandlersOutputFile, oldHandlersOutputFile)
             }else{
-                FileManager.delete(mergeScenario)
+                obtainResultsForDiscartFile(newHandlersOutputFile, oldHandlersOutputFile)
+              /*  FileManager.delete(new File(leftFile.toString()))
+                FileManager.delete(new File(baseFile.toString()))
+                FileManager.delete(new File(rightFile.toString()))
+                FileManager.delete(new File(newHandlersOutputFile.toString()))
+                FileManager.delete(new File(oldHandlersOutputFile.toString()))*/
+                FileManager.delete(new File(mergeScenario.toString()))
             }
         }
     }
     private static void obtainResultsForProject(Path newHandlersOutputFile, Path oldHandlersOutputFile) {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
         File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/comparation_handlersFiles.csv")
+        if (!obtainResultsForProjects.exists()) {
+            obtainResultsForProjects << 'New Handlers; old Handlers; status\n'
+        }
+        obtainResultsForProjects  << "${newHandlersOutputFile.toString()};${oldHandlersOutputFile.toString()};1;\n"
+    }
+    private static void obtainResultsForDiscartFile(Path newHandlersOutputFile, Path oldHandlersOutputFile) {
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/discart_handlersFiles.csv")
         if (!obtainResultsForProjects.exists()) {
             obtainResultsForProjects << 'New Handlers; old Handlers; status\n'
         }

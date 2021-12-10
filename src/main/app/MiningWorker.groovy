@@ -58,7 +58,7 @@ class MiningWorker implements Runnable {
                                 mergeCommit.getSHA().equals("f6373f7ada14a7914f4ae08b6af4c1b27d343c21") ||
                                 mergeCommit.getSHA().equals("fc517765d752ee8098ea48c052f6a709c5b451c9")
                         ){
-                       // if(mergeCommit.getSHA().equals("041f9b9fecc8f591f77c0e66ba8f95a1ad0ff146")){
+                       // if(mergeCommit.getSHA().equals("5e26af25e0313093256a49e2e1bc66a797cd4038")){
                             if (commitFilter.applyFilter(project, mergeCommit)) {
                                println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 

@@ -130,17 +130,33 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     protected Map<String, Tuple2<ModifiedStaticBlock, ModifiedStaticBlock>> intersectAndBuildMapStaticBlock(Set<ModifiedStaticBlock> leftModifiedStaticBlocks, Set<ModifiedStaticBlock> rightModifiedStaticBlocks) {
         Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
 
-        for(leftStaticBlock in leftModifiedStaticBlocks) {
-            if(rightModifiedStaticBlocks.size() > 0) {
-                for (rightStaticBlock in rightModifiedStaticBlocks) {
-                    if (leftStaticBlock == rightStaticBlock) {
-                        intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
+        if(leftModifiedStaticBlocks.size() > 0){
+            for(leftStaticBlock in leftModifiedStaticBlocks) {
+                if(rightModifiedStaticBlocks.size() > 0) {
+                    for (rightStaticBlock in rightModifiedStaticBlocks) {
+                        if (leftStaticBlock == rightStaticBlock) {
+                            intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
+                        }
                     }
+                }else{
+                    intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, leftStaticBlock))
                 }
-            }else{
-                intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, leftStaticBlock))
+            }
+        }else if(rightModifiedStaticBlocks.size() > 0){
+            for(rightStaticBlock in rightModifiedStaticBlocks) {
+                if(leftModifiedStaticBlocks.size() > 0) {
+                    for (leftStaticBlock in leftModifiedStaticBlocks) {
+                        if (leftStaticBlock == rightStaticBlock) {
+                            intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
+                        }
+                    }
+                }else{
+                    intersection.put(rightStaticBlock.getIdentifier(), new Tuple2(rightStaticBlock, rightStaticBlock))
+                }
             }
         }
+
+
 
         return intersection
     }

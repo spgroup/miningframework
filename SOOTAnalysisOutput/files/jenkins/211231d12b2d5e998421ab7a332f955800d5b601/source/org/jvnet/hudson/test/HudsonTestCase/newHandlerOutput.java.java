@@ -1896,18 +1896,6 @@ public abstract class HudsonTestCase extends TestCase implements RootAction {
             }
         }
     }
-    static {
-        MIME_TYPES.addMimeMapping("js","application/javascript");
-        Functions.DEBUG_YUI = true;
-
-        // during the unit test, predictably releasing classloader is important to avoid
-        // file descriptor leak.
-        ClassicPluginStrategy.useAntClassLoader = true;
-
-        // DNS multicast support takes up a lot of time during tests, so just disable it altogether
-        // this also prevents tests from falsely advertising Hudson
-        DNSMultiCast.disabled = true;
-    }
 
     public static class TestBuildWrapper extends BuildWrapper {
         public Result buildResultInTearDown;

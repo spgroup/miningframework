@@ -52,7 +52,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
            // leftModifiedContextStaticBlocks.retainAll(rightModifiedModifiedContextStaticBlocks) // Intersection.
 
             if(leftModifiedContextStaticBlocks.size() > 0 || rightModifiedModifiedContextStaticBlocks.size() >0 ){
-                createDataFilesExperimentalStaticBlock(project,mergeCommit,file, 1)
+                createDataFilesExperimentalStaticBlock(project,mergeCommit,file, leftModifiedContextStaticBlocks.size() + rightModifiedModifiedContextStaticBlocks.size() )
 
                 return true
              }
@@ -79,7 +79,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
     }
     private void createDataFilesExperimentalStaticBlock(Project project,MergeCommit mergeCommit, String targetFile, int qtdStaticBlock) {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
-        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/results-Iniatilizationlock.csv")
+        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/results-IniatilizationQTD.csv")
         if (!filteredScenariosIniatilizationBlock.exists()) {
             filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static\n'
         }

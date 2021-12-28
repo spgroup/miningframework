@@ -1864,41 +1864,6 @@ public abstract class HudsonTestCase extends TestCase implements RootAction {
         // remove the upper bound of the POST data size in Jetty.
         System.setProperty("org.mortbay.jetty.Request.maxFormContentSize","-1");
     }
-    
-    static {
-        // screen scraping relies on locale being fixed.
-        Locale.setDefault(Locale.ENGLISH);
-
-        {// enable debug assistance, since tests are often run from IDE
-            Dispatcher.TRACE = true;
-            MetaClass.NO_CACHE=true;
-            // load resources from the source dir.
-            File dir = new File("src/main/resources");
-            if(dir.exists() && MetaClassLoader.debugLoader==null)
-                try {
-                    MetaClassLoader.debugLoader = new MetaClassLoader(
-                        new URLClassLoader(new URL[]{dir.toURI().toURL()}));
-                } catch (MalformedURLException e) {
-                    throw new AssertionError(e);
-                }
-        }
-
-        // suppress INFO output from Spring, which is verbose
-        Logger.getLogger("org.springframework").setLevel(Level.WARNING);
-
-        // hudson-behavior.js relies on this to decide whether it's running unit tests.
-        Main.isUnitTest = true;
-
-        // prototype.js calls this method all the time, so ignore this warning.
-        XML_HTTP_REQUEST_LOGGER.setFilter(new Filter() {
-            public boolean isLoggable(LogRecord record) {
-                return !record.getMessage().contains("XMLHttpRequest.getResponseHeader() was called before the response was available.");
-            }
-        });
-
-        // remove the upper bound of the POST data size in Jetty.
-        System.setProperty("org.mortbay.jetty.Request.maxFormContentSize","-1");
-    }
 
     private static final Logger LOGGER = Logger.getLogger(HudsonTestCase.class.getName());
 

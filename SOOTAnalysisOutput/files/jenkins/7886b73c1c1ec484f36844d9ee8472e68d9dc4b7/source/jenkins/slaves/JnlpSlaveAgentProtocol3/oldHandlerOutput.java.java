@@ -149,17 +149,16 @@ public class JnlpSlaveAgentProtocol3 extends AgentProtocol {
     private static final Boolean forceEnabled;
 
     static {
+<<<<<<< MINE
         forceEnabled = SystemProperties.optBoolean(JnlpSlaveAgentProtocol3.class.getName() + ".enabled");
         if (forceEnabled != null) {
             ENABLED = forceEnabled;
-        }
-    }
-
-    static {
+=======
         String propName = JnlpSlaveAgentProtocol3.class.getName() + ".enabled";
         String propertyString = SystemProperties.getString(propName);
         if (propertyString != null) {
             ENABLED = SystemProperties.getBoolean(propName);
+>>>>>>> YOURS
         }
     }
 }

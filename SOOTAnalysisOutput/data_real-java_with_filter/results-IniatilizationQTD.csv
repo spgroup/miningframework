@@ -1,0 +1,4 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+realm-java;f034db6a3357b79d1eec6806e47ce52931dbf33e;5e3ac4a28f5ea50e663bcde1d8f0606f38456053;f05d561eb;17cd606ed;realm/realm-library/src/main/java/io/realm/objectserver/SyncManager.java;2
+realm-java;fca44870b40e9b26d713ff83eab4f12190ae5086;71e4034fbc0885c5aaf7b7af8ca39b86c1324985;6e6fc057c;9aa44d910;realm/realm-library/src/main/java/io/realm/internal/Util.java;1
+realm-java;c46ebfb6b0b0ca14505cb6281d78d48f0632371c;3411d9527a23f62c6840d634789c2ce9b186d769;d9f7fcfe9;1ad9c3175;realm-annotations-processor/src/main/java/io/realm/processor/RealmProxyClassGenerator.java;1

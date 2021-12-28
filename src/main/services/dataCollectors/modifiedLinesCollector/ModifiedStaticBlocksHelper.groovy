@@ -40,7 +40,7 @@ class ModifiedStaticBlocksHelper {
         // List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
        // if(staticBlockedASTFile?.size() >0)
-        createDataFilesExperimentalStaticBlock(project,ancestorSHA,targetSHA,filePath,mergeCommit,quantityInializationBlock(ancestorIniatilizationBlockASTFile,staticBlockedASTFile))
+        createDataFilesExperimentalStaticBlock(project,filePath,mergeCommit,quantityInializationBlock(ancestorIniatilizationBlockASTFile,staticBlockedASTFile))
         //Map<String, int[]> parsedDiffJResult = modifiedStaticBlocksParser.parse(diffJOutput);
         List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
 
@@ -56,11 +56,11 @@ class ModifiedStaticBlocksHelper {
            return ancestorIniatilizationBlockASTFile.size();
        }
    }
-   private void createDataFilesExperimentalStaticBlock(Project project,String sha, String ancestorSHA, String targetFile, MergeCommit mergeCommit,int qtdStaticBlock) {
+   private void createDataFilesExperimentalStaticBlock(Project project,String targetFile, MergeCommit mergeCommit,int qtdStaticBlock) {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
         filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/results-Iniatilizationlock.csv")
         if (!filteredScenariosIniatilizationBlock.exists()) {
-            filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static\n'
+            filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static\n'
         }
 
        filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${targetFile};${qtdStaticBlock}\n"

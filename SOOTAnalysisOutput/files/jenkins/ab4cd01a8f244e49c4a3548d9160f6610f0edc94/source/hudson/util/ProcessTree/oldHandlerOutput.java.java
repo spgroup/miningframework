@@ -674,10 +674,6 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree, 
         static {
             WinProcess.enableDebugPrivilege();
         }
-
-        static {
-            WinProcess.enableDebugPrivilege();
-        }
         
         private static boolean hasMatchingEnvVars(@Nonnull OSProcess p, @Nonnull Map<String, String> modelEnvVars)
                 throws WindowsOSProcessException {

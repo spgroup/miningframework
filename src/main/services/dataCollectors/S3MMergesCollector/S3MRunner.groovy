@@ -51,19 +51,19 @@ class S3MRunner {
         if (handlers.contains(Handlers.InitializationBlocks)){
             Path newHandlersOutputFile = getInvolvedFile(mergeScenario,newHandlerOutput);
             Path oldHandlersOutputFile = getInvolvedFile(mergeScenario,oldHandlerOutput);
-            run3MInicializedDeclaration(leftFile, baseFile, rightFile,  newHandlersOutputFile.toString(),  '--handle-initialization-blocks', 'true');
-            run3MInicializedDeclaration(leftFile, baseFile, rightFile,oldHandlersOutputFile.toString(), '--handle-initialization-blocks', 'false');
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,  oldHandlersOutputFile.toString(),  '--handle-initialization-blocks','true','--handle-initialization-blocks-multiple-blocks','false');
+            run3MInicializedDeclaration(leftFile, baseFile, rightFile,newHandlersOutputFile.toString(), '--handle-initialization-blocks', 'false','--handle-initialization-blocks-multiple-blocks','true' );
 
             List<String> resultDiff =  runTextualDiff(newHandlersOutputFile, oldHandlersOutputFile)
             if(resultDiff !=null && resultDiff.size() > 0){
                 obtainResultsForProject(newHandlersOutputFile, oldHandlersOutputFile)
             }else{
                 obtainResultsForDiscartFile(newHandlersOutputFile, oldHandlersOutputFile)
-              /*  FileManager.delete(new File(leftFile.toString()))
+                FileManager.delete(new File(leftFile.toString()))
                 FileManager.delete(new File(baseFile.toString()))
                 FileManager.delete(new File(rightFile.toString()))
                 FileManager.delete(new File(newHandlersOutputFile.toString()))
-                FileManager.delete(new File(oldHandlersOutputFile.toString()))*/
+                FileManager.delete(new File(oldHandlersOutputFile.toString()))
                 FileManager.delete(new File(mergeScenario.toString()))
             }
         }
@@ -94,8 +94,8 @@ class S3MRunner {
         renameUnstructuredMergeFile(baseFile.getParent(), handler.name(), outputFileName)
     }
 
-    private static void run3MInicializedDeclaration(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handler, String additionalParameters) {
-        Process S3M = ProcessRunner.startProcess(buildS3MProcessInizalizedDeclaration(leftFile, baseFile, rightFile, outputFileName, handler, additionalParameters))
+    private static void run3MInicializedDeclaration(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handler, String additionalParameters,String handlerNew, String additionalParametersNew) {
+        Process S3M = ProcessRunner.startProcess(buildS3MProcessInizalizedDeclaration(leftFile, baseFile, rightFile, outputFileName, handler, additionalParameters, handlerNew , additionalParametersNew))
 
         S3M.getInputStream().eachLine {
             println it
@@ -114,15 +114,15 @@ class S3MRunner {
         S3M.command().addAll(parameters)
         return S3M
     }
-    private static ProcessBuilder buildS3MProcessInizalizedDeclaration(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String additionalParameters) {
+    private static ProcessBuilder buildS3MProcessInizalizedDeclaration(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String additionalParameters, String handlerNameNew, String additionalParametersNew) {
         ProcessBuilder S3M = ProcessRunner.buildProcess(getParentAsString(S3M_PATH))
-        List<String> parameters = buildS3MParametersBasic(leftFile, baseFile, rightFile, outputFileName, handlerName, additionalParameters)
+        List<String> parameters = buildS3MParametersBasic(leftFile, baseFile, rightFile, outputFileName, handlerName, additionalParameters , handlerNameNew, additionalParametersNew)
         S3M.command().addAll(parameters)
         return  S3M
     }
 
-    private static List<String> buildS3MParametersBasic(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String additionalParameters) {
-        List<String> parameters = ['java', '-jar', getNameAsString(S3M_PATH), leftFile.toString(), baseFile.toString(), rightFile.toString(), '-o', outputFileName, handlerName,additionalParameters]
+    private static List<String> buildS3MParametersBasic(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String handlerName, String additionalParameters , String handlerNameNew, String additionalParametersNew) {
+        List<String> parameters = ['java', '-jar', getNameAsString(S3M_PATH), leftFile.toString(), baseFile.toString(), rightFile.toString(), '-o', outputFileName, handlerName,additionalParameters , handlerNameNew,additionalParametersNew]
         return parameters
     }
 

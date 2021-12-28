@@ -90,16 +90,14 @@ public class JnlpSlaveAgentProtocol3 extends AgentProtocol {
     public static boolean ENABLED;
     private static final Boolean forceEnabled;
 
-    static {
-        forceEnabled = SystemProperties.optBoolean(JnlpSlaveAgentProtocol3.class.getName() + ".enabled");
+    static {<<<<<<< MINE
+forceEnabled = SystemProperties.optBoolean(JnlpSlaveAgentProtocol3.class.getName() + ".enabled");
         if (forceEnabled != null) {
             ENABLED = forceEnabled;
-<<<<<<< MINE
-        } else {
-            byte hash = Util.fromHexString(Jenkins.getActiveInstance().getLegacyInstanceId())[0];
-            ENABLED = (hash % 10) == 0;
 =======
+forceEnabled = SystemProperties.optBoolean(JnlpSlaveAgentProtocol3.class.getName() + ".enabled");
+        if (forceEnabled != null) {
+            ENABLED = forceEnabled;
 >>>>>>> YOURS
-        }
-    }
+}
 }

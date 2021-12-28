@@ -4231,34 +4231,6 @@ public void doLaunchSlaveAgent(StaplerRequest req, StaplerResponse rsp) throws I
                     "anonymous", "anonymous", new GrantedAuthority[]{new GrantedAuthorityImpl("anonymous")});
             XSTREAM = XSTREAM2 = new XStream2();
 
-            XSTREAM.alias("jenkins", Jenkins.class);
-            XSTREAM.alias("slave", DumbSlave.class);
-            XSTREAM.alias("jdk", JDK.class);
-            // for backward compatibility with <1.75, recognize the tag name "view" as well.
-            XSTREAM.alias("view", ListView.class);
-            XSTREAM.alias("listView", ListView.class);
-            XSTREAM2.addCriticalField(Jenkins.class, "securityRealm");
-            XSTREAM2.addCriticalField(Jenkins.class, "authorizationStrategy");
-            // this seems to be necessary to force registration of converter early enough
-            Mode.class.getEnumConstants();
-
-            // double check that initialization order didn't do any harm
-            assert PERMISSIONS != null;
-            assert ADMINISTER != null;
-        } catch (RuntimeException e) {
-            // when loaded on a slave and this fails, subsequent NoClassDefFoundError will fail to chain the cause.
-            // see http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8051847
-            // As we don't know where the first exception will go, let's also send this to logging so that
-            // we have a known place to look at.
-            LOGGER.log(SEVERE, "Failed to load Jenkins.class", e);
-            throw e;
-        } catch (Error e) {
-            LOGGER.log(SEVERE, "Failed to load Jenkins.class", e);
-            throw e;
-        }
-    }
-
-    static {
         XSTREAM.alias("jenkins",Jenkins.class);
         XSTREAM.alias("slave", DumbSlave.class);
         XSTREAM.alias("jdk",JDK.class);
@@ -4273,6 +4245,17 @@ public void doLaunchSlaveAgent(StaplerRequest req, StaplerResponse rsp) throws I
         // double check that initialization order didn't do any harm
         assert PERMISSIONS!=null;
         assert ADMINISTER!=null;
+        } catch (RuntimeException e) {
+            // when loaded on a slave and this fails, subsequent NoClassDefFoundError will fail to chain the cause.
+            // see http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8051847
+            // As we don't know where the first exception will go, let's also send this to logging so that
+            // we have a known place to look at.
+            LOGGER.log(SEVERE, "Failed to load Jenkins.class", e);
+            throw e;
+        } catch (Error e) {
+            LOGGER.log(SEVERE, "Failed to load Jenkins.class", e);
+            throw e;
+        }
     }
 
 }

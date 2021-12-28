@@ -831,33 +831,6 @@ public abstract class ProcessTree implements Iterable<OSProcess>, IProcessTree, 
      * Reflection used in the Unix support.
      */
     private static final class UnixReflection {
-
-        static {
-            try {
-                Class<?> clazz = Class.forName("java.lang.UNIXProcess");
-                PID_FIELD = clazz.getDeclaredField("pid");
-                PID_FIELD.setAccessible(true);
-
-                if (isPreJava8()) {
-                    DESTROY_PROCESS = clazz.getDeclaredMethod("destroyProcess",int.class);
-                } else {
-                    DESTROY_PROCESS = clazz.getDeclaredMethod("destroyProcess",int.class, boolean.class);
-                }
-                DESTROY_PROCESS.setAccessible(true);
-            } catch (ClassNotFoundException e) {
-                LinkageError x = new LinkageError();
-                x.initCause(e);
-                throw x;
-            } catch (NoSuchFieldException e) {
-                LinkageError x = new LinkageError();
-                x.initCause(e);
-                throw x;
-            } catch (NoSuchMethodException e) {
-                LinkageError x = new LinkageError();
-                x.initCause(e);
-                throw x;
-            }
-        }
         /**
          * Field to access the PID of the process.
          * Required for Java 8 and older JVMs.

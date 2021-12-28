@@ -1,0 +1,13 @@
+project,merge commit,filter reason
+realm-java,c52fc84387009a4d9c5698a5a84a582db7459c10,no mutually modified static blocks
+realm-java,f05d561eb61e4c0ae1c51f9574e446085840ed2a,no mutually modified static blocks
+realm-java,6819e9ad1d159353497f264c39bf4a89a1925fef,no mutually modified static blocks
+realm-java,bd256dff7b5fdb12d5ce299233c4864a17297063,no mutually modified static blocks
+realm-java,ef3bb6f61d5f0671c593070bccb8e87ae4e8eab9,no mutually modified static blocks
+realm-java,1f135d7208a6928ec630e59066a833dda2faae79,no mutually modified static blocks
+realm-java,6e6fc057c7e1af378f9b0eb39b86960d3247e99e,no mutually modified static blocks
+realm-java,9aa44d910ea16727d2f44977c962e3c883d53b2a,no mutually modified static blocks
+realm-java,69b1b30333dd1a33887eaac207a91dca18805212,no mutually modified static blocks
+realm-java,db48fa333fbfca35cd0598443be72dfaff148c44,no mutually modified static blocks
+realm-java,be2464f1cd9924019524fe8c44c6b32482e6472b,no mutually modified static blocks
+realm-java,0393fbf3112e9f78e6b0ed278dfc1e3b7ff5465a,no mutually modified static blocks

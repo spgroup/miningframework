@@ -38,27 +38,27 @@ class MiningWorker implements Runnable {
                 }
                 //List<MergeCommit> mergeCommits = project.getMergeCommits("2009-03-25", "2009-10-14")
                 List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+                obtainResultsForProject(project,mergeCommits)
                 for (mergeCommit in mergeCommits) {
-                    obtainResultsForProject(project,mergeCommit)
                     try {
-                     /*   if(
-                        mergeCommit.getSHA().equals("0393fbf3112e9f78e6b0ed278dfc1e3b7ff5465a") ||
-                        mergeCommit.getSHA().equals("1f135d7208a6928ec630e59066a833dda2faae79") ||
-                        mergeCommit.getSHA().equals("6819e9ad1d159353497f264c39bf4a89a1925fef") ||
-                        mergeCommit.getSHA().equals("69b1b30333dd1a33887eaac207a91dca18805212") ||
-                        mergeCommit.getSHA().equals("6e6fc057c7e1af378f9b0eb39b86960d3247e99e") ||
-                        mergeCommit.getSHA().equals("9aa44d910ea16727d2f44977c962e3c883d53b2a") ||
-                                mergeCommit.getSHA().equals("bd256dff7b5fdb12d5ce299233c4864a17297063") ||
-                                mergeCommit.getSHA().equals("be2464f1cd9924019524fe8c44c6b32482e6472b") ||
-                                mergeCommit.getSHA().equals("c46ebfb6b0b0ca14505cb6281d78d48f0632371c") ||
-                                mergeCommit.getSHA().equals("c52fc84387009a4d9c5698a5a84a582db7459c10") ||
-                                mergeCommit.getSHA().equals("db48fa333fbfca35cd0598443be72dfaff148c44") ||
-                                mergeCommit.getSHA().equals("ef3bb6f61d5f0671c593070bccb8e87ae4e8eab9") ||
-                                mergeCommit.getSHA().equals("f034db6a3357b79d1eec6806e47ce52931dbf33e") ||
-                                mergeCommit.getSHA().equals("f05d561eb61e4c0ae1c51f9574e446085840ed2a") ||
-                                mergeCommit.getSHA().equals("fca44870b40e9b26d713ff83eab4f12190ae5086")
-                        ){*/
-                       // if(mergeCommit.getSHA().equals("5e26af25e0313093256a49e2e1bc66a797cd4038")){
+                        /*if(
+                           mergeCommit.getSHA().equals("0393fbf3112e9f78e6b0ed278dfc1e3b7ff5465a") ||
+                          mergeCommit.getSHA().equals("1f135d7208a6928ec630e59066a833dda2faae79") ||
+                          mergeCommit.getSHA().equals("6819e9ad1d159353497f264c39bf4a89a1925fef") ||
+                          mergeCommit.getSHA().equals("69b1b30333dd1a33887eaac207a91dca18805212") ||
+                          mergeCommit.getSHA().equals("6e6fc057c7e1af378f9b0eb39b86960d3247e99e") ||
+                          mergeCommit.getSHA().equals("9aa44d910ea16727d2f44977c962e3c883d53b2a") ||
+                                  mergeCommit.getSHA().equals("bd256dff7b5fdb12d5ce299233c4864a17297063") ||
+                                  mergeCommit.getSHA().equals("be2464f1cd9924019524fe8c44c6b32482e6472b") ||
+                                  mergeCommit.getSHA().equals("c46ebfb6b0b0ca14505cb6281d78d48f0632371c") ||
+                                  mergeCommit.getSHA().equals("c52fc84387009a4d9c5698a5a84a582db7459c10") ||
+                                  mergeCommit.getSHA().equals("db48fa333fbfca35cd0598443be72dfaff148c44") ||
+                                  mergeCommit.getSHA().equals("ef3bb6f61d5f0671c593070bccb8e87ae4e8eab9") ||*/
+                             //  mergeCommit.getSHA().equals("b41ca6e3195dcf60a842632b37b90059b7cd9960") ||
+                           //    mergeCommit.getSHA().equals("d4b14b8ec0013d0c35f361d1851e28a87456dab3") ||
+                             //   mergeCommit.getSHA().equals("d86925ca0efc051259a35f917753080868614f0f")
+                      //  ){
+                       // if(mergeCommit.getSHA().equals("4f8fc5bc5b6b33537c53ddf89b57ba865c716460")){
                             if (commitFilter.applyFilter(project, mergeCommit)) {
                                println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
@@ -125,13 +125,18 @@ class MiningWorker implements Runnable {
 
         project.setPath(target)
     }
-    private void obtainResultsForProject(Project project , MergeCommit mergeCommit) {
+    private void obtainResultsForProject(Project project , List<MergeCommit> mergeCommits) {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
-        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/commits_"+project.getName()+".csv")
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs()
+        }
+        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/1_results_merges_scenarios_"+project.getName()+".csv")
         if (!obtainResultsForProjects.exists()) {
             obtainResultsForProjects << 'Merge commit; Ancestor; Parent 1; Parent 2\n'
         }
-        obtainResultsForProjects  << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};\n"
+        for (mergeCommit in mergeCommits) {
+            obtainResultsForProjects << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};\n"
+        }
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {

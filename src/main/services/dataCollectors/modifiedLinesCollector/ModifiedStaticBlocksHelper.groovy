@@ -7,7 +7,6 @@ import util.ProcessRunner
 import static app.MiningFramework.arguments;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 
 
@@ -39,15 +38,17 @@ class ModifiedStaticBlocksHelper {
 
         // List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
-       // if(staticBlockedASTFile?.size() >0)
-        createDataFilesExperimentalStaticBlock(project,filePath,mergeCommit,quantityInializationBlock(ancestorIniatilizationBlockASTFile,staticBlockedASTFile))
+        if(staticBlockedASTFile?.size() >0 || ancestorIniatilizationBlockASTFile.size() > 0) {
+            obtainResultsForProject(project, mergeCommit)
+            createDataFilesExperimentalStaticBlock(project, filePath, mergeCommit, quantityInializationBlock(ancestorIniatilizationBlockASTFile, staticBlockedASTFile))
+        }
         //Map<String, int[]> parsedDiffJResult = modifiedStaticBlocksParser.parse(diffJOutput);
         List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
 
         targetFile.delete()
         ancestorFile.delete()
 
-        return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(staticBlockedASTFile, parsedTextualDiffResult);
+        return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(ancestorIniatilizationBlockASTFile,staticBlockedASTFile, parsedTextualDiffResult);
     }
    private int quantityInializationBlock(Map<Integer, String> ancestorIniatilizationBlockASTFile, Map<Integer, String> staticBlockedASTFile){
        if(staticBlockedASTFile.size() >= ancestorIniatilizationBlockASTFile.size()){
@@ -56,14 +57,23 @@ class ModifiedStaticBlocksHelper {
            return ancestorIniatilizationBlockASTFile.size();
        }
    }
+    private void obtainResultsForProject(Project project , MergeCommit mergeCommit) {
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/3_results_common_files_iniatilizationblock_both_branches_" + project.getName() + ".csv")
+        if (!obtainResultsForProjects.exists()) {
+            obtainResultsForProjects << 'Merge commit; Ancestor; left; right;\n'
+        }
+        if(printMergeCommitInitializationBlock(mergeCommit, obtainResultsForProjects.getAbsolutePath()))
+         obtainResultsForProjects  << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};\n"
+    }
    private void createDataFilesExperimentalStaticBlock(Project project,String targetFile, MergeCommit mergeCommit,int qtdStaticBlock) {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
-        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/results-Iniatilizationlock.csv")
+        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/merge_into_files_containing_initialization_blocks"+ project.getName() +".csv")
         if (!filteredScenariosIniatilizationBlock.exists()) {
             filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static\n'
         }
-
-       filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${targetFile};${qtdStaticBlock}\n"
+       if(printContentFileInitializationBlock(targetFile,mergeCommit))
+          filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${targetFile};${qtdStaticBlock}\n"
     }
     private Map<String,String> parsedASTAllStaticBlock(File file){
         JavaParser javaParser = new JavaParser();
@@ -93,8 +103,7 @@ class ModifiedStaticBlocksHelper {
 
 
     private List<String> runDiffJ(File ancestorFile, File targetFile) {
-        printRunDiffJ(ancestorFile,targetFile );
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
+         Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
 
 
@@ -107,25 +116,32 @@ class ModifiedStaticBlocksHelper {
 
         return output
     }
-    private void printRunDiffJ(File ancestorFile, File targetFile){
-        File target = new File("c:\\UFPE\\resultStaticBlock.txt")
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
+    private boolean printContentFileInitializationBlock(String targetFile, MergeCommit mergeCommit){
+        if(filteredScenariosIniatilizationBlock.exists()){
 
-
-        int i =1;
-        diffJ.getInputStream().eachLine {
-
-            int inIndex = it.indexOf("in ")
-            if(inIndex != -1) {
-                String signature = it.substring(inIndex + 3)
-                if(signature.equals("static block")){
-                    target << " ${it.toString()}\n"
-                    println "static${i}()"
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filteredScenariosIniatilizationBlock.getAbsolutePath())))
+            def line = null;
+            while ((line = reader.readLine()) != null) {
+               // println "${line}";
+                String str = line.split(";")[4]
+                String str1 = line.split(";")[5]
+                 if(targetFile.equals(str1) &&  mergeCommit.getRightSHA().equals(str) ){
+                  return false
                 }
             }
-            i++
         }
-
+        return true;
+    }
+    private boolean printMergeCommitInitializationBlock( MergeCommit mergeCommit, String absolutePath){
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(absolutePath)))
+            def line = null;
+            while ((line = reader.readLine()) != null) {
+                String str = line.split(";")[0]
+                if(mergeCommit.getSHA().equals(str) ){
+                    return false
+                }
+            }
+        return true;
     }
     private List<String> runTextualDiff (File ancestorFile, File targetFile) {
         Process textDiff = ProcessRunner.runProcess(".", "diff" ,ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())

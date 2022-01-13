@@ -5,9 +5,18 @@ import java.util.regex.Pattern;
 
 public class StaticBlockModifiedLinesMatcher {
     private String CONST_INITIALIZER_DECLARATION = "static-";
-    Set<ModifiedStaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocks, List<ModifiedLine> modifiedLines) {
+    Set<ModifiedStaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocks, Map<String, String> collectionsStaticBlocksAncestor, List<ModifiedLine> modifiedLines) {
         def staticBlockSet = new HashSet<ModifiedStaticBlock>();
-
+        if(collectionsStaticBlocks.entrySet().size() != collectionsStaticBlocksAncestor.entrySet().size()){
+            for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
+                String identifier = initializerDeclaration.getKey();
+                String blockedStatic = initializerDeclaration.getValue();
+                identifier = getIdentifierNumber(identifier);
+                def lineSet = new HashSet<ModifiedLine>();
+                staticBlockSet.add(new ModifiedStaticBlock(identifier, lineSet));
+            }
+            return staticBlockSet;
+        }
         if (collectionsStaticBlocks.entrySet().size() > 0) {
             for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
                 String identifier = initializerDeclaration.getKey();

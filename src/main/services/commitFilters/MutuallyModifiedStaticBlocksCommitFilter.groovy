@@ -29,8 +29,10 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
+        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
-        Set<String> mutuallyModifiedFiles = null;
+      /*  Set<String> mutuallyModifiedFiles = null;
        if(leftModifiedFiles.size() > 0){
            mutuallyModifiedFiles  = new HashSet<String>(leftModifiedFiles)
            mutuallyModifiedFiles.retainAll(rightModifiedFiles)
@@ -39,11 +41,12 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
            mutuallyModifiedFiles  = new HashSet<String>(rightModifiedFiles)
            mutuallyModifiedFiles.retainAll(leftModifiedFiles)
            obtainResultsForProject(project,mergeCommit,leftModifiedFiles, "files_all");
-       }
-        obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "mutuallyModifiedFiles");
+       }*/
+        if(mutuallyModifiedFiles.size() > 0)
+        obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
 
         for(file in mutuallyModifiedFiles) {
-        //   if (file.contains("JenkinsRule")){
+          // if (file.contains("MimeMessageParseTest")){
                     //|| file.contains("ComputerSet") || file.contains("ProcessTree") || file.contains("StreamTaskListener")) {
 
             Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
@@ -57,7 +60,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
                 return true
              }
         }
-       // }
+     // }
 
         return false
     }
@@ -72,14 +75,14 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
         File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/"+ name + "_" + project.getName() + ".csv")
         if (!obtainResultsForProjects.exists()) {
-            obtainResultsForProjects << 'Merge commit; Ancestor; Parent 1; Parent 2; files\n'
+            obtainResultsForProjects << 'Merge commit; Ancestor; Parent 1; Parent 2;\n'
         }
-        for(String path : leftModifiedFiles)
-           obtainResultsForProjects  << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${path};\n"
+
+           obtainResultsForProjects  << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};\n"
     }
     private void createDataFilesExperimentalStaticBlock(Project project,MergeCommit mergeCommit, String targetFile, int qtdStaticBlock) {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
-        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/results-IniatilizationQTD.csv")
+        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/4_results_branched_changed_least_on_iniatilizationBlock.csv")
         if (!filteredScenariosIniatilizationBlock.exists()) {
             filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static\n'
         }

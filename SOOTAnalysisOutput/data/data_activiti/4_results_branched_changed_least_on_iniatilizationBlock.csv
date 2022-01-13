@@ -1,0 +1,9 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+Activiti;91ae935eb992cf012f208f3cbc662ccd8f37b781;29e3052f1a5afb2867a3cbee0910167e4f8c6806;06241cad60;bb29ee360c;modules/activiti-engine/src/test/java/org/activiti/engine/test/history/ProcessInstanceLogQueryAndByteArrayTypeVariableTest.java;1
+Activiti;a0f41e550844c36d42463956e2b5c0d6bac23462;a8e02a1276ace42646834dbb030b61e4b63905f3;2393a16ffd;4b8457ed11;modules/activiti-rest/src/test/java/org/activiti/rest/service/BaseSpringRestTestCase.java;1
+Activiti;78c87cca2236d7cc61570eb5d473a1a36f35ec0e;715113fb25e3eaa18df0fdaf2df54211bf691fbe;60337c5ee9;d5ce0814dc;modules/activiti-engine/src/main/java/org/activiti/engine/impl/db/DbSqlSessionFactory.java;2
+Activiti;1894c058e3bcf1c7c813b6d2f1a83d2307285187;155b5085260a5ef84a87b7e522e0a3a6b82d5eac;b084b97d40;19d2642dcd;modules/activiti-bpmn-converter/src/main/java/org/activiti/bpmn/converter/BpmnXMLConverter.java;1
+Activiti;36f30cfa5599552a66aa797f08523bbb8aa8f4e0;d063efccb3efc0530efb19f80018627c2ebebd26;623fe34c48;ad0c9e10d3;modules/activiti-engine/src/main/java/org/activiti/engine/impl/db/DbSqlSessionFactory.java;1
+Activiti;b0a0bccddb782936d5fe486df2c009e0db49cb4b;915ceb09ad665e83389dcb0a932086988101cb77;75236c2a76;155b508526;modules/activiti-json-converter/src/main/java/org/activiti/editor/language/json/converter/BpmnJsonConverter.java;2
+Activiti;bdcbc9661e6d9efad9771f8c90b5217166596d27;3e371d9048ef78f4513c7bb145de083c037c322c;d45f48b7bd;bbc3ad78fe;modules/activiti-engine/src/main/java/org/activiti/engine/impl/calendar/CronExpression.java;1
+Activiti;d02071e076f49620f0bc201db569704ce478a4a5;d3c650c1f0f246aaa4ea8a6ffb0746a200b7a3ba;d2fa90894b;8becf95e6c;modules/activiti-rest/src/main/java/org/activiti/rest/api/history/HistoricProcessInstanceBaseResource.java;1

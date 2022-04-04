@@ -88,9 +88,16 @@ for separator in "${separators[@]}";
     # When none of the above, call sed with the substitution script, piping with the previous call.
     if [[ $separator = ${separators[0]} ]]
     then
-      sedCommandMyFile+="sed '${sedScript}' ${myFile}"
-      sedCommandOldFile+="sed '${sedScript}' ${oldFile}"
-      sedCommandYourFile+="sed '${sedScript}' ${yourFile}"
+      if [[ ${#separators[@]} = 1 ]]
+      then
+        sedCommandMyFile+="sed '${sedScript}' ${myFile} > ${myFile}_temp${fileExt}"
+        sedCommandOldFile+="sed '${sedScript}' ${oldFile} > ${oldFile}_temp${fileExt}"
+        sedCommandYourFile+="sed '${sedScript}' ${yourFile}  > ${yourFile}_temp${fileExt}"
+      else
+        sedCommandMyFile+="sed '${sedScript}' ${myFile}"
+        sedCommandOldFile+="sed '${sedScript}' ${oldFile}"
+        sedCommandYourFile+="sed '${sedScript}' ${yourFile}"
+      fi
     elif [[ $separator = ${separators[-1]} ]]
     then
       sedCommandMyFile+=" | sed '${sedScript}' > ${myFile}_temp${fileExt}"

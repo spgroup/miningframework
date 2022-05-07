@@ -3,9 +3,10 @@ package services.dataCollectors.modifiedLinesCollector
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
+import services.dataCollectors.staticBlockCollector.StaticBlock
+import services.dataCollectors.staticBlockCollector.StaticBlocksHelper
 import util.FileManager
 import services.dataCollectors.RevisionsFilesCollector
-import util.TypeNameHelper
 
 import static app.MiningFramework.arguments
 
@@ -20,7 +21,7 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     protected File experimentalDataFile;
     protected File experimentalDataFileWithLinks;
 
-    protected ModifiedStaticBlocksHelper modifiedStaticBlocksHelper;
+    protected StaticBlocksHelper modifiedStaticBlocksHelper;
     protected ModifiedMethodsHelper modifiedMethodsHelper;
     protected RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();
 
@@ -61,9 +62,9 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         printResults(project, mergeCommit, className, mergeMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
     }
 
-    protected void collectorData(Tuple2<ModifiedStaticBlock, ModifiedStaticBlock> leftAndRightStaticBlocks, ModifiedStaticBlock mergeStaticBlock, Project project, MergeCommit mergeCommit, String className) {
-        ModifiedStaticBlock leftStaticBlock = leftAndRightStaticBlocks.getV1();
-        ModifiedStaticBlock rightStaticBlock = leftAndRightStaticBlocks.getV2();
+    protected void collectorData(Tuple2<StaticBlock, StaticBlock> leftAndRightStaticBlocks, StaticBlock mergeStaticBlock, Project project, MergeCommit mergeCommit, String className) {
+        StaticBlock leftStaticBlock = leftAndRightStaticBlocks.getV1();
+        StaticBlock rightStaticBlock = leftAndRightStaticBlocks.getV2();
 
         Set<Integer> leftAddedLines = new HashSet<Integer>();
         Set<Integer> leftDeletedLines = new HashSet<Integer>();
@@ -120,14 +121,14 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         return intersectAndBuildMap(leftModifiedMethods, rightModifiedMethods)
     }
 
-    protected Map<String, Tuple2<ModifiedMethod, ModifiedStaticBlock>> getMutuallyModifiedStaticBlocks(Project project, MergeCommit mergeCommit, String filePath) {
+    protected Map<String, Tuple2<ModifiedMethod, StaticBlock>> getMutuallyModifiedStaticBlocks(Project project, MergeCommit mergeCommit, String filePath) {
         Set<ModifiedMethod> leftModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
         Set<ModifiedMethod> rightModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
         return intersectAndBuildMapStaticBlock(leftModifiedStaticBlocks, rightModifiedStaticBlocks )
     }
 
 
-    protected Map<String, Tuple2<ModifiedStaticBlock, ModifiedStaticBlock>> intersectAndBuildMapStaticBlock(Set<ModifiedStaticBlock> leftModifiedStaticBlocks, Set<ModifiedStaticBlock> rightModifiedStaticBlocks) {
+    protected Map<String, Tuple2<StaticBlock, StaticBlock>> intersectAndBuildMapStaticBlock(Set<StaticBlock> leftModifiedStaticBlocks, Set<StaticBlock> rightModifiedStaticBlocks) {
         Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
 
         if(leftModifiedStaticBlocks.size() > 0){

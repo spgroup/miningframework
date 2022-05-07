@@ -3,8 +3,6 @@ package services.dataCollectors
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
-import services.dataCollectors.S3MMergesCollector.S3MRunner
-import util.Handlers
 import util.TypeNameHelper
 import util.FileManager
 
@@ -34,8 +32,6 @@ class RevisionsFilesCollector implements DataCollector {
         FileManager.copyAndMoveFile(project, filePath, mergeCommit.getRightSHA(), "${revisionsFolder.getAbsolutePath()}/right.java")
         FileManager.copyAndMoveFile(project, filePath, mergeCommit.getAncestorSHA(), "${revisionsFolder.getAbsolutePath()}/base.java")
         FileManager.copyAndMoveFile(project, filePath, mergeCommit.getSHA(), "${revisionsFolder.getAbsolutePath()}/merge.java")
-
-        S3MRunner.collectS3MResult("${revisionsFolder.getAbsolutePath()}")
 
         return revisionsFolder
     }

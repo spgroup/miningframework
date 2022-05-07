@@ -73,4 +73,12 @@ final class Utils {
     static String getHyperLink(String link, String name) {
         return "=HYPERLINK(\"${link}\";\"${name}\")"
     }
+
+/**
+ * @param fileName
+ * @return a string which is the filename with the file extension (provided in the parameters) appended to the end
+ */
+    static String getfileNameWithExtension(String fileName) {
+        return "${fileName}${MiningFramework.arguments.getFileExtension()}"
+    }
 }

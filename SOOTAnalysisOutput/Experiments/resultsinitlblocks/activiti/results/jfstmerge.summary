@@ -1,0 +1,14 @@
+S3M was invoked in 36 JAVA files so far.
+In these files, you avoided at least 59 false positive(s), and at least 2 false negative(s) in relation to unstructured merge.
+Conversely, you had no extra false positives, but you had at most 55 potential extra false negative(s).
+
+S3M reported 60 conflicts, totaling 9774 conflicting LOC, compared to 120 conflicts and 22408 conflicting LOC from unstructured merge.
+
+Altogether, these numbers represent a reduction of 50,00% in the number of conflicts by S3M.
+A reduction of 100,00% in the number of false positives.
+And no reduction of false negatives.
+
+Finally, S3M took 118,78 seconds, and unstructured merge 1,29 seconds to merge all these files.
+
+
+LAST TIME UPDATED: 2022/04/03_13:06:07

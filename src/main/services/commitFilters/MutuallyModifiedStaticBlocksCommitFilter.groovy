@@ -3,7 +3,7 @@ package services.commitFilters
 import interfaces.CommitFilter
 import project.*
 import util.*
-import services.dataCollectors.modifiedLinesCollector.ModifiedStaticBlocksHelper
+import services.dataCollectors.staticBlockCollector.StaticBlocksHelper
 
 import java.util.stream.Collectors
 
@@ -11,7 +11,7 @@ import static app.MiningFramework.arguments
 
 class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
-    private modifiedStaticBlocksHelper = new ModifiedStaticBlocksHelper("diffj.jar");
+    private modifiedStaticBlocksHelper = new StaticBlocksHelper("diffj.jar");
     private File filteredScenariosIniatilizationBlock = null;
 
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
@@ -32,35 +32,22 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
         Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
-      /*  Set<String> mutuallyModifiedFiles = null;
-       if(leftModifiedFiles.size() > 0){
-           mutuallyModifiedFiles  = new HashSet<String>(leftModifiedFiles)
-           mutuallyModifiedFiles.retainAll(rightModifiedFiles)
-           obtainResultsForProject(project,mergeCommit,leftModifiedFiles, "files_all");
-       }else{
-           mutuallyModifiedFiles  = new HashSet<String>(rightModifiedFiles)
-           mutuallyModifiedFiles.retainAll(leftModifiedFiles)
-           obtainResultsForProject(project,mergeCommit,leftModifiedFiles, "files_all");
-       }*/
         if(mutuallyModifiedFiles.size() > 0)
         obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
 
         for(file in mutuallyModifiedFiles) {
-          // if (file.contains("MimeMessageParseTest")){
-                    //|| file.contains("ComputerSet") || file.contains("ProcessTree") || file.contains("StreamTaskListener")) {
+          // if ( file.contains("JenkinsRule") || file.contains("JnlpSlaveAgentProtocol3") ) {
 
             Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
             Set<String> rightModifiedModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
-
-           // leftModifiedContextStaticBlocks.retainAll(rightModifiedModifiedContextStaticBlocks) // Intersection.
 
             if(leftModifiedContextStaticBlocks.size() > 0 || rightModifiedModifiedContextStaticBlocks.size() >0 ){
                 createDataFilesExperimentalStaticBlock(project,mergeCommit,file, leftModifiedContextStaticBlocks.size() + rightModifiedModifiedContextStaticBlocks.size() )
 
                 return true
              }
-        }
-     // }
+        //}
+      }
 
         return false
     }

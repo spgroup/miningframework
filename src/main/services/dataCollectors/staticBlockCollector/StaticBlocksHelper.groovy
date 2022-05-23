@@ -51,7 +51,7 @@ class StaticBlocksHelper {
         targetFile.delete()
         ancestorFile.delete()
 
-        return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(ancestorIniatilizationBlockASTFile,staticBlockedASTFile, parsedTextualDiffResult);
+        return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(ancestorIniatilizationBlockASTFile,staticBlockedASTFile, parsedTextualDiffResult,filePath);
     }
    private int quantityInializationBlock(Map<Integer, String> ancestorIniatilizationBlockASTFile, Map<Integer, String> staticBlockedASTFile){
        if(staticBlockedASTFile.size() >= ancestorIniatilizationBlockASTFile.size()){

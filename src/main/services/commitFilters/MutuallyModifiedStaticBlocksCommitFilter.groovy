@@ -51,7 +51,33 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
         return false
     }
+    public List<String> getModifiedJavaFilePaths(Project project, MergeCommit mergeCommit) {
+        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
+        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
+        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
+       // if(mutuallyModifiedFiles.size() > 0)
+       //     obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
+        List<String> modifiedContextStaticBlocks = new ArrayList<String>();
+        for(file in mutuallyModifiedFiles) {
+           //  if ( file.contains("GCLogin")) {
+
+                modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
+                modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit))
+            //}
+        }
+
+        return modifiedContextStaticBlocks;
+
+    }
+    public Set<String> getModifiedContextStaticBlocksFiles(Project project, String filePath, String ancestorSHA, String targetSHA, MergeCommit mergeCommit) {
+        print"${filePath},${ancestorSHA}"
+        return modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, ancestorSHA, targetSHA, mergeCommit)
+                .stream()
+                .map(path -> path.getPath())
+                .collect(Collectors.toList())
+    }
     private Set<String> getModifiedContextStaticBlocks(Project project, String filePath, String ancestorSHA, String targetSHA, MergeCommit mergeCommit) {
         return modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, ancestorSHA, targetSHA, mergeCommit)
                 .stream()

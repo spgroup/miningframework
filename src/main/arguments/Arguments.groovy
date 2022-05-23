@@ -1,6 +1,7 @@
 package arguments
 
 import injectors.StaticAnalysisConflictsDetectionModule
+import injectors.StaticBlockAnalysisModule
 
 class Arguments {
     
@@ -20,7 +21,7 @@ class Arguments {
         sinceDate = ''
         untilDate = ''
         outputPath = 'output'
-        injector = StaticAnalysisConflictsDetectionModule
+        injector = StaticBlockAnalysisModule
         resultsRemoteRepositoryURL = ''
         accessKey = ''
         numOfThreads = 1

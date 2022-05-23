@@ -36,16 +36,17 @@ class MiningWorker implements Runnable {
                 } else {
                     checkForUnstagedChanges(project);
                 }
-                 List<MergeCommit> mergeCommits = project.getMergeCommits("", "05/29/2019")
-                //List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+             //    List<MergeCommit> mergeCommits = project.getMergeCommits("", "05/29/2019")
+                List<MergeCommit> mergeCommits = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
                 obtainResultsForProject(project,mergeCommits)
                 for (mergeCommit in mergeCommits) {
                     try {
-                   /*    if(
+                       /*if(
 
-                          mergeCommit.getSHA().equals("4753091384ea51c56cc09a0f96666ea9a4c2e03e") ||
-                         // mergeCommit.getSHA().equals("706aa7ad95f9461b58afb480dab6441b861fd24d") ||
-                          mergeCommit.getSHA().equals("fc517765d752ee8098ea48c052f6a709c5b451c9")
+                          mergeCommit.getSHA().equals("b41ca6e3195dcf60a842632b37b90059b7cd9960") ||
+                          mergeCommit.getSHA().equals("d86925ca0efc051259a35f917753080868614f0f") ||
+                          mergeCommit.getSHA().equals("a9552af41bc4a415a79c551c9f8d7a16b8d82900") ||
+                          mergeCommit.getSHA().equals("d4b14b8ec0013d0c35f361d1851e28a87456dab3")
 
                         ){*/
                        // if(mergeCommit.getSHA().equals("4f8fc5bc5b6b33537c53ddf89b57ba865c716460")){
@@ -54,7 +55,7 @@ class MiningWorker implements Runnable {
 
                                 runDataCollectors(project, mergeCommit)
                             }
-                    //    }
+                      //  }
                     } catch (Exception e) {
                         println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
                         e.printStackTrace();

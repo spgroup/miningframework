@@ -11,13 +11,18 @@ class StaticBlock {
 
     private String identifier;
     private Set<ModifiedLine> modifiedLines;
+    private String path;
 
 
     StaticBlock(String identifier, Set<ModifiedLine> lines) {
         this.identifier = identifier;
         this.modifiedLines = lines;
     }
-
+    StaticBlock(String identifier, Set<ModifiedLine> lines, path) {
+        this.identifier = identifier;
+        this.modifiedLines = lines;
+        this.path = path;
+    }
     public String getIdentifier() {
         return this.identifier;
     }
@@ -25,7 +30,9 @@ class StaticBlock {
     public Set<ModifiedLine> getModifiedLines() {
         return this.modifiedLines;
     }
-
+    public String getPath(){
+        return path;
+    }
     @Override
     public boolean equals(Object modifiedStaticBlock) {
         return modifiedStaticBlock instanceof StaticBlock && this.identifier == modifiedStaticBlock.getIdentifier()

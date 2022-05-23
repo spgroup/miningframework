@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class StaticBlockModifiedLinesMatcher {
     private String CONST_INITIALIZER_DECLARATION = "static-";
-    Set<StaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocks, Map<String, String> collectionsStaticBlocksAncestor, List<ModifiedLine> modifiedLines) {
+    Set<StaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocks, Map<String, String> collectionsStaticBlocksAncestor, List<ModifiedLine> modifiedLines, String filePath) {
         def staticBlockSet = new HashSet<StaticBlock>();
         if(collectionsStaticBlocks.entrySet().size() != collectionsStaticBlocksAncestor.entrySet().size()){
             for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
@@ -14,7 +14,7 @@ public class StaticBlockModifiedLinesMatcher {
                 String blockedStatic = initializerDeclaration.getValue();
                 identifier = getIdentifierNumber(identifier);
                 def lineSet = new HashSet<ModifiedLine>();
-                staticBlockSet.add(new StaticBlock(identifier, lineSet));
+                staticBlockSet.add(new StaticBlock(identifier, lineSet,filePath));
             }
             return staticBlockSet;
         }
@@ -29,7 +29,7 @@ public class StaticBlockModifiedLinesMatcher {
                 identifier = getIdentifierNumber(identifier);
                 if (diffLineText != null) {
                     lineSet.add(diffLineText);
-                    staticBlockSet.add(new StaticBlock(identifier, lineSet));
+                    staticBlockSet.add(new StaticBlock(identifier, lineSet,filePath));
                 }
             }
         }
@@ -44,7 +44,7 @@ public class StaticBlockModifiedLinesMatcher {
                 identifier = getIdentifierNumber(identifier);
                 if (diffLineText != null) {
                     lineSet.add(diffLineText);
-                    staticBlockSet.add(new StaticBlock(identifier, lineSet));
+                    staticBlockSet.add(new StaticBlock(identifier, lineSet,filePath));
                 }
             }
         }

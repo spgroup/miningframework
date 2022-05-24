@@ -41,21 +41,24 @@ class MiningWorker implements Runnable {
                 obtainResultsForProject(project,mergeCommits)
                 for (mergeCommit in mergeCommits) {
                     try {
-                       /*if(
+                     if(
 
-                          mergeCommit.getSHA().equals("b41ca6e3195dcf60a842632b37b90059b7cd9960") ||
-                          mergeCommit.getSHA().equals("d86925ca0efc051259a35f917753080868614f0f") ||
-                          mergeCommit.getSHA().equals("a9552af41bc4a415a79c551c9f8d7a16b8d82900") ||
-                          mergeCommit.getSHA().equals("d4b14b8ec0013d0c35f361d1851e28a87456dab3")
+                          mergeCommit.getSHA().equals("ff06bbc9189190a950d16b5d5fdecca1aeda0faa") ||
+                          mergeCommit.getSHA().equals("3354b92af1820ca12c9dbe5dc4d0db7d8d0a640a") ||
+                          mergeCommit.getSHA().equals("91186bf2779185a679ed1e7a7ce0680d0e4cb9e6") ||
+                          mergeCommit.getSHA().equals("4d1acd14a1e864188e28a90e4c84f0389b052da4") ||
+                          mergeCommit.getSHA().equals("09ee7b0897ede0ce104351026cabbef79a805b71") ||
+                          mergeCommit.getSHA().equals("018c7fe55c1d2f0d960492a214d4eaf069ec60da") ||
+                          mergeCommit.getSHA().equals("d4eb55daf5407679f485b9abef207fd2c76e7d73")
 
-                        ){*/
+                        ){
                        // if(mergeCommit.getSHA().equals("4f8fc5bc5b6b33537c53ddf89b57ba865c716460")){
                             if (commitFilter.applyFilter(project, mergeCommit)) {
                                println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
                                 runDataCollectors(project, mergeCommit)
                             }
-                      //  }
+                       }
                     } catch (Exception e) {
                         println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
                         e.printStackTrace();

@@ -1,5 +1,0 @@
-project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
-cgeo,f8e864188155af17fc8e28e745b67f0b46d6e24e,RenderThemeHelper,0,0,0,false,false,false,true,false,false
-cgeo,b41ca6e3195dcf60a842632b37b90059b7cd9960,GCLogin,1,1,0,false,false,false,true,false,false
-cgeo,d4b14b8ec0013d0c35f361d1851e28a87456dab3,cgBase,0,0,0,false,false,false,true,false,false
-cgeo,d86925ca0efc051259a35f917753080868614f0f,cgBase,2,2,0,false,false,false,true,false,false

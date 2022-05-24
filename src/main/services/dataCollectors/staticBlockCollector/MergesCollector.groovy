@@ -22,7 +22,7 @@ class MergesCollector implements DataCollector {
         ]
 
         // Textual merge algoritms used to run S3M
-        strategies = [ 'InsertionLevelInitializationBlockHandler', 'SimpleInitializationBlockHandler' ]
+        strategies = [ 'InsertionLevelInitializationBlockHandler', 'SimpleInitializationBlockHandler' , 'Actual']
 
         // All merge approaches
         mergeApproaches = [ 'InsertionLevelInitializationBlockHandler', 'SimpleInitializationBlockHandler' ]
@@ -46,8 +46,12 @@ class MergesCollector implements DataCollector {
         List<MergeSummary> summaries = DataAnalyser.analyseMerges(filesQuadruplePaths)
         println 'Summarized collected data'
 
+
         SpreadsheetBuilder.updateSpreadsheet(project, mergeCommit, summaries)
         println 'Updated spreadsheet'
+
+        StaticBlockManagerFiles staticBlockManagerFiles = new StaticBlockManagerFiles(filesQuadruplePaths)
+
     }
 
 }

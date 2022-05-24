@@ -9,6 +9,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 
+import static app.MiningFramework.arguments
+
 /**
  * Class responsible for collecting and storing eligible merge scenarios (modified from base java files).
  */
@@ -39,7 +41,7 @@ class MergeScenarioCollector {
         Path mergeScenarioDirectory = Utils.commitFilesPath(project, mergeCommit).resolve(modifiedFile)
         createDirectories(mergeScenarioDirectory)
 
-        Path filePath = mergeScenarioDirectory.resolve("${fileName}.java")
+        Path filePath = mergeScenarioDirectory.resolve(Utils.getfileNameWithExtension(fileName))
         Files.deleteIfExists(filePath)
         filePath.toFile() << getFileContent(project, modifiedFile, commitSHA)
         return filePath
@@ -61,7 +63,7 @@ class MergeScenarioCollector {
 
         return modifiedFiles.stream()
                 .filter(MergeScenarioCollector::isModifiedFile)
-                .filter(MergeScenarioCollector::isJavaFile)
+                .filter(MergeScenarioCollector::isRequiredFileFormat)
                 .map(MergeScenarioCollector::getPath)
                 .collect(Collectors.toList())
     }
@@ -70,8 +72,8 @@ class MergeScenarioCollector {
         return line.charAt(0) == 'M' as char
     }
 
-    private static boolean isJavaFile(String line) {
-        return line.endsWith('.java')
+    private static boolean isRequiredFileFormat(String line) {
+        line.endsWith(arguments.getFileExtension())
     }
 
     private static String getPath(String line) {

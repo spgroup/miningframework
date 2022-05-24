@@ -17,15 +17,25 @@ class ScenarioReader {
             String classPathName = line["className"]
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
-            String scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA);
+
+            String scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA)
+            
+            String realisticCasePath = line["realistic case path"]
+            if (realisticCasePath != null && realisticCasePath != "") {
+                scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA, realisticCasePath)
+            }
+
             boolean hasBuild = line["has_build"] == "true"
 
             def scenario = new Scenario(projectName, classPathName, methodSignature, commitSHA, scenarioDirectory, hasBuild);
 
             result.add(scenario)
         }
-
         return result
+    }
+
+    static private String getScenarioDirectory(String outputPath, String projectName, String commitSHA, String realisticCasePath) {
+        return "${getScenarioDirectory(outputPath, projectName, commitSHA)}/${realisticCasePath}"
     }
 
     static private String getScenarioDirectory (String outputPath, String projectName, String commitSHA) {

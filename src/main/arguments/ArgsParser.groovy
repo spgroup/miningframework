@@ -31,6 +31,8 @@ class ArgsParser {
         this.cli.a(longOpt: 'access-key', args: 1, argName: 'access key', 'Specify the access key of the git account for when the analysis needs user access to GitHub')
         this.cli.t(longOpt: 'threads', args: 1, argName: 'threads', "Number of cores used in analysis (default: 1)")
         this.cli.k(longOpt: 'keep-projects', argName: 'keep projects', 'Specify that cloned projects must be kept after the analysis (those are kept in clonedRepositories/ )')
+        this.cli.e(longOpt: 'extension', args: 1, argName: 'file extenson', 'Specify the file extension that should be used in the analysis (e.g. .rb, .ts, .java, .cpp. Default: .java)')
+        this.cli.l(longOpt: 'language-separators', args: 1, argName: 'language syntactic separators', 'Specify the language separators that should be used in the analysis. Required for (and only considered when) running studies with the CSDiff tool. Default: \"{ } ( ) ; ,\"')
     }
 
     Arguments parse(args) {
@@ -113,6 +115,14 @@ class ArgsParser {
 
         if (this.options.k) {
             args.setKeepProjects()
+        }
+
+        if(this.options.extension) {
+            args.setFileExtension(this.options.extension)
+        }
+
+        if(this.options.l) {
+            args.setLanguageSyntacticSeparators(this.options.l)
         }
     }
 

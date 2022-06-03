@@ -13,14 +13,16 @@ abstract class TriplaFilesRunner {
     protected String nameAlgoritm
 
 
-    void collectResults(List<Path> filesQuadruplePaths) {
+    void collectResults(Project project, MergeCommit mergeCommit,List<Path> filesQuadruplePaths) {
         filesQuadruplePaths.each { filesQuadruplePath ->
             Path leftFile = getContributionFile(filesQuadruplePath, 'left')
             Path baseFile = getContributionFile(filesQuadruplePath, 'base')
             Path rightFile = getContributionFile(filesQuadruplePath, 'right')
 
-          // createToolDirectory(filesQuadruplePath)
+            LoggerStatistics.logTimeInitial()
             runTool(leftFile, baseFile, rightFile)
+            LoggerStatistics.updateSpreadsheet(project,mergeCommit,filesQuadruplePath,nameAlgoritm,LoggerStatistics.logTimeFinal())
+
         }
     }
 

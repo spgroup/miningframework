@@ -64,8 +64,10 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
            //  if ( file.contains("GCLogin")) {
 
                 modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
-                modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit))
-            //}
+                if(!(modifiedContextStaticBlocks.size() > 0)) {
+                    modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit))
+                }
+           //}
         }
 
         return modifiedContextStaticBlocks;
@@ -95,7 +97,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
     }
     private void createDataFilesExperimentalStaticBlock(Project project,MergeCommit mergeCommit, String targetFile, int qtdStaticBlock) {
         File dataFolder = new File(arguments.getOutputPath() + "/data/");
-        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/4_results_branched_changed_least_on_iniatilizationBlock.csv")
+        filteredScenariosIniatilizationBlock = new File(dataFolder.getAbsolutePath() + "/4_results_branched_changed_least_on_iniatilizationBlock" + "_" + project.getName() + ".csv")
         if (!filteredScenariosIniatilizationBlock.exists()) {
             filteredScenariosIniatilizationBlock << 'project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static\n'
         }

@@ -1,0 +1,6 @@
+project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+libgdx;4676862809fd2e4db6d3a6b1e262a79bd1d1e54e;a8c507312873643cfe26cbb6b031c3f3102febb8;53d6cb986;ea3c9786f;tests/gdx-tests/src/com/badlogic/gdx/tests/utils/GdxTests.java;1
+libgdx;c91b4f5cd2c0b000e3935c86b97bb5f9d310ed00;b809d241dddf681f1a936c3e5b55e33035f4c685;a68c0eafe;800c49301;backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidFragmentApplication.java;1
+libgdx;c68866c90b0a65c62f220731ab668857c04cf2e2;90d9bb83db1caf6ad282654800b813aef4e4731d;4ac8740e3;e384d2cb3;tests/gdx-tests/src/com/badlogic/gdx/tests/utils/GdxTests.java;1
+libgdx;2d8c462a9a7019da440e1d096c45b95792a9ef60;3364f799c0da60479c1f8c02f89fc7798b55df62;61b6fd391;80b7e0d6d;backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java;1
+libgdx;2d8c462a9a7019da440e1d096c45b95792a9ef60;3364f799c0da60479c1f8c02f89fc7798b55df62;61b6fd391;80b7e0d6d;backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidDaydream.java;1

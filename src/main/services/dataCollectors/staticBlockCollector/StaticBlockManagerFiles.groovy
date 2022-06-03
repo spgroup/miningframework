@@ -2,7 +2,6 @@ package services.dataCollectors.staticBlockCollector
 
 import util.FileManager
 import util.ProcessRunner
-import java.io.File
 import java.nio.file.Path
 
 class StaticBlockManagerFiles {
@@ -12,7 +11,6 @@ class StaticBlockManagerFiles {
     StaticBlockManagerFiles(List<Path> filesQuadruplePaths ) {
        for(Path filesQuadruplePath : filesQuadruplePaths) {
            this.filesQuadruplePath = filesQuadruplePath
-
            forwentMergeScenariosWithBehaviorDifferent()
        }
 	}
@@ -27,8 +25,6 @@ private  boolean forwentMergeScenariosWithBehaviorDifferent() {
         }else{
 
             FileManager.delete(new File(this.filesQuadruplePath.toString()))
-      //      String str = getMergeCommit(this.filesQuadruplePath.toString())
-      //      FileManager.delete(new File(str))
             this.filesQuadruplePath = null;
             return false;
         }
@@ -42,10 +38,5 @@ private  boolean forwentMergeScenariosWithBehaviorDifferent() {
         def output = reader.readLines()
         reader.close()
         return output
-    }
-    private String getMergeCommit(String path){
-        path = path.replace("\\","/")
-        String str = path.split("/")[0] + "\\"+path.split("/")[1] + "\\"+ path.split("/")[2]
-        return str
     }
 }

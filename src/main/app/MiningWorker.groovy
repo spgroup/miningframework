@@ -43,13 +43,10 @@ class MiningWorker implements Runnable {
                     try {
                      if(
 
-                          mergeCommit.getSHA().equals("ff06bbc9189190a950d16b5d5fdecca1aeda0faa") ||
-                          mergeCommit.getSHA().equals("3354b92af1820ca12c9dbe5dc4d0db7d8d0a640a") ||
-                          mergeCommit.getSHA().equals("91186bf2779185a679ed1e7a7ce0680d0e4cb9e6") ||
-                          mergeCommit.getSHA().equals("4d1acd14a1e864188e28a90e4c84f0389b052da4") ||
-                          mergeCommit.getSHA().equals("09ee7b0897ede0ce104351026cabbef79a805b71") ||
-                          mergeCommit.getSHA().equals("018c7fe55c1d2f0d960492a214d4eaf069ec60da") ||
-                          mergeCommit.getSHA().equals("d4eb55daf5407679f485b9abef207fd2c76e7d73")
+                          mergeCommit.getSHA().equals("8c0d7771fc650edfdb0315c06d4c629f7e413e14") ||
+                          mergeCommit.getSHA().equals("6eee8f1665755d2fda42c59ce74cdafc29ca5554") ||
+                          mergeCommit.getSHA().equals("bade4792d12bcf7242ada53c197a924332840864") ||
+                          mergeCommit.getSHA().equals("752bb8a3f3e927013a97d06c219784be4e337f25")
 
                         ){
                        // if(mergeCommit.getSHA().equals("4f8fc5bc5b6b33537c53ddf89b57ba865c716460")){

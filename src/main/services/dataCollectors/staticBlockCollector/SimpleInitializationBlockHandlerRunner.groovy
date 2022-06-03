@@ -9,9 +9,7 @@ import java.nio.file.Paths
 
 class SimpleInitializationBlockHandlerRunner extends TriplaFilesRunner {
     static final Path S3M_PATH = Paths.get("dependencies/s3m.jar")
-    private static final String MERGE_FILE_NAME = "merge"
-   // static final String oldHandlerOutput = "oldHandlerOutput";
-	
+
     SimpleInitializationBlockHandlerRunner() {
         this.nameAlgoritm = 'SimpleInitializationBlockHandler'
     }

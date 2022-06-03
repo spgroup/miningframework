@@ -37,7 +37,8 @@ class MergesCollector implements DataCollector {
         for (String approach: mergeApproaches) {
             if (approach != 'Actual') {
                 TriplaFilesRunner runner = approachToRunner[approach]
-                runner.collectResults(filesQuadruplePaths)
+                runner.collectResults(project, mergeCommit, filesQuadruplePaths)
+
             }
         }
 

@@ -12,7 +12,7 @@ class SpreadsheetBuilder {
     private static final String SPREADSHEET_NAME = 'staticBlockResults.csv'
 
     static synchronized void updateSpreadsheet(Project project, MergeCommit mergeCommit, List<MergeSummary> summaries) {
-        File spreadsheet = Utils.getOutputPath().resolve(SPREADSHEET_NAME).toFile()
+        File spreadsheet = Utils.getOutputPath().resolve(project.getName() + "_" + SPREADSHEET_NAME).toFile()
         if (!spreadsheet.exists()) {
             String headerLine = getSpreadsheetHeaderLine()
             appendLineToSpreadsheet(spreadsheet, headerLine)
@@ -25,10 +25,10 @@ class SpreadsheetBuilder {
     }
 
     private static String getSpreadsheetHeaderLine() {
-        List<String> headers = [ 'project', 'merge commit', 'file' ]
+        List<String> headers = ['project', 'merge commit', 'file']
 
         List<String> mergeApproaches = MergesCollector.getMergeApproaches()
-        for (String approach: mergeApproaches) {
+        for (String approach : mergeApproaches) {
             headers.add("number of ${approach} conflicts")
         }
 
@@ -54,5 +54,4 @@ class SpreadsheetBuilder {
     private static void appendLineToSpreadsheet(File spreadsheet, String line) {
         spreadsheet << "${line.replaceAll('\\\\', '/')}\n"
     }
-
 }

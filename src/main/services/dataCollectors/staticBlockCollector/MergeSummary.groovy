@@ -17,12 +17,8 @@ import java.nio.file.Files
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils
 
-import static app.MiningFramework.arguments
 
 class MergeSummary {
 
@@ -37,53 +33,15 @@ class MergeSummary {
 
     MergeSummary(Path filesQuadruplePath) {
         this.filesQuadruplePath = filesQuadruplePath
-        //if(forwentMergeScenariosWithBehaviorDifferent()) {
-          //  if(verifyExistFile(this.filesQuadruplePath)) {
-                compareMergeApproaches()
-            //}
-        //}
+        compareMergeApproaches()
     }
-    private  boolean forwentMergeScenariosWithBehaviorDifferent() {
-        Path newHandlerOutput = getContributionFile(this.filesQuadruplePath, MergesCollector.mergeApproaches[0])
-        Path oldHandlerOutput = getContributionFile(this.filesQuadruplePath, MergesCollector.mergeApproaches[1])
 
-        List<String> resultDiff =  runTextualDiff(newHandlerOutput, oldHandlerOutput)
-        if(resultDiff !=null && resultDiff.size() > 0){
-            //obtainResultsForProject(newHandlersFile, oldHandlersFile)
-            return true;
-        }else{
-          //  obtainResultsForDiscartFile(getContributionFile(this.filesQuadruplePath), oldHandlersFile)
-            //FileManager.delete(new File(leftFile.toString()))
-            //FileManager.delete(new File(baseFile.toString()))
-            // FileManager.delete(new File(rightFile.toString()))
-            FileManager.delete(new File(this.filesQuadruplePath.toString()))
-            String str = getMergeCommit(this.filesQuadruplePath.toString())
-            println "${str}"
-            FileManager.delete(new File(str))
-            this.filesQuadruplePath = null;
-            return false;
-        }
-    }
-    private Path getContributionFile(Path filesQuadruplePath, String contributionFileName) {
-        return filesQuadruplePath.resolve("${contributionFileName}.java").toAbsolutePath()
-    }
-    private static List<String> runTextualDiff(Path newHandlersFile, Path oldHandlersFile) {
-        Process textDiff = ProcessRunner.runProcess(".", "diff" ,newHandlersFile.toString(), oldHandlersFile.toString())
-        BufferedReader reader = new BufferedReader(new InputStreamReader(textDiff.getInputStream()))
-        def output = reader.readLines()
-        reader.close()
-        return output
-    }
-    private String getMergeCommit(String path){
-        path = path.replace("\\","/")
-        String str = path.split("/")[0] + "\\"+path.split("/")[1] + "\\"+ path.split("/")[2]
-        return str
-    }
     private void compareMergeApproaches() {
 
         Map<String, Path> mergeOutputPaths = getMergeOutputPaths()
         Map<String, String> mergeOutputs = getMergeOutputs(mergeOutputPaths)
         Map<String, Set<MergeConflict>> mergeConflicts = getMergeConflicts(mergeOutputPaths)
+        Map<String, Set<MergeConflict>> mergeConflictsInitializationBlcok = getMergeConflicts(mergeOutputPaths)
 
         this.numberOfConflictsPerApproach = [:]
         mergeConflicts.each { approach, conflicts ->
@@ -106,10 +64,6 @@ class MergeSummary {
                 String output2 = StringUtils.deleteWhitespace(mergeOutputs[approach2])
                 this.approachesHaveSameOutputs[approach1][approach2] = output1 == output2
 
-               /* if(this.approachesHaveSameOutputs[approach1][approach2] == false){
-                    FileManager.delete(new File(this.filesQuadruplePath.toString()))
-                }
-               */
                 Set<MergeConflict> conflicts1 = mergeConflicts[approach1]
                 Set<MergeConflict> conflicts2 = mergeConflicts[approach2]
                 this.approachesHaveSameConflicts[approach1][approach2] = conflicts1 == conflicts2
@@ -121,8 +75,7 @@ class MergeSummary {
         Map<String, Path> mergeOutputPaths = [:]
         mergeOutputPaths["SimpleInitializationBlockHandler"] = getNewHandlerMergeOutputPath()
         mergeOutputPaths["InsertionLevelInitializationBlockHandler"] = getOldHandlerMergeOutputPath()
-       // mergeOutputPaths["GitMergeFile"] = getGitMergeFileOutputPath()
-        mergeOutputPaths["Actual"] = getActualMergeOutputPath()
+         mergeOutputPaths["Actual"] = getActualMergeOutputPath()
 
         for (String strategy: MergesCollector.strategies) {
             String key = "${strategy}"
@@ -138,10 +91,6 @@ class MergeSummary {
 
     private Path getOldHandlerMergeOutputPath() {
         return this.filesQuadruplePath.resolve("SimpleInitializationBlockHandler")
-    }
-
-    private Path getGitMergeFileOutputPath() {
-        return this.filesQuadruplePath.resolve("GitMergeFile").resolve(MERGE_FILE_NAME)
     }
 
     private Path getActualMergeOutputPath() {

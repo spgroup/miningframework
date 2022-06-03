@@ -23,7 +23,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2967648e-b582-4077-9e67-9510ed9d75f1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.staticBlockResults_1.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.Singularity_staticBlockResults.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.jackson-databind_staticBlockResults.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.jdk_staticBlockResults.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.spring-framework_staticBlockResults.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.staticBlockResults1.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/OpenRefine_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava/cd18923b8d26ae7a11766df3a33c510364ad14c5/rx/concurrency/ExecutorScheduler/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/RxJava_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/Singularity_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/TornadoVM_staticBlockResults.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/accumulo/018c7fe55c1d2f0d960492a214d4eaf069ec60da/org/apache/accumulo/core/iterators/user/IntersectingIteratorTest/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/accumulo/018c7fe55c1d2f0d960492a214d4eaf069ec60da/org/apache/accumulo/core/iterators/user/IntersectingIteratorTest/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/accumulo/018c7fe55c1d2f0d960492a214d4eaf069ec60da/org/apache/accumulo/core/iterators/user/IntersectingIteratorTest/SimpleInitializationBlockHandler.java" afterDir="false" />
@@ -848,39 +864,342 @@
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/accumulo/ff06bbc9189190a950d16b5d5fdecca1aeda0faa/org/apache/accumulo/core/tabletserver/thrift/TabletClientService/left.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/accumulo/ff06bbc9189190a950d16b5d5fdecca1aeda0faa/org/apache/accumulo/core/tabletserver/thrift/TabletClientService/merge.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/accumulo/ff06bbc9189190a950d16b5d5fdecca1aeda0faa/org/apache/accumulo/core/tabletserver/thrift/TabletClientService/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/analytics/projects_analyzed.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_OpenRefine.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_RxJava.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_Singularity.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_TornadoVM.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_accumulo.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_fastjson.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_jackson-databind.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_jdk.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_libgdx.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_mockito.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_orientdb.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_retrofit.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_spring-boot.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_spring-framework.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_OpenRefine.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_RxJava.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_Singularity.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_TornadoVM.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_accumulo.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_fastjson.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_jackson-databind.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_jdk.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_libgdx.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_mockito.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_orientdb.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_retrofit.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_spring-boot.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_spring-framework.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_OpenRefine.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_RxJava.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_Singularity.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_TornadoVM.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_accumulo.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_fastjson.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_jackson-databind.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_jdk.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_libgdx.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_mockito.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_orientdb.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_retrofit.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_spring-boot.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_spring-framework.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/4_results_branched_changed_least_on_iniatilizationBlock_jackson-databind.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/filtered_scenarios.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksOpenRefine.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksRxJava.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksSingularity.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksTornadoVM.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksaccumulo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/1_results_merges_scenarios_accumulo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/1_results_merges_scenarios_cgeo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/2_results_branches_changed_least_one_common_file_accumulo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/2_results_branches_changed_least_one_common_file_cgeo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/3_results_common_files_iniatilizationblock_both_branches_accumulo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/3_results_common_files_iniatilizationblock_both_branches_cgeo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/4_results_branched_changed_least_on_iniatilizationBlock.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/filtered_scenarios.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/merge_into_files_containing_initialization_blocksaccumulo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data_1/merge_into_files_containing_initialization_blockscgeo.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/staticBlockResults_1.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/StaticBlockManagerFiles.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksfastjson.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksjackson-databind.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksjdk.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blockslibgdx.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksmockito.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksorientdb.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksretrofit.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksspring-boot.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksspring-framework.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/2ef6ce007f3e591165297601aa4aebf99109209e/com/alibaba/fastjson/JSON/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/fastjson/c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f/com/alibaba/fastjson/JSON/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_logTime.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/162d75c68c87f79ee2854326e4e43bad1c97426c/sun/net/httpserver/ServerConfig/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/18d37dcd0e2181f7418bfb8fd1949dfb4f953bcd/java/lang/invoke/DirectMethodHandle/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1bdfa7bf9f3c7597686cfc64668d18a0b17cb1d0/java/lang/Class/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/1cb7e050ff91a87bad9e11b4a8637ad0f067b5ab/sun/invoke/util/ValueConversions/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2cfd23d6f4196c2fae9eb34dcbac3cbdb457a374/java/lang/Class/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/2f5be3ab0d60b94889b57635171553e4e7e34f14/java/util/jar/JarFile/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/32bc86d5412643b4ce80fdcabc0156446d093920/java/io/File/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/41cd33fc256711a3ae2f8b0e5044599ffb5c4a75/javax/swing/BufferStrategyPaintManager/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/62d0eedfbad6411c2a22bff09b763eb7e51b60c5/java/lang/Class/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/7ecb0fd433415c876adcab936db5235a4738bd9a/java/lang/invoke/MethodHandleImpl/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8a7e0be29b888351bf208fa70e2fb1206c8429f3/java/lang/Class/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/8b8ce19160db2a408353769d51a6e7048f6d3709/sun/tools/jconsole/JConsole/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/9fb4c3accc1b8595ceb415b9347d360c4c57a2d8/jdk/nashorn/internal/codegen/Compiler/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/a08435f4acad02afb2e2a639d07ab88f3b66c46c/java/math/BigInteger/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/b8265239b8c990dfee08c4e99ab50ad2d5d8bd0e/sun/invoke/util/ValueConversions/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPChecker/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c6c70af5686b9b1b6fb554a5638ae13c107dfad8/sun/security/provider/certpath/OCSPResponse/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/c8858ca3b611936d05d01f18a549ceb0a4d0c656/java/lang/invoke/MethodHandleImpl/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/cf72044ebb5495ef8d3ed450f344f4d7ba40e600/sun/print/Win32PrintService/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk/df4b562ac56ed76b2ce9417a2c364217435ead82/java/lang/StackStreamFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk_staticBlockResults - Copia.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jdk_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/mockito_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/orientdb/38ef3f10e64bcc451acc5e3404b5c43508533db2/com/orientechnologies/orient/core/sql/parser/OrientSql/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/orientdb/38ef3f10e64bcc451acc5e3404b5c43508533db2/com/orientechnologies/orient/core/sql/parser/OrientSql/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/orientdb/38ef3f10e64bcc451acc5e3404b5c43508533db2/com/orientechnologies/orient/core/sql/parser/OrientSql/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/orientdb/38ef3f10e64bcc451acc5e3404b5c43508533db2/com/orientechnologies/orient/core/sql/parser/OrientSql/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/orientdb/38ef3f10e64bcc451acc5e3404b5c43508533db2/com/orientechnologies/orient/core/sql/parser/OrientSql/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/orientdb/38ef3f10e64bcc451acc5e3404b5c43508533db2/com/orientechnologies/orient/core/sql/parser/OrientSql/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/orientdb_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-boot_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/annotation - Atalho.lnk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dc5807ea51b189acc7090036f9b5a4732280139a/org/springframework/cglib/core/ReflectUtils/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/dd011c991ce801660ec2be7979f3fc6462f29289/org/springframework/web/servlet/mvc/method/annotation/AbstractMessageConverterMethodProcessor/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework/f6a392c5ae373c0a4b3ecdffcf6f985cb0e5db13/org/springframework/cglib/core/ReflectUtils/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework_staticBlockResults.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/staticBlockResults1.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/LoggerStatistics.groovy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/cgeo/1ccf264b6d224560c9cb5fe9416ebdb43ec27a34/cgeo/geocaching/cgBase/base.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/cgeo/1ccf264b6d224560c9cb5fe9416ebdb43ec27a34/cgeo/geocaching/cgBase/left.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/cgeo/1ccf264b6d224560c9cb5fe9416ebdb43ec27a34/cgeo/geocaching/cgBase/merge.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/cgeo/1ccf264b6d224560c9cb5fe9416ebdb43ec27a34/cgeo/geocaching/cgBase/right.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_cgeo.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_cgeo.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_cgeo.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/4_results_branched_changed_least_on_iniatilizationBlock.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/4_results_branched_changed_least_on_iniatilizationBlock.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/filtered_scenarios.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/filtered_scenarios.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blockscgeo.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/staticBlockResults.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/staticBlockResults.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/projects.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedStaticBlocksCommitFilter.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedStaticBlocksCommitFilter.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/GitMergeFileRunner.groovy" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/InsertionLevelInitializationBlockHandlerRunner.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/InsertionLevelInitializationBlockHandlerRunner.groovy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergesCollector.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergesCollector.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/SimpleInitializationBlockHandlerRunner.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/SimpleInitializationBlockHandlerRunner.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/SpreadsheetBuilder.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/SpreadsheetBuilder.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/StaticBlockManagerFiles.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/StaticBlockManagerFiles.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/TriplaFilesRunner.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/TriplaFilesRunner.groovy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -1059,38 +1378,38 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="153" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1653172733390" />
-    <state width="1493" height="317" key="GridCell.Tab.0.bottom" timestamp="1653423884636">
+    <state width="1493" height="317" key="GridCell.Tab.0.bottom" timestamp="1654280286696">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1653423884636" />
-    <state width="1493" height="317" key="GridCell.Tab.0.center" timestamp="1653423884636">
+    <state width="1493" height="317" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1654280286696" />
+    <state width="1493" height="317" key="GridCell.Tab.0.center" timestamp="1654280286696">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1653423884636" />
-    <state width="1493" height="317" key="GridCell.Tab.0.left" timestamp="1653423884636">
+    <state width="1493" height="317" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1654280286696" />
+    <state width="1493" height="317" key="GridCell.Tab.0.left" timestamp="1654280286696">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1653423884636" />
-    <state width="1493" height="317" key="GridCell.Tab.0.right" timestamp="1653423884636">
+    <state width="1493" height="317" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1654280286696" />
+    <state width="1493" height="317" key="GridCell.Tab.0.right" timestamp="1654280286696">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1653423884636" />
-    <state width="1493" height="390" key="GridCell.Tab.1.bottom" timestamp="1653342619730">
+    <state width="1493" height="317" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1654280286696" />
+    <state width="1493" height="390" key="GridCell.Tab.1.bottom" timestamp="1654274898529">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="390" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1653342619730" />
-    <state width="1493" height="390" key="GridCell.Tab.1.center" timestamp="1653342619730">
+    <state width="1493" height="390" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1654274898529" />
+    <state width="1493" height="390" key="GridCell.Tab.1.center" timestamp="1654274898529">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="390" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1653342619730" />
-    <state width="1493" height="390" key="GridCell.Tab.1.left" timestamp="1653342619729">
+    <state width="1493" height="390" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1654274898529" />
+    <state width="1493" height="390" key="GridCell.Tab.1.left" timestamp="1654274898529">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="390" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1653342619729" />
-    <state width="1493" height="390" key="GridCell.Tab.1.right" timestamp="1653342619730">
+    <state width="1493" height="390" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1654274898529" />
+    <state width="1493" height="390" key="GridCell.Tab.1.right" timestamp="1654274898529">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="390" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1653342619730" />
+    <state width="1493" height="390" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1654274898529" />
     <state x="277" y="57" key="SettingsEditor" timestamp="1653338193326">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1099,10 +1418,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1653255581375" />
-    <state x="478" y="145" width="907" height="558" key="find.popup" timestamp="1653423938917">
+    <state x="478" y="145" width="907" height="558" key="find.popup" timestamp="1653430813240">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="478" y="145" width="907" height="558" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1653423938917" />
+    <state x="478" y="145" width="907" height="558" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1653430813240" />
     <state x="425" y="187" key="run.anything.popup" timestamp="1653046672963">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -1178,27 +1497,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
-          <line>60</line>
-          <option name="timeStamp" value="241" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
-          <line>78</line>
-          <option name="timeStamp" value="242" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
-          <line>83</line>
+          <line>40</line>
           <option name="timeStamp" value="245" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergesCollector.groovy</url>
-          <line>45</line>
+          <line>46</line>
           <option name="timeStamp" value="246" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
-          <line>200</line>
+          <line>149</line>
           <option name="timeStamp" value="247" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -1208,38 +1517,73 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
-          <line>85</line>
+          <line>42</line>
           <option name="timeStamp" value="251" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
-          <line>40</line>
-          <option name="timeStamp" value="253" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
-          <line>173</line>
+          <line>122</line>
           <option name="timeStamp" value="254" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/StaticBlockManagerFiles.groovy</url>
-          <line>12</line>
-          <option name="timeStamp" value="255" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergesCollector.groovy</url>
-          <line>52</line>
+          <line>53</line>
           <option name="timeStamp" value="256" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergesCollector.groovy</url>
-          <line>49</line>
+          <line>50</line>
           <option name="timeStamp" value="257" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/SpreadsheetBuilder.groovy</url>
           <line>14</line>
           <option name="timeStamp" value="258" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/LoggerStatistics.groovy</url>
+          <line>23</line>
+          <option name="timeStamp" value="260" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/TriplaFilesRunner.groovy</url>
+          <line>22</line>
+          <option name="timeStamp" value="261" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/TriplaFilesRunner.groovy</url>
+          <line>23</line>
+          <option name="timeStamp" value="262" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/TriplaFilesRunner.groovy</url>
+          <line>16</line>
+          <option name="timeStamp" value="263" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergesCollector.groovy</url>
+          <line>33</line>
+          <option name="timeStamp" value="264" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/FilesQuadruplesCollector.groovy</url>
+          <line>22</line>
+          <option name="timeStamp" value="265" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedStaticBlocksCommitFilter.groovy</url>
+          <line>44</line>
+          <option name="timeStamp" value="267" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedStaticBlocksCommitFilter.groovy</url>
+          <line>98</line>
+          <option name="timeStamp" value="268" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/commitFilters/MutuallyModifiedStaticBlocksCommitFilter.groovy</url>
+          <line>35</line>
+          <option name="timeStamp" value="269" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

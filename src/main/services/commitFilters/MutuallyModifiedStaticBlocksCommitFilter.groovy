@@ -33,10 +33,9 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
         if(mutuallyModifiedFiles.size() > 0)
-        obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
+          obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
 
         for(file in mutuallyModifiedFiles) {
-          // if ( file.contains("JenkinsRule") || file.contains("JnlpSlaveAgentProtocol3") ) {
 
             Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
             Set<String> rightModifiedModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
@@ -46,7 +45,6 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
                 return true
              }
-        //}
       }
 
         return false
@@ -57,17 +55,13 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
         Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
         mutuallyModifiedFiles.retainAll(rightModifiedFiles)
 
-       // if(mutuallyModifiedFiles.size() > 0)
-       //     obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
         List<String> modifiedContextStaticBlocks = new ArrayList<String>();
         for(file in mutuallyModifiedFiles) {
-           //  if ( file.contains("GCLogin")) {
 
                 modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
                 if(!(modifiedContextStaticBlocks.size() > 0)) {
                     modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit))
                 }
-           //}
         }
 
         return modifiedContextStaticBlocks;

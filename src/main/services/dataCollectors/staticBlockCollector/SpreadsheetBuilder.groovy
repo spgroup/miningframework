@@ -31,7 +31,9 @@ class SpreadsheetBuilder {
         for (String approach : mergeApproaches) {
             headers.add("number of ${approach} conflicts")
         }
-
+        for (String approach : mergeApproaches) {
+            headers.add("number of ${approach} for initialization block conflicts")
+        }
         for (int i = 0; i < mergeApproaches.size(); i++) {
             String approach1 = mergeApproaches[i]
             for (int j = i + 1; j < mergeApproaches.size(); j++) {

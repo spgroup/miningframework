@@ -10,7 +10,6 @@ import services.dataCollectors.RevisionsFilesCollector
 
 import static app.MiningFramework.arguments
 
-
 /**
  * @requires: that a diffj cli is in the dependencies folder and that diff (textual diff tool) is installed
  * @provides: a [outputPath]/data/results.csv file with the following format:
@@ -21,7 +20,6 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     protected File experimentalDataFile;
     protected File experimentalDataFileWithLinks;
 
-    protected StaticBlocksHelper modifiedStaticBlocksHelper;
     protected ModifiedMethodsHelper modifiedMethodsHelper;
     protected RevisionsFilesCollector revisionsCollector = new RevisionsFilesCollector();
 
@@ -62,39 +60,6 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         printResults(project, mergeCommit, className, mergeMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
     }
 
-    protected void collectorData(Tuple2<StaticBlock, StaticBlock> leftAndRightStaticBlocks, StaticBlock mergeStaticBlock, Project project, MergeCommit mergeCommit, String className) {
-        StaticBlock leftStaticBlock = leftAndRightStaticBlocks.getV1();
-        StaticBlock rightStaticBlock = leftAndRightStaticBlocks.getV2();
-
-        Set<Integer> leftAddedLines = new HashSet<Integer>();
-        Set<Integer> leftDeletedLines = new HashSet<Integer>();
-        Set<Integer> rightAddedLines = new HashSet<Integer>();
-        Set<Integer> rightDeletedLines = new HashSet<Integer>();
-
-        // for each modified line in merge
-        for (def mergeLine : mergeStaticBlock.getModifiedLines()) {
-            // if it is at left's modified lines add it to left list
-            if (leftStaticBlock.getModifiedLines().contains(mergeLine)) {
-                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
-                    leftDeletedLines.add(mergeLine.getNumber());
-                } else {
-                    leftAddedLines.add(mergeLine.getNumber());
-                }
-            }
-            // if it is at rights's modified lines add it to right list
-            if (rightStaticBlock.getModifiedLines().contains(mergeLine)) {
-                if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
-                    rightDeletedLines.add(mergeLine.getNumber());
-                } else {
-                    rightAddedLines.add(mergeLine.getNumber());
-                }
-            }
-        }
-
-        // prints results to a csv file
-        printResults(project, mergeCommit, className, mergeStaticBlock.getIdentifier(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
-    }
-
     protected void createOutputFiles(String outputPath) {
         createExperimentalDataDir(outputPath)
         createExperimentalDataFiles(outputPath)
@@ -121,46 +86,6 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         return intersectAndBuildMap(leftModifiedMethods, rightModifiedMethods)
     }
 
-    protected Map<String, Tuple2<ModifiedMethod, StaticBlock>> getMutuallyModifiedStaticBlocks(Project project, MergeCommit mergeCommit, String filePath) {
-        Set<ModifiedMethod> leftModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
-        Set<ModifiedMethod> rightModifiedStaticBlocks = modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
-        return intersectAndBuildMapStaticBlock(leftModifiedStaticBlocks, rightModifiedStaticBlocks )
-    }
-
-
-    protected Map<String, Tuple2<StaticBlock, StaticBlock>> intersectAndBuildMapStaticBlock(Set<StaticBlock> leftModifiedStaticBlocks, Set<StaticBlock> rightModifiedStaticBlocks) {
-        Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
-
-        if(leftModifiedStaticBlocks.size() > 0){
-            for(leftStaticBlock in leftModifiedStaticBlocks) {
-                if(rightModifiedStaticBlocks.size() > 0) {
-                    for (rightStaticBlock in rightModifiedStaticBlocks) {
-                        if (leftStaticBlock == rightStaticBlock) {
-                            intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
-                        }
-                    }
-                }else{
-                    intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, leftStaticBlock))
-                }
-            }
-        }else if(rightModifiedStaticBlocks.size() > 0){
-            for(rightStaticBlock in rightModifiedStaticBlocks) {
-                if(leftModifiedStaticBlocks.size() > 0) {
-                    for (leftStaticBlock in leftModifiedStaticBlocks) {
-                        if (leftStaticBlock == rightStaticBlock) {
-                            intersection.put(leftStaticBlock.getIdentifier(), new Tuple2(leftStaticBlock, rightStaticBlock))
-                        }
-                    }
-                }else{
-                    intersection.put(rightStaticBlock.getIdentifier(), new Tuple2(rightStaticBlock, rightStaticBlock))
-                }
-            }
-        }
-
-
-
-        return intersection
-    }
     protected Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersectAndBuildMap(Set<ModifiedMethod> leftModifiedMethods, Set<ModifiedMethod> rightModifiedMethods) {
         Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> intersection = [:]
 
@@ -174,15 +99,5 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
 
         return intersection
     }
-    private synchronized void printResults(Project project, MergeCommit mergeCommit, String className, String modifiedDeclarationSignature,
-                                           HashSet<Integer> leftAddedLines, HashSet<Integer> leftDeletedLines, HashSet<Integer> rightAddedLines,
-                                           HashSet<Integer> rightDeletedLines) {
 
-        experimentalDataFile << "${project.getName()};${mergeCommit.getSHA()};${className};${modifiedDeclarationSignature};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
-
-        // Add links.
-        if(arguments.isPushCommandActive())
-            addLinks(project.getName(), mergeCommit.getSHA(), className, modifiedDeclarationSignature, leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines, arguments.getResultsRemoteRepositoryURL())
-
-    }
 }

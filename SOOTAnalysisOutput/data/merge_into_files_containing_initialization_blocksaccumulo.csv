@@ -1361,7 +1361,6 @@ accumulo;0d2cd1c06cef923aa4026d9bee3df1966ee50d9c;9e5854fb3ff90c0e80523394401f41
 accumulo;0d2cd1c06cef923aa4026d9bee3df1966ee50d9c;9e5854fb3ff90c0e80523394401f4103eb4212a2;2cca3ee0c5;f0759dcb8b;src/examples/simple/src/main/java/org/apache/accumulo/examples/simple/mapreduce/TeraSortIngest.java;1
 accumulo;0d2cd1c06cef923aa4026d9bee3df1966ee50d9c;9e5854fb3ff90c0e80523394401f4103eb4212a2;2cca3ee0c5;f0759dcb8b;src/server/src/main/java/org/apache/accumulo/server/test/functional/RunTests.java;1
 accumulo;2cca3ee0c59ff4c746e6e9a51536033e591f9f70;1258b4e0352e99d70b34b1131a4cfa5f90afd6ff;5b4792431a;9e5854fb3f;src/core/src/main/java/org/apache/accumulo/core/util/ContextFactory.java;1
-accumulo;2cca3ee0c59ff4c746e6e9a51536033e591f9f70;1258b4e0352e99d70b34b1131a4cfa5f90afd6ff;5b4792431a;9e5854fb3f;src/server/src/main/java/org/apache/accumulo/server/test/continuous/ContinuousVerify.java;1
 accumulo;20e2b0a6a6ca56e3e91fbf9ac1c1108b6b98dc9d;5413823d6ca91454c81a48730fa75633bd463745;67a11a8d90;d77cba39fc;test/src/main/java/org/apache/accumulo/test/functional/RunTests.java;1
 accumulo;d77cba39fc032b327c448931e3841e4aa34c90f2;88761e05bce7e71c89b1a6033ba74edfcd8db9a6;5413823d6c;4ee0f6494e;src/server/src/main/java/org/apache/accumulo/server/test/functional/RunTests.java;1
 accumulo;c5b8335d31c7f318a903c52dc6d4195f9642137e;828c3b3ee2347fcb1b05fea6f3c722fbaa25c32d;a03071cd3d;f2920c266f;core/src/main/java/org/apache/accumulo/core/data/Value.java;1
@@ -1552,7 +1551,6 @@ accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513
 accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513dfd32cdfaf;2654ba56f4;652b5af396;src/server/src/main/java/org/apache/accumulo/server/test/functional/DeleteRowsSplitTest.java;2
 accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513dfd32cdfaf;2654ba56f4;652b5af396;src/core/src/test/java/org/apache/accumulo/core/client/ClientSideIteratorTest.java;1
 accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513dfd32cdfaf;2654ba56f4;652b5af396;src/core/src/main/java/org/apache/accumulo/core/data/thrift/MultiScanResult.java;2
-accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513dfd32cdfaf;2654ba56f4;652b5af396;examples/simple/src/test/java/org/apache/accumulo/examples/simple/filedata/ChunkInputFormatTest.java;1
 accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513dfd32cdfaf;2654ba56f4;652b5af396;src/proxy/src/test/java/org/apache/accumulo/proxy/SimpleTest.java;2
 accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513dfd32cdfaf;2654ba56f4;652b5af396;src/core/src/main/java/org/apache/accumulo/core/data/thrift/UpdateErrors.java;2
 accumulo;4c2652b233e3cba9c7c1ca3e82eb2898278b5a1d;adaf0579035508b23bb96427832513dfd32cdfaf;2654ba56f4;652b5af396;src/core/src/main/java/org/apache/accumulo/core/util/ContextFactory.java;1
@@ -2123,7 +2121,6 @@ accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a154
 accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a1542ab451ad0f;35c7591a3c;333062d27e;src/core/src/main/java/org/apache/accumulo/core/data/thrift/IterInfo.java;2
 accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a1542ab451ad0f;35c7591a3c;333062d27e;src/core/src/main/java/org/apache/accumulo/core/master/thrift/MasterMonitorInfo.java;2
 accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a1542ab451ad0f;35c7591a3c;333062d27e;src/examples/src/test/java/org/apache/accumulo/examples/filedata/ChunkInputFormatTest.java;1
-accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a1542ab451ad0f;35c7591a3c;333062d27e;src/server/src/main/java/org/apache/accumulo/server/test/randomwalk/bulk/BulkPlusOne.java;1
 accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a1542ab451ad0f;35c7591a3c;333062d27e;src/core/src/main/java/org/apache/accumulo/core/tabletserver/thrift/TooManyFilesException.java;2
 accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a1542ab451ad0f;35c7591a3c;333062d27e;src/core/src/main/java/org/apache/accumulo/core/tabletserver/thrift/LoggerClosedException.java;2
 accumulo;b03b86491a74a079d0f81bb22e0811c87b8a1d40;1ccd5dda459ffe32680f103171a1542ab451ad0f;35c7591a3c;333062d27e;src/core/src/main/java/org/apache/accumulo/core/data/thrift/MapFileInfo.java;2

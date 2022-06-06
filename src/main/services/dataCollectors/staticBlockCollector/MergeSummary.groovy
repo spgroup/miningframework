@@ -28,6 +28,7 @@ class MergeSummary {
     public Path filesQuadruplePath
 
     Map<String, Integer> numberOfConflictsPerApproach
+    Map<String, Integer> numberOfConflictsPerInitializationBlockAndApproach
     Map<String, Map<String, Boolean>> approachesHaveSameOutputs
     Map<String, Map<String, Boolean>> approachesHaveSameConflicts
 
@@ -41,11 +42,16 @@ class MergeSummary {
         Map<String, Path> mergeOutputPaths = getMergeOutputPaths()
         Map<String, String> mergeOutputs = getMergeOutputs(mergeOutputPaths)
         Map<String, Set<MergeConflict>> mergeConflicts = getMergeConflicts(mergeOutputPaths)
-        Map<String, Set<MergeConflict>> mergeConflictsInitializationBlcok = getMergeConflicts(mergeOutputPaths)
+        Map<String, Integer> mergeConflictsInitializationBlcok = getMergeConflictsForStaticBlock(mergeOutputPaths)
 
         this.numberOfConflictsPerApproach = [:]
         mergeConflicts.each { approach, conflicts ->
             this.numberOfConflictsPerApproach[approach] = conflicts.size()
+        }
+
+        this.numberOfConflictsPerInitializationBlockAndApproach = [:]
+        mergeConflictsInitializationBlcok.each { approach, conflicts ->
+            this.numberOfConflictsPerInitializationBlockAndApproach[approach] = conflicts
         }
 
         this.approachesHaveSameOutputs = [:]
@@ -137,7 +143,19 @@ class MergeSummary {
 
         return conflicts
     }
+    private Map<String, Integer> getMergeConflictsForStaticBlock(Map<String, Path> mergeOutputPaths) {
+        Map<String, Integer> conflicts = [:]
+        for (String strategy: MergesCollector.strategies) {
+            Path mergeOutputPath = mergeOutputPaths[strategy]
+            Integer currentConflicts = getMergeConflictsForStaticBlock(mergeOutputPath)
+            conflicts[strategy] = currentConflicts
+        }
 
+        return conflicts
+    }
+    private int getMergeConflictsForStaticBlock(Path mergeOutputPath){
+        return MergeConflictStaticBlock.extractMergeConflictsForStaticBlock(mergeOutputPath)
+    }
     private Set<MergeConflict> getMergeConflicts(Path mergeOutputPath) {
         return MergeConflict.extractMergeConflicts(mergeOutputPath)
     }
@@ -153,6 +171,13 @@ class MergeSummary {
                     values.add(Integer.valueOf(0).toString())
                 }
             }
+        }
+        for (String approach: MergesCollector.mergeApproaches) {
+                if (this.numberOfConflictsPerInitializationBlockAndApproach != null || this.numberOfConflictsPerInitializationBlockAndApproach[approach] != null) {
+                    values.add(Integer.toString(this.numberOfConflictsPerInitializationBlockAndApproach[approach]))
+                } else {
+                    values.add(Integer.valueOf(0).toString())
+                }
         }
 
         for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {

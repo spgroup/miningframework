@@ -40,13 +40,15 @@ class MiningWorker implements Runnable {
                 }
 
                 def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+                obtainResultsForProject(project,mergeCommits)
+
                 for (mergeCommit in mergeCommits) {
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {
-                            println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
+                               println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
-                            runDataCollectors(project, mergeCommit)
-                        }
+                                runDataCollectors(project, mergeCommit)
+                            }
                     } catch (Exception e) {
                         println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
                         e.printStackTrace();
@@ -109,7 +111,21 @@ class MiningWorker implements Runnable {
 
         project.setPath(target)
     }
-
+    private void obtainResultsForProject(Project project , List<MergeCommit> mergeCommits) {
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs()
+        }
+        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/1_results_merges_scenarios_"+project.getName()+".csv")
+        if (!obtainResultsForProjects.exists()) {
+            obtainResultsForProjects << 'Merge commit, Parent 1, Parent 2\n'
+        }
+        for(int i = mergeCommits.size()-1;i>=0;i--){
+            MergeCommit mergeCommit = mergeCommits.get(i);
+       // for (mergeCommit in mergeCommits) {
+            obtainResultsForProjects << "${mergeCommit.getSHA()},${mergeCommit.getLeftSHA()},${mergeCommit.getRightSHA()}\n"
+        }
+    }
 
     private void pushResults(Project project, String remoteRepositoryURL) {
         Project resultsRepository = new Project('', remoteRepositoryURL)

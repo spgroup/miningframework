@@ -3,12 +3,12 @@ package services.dataCollectors.modifiedLinesCollector
 import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
+import services.dataCollectors.staticBlockCollector.StaticBlock
+import services.dataCollectors.staticBlockCollector.StaticBlocksHelper
 import util.FileManager
 import services.dataCollectors.RevisionsFilesCollector
-import util.TypeNameHelper
 
 import static app.MiningFramework.arguments
-
 
 /**
  * @requires: that a diffj cli is in the dependencies folder and that diff (textual diff tool) is installed
@@ -27,7 +27,7 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
 
     abstract def void createExperimentalDataFiles(String outputPath)
 
-    protected void collectMethodData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
+    protected void collectorData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
         ModifiedMethod leftMethod = leftAndRightMethods.getV1();
         ModifiedMethod rightMethod = leftAndRightMethods.getV2();
 

@@ -35,7 +35,7 @@ class StaticAnalysisConflictsDetectionModule extends AbstractModule {
         dataCollectorBinder.addBinding().to(BuildRequester.class)
         dataCollectorBinder.addBinding().to(MergeConflictCollector.class)
         
-        bind(CommitFilter.class).to(InCommitListMutuallyModifiedMethodsFilter.class)
+        bind(CommitFilter.class).to(InCommitListMutuallyModifiedStaticBlocksFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
         projectProcessorBinder.addBinding().to(FilterNonExistentProjectsProcessor.class)

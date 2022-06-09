@@ -7,7 +7,7 @@ import interfaces.CommitFilter
 import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
-import services.dataCollectors.BuildRequester
+import services.dataCollectors.buildRequester.BuildRequester
 import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
 import services.dataCollectors.staticBlockCollector.MergesCollector

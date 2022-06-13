@@ -23,21 +23,89 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2967648e-b582-4077-9e67-9510ed9d75f1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/DEBUG_NewHandlerOutputCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/DEBUG_NewHandlerOutputCode.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework_old/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/DEBUG_NewHandlerOutputCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework_old/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/DEBUG_NewHandlerOutputCode.java.merge" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework_old/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/DEBUG_OldHandlerOutputCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/spring-framework_old/9dc5c9f935dd913440d4e0765952d85288d35a5c/org/springframework/context/annotation/AnnotationConfigUtils/DEBUG_OldHandlerOutputCode.java.merge" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_jackson-databind_old.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_jackson-databind_old.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_jackson-databind_old.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/4_results_branched_changed_least_on_iniatilizationBlock_jackson-databind.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksjackson-databind_old.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/right.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/DEBUG_NewHandlerOutputCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/DEBUG_NewHandlerOutputCode.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java.merge" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/left.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/merge.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_old/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/right.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.Singularity_staticBlockResults.csv#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.accumulo_staticBlockResults.csv#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.spring-framework_staticBlockResults.csv#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/.~lock.staticBlockResults1.csv#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/app/MiningWorker.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_jackson-databind.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/1_results_merges_scenarios_jackson-databind.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_jackson-databind.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/2_results_branches_changed_least_one_common_file_jackson-databind.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_jackson-databind.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/3_results_common_files_iniatilizationblock_both_branches_jackson-databind.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/filtered_scenarios.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/filtered_scenarios.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksjackson-databind.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/data/merge_into_files_containing_initialization_blocksjackson-databind.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/6eee8f1665755d2fda42c59ce74cdafc29ca5554/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/InsertionLevelInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/InsertionLevelInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/SimpleInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/SimpleInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/752bb8a3f3e927013a97d06c219784be4e337f25/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/InsertionLevelInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/SimpleInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/SimpleInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/8c0d7771fc650edfdb0315c06d4c629f7e413e14/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/DEBUG_NewHandlerOutputCode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/DEBUG_NewHandlerOutputCode.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/InsertionLevelInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/SimpleInitializationBlockHandler.java.merge" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/base.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/left.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/merge.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind/bade4792d12bcf7242ada53c197a924332840864/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory/right.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_logTime.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_logTime.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOOTAnalysisOutput/jackson-databind_staticBlockResults.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projects.csv" beforeDir="false" afterPath="$PROJECT_DIR$/projects.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/injectors/StaticBlockAnalysisModule.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/injectors/StaticBlockAnalysisModule.groovy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeConflictStaticBlock.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeConflictStaticBlock.groovy" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,50 +288,50 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="153" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1653172733390" />
-    <state width="1493" height="317" key="GridCell.Tab.0.bottom" timestamp="1654541535784">
+    <state width="1493" height="317" key="GridCell.Tab.0.bottom" timestamp="1655155139270">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1654541535784" />
-    <state width="1493" height="317" key="GridCell.Tab.0.center" timestamp="1654541535784">
+    <state width="1493" height="317" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1655155139270" />
+    <state width="1493" height="317" key="GridCell.Tab.0.center" timestamp="1655155139270">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1654541535784" />
-    <state width="1493" height="317" key="GridCell.Tab.0.left" timestamp="1654541535783">
+    <state width="1493" height="317" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1655155139270" />
+    <state width="1493" height="317" key="GridCell.Tab.0.left" timestamp="1655155139269">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1654541535783" />
-    <state width="1493" height="317" key="GridCell.Tab.0.right" timestamp="1654541535784">
+    <state width="1493" height="317" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1655155139269" />
+    <state width="1493" height="317" key="GridCell.Tab.0.right" timestamp="1655155139270">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="317" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1654541535784" />
-    <state width="1493" height="338" key="GridCell.Tab.1.bottom" timestamp="1654388363909">
+    <state width="1493" height="317" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1655155139270" />
+    <state width="1493" height="338" key="GridCell.Tab.1.bottom" timestamp="1655155102658">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="338" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1654388363909" />
-    <state width="1493" height="338" key="GridCell.Tab.1.center" timestamp="1654388363909">
+    <state width="1493" height="338" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1655155102658" />
+    <state width="1493" height="338" key="GridCell.Tab.1.center" timestamp="1655155102658">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="338" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1654388363909" />
-    <state width="1493" height="338" key="GridCell.Tab.1.left" timestamp="1654388363909">
+    <state width="1493" height="338" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1655155102658" />
+    <state width="1493" height="338" key="GridCell.Tab.1.left" timestamp="1655155102658">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="338" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1654388363909" />
-    <state width="1493" height="338" key="GridCell.Tab.1.right" timestamp="1654388363909">
+    <state width="1493" height="338" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1655155102658" />
+    <state width="1493" height="338" key="GridCell.Tab.1.right" timestamp="1655155102658">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="338" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1654388363909" />
+    <state width="1493" height="338" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1655155102658" />
     <state x="277" y="57" key="SettingsEditor" timestamp="1653338193326">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1653338193326" />
-    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1654304223627">
+    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1655151364800">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1654304223627" />
-    <state x="478" y="145" width="907" height="558" key="find.popup" timestamp="1654620894773">
+    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1655151364799" />
+    <state x="478" y="145" width="992" height="558" key="find.popup" timestamp="1655149435412">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="478" y="145" width="907" height="558" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1654620894773" />
+    <state x="478" y="145" width="992" height="558" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1655149435412" />
     <state x="425" y="187" key="run.anything.popup" timestamp="1653046672963">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -386,6 +454,26 @@
           <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergeSummary.groovy</url>
           <line>52</line>
           <option name="timeStamp" value="274" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/MergesCollector.groovy</url>
+          <line>34</line>
+          <option name="timeStamp" value="276" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/TriplaFilesRunner.groovy</url>
+          <line>37</line>
+          <option name="timeStamp" value="277" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/InsertionLevelInitializationBlockHandlerRunner.groovy</url>
+          <line>31</line>
+          <option name="timeStamp" value="278" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/services/dataCollectors/staticBlockCollector/SimpleInitializationBlockHandlerRunner.groovy</url>
+          <line>17</line>
+          <option name="timeStamp" value="279" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

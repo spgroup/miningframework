@@ -21,10 +21,10 @@ class StaticBlockAnalysisModule extends AbstractModule {
     @Override
     protected void configure() {
         Multibinder<DataCollector> dataCollectorsBinder = Multibinder.newSetBinder(binder(), DataCollector)
-        dataCollectorsBinder.addBinding().to(MergesCollector)
-        dataCollectorsBinder.addBinding().to(StatisticsCollector.class)
-        dataCollectorsBinder.addBinding().to(BuildRequester.class)
-        dataCollectorsBinder.addBinding().to(MergeConflictCollector.class)
+        dataCollectorsBinder.addBinding().to(MergesCollector.class)
+     //   dataCollectorsBinder.addBinding().to(StatisticsCollector.class)
+       //   dataCollectorsBinder.addBinding().to(BuildRequester.class)
+       // dataCollectorsBinder.addBinding().to(MergeConflictCollector.class)
 
         Multibinder<ProjectProcessor> projectProcessorsBinder = Multibinder.newSetBinder(binder(), ProjectProcessor)
         projectProcessorsBinder.addBinding().to(DummyProjectProcessor)

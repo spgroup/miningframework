@@ -1,0 +1,3 @@
+project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+jackson-databind;bade4792d12bcf7242ada53c197a924332840864;f031f27a31625d07922bdd090664c69544200a5d;10fe7f17e;67439539e;src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java;1
+jackson-databind;752bb8a3f3e927013a97d06c219784be4e337f25;86c43debb15220b3d62bd973fda29fd861b69851;38f749ba5;147fb0814;src/main/java/com/fasterxml/jackson/databind/ext/OptionalHandlerFactory.java;2

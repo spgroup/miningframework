@@ -1,0 +1,3 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+andlytics;b51b0fb076ef904e42b0a058c5e1154ab0d274fd;92b1ac6eaba0ef065c96fe7df72d6c6c4f3c66a8;333f857;66f86ad;src/com/github/andlyticsproject/db/RevenueSummaryTable.java;2
+andlytics;4bd9515747adf8962d88ee73c165560142d443b2;f97a3d8e813d5a2c5fa9603fe09e221a98b47929;500ecbb;4afb575;src/com/github/andlyticsproject/db/AppInfoTable.java;1

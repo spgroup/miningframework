@@ -1,0 +1,27 @@
+project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
+cgeo,4b77a9beaa83c6a5e313c51d6eba97bd19f3fe93,CacheSize,11,11,0,0,0,0,true,false,false,true,false,false
+cgeo,f8e864188155af17fc8e28e745b67f0b46d6e24e,RenderThemeHelper,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,7fdea417f1813375b09234114ce540f2b24e0701,LogType,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,b41ca6e3195dcf60a842632b37b90059b7cd9960,GCLogin,1,1,0,0,0,0,true,false,false,true,false,false
+cgeo,ace377c95a24105528aac637243106be38e7ab97,GCLogin,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,5be9d97e0c4ad128ea64f45b9de4b5e73fee7c4e,CacheType,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,10c0038a17f5342c9fda74bc04cc0d0389a4af42,GCLogin,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,5fcce648e200669f1ae0875c7aea9dc3a4a37574,CgeoApplication,0,0,0,0,0,0,true,false,false,true,true,true
+cgeo,27f24a9a089308901a91a58b65e9c4bf71c1b6b4,LogType,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,de8c6d044c06d8d3da5d309202c35f1321431ea0,LogType,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,a89e683d216baae38bc5711848f3516833f5e18b,CacheListAdapter,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,1eba3b589fb265c3832d76d4ce51952e8a67c62e,CacheListAdapter,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,9c62d0a0d10a7345210b2d06da5dbc126c68977e,Network,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,5ad007ed7938a9b284278b34a77ec21a0061fd86,LogType,1,1,0,0,0,0,true,false,false,true,false,false
+cgeo,ffa2e166ba13c9cace1a6a0fc98d210b42ca37b1,LogType,0,0,0,0,0,0,true,false,false,true,true,true
+cgeo,cfdca4e9d09ba1a496d682850dc893c397c895c4,Login,1,1,0,0,0,0,true,false,false,true,false,false
+cgeo,f8d5547a2ae2d111508d7231c4a3f176dd4a17bd,Settings,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,7e7255a1bedafbeb797429014e721d1a01f006e2,Settings,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,e14bda126b991d711ebba4aad0bdba35ea24eb70,Compatibility,1,1,0,0,0,0,true,false,false,true,false,false
+cgeo,d4b14b8ec0013d0c35f361d1851e28a87456dab3,cgBase,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,d86925ca0efc051259a35f917753080868614f0f,cgBase,2,2,0,0,0,0,true,false,false,true,false,false
+cgeo,83ba46de1e195e8c93452b237df4855cfa76ae69,cgBase,0,0,0,0,0,0,true,false,false,true,true,true
+cgeo,1ccf264b6d224560c9cb5fe9416ebdb43ec27a34,cgBase,1,1,0,0,0,0,true,false,false,true,false,false
+cgeo,eca1e9ec31ca0165e4b0bb7ca4c2b989efe16fee,cgBase,0,0,0,0,0,0,true,false,false,true,true,true
+cgeo,22940d838d710537e8e5c83b1d22015747fbc4e4,cgBase,7,7,0,0,0,0,true,false,false,true,false,false
+cgeo,f5811825c4c9ceb1ed9d213a39b1cacb956e24de,cgBase,0,0,0,0,0,0,true,false,false,true,true,true

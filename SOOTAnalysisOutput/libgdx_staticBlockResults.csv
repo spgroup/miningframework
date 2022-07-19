@@ -1,0 +1,6 @@
+project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
+libgdx,d5ecb0a68b00ee77af21aacea2eb41c4ea1fd439,Skin,0,0,0,0,0,0,true,true,true,true,true,true
+libgdx,7dcfcd87f003223730bf11c7c295225cd9062e77,IOSInput,0,0,0,0,0,0,true,false,false,true,true,true
+libgdx,2d89744c3df4cd9264c5957d47af2ef782942caf,GdxSetupUI,0,0,0,0,0,0,true,true,true,true,true,true
+libgdx,2d89744c3df4cd9264c5957d47af2ef782942caf,MathUtils,1,1,0,0,0,0,true,false,false,true,false,false
+libgdx,cc30d7aa5b1e2a42530489ab53873e1baaa65d97,SharedLibraryLoader,0,0,0,0,0,0,true,true,true,true,true,true

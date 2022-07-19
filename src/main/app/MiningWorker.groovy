@@ -40,21 +40,26 @@ class MiningWorker implements Runnable {
                 }
 
                 def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
-                obtainResultsForProject(project,mergeCommits)
 
                 for (mergeCommit in mergeCommits) {
-                    try {
-                        if (commitFilter.applyFilter(project, mergeCommit)) {
-                               println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
+                   if (
+
+                            mergeCommit.getSHA().equals("dc5807ea51b189acc7090036f9b5a4732280139a") ||
+                            mergeCommit.getSHA().equals("4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4")
+
+                    ) {
+                        try {
+                            if (commitFilter.applyFilter(project, mergeCommit)) {
+                                println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
                                 runDataCollectors(project, mergeCommit)
                             }
-                    } catch (Exception e) {
-                        println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
-                        e.printStackTrace();
-                    }
+                        } catch (Exception e) {
+                            println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
+                            e.printStackTrace();
+                        }
+                   }
                 }
-
                 updateSkippedCommitsSpreadsheet(project, skipped)
 
                 if (arguments.isPushCommandActive()) // Will push.
@@ -110,21 +115,6 @@ class MiningWorker implements Runnable {
         process.waitFor()
 
         project.setPath(target)
-    }
-    private void obtainResultsForProject(Project project , List<MergeCommit> mergeCommits) {
-        File dataFolder = new File(arguments.getOutputPath() + "/data/");
-        if (!dataFolder.exists()) {
-            dataFolder.mkdirs()
-        }
-        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/1_results_merges_scenarios_"+project.getName()+".csv")
-        if (!obtainResultsForProjects.exists()) {
-            obtainResultsForProjects << 'Merge commit, Parent 1, Parent 2\n'
-        }
-        for(int i = mergeCommits.size()-1;i>=0;i--){
-            MergeCommit mergeCommit = mergeCommits.get(i);
-       // for (mergeCommit in mergeCommits) {
-            obtainResultsForProjects << "${mergeCommit.getSHA()},${mergeCommit.getLeftSHA()},${mergeCommit.getRightSHA()}\n"
-        }
     }
 
     private void pushResults(Project project, String remoteRepositoryURL) {

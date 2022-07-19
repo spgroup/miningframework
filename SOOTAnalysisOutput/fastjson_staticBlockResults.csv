@@ -1,0 +1,25 @@
+project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
+fastjson,91dd512a86fce9cea7ef0ca1bfde265c5718d3eb,FastJsonHttpMessageConverter,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,0b269eb6b2414520ee90109bba873560afe5281b,ParserConfig,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,3b370ac07cef990eb0a10eeeb6388b2b91feada8,TypeUtils,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,8a929a42c5365ecf634b31d014b78d25b43bc3f8,TypeUtils,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,bdc65e5d3ad1ce6e929704fe56e034967141867b,DefaultJSONParser,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,311487b4e91bf3cea42ebf688bd25570f4e5d37a,ParserConfig,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,966ff88dc9a6d7b51df39e2bf726061ba25e6485,ParserConfig,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,2ef6ce007f3e591165297601aa4aebf99109209e,JSON,0,0,0,0,0,0,true,false,false,true,true,true
+fastjson,c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f,JSON,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,0c5b60ef40e46d82b4d73b25cefb0c0c8a430c57,TypeUtils,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,e14212324a781fdd5b3ea8d80292d65060325da1,JSON,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,db26e8ef5b2617d9cc17263d3922ac130b520b2b,JSONLexerBase,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,91dd512a86fce9cea7ef0ca1bfde265c5718d3eb,FastJsonHttpMessageConverter,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,0b269eb6b2414520ee90109bba873560afe5281b,ParserConfig,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,3b370ac07cef990eb0a10eeeb6388b2b91feada8,TypeUtils,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,8a929a42c5365ecf634b31d014b78d25b43bc3f8,TypeUtils,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,bdc65e5d3ad1ce6e929704fe56e034967141867b,DefaultJSONParser,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,311487b4e91bf3cea42ebf688bd25570f4e5d37a,ParserConfig,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,966ff88dc9a6d7b51df39e2bf726061ba25e6485,ParserConfig,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,2ef6ce007f3e591165297601aa4aebf99109209e,JSON,0,0,0,0,0,0,true,false,false,true,true,true
+fastjson,c2829d3ac576b3330e71b5b1aa23bd5ad40ff21f,JSON,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,0c5b60ef40e46d82b4d73b25cefb0c0c8a430c57,TypeUtils,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,e14212324a781fdd5b3ea8d80292d65060325da1,JSON,0,0,0,0,0,0,true,true,true,true,true,true
+fastjson,db26e8ef5b2617d9cc17263d3922ac130b520b2b,JSONLexerBase,0,0,0,0,0,0,true,true,true,true,true,true

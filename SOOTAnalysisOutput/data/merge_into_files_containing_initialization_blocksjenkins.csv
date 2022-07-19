@@ -1,4 +1,5 @@
 project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+jenkins;a7950b8cf18dca4923186a3fc3bb1512c1119551;a153bb61eba3854a88bb8d299cf185117a7cbc3f;3191a1baaa;09ea8fff70;core/src/main/java/org/jenkins/ui/icon/IconSet.java;2
 jenkins;b1c0adfed46b2166b776bae23b17a4c1ad36ca4f;ef16ca78df35a80b0126dfe1ec0c37048b9ac646;fe7d20b992;ce5100c963;core/src/main/java/org/jenkins/ui/icon/IconSet.java;1
 jenkins;fe5e50efbaa044fc024a14df718d4f78e1f0f671;d5cea69751df9409245b9e3e2b96443bc4314489;145b22705f;426c6a1b54;core/src/main/java/jenkins/model/Jenkins.java;2
 jenkins;fe5e50efbaa044fc024a14df718d4f78e1f0f671;d5cea69751df9409245b9e3e2b96443bc4314489;145b22705f;426c6a1b54;core/src/main/java/hudson/model/Queue.java;1

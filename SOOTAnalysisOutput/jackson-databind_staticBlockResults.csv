@@ -58,7 +58,7 @@ jackson-databind,a55c4a9d4164794b0afec54a14d938c02ea6510f,SubTypeValidator,0,0,0
 jackson-databind,232e518944d0e1875a866d719a4286e232427865,SubTypeValidator,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,63548e0b5e97cea465d7de436e2e7d88be0b2d21,SubTypeValidator,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,c8d1c71b072acde6af9aad7fb605ae5a1fd2699c,SubTypeValidator,0,0,0,0,0,0,true,true,true,true,true,true
-jackson-databind,8c0d7771fc650edfdb0315c06d4c629f7e413e14,BasicDeserializerFactory,0,0,0,0,0,0,false,true,false,true,true,true
+jackson-databind,8c0d7771fc650edfdb0315c06d4c629f7e413e14,BasicDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,b3402c3c9c364f10f230d0f4096472dd59e52397,SubTypeValidator,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,c50516de13bb747090413e40bcd213448d94ff2d,SubTypeValidator,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,b42dfc4fcf1dc7a1473a2e228afcc1d029371266,NodeContext2049Test,0,0,0,0,0,0,true,true,true,true,true,true
@@ -72,8 +72,8 @@ jackson-databind,051bd5e447fbc9539e12a4fe90eb989dba0c656e,SubTypeValidator,1,1,0
 jackson-databind,e66c0a9d3c926ff1b63bf586c824ead1d02f2a3d,SubTypeValidator,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,c921f0935d5e41bf206e702d8077a275ba1a6efc,SubTypeValidator,1,1,0,0,0,0,true,false,false,true,false,false
 jackson-databind,03ea0bec6293d4330b5ad19d1d62aca0e3cb6381,SubTypeValidator,0,0,0,0,0,0,true,true,true,true,true,true
-jackson-databind,6eee8f1665755d2fda42c59ce74cdafc29ca5554,BeanDeserializerFactory,0,0,0,0,0,0,false,false,false,true,true,true
-jackson-databind,bade4792d12bcf7242ada53c197a924332840864,BeanDeserializerFactory,1,0,0,1,0,0,false,false,false,false,false,true
+jackson-databind,6eee8f1665755d2fda42c59ce74cdafc29ca5554,BeanDeserializerFactory,0,0,0,0,0,0,true,false,false,true,true,true
+jackson-databind,bade4792d12bcf7242ada53c197a924332840864,BeanDeserializerFactory,1,1,0,1,1,0,true,false,false,true,false,false
 jackson-databind,eb217dd0f87c5fb471e0668575644aa7eba9a3d3,BeanDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,10fe7f17ea7c8da2a71e7a0c774b420a1d5c1b50,BeanDeserializerFactory,1,1,0,1,1,0,true,false,false,true,false,false
 jackson-databind,f0fbb322cd26ae5cf30665a3bd9f6e27a3e26684,BeanDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
@@ -84,7 +84,7 @@ jackson-databind,872366caf5a11364960d7c9be0bf18598392ff09,BeanDeserializerFactor
 jackson-databind,a1d27181b076d0aa9d52888f2d5df1df63200521,StdDateFormat,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,77968a2ebfdc4be13acb9b5757bfc92dbf057495,TestAnyGetterFiltering,1,1,0,0,0,0,true,false,false,true,false,false
 jackson-databind,4aceaa718ca1c09eabd363288d43d9a956b43fd5,OptionalHandlerFactory,0,0,0,0,0,0,true,true,true,true,true,true
-jackson-databind,752bb8a3f3e927013a97d06c219784be4e337f25,OptionalHandlerFactory,2,1,0,2,1,0,false,false,false,false,false,false
+jackson-databind,752bb8a3f3e927013a97d06c219784be4e337f25,OptionalHandlerFactory,2,2,0,2,2,0,true,false,false,true,false,false
 jackson-databind,680d75b011edd67a2d2a2e9980998a968194c2ef,BeanDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,90042692085deeb05ae75c569c9909f7dba24415,BeanDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,ac3497208aa4a5d82e157ba28ba087be589ecd59,JacksonAnnotationIntrospector,0,0,0,0,0,0,true,true,true,true,true,true

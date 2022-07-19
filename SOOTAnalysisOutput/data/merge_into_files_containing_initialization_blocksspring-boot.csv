@@ -1,2 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
-spring-boot;5dfa5adb75f38907250bcadb6f101cd40a9bc020;b3a4982f31c39aa27e83635c5c72d453e77ab00a;e9673fd622;455ee0ce22;spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/endpoint/web/jersey/JerseyEndpointResourceFactory.java;1

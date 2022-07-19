@@ -16,7 +16,7 @@ k-9,66528a0ca891c3d695280f97e42accc9b413c4b8,AccountSettings,0,0,0,0,0,0,true,tr
 k-9,3e03120a7327b4c44620b19cdcb9a49911681128,MessageList,0,0,0,0,0,0,true,true,true,true,true,true
 k-9,3e03120a7327b4c44620b19cdcb9a49911681128,GlobalSettings,1,1,0,1,1,0,true,false,false,true,false,false
 k-9,8e1627e1b96662866cfe97fe80cea5c4bcaa600e,WebDavStore,0,0,0,0,0,0,true,false,false,true,true,true
-k-9,fe727f8b20d76c15abac7f580ce6f1632165e1d2,MessageView,0,0,0,0,0,0,false,true,false,true,true,true
+k-9,fe727f8b20d76c15abac7f580ce6f1632165e1d2,MessageView,0,0,0,0,0,0,true,true,true,true,true,true
 k-9,88a2dd6289f46535efb04b0b8d4bf51292e57d5d,WebDavStore,0,0,0,0,0,0,true,false,false,true,true,true
 k-9,57e0abbf8f70d2ac7dffe89096a8d6b177ce2516,WebDavStore,0,0,0,0,0,0,true,true,true,true,true,true
 k-9,7f046e5f0a3e816c51d565c9dbcfb84446abc6b1,WebDavStore,0,0,0,0,0,0,true,true,true,true,true,true

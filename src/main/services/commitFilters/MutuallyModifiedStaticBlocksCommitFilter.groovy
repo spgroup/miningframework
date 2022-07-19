@@ -15,6 +15,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
     private File filteredScenariosIniatilizationBlock = null;
 
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
+        obtainResultsForProject(project,mergeCommit)
         return containsMutuallyModifiedStaticBlocks(project, mergeCommit)
     }
 
@@ -36,15 +37,19 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
           obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
 
         for(file in mutuallyModifiedFiles) {
+       //   if(file.containsIgnoreCase("Secret") || file.containsIgnoreCase("JnlpSlaveAgentProtocol3")) {
+              Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
+              Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
-            Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
-            Set<String> rightModifiedModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
+              /*
+            * Step 4 of filter: both branches changed at least one initialization block
+             */
+              if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
+                  createDataFilesExperimentalStaticBlock(project, mergeCommit, file, leftModifiedContextStaticBlocks.size() + rightModifiedContextStaticBlocks.size())
 
-            if(leftModifiedContextStaticBlocks.size() > 0 || rightModifiedModifiedContextStaticBlocks.size() >0 ){
-                createDataFilesExperimentalStaticBlock(project,mergeCommit,file, leftModifiedContextStaticBlocks.size() + rightModifiedModifiedContextStaticBlocks.size() )
-
-                return true
-             }
+                  return true
+              }
+          //}
       }
 
         return false
@@ -97,5 +102,16 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
         }
 
         filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${targetFile};${qtdStaticBlock}\n"
+    }
+    private void obtainResultsForProject(Project project , MergeCommit mergeCommit) {
+        File dataFolder = new File(arguments.getOutputPath() + "/data/");
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs()
+        }
+        File obtainResultsForProjects = new File(dataFolder.getAbsolutePath() + "/1_results_merges_scenarios_"+project.getName()+".csv")
+        if (!obtainResultsForProjects.exists()) {
+            obtainResultsForProjects << 'Merge commit, Parent 1, Parent 2\n'
+        }
+        obtainResultsForProjects << "${mergeCommit.getSHA()},${mergeCommit.getLeftSHA()},${mergeCommit.getRightSHA()}\n"
     }
 }

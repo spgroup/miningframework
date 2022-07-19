@@ -4,25 +4,25 @@ import project.MergeCommit
 import project.Project
 import util.ProcessRunner
 import util.TypeNameHelper
-
+import java.util.*;
 import java.nio.file.Path
 import java.nio.file.Paths
 
 abstract class TriplaFilesRunner {
 
     protected String nameAlgoritm
-
+    protected List<Integer> itens = Arrays.asList(1, 2, 3, 4, 5);
 
     void collectResults(Project project, MergeCommit mergeCommit,List<Path> filesQuadruplePaths) {
         filesQuadruplePaths.each { filesQuadruplePath ->
             Path leftFile = getContributionFile(filesQuadruplePath, 'left')
             Path baseFile = getContributionFile(filesQuadruplePath, 'base')
             Path rightFile = getContributionFile(filesQuadruplePath, 'right')
-
-            LoggerStatistics.logTimeInitial()
-            runTool(leftFile, baseFile, rightFile)
-            LoggerStatistics.updateSpreadsheet(project,mergeCommit,filesQuadruplePath,nameAlgoritm,LoggerStatistics.logTimeFinal())
-
+            for(Integer count : itens) {
+                LoggerStatistics.logTimeInitial()
+                runTool(leftFile, baseFile, rightFile)
+                LoggerStatistics.updateSpreadsheet(count,project, mergeCommit, filesQuadruplePath, nameAlgoritm, LoggerStatistics.logTimeFinal())
+            }
         }
     }
 

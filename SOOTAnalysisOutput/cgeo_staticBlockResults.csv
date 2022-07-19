@@ -1,8 +1,8 @@
 project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
 cgeo,4b77a9beaa83c6a5e313c51d6eba97bd19f3fe93,CacheSize,11,11,0,0,0,0,true,false,false,true,false,false
-cgeo,f8e864188155af17fc8e28e745b67f0b46d6e24e,RenderThemeHelper,0,0,0,0,0,0,false,true,false,true,true,true
+cgeo,f8e864188155af17fc8e28e745b67f0b46d6e24e,RenderThemeHelper,0,0,0,0,0,0,true,true,true,true,true,true
 cgeo,7fdea417f1813375b09234114ce540f2b24e0701,LogType,0,0,0,0,0,0,true,true,true,true,true,true
-cgeo,b41ca6e3195dcf60a842632b37b90059b7cd9960,GCLogin,1,1,0,0,0,0,false,false,false,true,false,false
+cgeo,b41ca6e3195dcf60a842632b37b90059b7cd9960,GCLogin,1,1,0,0,0,0,true,false,false,true,false,false
 cgeo,ace377c95a24105528aac637243106be38e7ab97,GCLogin,0,0,0,0,0,0,true,true,true,true,true,true
 cgeo,5be9d97e0c4ad128ea64f45b9de4b5e73fee7c4e,CacheType,0,0,0,0,0,0,true,true,true,true,true,true
 cgeo,10c0038a17f5342c9fda74bc04cc0d0389a4af42,GCLogin,0,0,0,0,0,0,true,true,true,true,true,true
@@ -18,8 +18,8 @@ cgeo,cfdca4e9d09ba1a496d682850dc893c397c895c4,Login,1,1,0,0,0,0,true,false,false
 cgeo,f8d5547a2ae2d111508d7231c4a3f176dd4a17bd,Settings,0,0,0,0,0,0,true,true,true,true,true,true
 cgeo,7e7255a1bedafbeb797429014e721d1a01f006e2,Settings,0,0,0,0,0,0,true,true,true,true,true,true
 cgeo,e14bda126b991d711ebba4aad0bdba35ea24eb70,Compatibility,1,1,0,0,0,0,true,false,false,true,false,false
-cgeo,d4b14b8ec0013d0c35f361d1851e28a87456dab3,cgBase,0,0,0,0,0,0,false,true,false,true,true,true
-cgeo,d86925ca0efc051259a35f917753080868614f0f,cgBase,2,2,0,0,0,0,false,false,false,true,false,false
+cgeo,d4b14b8ec0013d0c35f361d1851e28a87456dab3,cgBase,0,0,0,0,0,0,true,true,true,true,true,true
+cgeo,d86925ca0efc051259a35f917753080868614f0f,cgBase,2,2,0,0,0,0,true,false,false,true,false,false
 cgeo,83ba46de1e195e8c93452b237df4855cfa76ae69,cgBase,0,0,0,0,0,0,true,false,false,true,true,true
 cgeo,1ccf264b6d224560c9cb5fe9416ebdb43ec27a34,cgBase,1,1,0,0,0,0,true,false,false,true,false,false
 cgeo,eca1e9ec31ca0165e4b0bb7ca4c2b989efe16fee,cgBase,0,0,0,0,0,0,true,false,false,true,true,true

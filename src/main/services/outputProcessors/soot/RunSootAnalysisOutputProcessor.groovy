@@ -3,6 +3,9 @@ package services.outputProcessors.soot
 
 import interfaces.OutputProcessor
 
+import java.text.DecimalFormat
+import java.text.NumberFormat
+
 import static app.MiningFramework.arguments
 
 /**
@@ -17,12 +20,18 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
 
     private final ConflictDetectionAlgorithm[] detectionAlgorithms = [
-            new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, 120),
-            new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, 120),
-            new ConflictDetectionAlgorithm("Confluence Intra", "svfa-confluence-intraprocedural", sootWrapper, 240),
-            new ConflictDetectionAlgorithm("Confluence Inter", "svfa-confluence-interprocedural", sootWrapper, 240),
-            new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, 120),
-            new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, 120)
+            new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, 240),
+            new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, 240),
+            new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, 240),
+            new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, 240),
+            new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("PDG-SDG", "pdg-sdg", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("PDG-SDGe", "pdg-sdg-e", sootWrapper, 240),
+            new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, 240)
     ]
 
     void processOutput () {
@@ -41,6 +50,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
             for (scenario in sootScenarios) {
                 if (scenario.getHasBuild()) {
+                    long start = System.currentTimeMillis();
                     println "Running soot scenario ${scenario.toString()}"
                     List<String> results = [];
 
@@ -49,6 +59,10 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
                         results.add(algorithmResult)
                     }
+                    long end = System.currentTimeMillis();
+
+                    NumberFormat formatter = new DecimalFormat("#0.00000");
+                    results.add(formatter.format((end - start) / 1000d))
                     sootResultsFile << "${scenario.toString()};${results.join(";")}\n"
                 }
             }
@@ -72,6 +86,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
         StringBuilder resultStringBuilder = new StringBuilder("project;class;method;merge commit");
 
         for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
+//            resultStringBuilder.append(";${algorithm.generateHeaderName()};time (s)");
             resultStringBuilder.append(";${algorithm.generateHeaderName()}");
         }
         resultStringBuilder.append("\n");

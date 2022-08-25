@@ -86,7 +86,6 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
         StringBuilder resultStringBuilder = new StringBuilder("project;class;method;merge commit");
 
         for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
-//            resultStringBuilder.append(";${algorithm.generateHeaderName()};time (s)");
             resultStringBuilder.append(";${algorithm.generateHeaderName()}");
         }
         resultStringBuilder.append("\n");

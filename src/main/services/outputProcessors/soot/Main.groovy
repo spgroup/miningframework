@@ -1,13 +1,19 @@
 package services.outputProcessors.soot
 
+import java.nio.channels.ScatteringByteChannel
+
 class Main {
 
     static main(args) {
         String outputPath = "output"
 
-        FileOutputStream file = new FileOutputStream("outConsole.txt");
-        TeePrintStream tee = new TeePrintStream(file, System.out);
-        System.setOut(tee);
+        try{
+            FileOutputStream file = new FileOutputStream("outConsole.txt");
+            TeePrintStream tee = new TeePrintStream(file, System.out);
+            System.setOut(tee);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
 

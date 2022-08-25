@@ -1,7 +1,5 @@
 package services.outputProcessors.soot
 
-import java.nio.channels.ScatteringByteChannel
-
 class Main {
 
     static main(args) {

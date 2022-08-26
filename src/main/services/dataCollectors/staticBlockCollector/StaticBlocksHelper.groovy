@@ -11,6 +11,9 @@ import static app.MiningFramework.arguments;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.BodyDeclaration;
+
 
 
 /**
@@ -36,8 +39,8 @@ class StaticBlocksHelper {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        Map<Integer, String> ancestorIniatilizationBlockASTFile = parsedASTAllStaticBlock(ancestorFile)
-        Map<Integer, String> staticBlockedASTFile = parsedASTAllStaticBlock(targetFile)
+        Map<Integer, String> ancestorIniatilizationBlockASTFile = parsedOnlyGlobalStaticBlockAST(ancestorFile)
+        Map<Integer, String> staticBlockedASTFile = parsedOnlyGlobalStaticBlockAST(targetFile)
 
         // List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
@@ -77,6 +80,33 @@ class StaticBlocksHelper {
         }
        if(printContentFileInitializationBlock(targetFile,mergeCommit))
           filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${targetFile};${qtdStaticBlock}\n"
+    }
+    private Map<String,String> parsedOnlyGlobalStaticBlockAST(File file){
+        JavaParser javaParser = new JavaParser();
+        def result = new HashMap<int, String>();
+        if(file !=null) {
+            try {
+                CompilationUnit compilationUnit = javaParser.parse(file).getResult().get();
+                int i=1;
+                if (compilationUnit != null) {
+                    for (TypeDeclaration typeDec : compilationUnit.getTypes()) {
+                        List<BodyDeclaration> members = typeDec.getMembers();
+                        if (members != null) {
+                            for (BodyDeclaration member : members) {
+                                 if(member.isInitializerDeclaration()) {
+                                     int begin = member?.getRange().get().begin.line
+                                     int end = member?.getRange().get().end.line
+                                     result.put(convertStrIntIdentifier(i++ , begin , end) , member?.getBody()?.asBlockStmt()?.toString())
+                                 }
+                            }
+                        }
+                    }
+                }
+            }catch(Exception e){
+                println e
+            }
+        }
+        return result;
     }
     private Map<String,String> parsedASTAllStaticBlock(File file){
         JavaParser javaParser = new JavaParser();

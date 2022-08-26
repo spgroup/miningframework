@@ -37,7 +37,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
           obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
 
         for(file in mutuallyModifiedFiles) {
-       //   if(file.containsIgnoreCase("Secret") || file.containsIgnoreCase("JnlpSlaveAgentProtocol3")) {
+          if(file.containsIgnoreCase("RealmSourceCodeGenerator")) {
               Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
               Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
@@ -49,7 +49,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
                   return true
               }
-          //}
+          }
       }
 
         return false
@@ -62,11 +62,16 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
         List<String> modifiedContextStaticBlocks = new ArrayList<String>();
         for(file in mutuallyModifiedFiles) {
+            Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
+            Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
-                modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
+            if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
+                modifiedContextStaticBlocks.addAll(leftModifiedContextStaticBlocks)
+            }
+              /*  modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
                 if(!(modifiedContextStaticBlocks.size() > 0)) {
                     modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit))
-                }
+                }*/
         }
 
         return modifiedContextStaticBlocks;

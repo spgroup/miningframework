@@ -5,11 +5,19 @@ class Main {
     static main(args) {
         String outputPath = "output"
 
-        try{
-            FileOutputStream file = new FileOutputStream("outConsole.txt");
+        File consoleFile = null;
+        FileOutputStream file = null;
+        try {
+            consoleFile = new File("outConsole.txt");
+            consoleFile.createNewFile(); // if file already exists will do nothing
+            file = new FileOutputStream(consoleFile, false);
             TeePrintStream tee = new TeePrintStream(file, System.out);
             System.setOut(tee);
-        } catch (Exception e) {
+
+        } catch (IOException e) {
+            if (file != null) {
+                file.close();
+            }
             e.printStackTrace();
         }
 

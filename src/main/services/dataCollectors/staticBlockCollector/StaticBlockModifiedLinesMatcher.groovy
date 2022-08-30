@@ -9,7 +9,8 @@ public class StaticBlockModifiedLinesMatcher {
     Set<StaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocks, Map<String, String> collectionsStaticBlocksAncestor, List<ModifiedLine> modifiedLines, String filePath) {
         def staticBlockSet = new HashSet<StaticBlock>();
         if(collectionsStaticBlocks.entrySet().size() != collectionsStaticBlocksAncestor.entrySet().size()){
-            for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
+
+            for (def initializerDeclaration : collectionsStaticBlocks.entrySet().size() ==0 ? collectionsStaticBlocksAncestor.entrySet() : collectionsStaticBlocks.entrySet()) {
                 String identifier = initializerDeclaration.getKey();
                 String blockedStatic = initializerDeclaration.getValue();
                 identifier = getIdentifierNumber(identifier);

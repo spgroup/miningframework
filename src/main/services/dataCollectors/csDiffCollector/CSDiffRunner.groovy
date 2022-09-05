@@ -3,48 +3,48 @@ package services.dataCollectors.csDiffCollector
 import com.google.common.io.Files
 import org.apache.commons.io.FileUtils;
 import util.ProcessRunner;
+import services.util.Utils
 
 import java.nio.file.Path;
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption;
 
 public class CSDiffRunner {
-    static final Path CS_DIFF_PATH = Paths.get("dependencies/csdiff.sh")
+    static final Path CS_DIFF_PATH = Paths.get("dependencies/csdiff_v2.sh")
 
     /**
      * @param mergeScenarios
+     * @param languageSeparators
      */
-    static void collectCSDiffResults(List<Path> mergeScenarios) {
+    static void collectCSDiffResults(List<Path> mergeScenarios, String languageSeparators) {
         mergeScenarios.parallelStream()
-                .forEach(mergeScenario -> runCSDiffForMergeScenario(mergeScenario))
+                .forEach(mergeScenario -> runCSDiffForMergeScenario(languageSeparators, mergeScenario))
     }
 
-    private static void runCSDiffForMergeScenario(Path mergeScenario) {
-        Path leftFile = getInvolvedFile(mergeScenario, 'left')
-        Path baseFile = getInvolvedFile(mergeScenario, 'base')
-        Path rightFile = getInvolvedFile(mergeScenario, 'right')
+    private static void runCSDiffForMergeScenario(String languageSeparators, Path mergeScenario) {
+        Path leftFile = getInvolvedFile(mergeScenario, "left")
+        Path baseFile = getInvolvedFile(mergeScenario, "base")
+        Path rightFile = getInvolvedFile(mergeScenario, "right")
 
-        runCSDiffProcess(leftFile, baseFile, rightFile, 'csdiff.java')
+        runCSDiffProcess(languageSeparators, leftFile, baseFile, rightFile)
     }
 
-    private static void runCSDiffProcess(Path leftFile, Path baseFile, Path rightFile, String outputFileName) {
-        String outputPathFileName = getOutputPath(baseFile.getParent(), outputFileName).toString()
-        String diff3PathFileName = getOutputPath(baseFile.getParent(), 'diff3.java').toString()
-
-        Process csDiff = ProcessRunner.startProcess(buildCSDiffProcess(leftFile, baseFile, rightFile, outputPathFileName, diff3PathFileName))
+    private static void runCSDiffProcess(String languageSeparators, Path leftFile, Path baseFile, Path rightFile) {
+        Process csDiff = ProcessRunner.startProcess(buildCSDiffProcess(languageSeparators, leftFile, baseFile, rightFile))
 
         csDiff.waitFor()
     }
 
-    private static ProcessBuilder buildCSDiffProcess(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String diff3PathFileName) {
+    private static ProcessBuilder buildCSDiffProcess(String languageSeparators, Path leftFile, Path baseFile, Path rightFile) {
         ProcessBuilder csDiffProcessBuilder = ProcessRunner.buildProcess(getParentAsString(CS_DIFF_PATH))
-        List<String> parameters = buildCSDiffParameters(leftFile, baseFile, rightFile, outputFileName, diff3PathFileName)
+        List<String> parameters = buildCSDiffParameters(languageSeparators, leftFile, baseFile, rightFile)
         csDiffProcessBuilder.command().addAll(parameters)
         return csDiffProcessBuilder
     }
 
-    private static List<String> buildCSDiffParameters(Path leftFile, Path baseFile, Path rightFile, String outputFileName, String diff3PathFileName) {
-        List<String> parameters = ['sh', getNameAsString(CS_DIFF_PATH), leftFile.toString(), baseFile.toString(), rightFile.toString(), outputFileName, diff3PathFileName]
+    private static List<String> buildCSDiffParameters(String languageSeparators, Path leftFile, Path baseFile, Path rightFile) {
+        List<String> parameters = ['bash', getNameAsString(CS_DIFF_PATH), String.format("-s \"%s\"", languageSeparators), leftFile.toString(), baseFile.toString(), rightFile.toString()]
+
         return parameters
     }
 
@@ -57,10 +57,10 @@ public class CSDiffRunner {
     }
 
     private static Path getOutputPath(Path baseFileParent, String fileName) {
-        return baseFileParent.resolve(fileName)
+        return baseFileParent.resolve(Utils.getfileNameWithExtension(fileName))
     }
 
     private static Path getInvolvedFile(Path mergeScenario, String fileName) {
-        return mergeScenario.resolve("${fileName}.java").toAbsolutePath()
+        return mergeScenario.resolve(Utils.getfileNameWithExtension(fileName)).toAbsolutePath()
     }
 }

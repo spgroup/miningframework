@@ -1,9 +1,17 @@
 package services.outputProcessors.soot
 
+import exception.InvalidArgsException
+import services.outputProcessors.soot.arguments.ArgsParser
+import services.outputProcessors.soot.arguments.Arguments
+
 class Main {
 
     static main(args) {
+        SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
         String outputPath = "output"
+
+        ArgsParser argsParser = new ArgsParser()
+        Arguments appArguments;
 
         File consoleFile = null;
         FileOutputStream file = null;
@@ -14,18 +22,77 @@ class Main {
             TeePrintStream tee = new TeePrintStream(file, System.out);
             System.setOut(tee);
 
+            appArguments = argsParser.parse(args)
+
+            if (appArguments.isHelp()) {
+                argsParser.printHelp()
+            }
+            RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
+            sootRunner.configureDetectionAlgorithms(appArguments.getTimeout())
+
+            if (!appArguments.getAllanalysis()) {
+                sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
+            }
+
+            sootRunner.executeAllAnalyses(outputPath)
+
+
         } catch (IOException e) {
             if (file != null) {
                 file.close();
             }
             e.printStackTrace();
+        } catch (InvalidArgsException e) {
+            println e.message
+            println 'Run the miningframework with --help to see the possible arguments'
         }
 
-        RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
 
-        sootRunner.executeAllAnalyses(outputPath);
     }
 
+    private static ArrayList<ConflictDetectionAlgorithm> configureDetectionAlgorithms(Arguments appArguments, SootAnalysisWrapper sootWrapper) {
+        List<ConflictDetectionAlgorithm> detectionAlgorithms = new ArrayList<ConflictDetectionAlgorithm>();
+
+        if (appArguments.getDfIntra()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getDfInter()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getCfIntra()) {
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getCfInter()) {
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getOaIntra()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getOaInter()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, appArguments.getTimeout()))
+        }
+
+        if (appArguments.getDfpIntra()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getDfpInter()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getCd()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getCde()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getPdgSdg()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-SDG", "pdg-sdg", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getPdgSdge()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-SDGe", "pdg-sdg-e", sootWrapper, appArguments.getTimeout()))
+        }
+
+        return detectionAlgorithms;
+    }
 }
 
 public class TeePrintStream extends PrintStream {

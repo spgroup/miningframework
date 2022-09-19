@@ -28,14 +28,14 @@ class Main {
                 argsParser.printHelp()
             }
             RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
-            sootRunner.configureDetectionAlgorithms(appArguments.getTimeout())
 
-            if (!appArguments.getAllanalysis()) {
+            if (appArguments.getAllanalysis()) {
+                sootRunner.configureDetectionAlgorithmsTimeout(appArguments.getTimeout())
+            } else {
                 sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
             }
 
             sootRunner.executeAllAnalyses(outputPath)
-
 
         } catch (IOException e) {
             if (file != null) {
@@ -46,7 +46,6 @@ class Main {
             println e.message
             println 'Run the miningframework with --help to see the possible arguments'
         }
-
 
     }
 

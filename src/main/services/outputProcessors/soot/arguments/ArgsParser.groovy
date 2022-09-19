@@ -9,8 +9,8 @@ class ArgsParser {
     private OptionAccessor options
 
     ArgsParser() {
-        this.cli = new CliBuilder(usage: "miningframework [options]",
-                header: "the Mining Framework take an input csv file and a name for the output dir (default: output) \n Options: ")
+        this.cli = new CliBuilder(usage: "./gradlew run -DmainClass=\"services.outputProcessors.soot.Main --args=\"[options]\"",
+                header: "Options: ")
 
         defParameters()
     }

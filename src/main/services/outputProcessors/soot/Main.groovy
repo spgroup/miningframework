@@ -26,16 +26,18 @@ class Main {
 
             if (appArguments.isHelp()) {
                 argsParser.printHelp()
-            }
-            RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
-
-            if (appArguments.getAllanalysis()) {
-                sootRunner.configureDetectionAlgorithmsTimeout(appArguments.getTimeout())
             } else {
-                sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
+                RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
+
+                if (appArguments.getAllanalysis()) {
+                    sootRunner.configureDetectionAlgorithmsTimeout(appArguments.getTimeout())
+                } else {
+                    sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
+                }
+
+                sootRunner.executeAllAnalyses(outputPath)
             }
 
-            sootRunner.executeAllAnalyses(outputPath)
 
         } catch (IOException e) {
             if (file != null) {

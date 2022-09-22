@@ -35,30 +35,27 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
         mutuallyModifiedNamesFiles.retainAll(rightModifiedFiles)
 
         /*
-          * Step 2 of filter: Both branches changed at least one common file
+         * Step 2 of filter: Both branches changed at least one common file
          */
-        if(mutuallyModifiedNamesFiles.size() > 0) {
-            obtainResultsForProject(project, mergeCommit, mutuallyModifiedNamesFiles, "2_results_branches_changed_least_one_common_file");
-        }
-        //else retornar ...
-          for(file in mutuallyModifiedNamesFiles) {
-           //if(file.containsIgnoreCase("RealmSourceCodeGenerator")
-              // || file.containsIgnoreCase("JnlpSlaveAgentProtocol3")
-           //    ) {
+
+        if(mutuallyModifiedFiles.size() > 0)
+          obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
+
+        for(file in mutuallyModifiedFiles) {
+          if(file.containsIgnoreCase("RealmSourceCodeGenerator")) {
               Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
               Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
               /*
-              * Step 4 of filter: both branches changed at least one initialization block
-             */
+               * Step 4 of filter: both branches changed at least one initialization block
+               */
               if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
                   createDataFilesExperimentalStaticBlock(project, mergeCommit, file, leftModifiedContextStaticBlocks.size() + rightModifiedContextStaticBlocks.size())
 
                   return true
               }
-            //}
           }
-
+      }
         return false
     }
     public List<String> getModifiedJavaFilePaths(Project project, MergeCommit mergeCommit) {

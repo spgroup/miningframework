@@ -14,7 +14,6 @@ import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 
-
 /**
  * This class uses a combination o two diffing tools to provide the necessary diff output
  * it uses the semantic diff tool (diffj) to get which methods were modified and which lines
@@ -38,8 +37,8 @@ class StaticBlocksHelper {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        Map<Integer, String> ancestorIniatilizationBlockASTFile = parsedASTOnlyStaticBlockGlobal(ancestorFile)
-        Map<Integer, String> staticBlockedASTFile = parsedASTOnlyStaticBlockGlobal(targetFile)
+        Map<Integer, String> ancestorIniatilizationBlockASTFile = parsedOnlyGlobalStaticBlockAST(ancestorFile)
+        Map<Integer, String> staticBlockedASTFile = parsedOnlyGlobalStaticBlockAST(targetFile)
 
         // List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
@@ -80,7 +79,8 @@ class StaticBlocksHelper {
        if(printContentFileInitializationBlock(targetFile,mergeCommit))
           filteredScenariosIniatilizationBlock << "${project.getName()};${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};${targetFile};${qtdStaticBlock}\n"
     }
-    private Map<String,String> parsedASTOnlyStaticBlockGlobal(File file){
+
+    private Map<String,String> parsedOnlyGlobalStaticBlockAST(File file){
         JavaParser javaParser = new JavaParser();
         def result = new HashMap<int, String>();
         if(file !=null) {

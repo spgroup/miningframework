@@ -10,10 +10,12 @@ public class StaticBlockModifiedLinesMatcher {
     Set<StaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocksAncestor, Map<String, String> collectionsStaticBlocks, List<ModifiedLine> modifiedLines, String filePath) {
         def staticBlockSet = new HashSet<StaticBlock>();
         /*
-        * Qunando há diferença entre os arquivos contendo blocos, com isso já caracteriza que houve alteração
+        * Qunando há diferença entre os arquivos contendo blocos. É possivel já caracterizar que houve alteração.
         */
-        if(collectionsStaticBlocks.entrySet()?.size() != collectionsStaticBlocksAncestor.entrySet()?.size()){
-            for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
+        if(collectionsStaticBlocks.entrySet().size() != collectionsStaticBlocksAncestor.entrySet().size()){
+
+            for (def initializerDeclaration : collectionsStaticBlocks.entrySet().size() ==0 ? collectionsStaticBlocksAncestor.entrySet() : collectionsStaticBlocks.entrySet()) {
+
                 String identifier = initializerDeclaration.getKey();
                 String blockedStatic = initializerDeclaration.getValue();
                 identifier = getIdentifierNumber(identifier);

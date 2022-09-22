@@ -1,0 +1,8 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+spring-framework;dc5807ea51b189acc7090036f9b5a4732280139a;bfa01b35df42c526253866a4b601e8be83746a4b;a4b74a320e;4f44ae3f28;spring-core/src/main/java/org/springframework/cglib/core/ReflectUtils.java;2
+spring-framework;4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4;3be2b32e21ad91b94346a1b9f8cf58fb3ea48ced;1e6c0d2f7b;040445612f;spring-context/src/main/java/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor.java;2
+spring-framework;6c631e3d5cb14a401befcc9f5ba6971153477d38;bf00db3c6c4fa3f0e103558f73a792c52c5615c0;9ad5a8ead0;6e4fcb69f0;spring-web/src/main/java/org/springframework/web/client/RestTemplate.java;2
+spring-framework;929244215cdc49f5fab0ea3a0efe18c0fe0da42a;4f65ba4e74096e2391a576d865aaa1ec7c2a70ff;94f1d77e22;ae8d0d4a12;spring-core/src/main/java/org/springframework/util/ClassUtils.java;2
+spring-framework;a312d900f812586e4d0614c9c5904eb16f059509;abdcefb460fcbc1348ef04505a78381a2c69a643;aa914497dc;8472a2b2ab;spring-core/src/main/java/org/springframework/core/convert/support/GenericConversionService.java;2
+spring-framework;3e81482760f742d078e71b166cc0f7c3c2eb6abb;1d9d3e6ff79ce9f0eca03b02cd1df705925575da;81dfef90ef;1c2b1d2c85;org.springframework.context.support/src/main/java/org/springframework/scheduling/quartz/MethodInvokingJobDetailFactoryBean.java;2
+spring-framework;e091e399dcf0323fbe509b267bfc5ce176571eb8;fae32cea8ed26d4839da62097393909a0b3dc854;6d674f7836;f1168ea453;org.springframework.context.support/src/main/java/org/springframework/scheduling/quartz/QuartzJobBean.java;2

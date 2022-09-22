@@ -1,0 +1,6 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+realm-java;86c8fa5e63ac2166f2805495a605b4873daa40af;eddd4b83c4cb340674a1261cfc57e83a4f58d7fd;ab8a42ac8;c2f8b660b;realm/realm-library/src/main/java/io/realm/StandardRealmObjectSchema.java;4
+realm-java;f034db6a3357b79d1eec6806e47ce52931dbf33e;5e3ac4a28f5ea50e663bcde1d8f0606f38456053;f05d561eb;17cd606ed;realm/realm-library/src/main/java/io/realm/objectserver/SyncManager.java;2
+realm-java;709da6b9466c4d8850a4cabea53637b4bb82708e;dab0f0d7dbd70ef291f1b6ad6a09ef2b4429a52a;497991966;2b2c80e40;realm-annotations-processor/src/main/java/io/realm/processor/RealmSourceCodeGenerator.java;10
+realm-java;bbc2f506e0e477ccc404c123094008e48d446d86;4b38626f185f53c070f5fce3d84d991ac9c1e851;2b81ae191;cfe2d34aa;realm-annotations-processor/src/main/java/io/realm/processor/RealmSourceCodeGenerator.java;8
+realm-java;420b4e147c9dff449209f332155e66df108982bf;e59e4eef43b88db860f7891488cbe587b5581cbe;7b0005a48;477bd8ab5;tightdb-java-core/src/main/java/com/tightdb/Table.java;2

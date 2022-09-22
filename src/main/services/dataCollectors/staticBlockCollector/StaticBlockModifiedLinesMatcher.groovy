@@ -1,24 +1,35 @@
 package services.dataCollectors.staticBlockCollector
 
+import org.apache.commons.lang3.StringUtils
 import services.dataCollectors.modifiedLinesCollector.ModifiedLine
 
 import java.util.regex.Pattern;
 
 public class StaticBlockModifiedLinesMatcher {
     private String CONST_INITIALIZER_DECLARATION = "static-";
-    Set<StaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocks, Map<String, String> collectionsStaticBlocksAncestor, List<ModifiedLine> modifiedLines, String filePath) {
+    Set<StaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocksAncestor, Map<String, String> collectionsStaticBlocks, List<ModifiedLine> modifiedLines, String filePath) {
         def staticBlockSet = new HashSet<StaticBlock>();
-        if(collectionsStaticBlocks.entrySet().size() != collectionsStaticBlocksAncestor.entrySet().size()){
+        /*
+        * Qunando há diferença entre os arquivos contendo blocos, com isso já caracteriza que houve alteração
+        */
+        if(collectionsStaticBlocks.entrySet()?.size() != collectionsStaticBlocksAncestor.entrySet()?.size()){
             for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
                 String identifier = initializerDeclaration.getKey();
                 String blockedStatic = initializerDeclaration.getValue();
                 identifier = getIdentifierNumber(identifier);
                 def lineSet = new HashSet<ModifiedLine>();
                 staticBlockSet.add(new StaticBlock(identifier, lineSet,filePath));
+
+              /*  def diffLineText = findModifiedLineByText(identifier,blockedStatic, modifiedLines);
+                identifier = getIdentifierNumber(identifier);
+                if (diffLineText != null) {
+                    lineSet.add(diffLineText);
+                    staticBlockSet.add(new StaticBlock(identifier, lineSet,filePath));
+                }*/
             }
             return staticBlockSet;
         }
-        if (collectionsStaticBlocks.entrySet().size() > 0) {
+        if (collectionsStaticBlocks.entrySet()?.size() > 0) {
             for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
                 String identifier = initializerDeclaration.getKey();
                 //String identifier = CONST_INITIALIZER_DECLARATION + initializerDeclaration.getKey();
@@ -33,7 +44,7 @@ public class StaticBlockModifiedLinesMatcher {
                 }
             }
         }
-        if (collectionsStaticBlocksAncestor.entrySet().size() > 0) {
+        if (collectionsStaticBlocksAncestor.entrySet()?.size() > 0) {
             for (def initializerDeclaration : collectionsStaticBlocksAncestor.entrySet()) {
                 String identifier = initializerDeclaration.getKey();
                 //String identifier = CONST_INITIALIZER_DECLARATION + initializerDeclaration.getKey();
@@ -77,23 +88,33 @@ public class StaticBlockModifiedLinesMatcher {
     public ModifiedLine findModifiedLineByText(String keyBlockedStatic , String blockedStatic, List<ModifiedLine> modifiedLines) {
         for (def modifiedLine: modifiedLines) {
             String line = modifiedLine.getContent().split("-")[0];
-           // line = removerChar(line);
-            //|| line.equals("static {")
-            // if((!line.isEmpty() &&  Pattern.compile(line,Pattern.LITERAL).matcher(blockedStatic).find()) || line.equals("static {")){
-            //  if (Pattern.compile(modifiedLine.getContent(),Pattern.LITERAL).matcher(blockedStatic).find()) {
-            boolean temp = line.toString().trim().contains(blockedStatic);
-            boolean  temp1 = Pattern.compile(line,Pattern.LITERAL).matcher(blockedStatic).find();
-            boolean  temp2 = line.toString().trim().containsIgnoreCase(blockedStatic);
-            boolean  temp3 = Pattern.compile(modifiedLine.getContent(),Pattern.LITERAL).matcher(blockedStatic).find();
+            String lineTemp = getStringContentIntoSingleLineNoSpacing(line)
+            String bStatic = getStringContentIntoSingleLineNoSpacing(StringUtils.removeEnd(StringUtils.removeStart(blockedStatic,"{"),"}"))
 
-            if((!line.isEmpty() && temp1 ) || line.equals("static {")){
+            boolean  temp4 = lineTemp.equals(bStatic)
+
+            if((!line.isEmpty() && temp4 ) || line.equals("static {")){
                 if(verifyIdentifierNumber(keyBlockedStatic, modifiedLine.getNumber()))
                    return modifiedLine;
             }
         }
         return null;
     }
-
+    private static String getStringContentIntoSingleLineNoSpacing(String content) {
+        return (content.replaceAll("\\r\\n|\\r|\\n|\\u0000","")).replaceAll("\\s+","");
+    }
+    private static String getRemovedKeysOfBlockStatic(String content){
+        List<String> list = content.toList()
+        if(list.size() > 0){
+            if(list.first().equals("{") && list.last().equals("}")){
+                 list.removeLast()
+                 list.remove(0)
+            }
+        }
+        String cont = list.toString().replace("[","").replace("]","").replaceAll(",","\r\n")
+        String temp = list.stream().map( e -> e.toString() ).collect( toList() )
+        return cont
+    }
     private String removerChar(String str){
         str = str.replace("/**", "");
         str = str.replace("*", "");

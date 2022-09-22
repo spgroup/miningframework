@@ -1,0 +1,9 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+k-9;7bf9d7ec085f13c691d345ca1e9af3c8c449b708;a14cd9f0e0e17a2f1aaa078977092fd1194873be;bf881cd3c;1697be33f;k9mail/src/main/java/com/fsck/k9/preferences/GlobalSettings.java;2
+k-9;5f0f4e9c219a364c8669cc02fb0a2ae0410b39bc;0a507463c4eca5023eb6dd1e7d78f74390c35135;8ef45e8f9;f5cfaceef;src/com/fsck/k9/preferences/AccountSettings.java;2
+k-9;2e74d28da95d6a8b11d91583c5599e5a63f8ab35;f363333c87ebd24d91a7e497171532f3598e8389;1014f0de1;97a2f1b26;src/com/fsck/k9/preferences/GlobalSettings.java;2
+k-9;4e46b3411ca94dcc036409f122487708053835aa;67355922041ab2cebbf90c469c1980c987b2173b;396b01aac;556503318;src/com/fsck/k9/preferences/GlobalSettings.java;2
+k-9;d209c0cce362e86fc9b0b70180bfcd7b690eaea2;e66dd3d5215ab9be540f0290f58608d09f7dfa64;52bfea65d;c0cb73428;src/com/fsck/k9/preferences/GlobalSettings.java;2
+k-9;66528a0ca891c3d695280f97e42accc9b413c4b8;de2c6cdae35e659de595f94d298c4aac31f95f41;50b205645;7a9ba4e0a;src/com/fsck/k9/preferences/AccountSettings.java;2
+k-9;3e03120a7327b4c44620b19cdcb9a49911681128;852dca41245439c56ec429b262bc5b5dcd014600;1b1e8e485;2261edcfb;src/com/fsck/k9/preferences/GlobalSettings.java;2
+k-9;932d1786796d07d58f5b01496ac494063cd7dd43;c1df45414f8222267e988f69df37c03a76457cb6;4724848a5;807f85d38;src/com/fsck/k9/activity/MessageList.java;2

@@ -1,0 +1,9 @@
+project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
+spring-framework,dc5807ea51b189acc7090036f9b5a4732280139a,ReflectUtils,3,2,0,1,0,0,false,false,false,false,false,false
+spring-framework,4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4,CommonAnnotationBeanPostProcessor,2,2,0,1,1,0,false,false,false,false,false,false
+spring-framework,6c631e3d5cb14a401befcc9f5ba6971153477d38,RestTemplate,0,0,0,0,0,0,true,true,true,true,true,true
+spring-framework,929244215cdc49f5fab0ea3a0efe18c0fe0da42a,ClassUtils,0,0,0,0,0,0,true,true,true,true,true,true
+spring-framework,a312d900f812586e4d0614c9c5904eb16f059509,GenericConversionService,0,0,0,0,0,0,true,true,true,true,true,true
+spring-framework,3e81482760f742d078e71b166cc0f7c3c2eb6abb,MethodInvokingJobDetailFactoryBean,1,1,0,0,0,0,true,false,false,true,false,false
+spring-framework,3e81482760f742d078e71b166cc0f7c3c2eb6abb,VfsUtils,1,1,0,0,0,0,true,false,false,true,false,false
+spring-framework,e091e399dcf0323fbe509b267bfc5ce176571eb8,QuartzJobBean,0,0,0,0,0,0,true,true,true,true,true,true

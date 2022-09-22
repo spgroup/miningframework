@@ -1,0 +1,17 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+realm-java;68ef49b6f7392875ecec3b4ce5367e63dae9b768;4c7e0835a30c289e190063f51856e5ba42336d2b;fecd97b2c;6261a2011;realm/realm-annotations-processor/src/test/resources/io/realm/RealmDefaultModuleMediator.java;2
+realm-java;86c8fa5e63ac2166f2805495a605b4873daa40af;eddd4b83c4cb340674a1261cfc57e83a4f58d7fd;ab8a42ac8;c2f8b660b;realm/realm-annotations-processor/src/main/java/io/realm/processor/RealmJsonTypeHelper.java;2
+realm-java;3e1310755be871ec120633637f17afe3a439f4bc;6d071200d8dba9eee93160bdd001a38de966faee;52ba434e3;721753ab6;realm/realm-library/src/main/java/io/realm/internal/ObjectServerFacade.java;2
+realm-java;38c90e5e885158e1b4cbae570b0a65f894b91f1e;eebdb0849e08aed5862f2bc0a638274b05e8395a;154419881;c5a616b56;realm/realm-library/src/main/java/io/realm/internal/ObjectServerFacade.java;2
+realm-java;fca44870b40e9b26d713ff83eab4f12190ae5086;71e4034fbc0885c5aaf7b7af8ca39b86c1324985;6e6fc057c;9aa44d910;realm/realm-library/src/main/java/io/realm/internal/Util.java;2
+realm-java;d00b959d82d4af0a5db537d43db62d75fe3b5c5d;1c75c9cc4c030ded2797d412e8e37c4d5f5944c4;088e2cecb;b656f99c6;realm-annotations-processor/src/test/resources/io/realm/AllTypesRealmProxy.java;2
+realm-java;ee2d104ab6ff0a14694a8faa9944fba942c96e56;8e6a114d27d85c18eeac4cdd6da3955c4fec51ae;fd2599b58;c8ba861c5;realm-annotations-processor/src/test/resources/io/realm/AllTypesRealmProxy.java;2
+realm-java;4cc10993c45c22a5506583ae4fb69934b808cd8a;43cbf876e32bc6f439b955d7952531eecee9b4e5;fd53aab3e;f493fc9fb;realm-annotations-processor/src/test/resources/io/realm/RealmDefaultModuleMediator.java;2
+realm-java;0f5a8f4195c47d2779d114e61928504e8c092624;0ac84bf33f4f29c4e5912d34d8491eb75fae63f2;b6fe89c6e;43cbf876e;realm-annotations-processor/src/main/java/io/realm/processor/RealmJsonTypeHelper.java;2
+realm-java;47a26984d0d1b2337913e6d59952491218e9a573;6efea4f77b38c9bb5ae1d501336a026fd1e3ff2f;fa0495511;46df88627;realm-annotations-processor/src/main/java/io/realm/processor/RealmSourceCodeGenerator.java;8
+realm-java;709da6b9466c4d8850a4cabea53637b4bb82708e;dab0f0d7dbd70ef291f1b6ad6a09ef2b4429a52a;497991966;2b2c80e40;realm-annotations-processor/src/main/java/io/realm/processor/RealmSourceCodeGenerator.java;8
+realm-java;bbc2f506e0e477ccc404c123094008e48d446d86;4b38626f185f53c070f5fce3d84d991ac9c1e851;2b81ae191;cfe2d34aa;realm-annotations-processor/src/main/java/io/realm/processor/RealmSourceCodeGenerator.java;6
+realm-java;e0c2555dc3b25ac42317b7b00294648122e5b5a0;e689b8f6e15938311ab5ba4ba14fb1af989960ad;620922fff;54bf93f76;realm-annotations-processor/src/main/java/io/realm/processor/RealmSourceCodeGenerator.java;6
+realm-java;cb1fec64391abccaaec8a08660932ed7c5f735d8;ee0dca1c41f3cceb6d82339dd4607b43adab15c1;9e83637a6;cb42f70d2;tightdb-java-core/src/main/java/com/tightdb/internal/util.java;2
+realm-java;420b4e147c9dff449209f332155e66df108982bf;e59e4eef43b88db860f7891488cbe587b5581cbe;7b0005a48;477bd8ab5;tightdb-java-core/src/main/java/com/tightdb/lib/AbstractTable.java;2
+realm-java;fbea1a248dc7bae6ce94ffbdce08b0594e0d089e;680520ccc632ecbfde9003335e3d91d2416477d0;adffbe947;6936de777;AutoCodeWorkspace/AutoCodeGeneration/src/com/tightdb/db/utility/AutoCodeGeneration.java;2

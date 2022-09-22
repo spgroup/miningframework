@@ -2,6 +2,7 @@ package services.commitFilters
 
 import interfaces.CommitFilter
 import project.*
+import services.util.Utils
 import util.*
 import services.dataCollectors.staticBlockCollector.StaticBlocksHelper
 
@@ -30,27 +31,33 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
-        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
+        Set<String> mutuallyModifiedNamesFiles = new HashSet<String>(leftModifiedFiles)
+        mutuallyModifiedNamesFiles.retainAll(rightModifiedFiles)
 
-        if(mutuallyModifiedFiles.size() > 0)
-          obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
-
-        for(file in mutuallyModifiedFiles) {
-       //   if(file.containsIgnoreCase("Secret") || file.containsIgnoreCase("JnlpSlaveAgentProtocol3")) {
+        /*
+          * Step 2 of filter: Both branches changed at least one common file
+         */
+        if(mutuallyModifiedNamesFiles.size() > 0) {
+            obtainResultsForProject(project, mergeCommit, mutuallyModifiedNamesFiles, "2_results_branches_changed_least_one_common_file");
+        }
+        //else retornar ...
+          for(file in mutuallyModifiedNamesFiles) {
+           //if(file.containsIgnoreCase("RealmSourceCodeGenerator")
+              // || file.containsIgnoreCase("JnlpSlaveAgentProtocol3")
+           //    ) {
               Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
               Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
               /*
-            * Step 4 of filter: both branches changed at least one initialization block
+              * Step 4 of filter: both branches changed at least one initialization block
              */
               if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
                   createDataFilesExperimentalStaticBlock(project, mergeCommit, file, leftModifiedContextStaticBlocks.size() + rightModifiedContextStaticBlocks.size())
 
                   return true
               }
-          //}
-      }
+            //}
+          }
 
         return false
     }
@@ -62,11 +69,16 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
         List<String> modifiedContextStaticBlocks = new ArrayList<String>();
         for(file in mutuallyModifiedFiles) {
+            Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
+            Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
-                modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
+            if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
+                modifiedContextStaticBlocks.addAll(leftModifiedContextStaticBlocks)
+            }
+              /*  modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
                 if(!(modifiedContextStaticBlocks.size() > 0)) {
                     modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit))
-                }
+                }*/
         }
 
         return modifiedContextStaticBlocks;
@@ -74,10 +86,11 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
     }
     public Set<String> getModifiedContextStaticBlocksFiles(Project project, String filePath, String ancestorSHA, String targetSHA, MergeCommit mergeCommit) {
         print"${filePath},${ancestorSHA}"
-        return modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, ancestorSHA, targetSHA, mergeCommit)
+        Set<String> listaIB =  modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, ancestorSHA, targetSHA, mergeCommit)
                 .stream()
                 .map(path -> path.getPath())
                 .collect(Collectors.toList())
+        return listaIB;
     }
     private Set<String> getModifiedContextStaticBlocks(Project project, String filePath, String ancestorSHA, String targetSHA, MergeCommit mergeCommit) {
         return modifiedStaticBlocksHelper.getModifiedStaticBlocks(project, filePath, ancestorSHA, targetSHA, mergeCommit)
@@ -113,5 +126,12 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
             obtainResultsForProjects << 'Merge commit, Parent 1, Parent 2\n'
         }
         obtainResultsForProjects << "${mergeCommit.getSHA()},${mergeCommit.getLeftSHA()},${mergeCommit.getRightSHA()}\n"
+    }
+    private void spreadsheetResultsMergesScenarios(Project project, MergeCommit mergeCommit) {
+        String spreadsheetName = "1_results_merges_scenarios_"+project.getName()+".csv"
+        String spreadsheetHeader = 'Merge commit, Parent 1, Parent 2\n'
+
+        File spreadsheet = FileManager.createSpreadsheet(Utils.getOutputPath(), spreadsheetName, spreadsheetHeader)
+        FileManager.appendLineToFile(spreadsheet, "${project.getName()},${mergeCommit}")
     }
 }

@@ -35,7 +35,7 @@ class Main {
                     sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
                 }
 
-                sootRunner.executeAllAnalyses(outputPath)
+                sootRunner.executeAnalyses(outputPath)
             }
 
 

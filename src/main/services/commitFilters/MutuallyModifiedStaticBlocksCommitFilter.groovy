@@ -38,11 +38,11 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
          * Step 2 of filter: Both branches changed at least one common file
          */
 
-        if(mutuallyModifiedFiles.size() > 0)
-          obtainResultsForProject(project, mergeCommit, mutuallyModifiedFiles, "2_results_branches_changed_least_one_common_file");
+        if(mutuallyModifiedNamesFiles.size() > 0)
+          obtainResultsForProject(project, mergeCommit, mutuallyModifiedNamesFiles, "2_results_branches_changed_least_one_common_file");
 
-        for(file in mutuallyModifiedFiles) {
-          if(file.containsIgnoreCase("RealmSourceCodeGenerator")) {
+        for(file in mutuallyModifiedNamesFiles) {
+       //   if(file.containsIgnoreCase("RealmSourceCodeGenerator")) {
               Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
               Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
@@ -54,18 +54,18 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
                   return true
               }
-          }
+         // }
       }
         return false
     }
     public List<String> getModifiedJavaFilePaths(Project project, MergeCommit mergeCommit) {
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
-        Set<String> mutuallyModifiedFiles = new HashSet<String>(leftModifiedFiles)
-        mutuallyModifiedFiles.retainAll(rightModifiedFiles)
+        Set<String> mutuallyModifiedNamesFiles = new HashSet<String>(leftModifiedFiles)
+        mutuallyModifiedNamesFiles.retainAll(rightModifiedFiles)
 
         List<String> modifiedContextStaticBlocks = new ArrayList<String>();
-        for(file in mutuallyModifiedFiles) {
+        for(file in mutuallyModifiedNamesFiles) {
             Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
             Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 

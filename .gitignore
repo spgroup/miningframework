@@ -30,4 +30,11 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 *.jimple
 
+<<<<<<< HEAD
 .idea/workspace.xml
+=======
+.idea/
+out.txt
+outConsole.txt
+time.txt
+>>>>>>> dbf70d34fc18729868204242c5ca0e6105c9a8db

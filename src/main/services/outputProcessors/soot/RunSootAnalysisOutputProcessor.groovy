@@ -24,16 +24,16 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, TIMEOUT),
             new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, TIMEOUT),
             new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, TIMEOUT),
+            new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, TIMEOUT),
+            new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, TIMEOUT),
+            new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, TIMEOUT),
+            new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, TIMEOUT),
     ]
 
     void setDetectionAlgorithms(List<ConflictDetectionAlgorithm> detectionAlgorithms) {

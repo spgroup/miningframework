@@ -50,84 +50,57 @@ class ArgsParser {
 
 
     private void parseOptions(Arguments args) {
+        if (!this.options.a) {
+            args.setAllanalysis(false)
+        }
         if (this.options.h) {
             args.setIsHelp(true)
         }
-
-        if (this.options.a) {
-            args.setAllanalysis(true)
-        }
-
         if (this.options.t) {
             args.setTimeout(this.options.t.toInteger())
         }
-
         if (this.options.df) {
-            args.setAllanalysis(false)
             args.setDfIntra(true)
         }
-
         if (this.options.idf) {
-            args.setAllanalysis(false)
             args.setDfInter(true)
         }
-
-
         if (this.options.cf) {
-            args.setAllanalysis(false)
             args.setCfIntra(true)
         }
-
         if (this.options.icf) {
-            args.setAllanalysis(false)
             args.setCfInter(true)
         }
-
         if (this.options.oa) {
-            args.setAllanalysis(false)
             args.setOaIntra(true)
         }
-
         if (this.options.ioa) {
-            args.setAllanalysis(false)
             args.setOaInter(true)
         }
 
-
         if (this.options.dfp) {
-            args.setAllanalysis(false)
             args.setDfpIntra(true)
         }
-
         if (this.options.idfp) {
-            args.setAllanalysis(false)
             args.setDfpInter(true)
         }
-
-
         if (this.options.cd) {
-            args.setAllanalysis(false)
             args.setCd(true)
         }
 
         if (this.options.cde) {
-            args.setAllanalysis(false)
             args.setCde(true)
         }
         if (this.options.pdg) {
-            args.setAllanalysis(false)
             args.setPdg(true)
         }
         if (this.options.pdge) {
-            args.setAllanalysis(false)
             args.setPdge(true)
         }
         if (this.options.pd) {
-            args.setAllanalysis(false)
             args.setPessimisticDataflow(true)
         }
         if (this.options.r) {
-            args.setAllanalysis(false)
             args.setReachability(true)
         }
     }

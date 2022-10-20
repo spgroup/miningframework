@@ -67,10 +67,10 @@ class Main {
             detectionAlgorithms.add(new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, appArguments.getTimeout()))
         }
         if (appArguments.getOaIntra()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, appArguments.getTimeout()))
         }
         if (appArguments.getOaInter()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, appArguments.getTimeout()))
         }
 
         if (appArguments.getDfpIntra()) {
@@ -92,10 +92,10 @@ class Main {
             detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, appArguments.getTimeout()))
         }
         if (appArguments.getPessimisticDataflow()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, appArguments.getTimeout()))
         }
         if (appArguments.getReachability()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, appArguments.getTimeout()))
         }
 
         return detectionAlgorithms;

@@ -29,8 +29,10 @@ class ArgsParser {
         this.cli.idfp(longOpt: 'dfp-inter',  "Run dfp-inter")
         this.cli.cd(longOpt: 'cd',  "Run cd")
         this.cli.cde(longOpt: 'cde',  "Run cd-e")
-        this.cli.pdg(longOpt: 'pdgsdg',  "Run pdg-sdg")
-        this.cli.pdge(longOpt: 'pdgsdge',  "Run pdg-sdg-e")
+        this.cli.pdg(longOpt: 'pdg',  "Run pdg")
+        this.cli.pdge(longOpt: 'pdge',  "Run pdg-e")
+        this.cli.pd(longOpt: 'pessimistic-dataflow',  "Run pessimistic-dataflow")
+        this.cli.r(longOpt: 'reachability',  "Run reachability")
     }
 
     Arguments parse(args) {
@@ -48,7 +50,6 @@ class ArgsParser {
 
 
     private void parseOptions(Arguments args) {
-
         if (this.options.h) {
             args.setIsHelp(true)
         }
@@ -115,11 +116,19 @@ class ArgsParser {
         }
         if (this.options.pdg) {
             args.setAllanalysis(false)
-            args.setPdgSdg(true)
+            args.setPdg(true)
         }
         if (this.options.pdge) {
             args.setAllanalysis(false)
-            args.setPdgSdge(true)
+            args.setPdge(true)
+        }
+        if (this.options.pd) {
+            args.setAllanalysis(false)
+            args.setPessimisticDataflow(true)
+        }
+        if (this.options.r) {
+            args.setAllanalysis(false)
+            args.setReachability(true)
         }
     }
 }

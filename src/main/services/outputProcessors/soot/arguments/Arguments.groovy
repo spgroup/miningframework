@@ -13,8 +13,10 @@ class Arguments {
     private boolean dfpInter
     private boolean cd
     private boolean cde
-    private boolean pdgSdg
-    private boolean pdgSdge
+    private boolean pdg
+    private boolean pdge
+    private boolean pessimisticDataflow
+    private boolean reachability
     private int timeout
 
     Arguments() { // set the default values for all parameters
@@ -30,8 +32,10 @@ class Arguments {
         dfpInter = false
         cd = false
         cde = false
-        pdgSdg = false
-        pdgSdge = false
+        pdg = false
+        pdge = false
+        pessimisticDataflow = false
+        reachability = false
         timeout = 240
     }
 
@@ -131,20 +135,36 @@ class Arguments {
         this.cde = cde
     }
 
-    boolean getPdgSdg() {
-        return pdgSdg
+    boolean getPdg() {
+        return pdg
     }
 
-    void setPdgSdg(boolean pdgSdg) {
-        this.pdgSdg = pdgSdg
+    void setPdg(boolean pdg) {
+        this.pdg = pdg
     }
 
-    boolean getPdgSdge() {
-        return pdgSdge
+    boolean getPdge() {
+        return pdge
     }
 
-    void setPdgSdge(boolean pdgSdge) {
-        this.pdgSdge = pdgSdge
+    void setPdge(boolean pdge) {
+        this.pdge = pdge
+    }
+
+    boolean getPessimisticDataflow() {
+        return pessimisticDataflow
+    }
+
+    void setPessimisticDataflow(boolean pessimisticDataflow) {
+        this.pessimisticDataflow = pessimisticDataflow
+    }
+
+    boolean getReachability() {
+        return reachability
+    }
+
+    void setReachability(boolean reachability) {
+        this.reachability = reachability
     }
 
     int getTimeout() {

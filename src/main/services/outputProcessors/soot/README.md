@@ -51,8 +51,10 @@ Options:
  -idfp,--dfp-inter                       Run dfp-inter
  -ioa,--overriding-interprocedural       Run overriding-interprocedural
  -oa,--overriding-intraprocedural        Run overriding-intraprocedural
- -pdg,--pdgsdg                           Run pdg-sdg
- -pdge,--pdgsdge                         Run pdg-sdg-e
+ -pd,--pessimistic-dataflow              Run pessimistic-dataflow
+ -pdg,--pdg                              Run pdg
+ -pdge,--pdge                            Run pdg-e
+ -r,--reachability                       Run reachability
  -t,--timeout <timeout>                  timeout (default: 240)
 ```
 5. The result will be written in `output/data/soot-results.csv`

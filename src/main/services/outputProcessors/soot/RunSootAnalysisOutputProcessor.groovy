@@ -30,8 +30,10 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("PDG-SDG", "pdg-sdg", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("PDG-SDGe", "pdg-sdg-e", sootWrapper, TIMEOUT),
+            new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", sootWrapper, TIMEOUT),
+            new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, TIMEOUT),
+            new NonCommutativeConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, TIMEOUT),
+            new NonCommutativeConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, TIMEOUT),
     ]
 
     void setDetectionAlgorithms(List<ConflictDetectionAlgorithm> detectionAlgorithms) {

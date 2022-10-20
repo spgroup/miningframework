@@ -85,11 +85,17 @@ class Main {
         if (appArguments.getCde()) {
             detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, appArguments.getTimeout()))
         }
-        if (appArguments.getPdgSdg()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-SDG", "pdg-sdg", sootWrapper, appArguments.getTimeout()))
+        if (appArguments.getPdg()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", sootWrapper, appArguments.getTimeout()))
         }
-        if (appArguments.getPdgSdge()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-SDGe", "pdg-sdg-e", sootWrapper, appArguments.getTimeout()))
+        if (appArguments.getPdge()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getPessimisticDataflow()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getReachability()) {
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, appArguments.getTimeout()))
         }
 
         return detectionAlgorithms;

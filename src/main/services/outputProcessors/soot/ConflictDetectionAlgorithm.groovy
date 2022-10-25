@@ -36,6 +36,10 @@ class ConflictDetectionAlgorithm {
         return name
     }
 
+    void setTimeout(Long timeout) {
+        this.timeout = timeout
+    }
+
     @Override
     String toString() {
         return "ConflictDetectionAlgorithm{" +

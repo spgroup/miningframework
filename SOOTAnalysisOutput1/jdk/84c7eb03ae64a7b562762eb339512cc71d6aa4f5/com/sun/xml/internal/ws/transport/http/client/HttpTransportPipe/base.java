@@ -1,0 +1,335 @@
+package com.sun.xml.internal.ws.transport.http.client;
+
+import com.sun.istack.internal.NotNull;
+import com.sun.xml.internal.ws.api.SOAPVersion;
+import com.sun.xml.internal.ws.api.WSBinding;
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
+import com.sun.xml.internal.ws.api.message.Packet;
+import com.sun.xml.internal.ws.api.pipe.*;
+import com.sun.xml.internal.ws.api.pipe.helper.AbstractTubeImpl;
+import com.sun.xml.internal.ws.developer.HttpConfigFeature;
+import com.sun.xml.internal.ws.transport.Headers;
+import com.sun.xml.internal.ws.util.ByteArrayBuffer;
+import com.sun.xml.internal.ws.client.ClientTransportException;
+import com.sun.xml.internal.ws.resources.ClientMessages;
+import com.sun.xml.internal.ws.util.RuntimeVersion;
+import com.sun.xml.internal.ws.util.StreamUtils;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.soap.SOAPBinding;
+import javax.xml.ws.handler.MessageContext;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.CookieHandler;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.net.HttpURLConnection;
+
+public class HttpTransportPipe extends AbstractTubeImpl {
+
+    private static final Logger LOGGER = Logger.getLogger(HttpTransportPipe.class.getName());
+
+    private final Codec codec;
+
+    private final WSBinding binding;
+
+    private static final List<String> USER_AGENT = Collections.singletonList(RuntimeVersion.VERSION.toString());
+
+    private final CookieHandler cookieJar;
+
+    private final boolean sticky;
+
+    static {
+        try {
+            JAXBContext.newInstance().createUnmarshaller();
+        } catch (JAXBException je) {
+        }
+    }
+
+    public HttpTransportPipe(Codec codec, WSBinding binding) {
+        this.codec = codec;
+        this.binding = binding;
+        this.sticky = isSticky(binding);
+        HttpConfigFeature configFeature = binding.getFeature(HttpConfigFeature.class);
+        if (configFeature == null) {
+            configFeature = new HttpConfigFeature();
+        }
+        this.cookieJar = configFeature.getCookieHandler();
+    }
+
+    private static boolean isSticky(WSBinding binding) {
+        boolean tSticky = false;
+        WebServiceFeature[] features = binding.getFeatures().toArray();
+        for (WebServiceFeature f : features) {
+            if (f instanceof StickyFeature) {
+                tSticky = true;
+                break;
+            }
+        }
+        return tSticky;
+    }
+
+    private HttpTransportPipe(HttpTransportPipe that, TubeCloner cloner) {
+        this(that.codec.copy(), that.binding);
+        cloner.add(that, this);
+    }
+
+    public NextAction processException(@NotNull Throwable t) {
+        return doThrow(t);
+    }
+
+    public NextAction processRequest(@NotNull Packet request) {
+        return doReturnWith(process(request));
+    }
+
+    public NextAction processResponse(@NotNull Packet response) {
+        return doReturnWith(response);
+    }
+
+    protected HttpClientTransport getTransport(Packet request, Map<String, List<String>> reqHeaders) {
+        return new HttpClientTransport(request, reqHeaders);
+    }
+
+    @Override
+    public Packet process(Packet request) {
+        HttpClientTransport con;
+        try {
+            Map<String, List<String>> reqHeaders = new Headers();
+            @SuppressWarnings("unchecked")
+            Map<String, List<String>> userHeaders = (Map<String, List<String>>) request.invocationProperties.get(MessageContext.HTTP_REQUEST_HEADERS);
+            boolean addUserAgent = true;
+            if (userHeaders != null) {
+                reqHeaders.putAll(userHeaders);
+                if (userHeaders.get("User-Agent") != null) {
+                    addUserAgent = false;
+                }
+            }
+            if (addUserAgent) {
+                reqHeaders.put("User-Agent", USER_AGENT);
+            }
+            addBasicAuth(request, reqHeaders);
+            addCookies(request, reqHeaders);
+            con = getTransport(request, reqHeaders);
+            request.addSatellite(new HttpResponseProperties(con));
+            ContentType ct = codec.getStaticContentType(request);
+            if (ct == null) {
+                ByteArrayBuffer buf = new ByteArrayBuffer();
+                ct = codec.encode(request, buf);
+                reqHeaders.put("Content-Length", Collections.singletonList(Integer.toString(buf.size())));
+                reqHeaders.put("Content-Type", Collections.singletonList(ct.getContentType()));
+                if (ct.getAcceptHeader() != null) {
+                    reqHeaders.put("Accept", Collections.singletonList(ct.getAcceptHeader()));
+                }
+                if (binding instanceof SOAPBinding) {
+                    writeSOAPAction(reqHeaders, ct.getSOAPActionHeader());
+                }
+                if (dump || LOGGER.isLoggable(Level.FINER))
+                    dump(buf, "HTTP request", reqHeaders);
+                buf.writeTo(con.getOutput());
+            } else {
+                reqHeaders.put("Content-Type", Collections.singletonList(ct.getContentType()));
+                if (ct.getAcceptHeader() != null) {
+                    reqHeaders.put("Accept", Collections.singletonList(ct.getAcceptHeader()));
+                }
+                if (binding instanceof SOAPBinding) {
+                    writeSOAPAction(reqHeaders, ct.getSOAPActionHeader());
+                }
+                if (dump || LOGGER.isLoggable(Level.FINER)) {
+                    ByteArrayBuffer buf = new ByteArrayBuffer();
+                    codec.encode(request, buf);
+                    dump(buf, "HTTP request - " + request.endpointAddress, reqHeaders);
+                    OutputStream out = con.getOutput();
+                    if (out != null) {
+                        buf.writeTo(out);
+                    }
+                } else {
+                    OutputStream os = con.getOutput();
+                    if (os != null) {
+                        codec.encode(request, os);
+                    }
+                }
+            }
+            con.closeOutput();
+            return createResponsePacket(request, con);
+        } catch (WebServiceException wex) {
+            throw wex;
+        } catch (Exception ex) {
+            throw new WebServiceException(ex);
+        }
+    }
+
+    private Packet createResponsePacket(Packet request, HttpClientTransport con) throws IOException {
+        con.readResponseCodeAndMessage();
+        recordCookies(request, con);
+        InputStream responseStream = con.getInput();
+        if (dump || LOGGER.isLoggable(Level.FINER)) {
+            ByteArrayBuffer buf = new ByteArrayBuffer();
+            if (responseStream != null) {
+                buf.write(responseStream);
+                responseStream.close();
+            }
+            dump(buf, "HTTP response - " + request.endpointAddress + " - " + con.statusCode, con.getHeaders());
+            responseStream = buf.newInputStream();
+        }
+        int cl = con.contentLength;
+        InputStream tempIn = null;
+        if (cl == -1) {
+            tempIn = StreamUtils.hasSomeData(responseStream);
+            if (tempIn != null) {
+                responseStream = tempIn;
+            }
+        }
+        if (cl == 0 || (cl == -1 && tempIn == null)) {
+            if (responseStream != null) {
+                responseStream.close();
+                responseStream = null;
+            }
+        }
+        checkStatusCode(responseStream, con);
+        Packet reply = request.createClientResponse(null);
+        reply.wasTransportSecure = con.isSecure();
+        if (responseStream != null) {
+            String contentType = con.getContentType();
+            if (contentType != null && contentType.contains("text/html") && binding instanceof SOAPBinding) {
+                throw new ClientTransportException(ClientMessages.localizableHTTP_STATUS_CODE(con.statusCode, con.statusMessage));
+            }
+            codec.decode(responseStream, contentType, reply);
+        }
+        return reply;
+    }
+
+    private void checkStatusCode(InputStream in, HttpClientTransport con) throws IOException {
+        int statusCode = con.statusCode;
+        String statusMessage = con.statusMessage;
+        if (binding instanceof SOAPBinding) {
+            if (binding.getSOAPVersion() == SOAPVersion.SOAP_12) {
+                if (statusCode == HttpURLConnection.HTTP_OK || statusCode == HttpURLConnection.HTTP_ACCEPTED || isErrorCode(statusCode)) {
+                    if (isErrorCode(statusCode) && in == null) {
+                        throw new ClientTransportException(ClientMessages.localizableHTTP_STATUS_CODE(statusCode, statusMessage));
+                    }
+                    return;
+                }
+            } else {
+                if (statusCode == HttpURLConnection.HTTP_OK || statusCode == HttpURLConnection.HTTP_ACCEPTED || statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+                    if (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR && in == null) {
+                        throw new ClientTransportException(ClientMessages.localizableHTTP_STATUS_CODE(statusCode, statusMessage));
+                    }
+                    return;
+                }
+            }
+            if (in != null) {
+                in.close();
+            }
+            throw new ClientTransportException(ClientMessages.localizableHTTP_STATUS_CODE(statusCode, statusMessage));
+        }
+    }
+
+    private boolean isErrorCode(int code) {
+        return code == 500 || code == 400;
+    }
+
+    private void addCookies(Packet context, Map<String, List<String>> reqHeaders) throws IOException {
+        Boolean shouldMaintainSessionProperty = (Boolean) context.invocationProperties.get(BindingProvider.SESSION_MAINTAIN_PROPERTY);
+        if (shouldMaintainSessionProperty != null && !shouldMaintainSessionProperty) {
+            return;
+        }
+        if (sticky || (shouldMaintainSessionProperty != null && shouldMaintainSessionProperty)) {
+            Map<String, List<String>> cookies = cookieJar.get(context.endpointAddress.getURI(), reqHeaders);
+            List<String> cookieList = cookies.get("Cookie");
+            if (cookieList != null && !cookieList.isEmpty()) {
+                reqHeaders.put("Cookie", cookieList);
+            }
+            cookieList = cookies.get("Cookie2");
+            if (cookieList != null && !cookieList.isEmpty()) {
+                reqHeaders.put("Cookie2", cookieList);
+            }
+        }
+    }
+
+    private void recordCookies(Packet context, HttpClientTransport con) throws IOException {
+        Boolean shouldMaintainSessionProperty = (Boolean) context.invocationProperties.get(BindingProvider.SESSION_MAINTAIN_PROPERTY);
+        if (shouldMaintainSessionProperty != null && !shouldMaintainSessionProperty) {
+            return;
+        }
+        if (sticky || (shouldMaintainSessionProperty != null && shouldMaintainSessionProperty)) {
+            cookieJar.put(context.endpointAddress.getURI(), con.getHeaders());
+        }
+    }
+
+    private void addBasicAuth(Packet context, Map<String, List<String>> reqHeaders) {
+        String user = (String) context.invocationProperties.get(BindingProvider.USERNAME_PROPERTY);
+        if (user != null) {
+            String pw = (String) context.invocationProperties.get(BindingProvider.PASSWORD_PROPERTY);
+            if (pw != null) {
+                StringBuffer buf = new StringBuffer(user);
+                buf.append(":");
+                buf.append(pw);
+                String creds = DatatypeConverter.printBase64Binary(buf.toString().getBytes());
+                reqHeaders.put("Authorization", Collections.singletonList("Basic " + creds));
+            }
+        }
+    }
+
+    private void writeSOAPAction(Map<String, List<String>> reqHeaders, String soapAction) {
+        if (SOAPVersion.SOAP_12.equals(binding.getSOAPVersion()))
+            return;
+        if (soapAction != null)
+            reqHeaders.put("SOAPAction", Collections.singletonList(soapAction));
+        else
+            reqHeaders.put("SOAPAction", Collections.singletonList("\"\""));
+    }
+
+    public void preDestroy() {
+    }
+
+    public HttpTransportPipe copy(TubeCloner cloner) {
+        return new HttpTransportPipe(this, cloner);
+    }
+
+    private void dump(ByteArrayBuffer buf, String caption, Map<String, List<String>> headers) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintWriter pw = new PrintWriter(baos, true);
+        pw.println("---[" + caption + "]---");
+        for (Entry<String, List<String>> header : headers.entrySet()) {
+            if (header.getValue().isEmpty()) {
+                pw.println(header.getValue());
+            } else {
+                for (String value : header.getValue()) {
+                    pw.println(header.getKey() + ": " + value);
+                }
+            }
+        }
+        buf.writeTo(baos);
+        pw.println("--------------------");
+        String msg = baos.toString();
+        if (dump) {
+            System.out.println(msg);
+        }
+        if (LOGGER.isLoggable(Level.FINER)) {
+            LOGGER.log(Level.FINER, msg);
+        }
+    }
+
+    public static boolean dump;
+
+    static {
+        boolean b;
+        try {
+            b = Boolean.getBoolean(HttpTransportPipe.class.getName() + ".dump");
+        } catch (Throwable t) {
+            b = false;
+        }
+        dump = b;
+    }
+}

@@ -1,12 +1,49 @@
 package services.dataCollectors.staticBlockCollector
 
 import org.apache.commons.lang3.StringUtils
+import project.MergeCommit
+import project.Project
 import services.dataCollectors.modifiedLinesCollector.ModifiedLine
+import util.FileManager
 
 import java.util.regex.Pattern;
 
 public class StaticBlockModifiedLinesMatcher {
     private String CONST_INITIALIZER_DECLARATION = "static-";
+
+    Set<StaticBlock> matchModifiedStaticBlocksAST(Map<String, String> collectionsStaticBlocksAncestor, Map<String, String> collectionsStaticBlocks, List<ModifiedLine> modifiedLines, String filePath) {
+        def staticBlockSet = new HashSet<StaticBlock>();
+        /*
+        * Qunando há diferença entre os arquivos contendo blocos. É possivel já caracterizar que houve alteração.
+        */
+        if (collectionsStaticBlocks.entrySet().size() != collectionsStaticBlocksAncestor.entrySet().size()) {
+            for (def initializerDeclaration : collectionsStaticBlocks.entrySet().size() == 0 ? collectionsStaticBlocksAncestor.entrySet() : collectionsStaticBlocks.entrySet()) {
+
+                String identifier = initializerDeclaration.getKey();
+                String blockedStatic = initializerDeclaration.getValue();
+                identifier = getIdentifierNumber(identifier);
+                def lineSet = new HashSet<ModifiedLine>();
+                staticBlockSet.add(new StaticBlock(identifier, lineSet, filePath));
+            }
+
+        } else {
+            for (def initializerDeclaration : collectionsStaticBlocks.entrySet()) {
+                for (def ancestralInitBlcok : collectionsStaticBlocksAncestor.entrySet()) {
+                    if (diffContentInitializationBlock(initializerDeclaration.getValue(), ancestralInitBlcok.getValue())) {
+                        String identifier = initializerDeclaration.getKey();
+                        String blockedStatic = initializerDeclaration.getValue();
+
+                        def lineSet = new HashSet<ModifiedLine>();
+                        identifier = getIdentifierNumber(identifier);
+                        staticBlockSet.add(new StaticBlock(identifier, lineSet, filePath));
+                    }
+
+                }
+            }
+        }
+        return staticBlockSet;
+    }
+
     Set<StaticBlock> matchModifiedStaticBlocksASTLines(Map<String, String> collectionsStaticBlocksAncestor, Map<String, String> collectionsStaticBlocks, List<ModifiedLine> modifiedLines, String filePath) {
         def staticBlockSet = new HashSet<StaticBlock>();
         /*
@@ -21,13 +58,6 @@ public class StaticBlockModifiedLinesMatcher {
                 identifier = getIdentifierNumber(identifier);
                 def lineSet = new HashSet<ModifiedLine>();
                 staticBlockSet.add(new StaticBlock(identifier, lineSet,filePath));
-
-              /*  def diffLineText = findModifiedLineByText(identifier,blockedStatic, modifiedLines);
-                identifier = getIdentifierNumber(identifier);
-                if (diffLineText != null) {
-                    lineSet.add(diffLineText);
-                    staticBlockSet.add(new StaticBlock(identifier, lineSet,filePath));
-                }*/
             }
             return staticBlockSet;
         }
@@ -86,6 +116,12 @@ public class StaticBlockModifiedLinesMatcher {
         }
 
         return staticBlockSet;
+    }
+    private boolean diffContentInitializationBlock(String targetBlock, String ascentralBlock){
+        String bStatic = getStringContentIntoSingleLineNoSpacing(StringUtils.removeEnd(StringUtils.removeStart(targetBlock,"{"),"}"))
+        String aStatic = getStringContentIntoSingleLineNoSpacing(StringUtils.removeEnd(StringUtils.removeStart(ascentralBlock,"{"),"}"))
+
+        return !(bStatic.equals(aStatic));
     }
     public ModifiedLine findModifiedLineByText(String keyBlockedStatic , String blockedStatic, List<ModifiedLine> modifiedLines) {
         for (def modifiedLine: modifiedLines) {

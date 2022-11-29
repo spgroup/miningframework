@@ -1,0 +1,16 @@
+project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+cxf;d00ec746daa06be71e05c70158f89763911c8892;b381188f7969cac583d069832375b34c05fcf42d;ca3f8a54ea;6e8816f1c4;rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/utils/InjectionUtils.java;1
+cxf;1643d074271218151cf2a17cbc71e5322497dee0;2bbdbdab92befd79e5083cf7a298f6a931a2e76e;0310b3420f;28b4fdefc3;rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java;1
+cxf;846d6c701c152f93e10a63ff110fd358c304e5b3;e5833e25c449f4e4b2ffba767a546907ffc173ec;1fc1fa0c79;1788c73628;core/src/main/java/org/apache/cxf/helpers/DOMUtils.java;1
+cxf;846d6c701c152f93e10a63ff110fd358c304e5b3;e5833e25c449f4e4b2ffba767a546907ffc173ec;1fc1fa0c79;1788c73628;rt/databinding/aegis/src/main/java/org/apache/cxf/aegis/type/XMLTypeCreator.java;2
+cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;services/sts/sts-core/src/test/java/org/apache/cxf/sts/common/CustomUserClaimsHandler.java;1
+cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;rt/transports/http-jetty/src/main/java/org/apache/cxf/transport/http_jetty/JettyHTTPDestination.java;1
+cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;rt/rs/security/xml/src/main/java/org/apache/cxf/rs/security/saml/authorization/ClaimsAuthorizingInterceptor.java;1
+cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;rt/transports/websocket/src/main/java/org/apache/cxf/transport/websocket/WebSocketTransportFactory.java;1
+cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;rt/rs/security/oauth-parent/oauth2-saml/src/main/java/org/apache/cxf/rs/security/oauth2/grants/saml/Saml2BearerGrantHandler.java;1
+cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;services/sts/sts-core/src/test/java/org/apache/cxf/sts/common/CustomClaimsHandler.java;1
+cxf;eed15b403add8264f8ee8d670dae7f8a07788c83;9f9a1c741cc37201bab1f19a0742a47aedc91306;1eb6908651;925978effd;rt/rs/security/xml/src/main/java/org/apache/cxf/rs/security/saml/AbstractSamlInHandler.java;1
+cxf;eed15b403add8264f8ee8d670dae7f8a07788c83;9f9a1c741cc37201bab1f19a0742a47aedc91306;1eb6908651;925978effd;rt/ws/security/src/main/java/org/apache/cxf/ws/security/tokenstore/TokenStoreFactory.java;1
+cxf;eed15b403add8264f8ee8d670dae7f8a07788c83;9f9a1c741cc37201bab1f19a0742a47aedc91306;1eb6908651;925978effd;services/sts/sts-core/src/test/java/org/apache/cxf/sts/operation/IssueEncryptedUnitTest.java;1
+cxf;eed15b403add8264f8ee8d670dae7f8a07788c83;9f9a1c741cc37201bab1f19a0742a47aedc91306;1eb6908651;925978effd;rt/ws/security/src/main/java/org/apache/cxf/ws/security/cache/ReplayCacheFactory.java;1
+cxf;eed15b403add8264f8ee8d670dae7f8a07788c83;9f9a1c741cc37201bab1f19a0742a47aedc91306;1eb6908651;925978effd;rt/ws/security/src/main/java/org/apache/cxf/ws/security/SecurityConstants.java;1

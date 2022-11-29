@@ -33,6 +33,9 @@ class StaticBlock {
     public String getPath(){
         return path;
     }
+    public void setPath(String pPath){
+        this.path = pPath;
+    }
     @Override
     public boolean equals(Object modifiedStaticBlock) {
         return modifiedStaticBlock instanceof StaticBlock && this.identifier == modifiedStaticBlock.getIdentifier()

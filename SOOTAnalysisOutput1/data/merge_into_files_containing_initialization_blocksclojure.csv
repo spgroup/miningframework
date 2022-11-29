@@ -1,0 +1,6 @@
+project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+clojure;ebcdd71828b1d4ec7df79a1dea963ede3e046ca1;64e4a00b25baed8315e17752241a3a3d28b5280c;2987bcdc;23746eea;src/jvm/clojure/lang/RT.java;1
+clojure;c6fddcabebd1dec50ea535d7576615da57fc0112;42df6a0ad721a798411e9a701d51a42f6686777f;07f05862;77be185a;src/jvm/clojure/lang/Compiler.java;1
+clojure;728c4c910595332dffd4308ed24364356d330471;c1ca66b7a171bcd2157e679799f37ba7a37bff36;ee9fc81d;93fecbd8;src/jvm/clojure/lang/Compiler.java;1
+clojure;c88ba226d4d64529dee3120719e48e0b08439eaa;d910b3d997e1c40528aab2212fe356a8598bb738;4d08439a;5f9df701;src/jvm/clojure/lang/Compiler.java;1
+clojure;c0218cfc80ba9ae4c1808e8f5644e14c464a5268;3e60eff602652e753a54ba88b25dbdd2615c3b2e;3d69750b;d910b3d9;src/jvm/clojure/lang/Compiler.java;1

@@ -1,0 +1,1 @@
+fatal: path 'hotspot/src/jdk.vm.compiler/share/classes/org.graalvm.compiler.hotspot.test/src/org/graalvm/compiler/hotspot/test/WriteBarrierAdditionTest.java' does not exist in '3ff7e077ea5520b7e0cddd5238f6099b7319527e'

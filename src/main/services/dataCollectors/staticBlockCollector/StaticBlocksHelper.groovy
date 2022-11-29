@@ -1,5 +1,6 @@
 package services.dataCollectors.staticBlockCollector
 
+import org.apache.commons.lang3.StringUtils
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.modifiedLinesCollector.DiffJParser
@@ -33,7 +34,7 @@ class StaticBlocksHelper {
         this.diffJOption = diffj
     }
 
-    public Set<StaticBlock> getModifiedStaticBlocks(Project project, String filePath, String ancestorSHA, String targetSHA, MergeCommit mergeCommit) {
+        public Set<StaticBlock> getModifiedStaticBlocks(Project project, String filePath, String ancestorSHA, String targetSHA, MergeCommit mergeCommit) {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
@@ -52,7 +53,7 @@ class StaticBlocksHelper {
         targetFile.delete()
         ancestorFile.delete()
 
-        return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksASTLines(ancestorIniatilizationBlockASTFile,staticBlockedASTFile, parsedTextualDiffResult,filePath);
+        return modifiedStaticBlocksMatcher.matchModifiedStaticBlocksAST(ancestorIniatilizationBlockASTFile,staticBlockedASTFile, parsedTextualDiffResult,filePath);
     }
    private int quantityInializationBlock(Map<Integer, String> ancestorIniatilizationBlockASTFile, Map<Integer, String> staticBlockedASTFile){
        if(staticBlockedASTFile.size() >= ancestorIniatilizationBlockASTFile.size()){
@@ -150,7 +151,6 @@ class StaticBlocksHelper {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filteredScenariosIniatilizationBlock.getAbsolutePath())))
             def line = null;
             while ((line = reader.readLine()) != null) {
-               // println "${line}";
                 String str = line.split(";")[4]
                 String str1 = line.split(";")[5]
                  if(targetFile.equals(str1) &&  mergeCommit.getRightSHA().equals(str) ){
@@ -177,6 +177,9 @@ class StaticBlocksHelper {
         def output = reader.readLines()
         reader.close()
         return output
+    }
+    private static String getStringContentIntoSingleLineNoSpacing(String content) {
+        return (content.replaceAll("\\r\\n|\\r|\\n|\\u0000","")).replaceAll("\\s+","");
     }
 
 }

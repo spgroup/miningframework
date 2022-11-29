@@ -42,7 +42,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
           obtainResultsForProject(project, mergeCommit, mutuallyModifiedNamesFiles, "2_results_branches_changed_least_one_common_file");
 
         for(file in mutuallyModifiedNamesFiles) {
-       //   if(file.containsIgnoreCase("RealmSourceCodeGenerator")) {
+         // if(file.containsIgnoreCase("JnlpSlaveAgentProtocol3")) {
               Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
               Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
@@ -54,7 +54,7 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
                   return true
               }
-         // }
+          //}
       }
         return false
     }
@@ -66,17 +66,19 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
 
         List<String> modifiedContextStaticBlocks = new ArrayList<String>();
         for(file in mutuallyModifiedNamesFiles) {
-            Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
-            Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
+           //if (file.contains("JnlpSlaveAgentProtocol3")) {
+                Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
+                Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
-            if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
-                modifiedContextStaticBlocks.addAll(leftModifiedContextStaticBlocks)
+                if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
+                    modifiedContextStaticBlocks.addAll(leftModifiedContextStaticBlocks)
+                }
             }
               /*  modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit))
                 if(!(modifiedContextStaticBlocks.size() > 0)) {
                     modifiedContextStaticBlocks.addAll(getModifiedContextStaticBlocksFiles(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit))
                 }*/
-        }
+        //}
 
         return modifiedContextStaticBlocks;
 

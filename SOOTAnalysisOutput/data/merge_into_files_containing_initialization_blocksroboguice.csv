@@ -1,0 +1,5 @@
+project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+roboguice;378e9da4b41f0f3cdba24a13453fc02978f129c3;9a7667b4b2a4473d52ff7514a691683efcca3bf1;594d19dd;c7cc90d5;roboguice/src/main/java/roboguice/config/DefaultRoboModule.java;1
+roboguice;9a7667b4b2a4473d52ff7514a691683efcca3bf1;662eef1774e2dd03391e6470c2fba71345c4e904;755dc568;435138e8;roboguice/src/main/java/roboguice/config/DefaultRoboModule.java;1
+roboguice;ffa3ffc5e6feb953b65f61dd45b268d8c03e3045;8d07bed511e1840e68787eaa916b43bdfd15e60d;1c3a9fcf;b78ce0f5;roboguice/src/main/java/roboguice/config/DefaultRoboModule.java;1
+roboguice;c4912aa4dcc9dbffc866d98fd027e6e1b414799d;0b52370dd4d43942c7e95c4d6204dc976d9f394d;54a59d36;6757e825;robo-guice/src/main/java/roboguice/application/GuiceApplication.java;1

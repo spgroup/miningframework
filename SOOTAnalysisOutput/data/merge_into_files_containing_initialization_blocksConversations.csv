@@ -1,0 +1,5 @@
+project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+Conversations;9d849f540f6cb5b1530fe52ef1a9469de28e2998;835c89328d44e81525b1d402090bfe48987cd26f;77b42ba9c;52e1a0c70;src/main/java/eu/siacs/conversations/services/XmppConnectionService.java;1
+Conversations;c33f4b704cd318514e2ed92a19c55a0ae42d2d14;0904ba42f83aa300711f73afb9bb50454712d440;9cc37a7bd;403eff3d1;src/main/java/eu/siacs/conversations/services/XmppConnectionService.java;1
+Conversations;c7ec82679f34888ded83758d7a3a5b0c03830b58;0d00ff0c159dfcc466355cf0a9c374211df5524b;8e0e81a60;a28116753;src/main/java/eu/siacs/conversations/services/XmppConnectionService.java;1
+Conversations;a28116753a1071e3fd88f32f19edffc046cd791c;abaabae853f67b4048b194131bd7b72114e86ba1;0d00ff0c1;d3dd80eec;src/main/java/eu/siacs/conversations/services/XmppConnectionService.java;1

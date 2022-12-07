@@ -1,0 +1,2 @@
+project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
+jedis;4a1d9928b58e61abc73612c883ea41c6eff32175;f9e7887e02b86ce893fde73dfec1ec5daabb7ba3;e4ee2c04;f4548807;src/test/java/redis/clients/jedis/tests/JedisPoolTest.java;1

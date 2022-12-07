@@ -1,0 +1,5 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+rstudio;7e485a33c83b1a0198d5aebe15e72c3e7d19eedc;b005d45576a6390c458882abca67b077e6360989;c1f1c2b36d;bad595888a;src/gwt/src/org/rstudio/core/client/polyfill/FastestSmallestTextEncoderDecoder.java;2
+rstudio;41494408a33d4f2366dd972da382adf668c35a59;36ff4a749da8da196c7b4bb7cd6e42820fa9377c;1479021360;3b22da5faf;src/gwt/src/org/rstudio/core/client/files/FileSystemItem.java;2
+rstudio;43277e4f3c80ee1758f9c7e3835ad22315f55a9a;36203ed67720c926decb47fd27ac6a9f235d3584;183761dfc8;1104c98031;src/gwt/src/org/rstudio/core/client/widget/TriStateCheckBox.java;2
+rstudio;7209b3cd5737b0630306192674517deb92ba9a22;f4d39967d7a30415411031360a82ea999e2dbf1a;9f8d1e394f;8bbedf6320;src/gwt/src/org/rstudio/core/client/RegexUtil.java;2

@@ -6,6 +6,8 @@ results.csv
 /build/
 .gradle
 /build/
+results.pdf
+confusion_matrix.jpg
 
 # Ignore Gradle GUI config
 gradle-app.setting

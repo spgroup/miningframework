@@ -15,25 +15,25 @@ import static app.MiningFramework.arguments
 class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
-    private final Long TIMEOUT = 240
+    private final Long TIMEOUT = 50
 
     private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
 
     private ConflictDetectionAlgorithm[] detectionAlgorithms = [
-            new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, TIMEOUT),
-            new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, TIMEOUT),
+//            new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, TIMEOUT),
+//            new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, TIMEOUT),
+//            new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, TIMEOUT),
             new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, TIMEOUT),
-            new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, TIMEOUT),
+//            new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, TIMEOUT),
             new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, TIMEOUT),
+//            new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, TIMEOUT),
+//            new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, TIMEOUT),
+//            new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, TIMEOUT),
             new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", sootWrapper, TIMEOUT),
-            new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, TIMEOUT),
-            new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, TIMEOUT),
-            new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, TIMEOUT),
+//            new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, TIMEOUT),
+//            new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, TIMEOUT),
+//            new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, TIMEOUT),
     ]
 
     void setDetectionAlgorithms(List<ConflictDetectionAlgorithm> detectionAlgorithms) {
@@ -88,18 +88,19 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
             sootResultsFile.delete()
         }
 
-        sootResultsFile << sootWrapper.getSootAnalysisVersionDisclaimer();
+//        sootResultsFile << sootWrapper.getSootAnalysisVersionDisclaimer();
         sootResultsFile << buildCsvHeader();
 
         return sootResultsFile
     }
 
-    private String buildCsvHeader() {
+    private String buildCsvHeader () {
         StringBuilder resultStringBuilder = new StringBuilder("project;class;method;merge commit");
 
         for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
             resultStringBuilder.append(";${algorithm.generateHeaderName()}");
         }
+        resultStringBuilder.append(";Time")
         resultStringBuilder.append("\n");
 
         return resultStringBuilder.toString();

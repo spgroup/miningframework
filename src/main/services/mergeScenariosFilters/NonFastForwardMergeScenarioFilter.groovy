@@ -2,6 +2,7 @@ package services.mergeScenariosFilters
 
 import java.nio.file.Path
 import java.util.stream.Collectors
+import services.util.Utils
 
 class NonFastForwardMergeScenarioFilter {
     public static List<Path> applyFilter(List<Path> mergeScenarios) {
@@ -26,6 +27,6 @@ class NonFastForwardMergeScenarioFilter {
     }
 
     private static Path getInvolvedFile(Path mergeScenario, String fileName) {
-        return mergeScenario.resolve("${fileName}.java").toAbsolutePath()
+        return mergeScenario.resolve(Utils.getfileNameWithExtension(fileName)).toAbsolutePath()
     }
 }

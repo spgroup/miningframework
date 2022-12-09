@@ -1,6 +1,11 @@
 package services.outputProcessors.soot
 
+import exception.ExternalScriptException
+import util.ProcessRunner
+
 class Main {
+    private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/gerenate_results_analysis.py"
+    private static final String SCRIPT_RUNNER = "python3"
 
     static main(args) {
         String outputPath = "output"
@@ -24,9 +29,26 @@ class Main {
         RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
 
         sootRunner.executeAllAnalyses(outputPath);
+
+        generateResults(outputPath);
+    }
+
+    public static void generateResults(outputPath){
+        println "Running gerenate_results_analysis"
+        ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, RESULT_ANALYSIS_PATH, outputPath)
+        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
+
+        Process process = ProcessRunner.startProcess(builder)
+        int exitStatus = process.waitFor()
+
+        if (exitStatus != 0) {
+            throw new ExternalScriptException(RESULT_ANALYSIS_PATH, exitStatus);
+        }
     }
 
 }
+
+
 
 public class TeePrintStream extends PrintStream {
     private final PrintStream second;

@@ -15,7 +15,7 @@ import static app.MiningFramework.arguments
 class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
-    private final Long TIMEOUT = 50
+    private final Long TIMEOUT = 240
 
     private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
 

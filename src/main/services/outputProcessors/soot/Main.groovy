@@ -34,17 +34,19 @@ class Main {
             } else {
                 RunSootAnalysisOutputProcessor sootRunner = new RunSootAnalysisOutputProcessor();
 
-//                if (appArguments.getAllanalysis()) {
-//                    sootRunner.configureDetectionAlgorithmsTimeout(appArguments.getTimeout())
-//                } else {
-//                    sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
-//                }
+                if (appArguments.getAllanalysis()) {
+                    sootRunner.configureDetectionAlgorithmsTimeout(appArguments.getTimeout())
+                } else {
+                    sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
+                }
 
                 sootRunner.executeAnalyses(outputPath)
 
-                generateResults(outputPath)
-            }
+                if (appArguments.isReport()) {
+                    reportResults(outputPath)
+                }
 
+            }
 
         } catch (IOException e) {
             if (file != null) {
@@ -58,7 +60,7 @@ class Main {
 
     }
 
-    public static void generateResults(outputPath){
+    public static void reportResults(outputPath){
         println "Running gerenate_results_analysis"
         ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, RESULT_ANALYSIS_PATH, outputPath)
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)

@@ -2,7 +2,7 @@ results.csv
 /output/
 *.iml
 /bin/
-
+dependencies/.fuse_hidden*
 /build/
 .gradle
 /build/

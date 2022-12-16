@@ -8,7 +8,7 @@ import util.ProcessRunner
 
 class Main {
 
-    private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/gerenate_results_analysis.py"
+    private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/generate_analysis_results.py"
     private static final String SCRIPT_RUNNER = "python3"
 
     static main(args) {
@@ -61,7 +61,7 @@ class Main {
     }
 
     public static void reportResults(outputPath){
-        println "Running gerenate_results_analysis"
+        println "Running generate_analysis_results"
         ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, RESULT_ANALYSIS_PATH, outputPath)
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
 

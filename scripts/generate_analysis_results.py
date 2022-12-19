@@ -41,8 +41,6 @@ class ReportAnalysis:
             LOIGroundTruth.append(LOI)
 
         index = 0
-        result = {"True Negative":0, "False Negative":0, "True Positive":0, "False Positive":0}
-
         for (confluence, OA, lrPDG, rlPDG, lrDP, rlDF) in zip(soot_results["Confluence Inter"], soot_results["OA Inter"], soot_results["left right PDG"], soot_results["right left PDG"], soot_results["left right DFP-Inter"], soot_results["right left DFP-Inter"]):
             analysesORResult = False
             error = False
@@ -53,31 +51,24 @@ class ReportAnalysis:
             else:
                 error = True
 
-            if (LOIGroundTruth[index] == "No"):
-                if (analysesORResult):
-                    ReportAnalysis.updating_results(result, LOIGroundTruth[index], "False Positive", error)
-                else:
-                    ReportAnalysis.updating_results(result, LOIGroundTruth[index], "True Negative", error)
+            if (LOIGroundTruth[index] != "-" and not error):
+                if (LOIGroundTruth[index] == "No"):
+                    if (analysesORResult):
+                        FP = FP + 1
+                    else:
+                        TN = TN + 1
 
-            if (LOIGroundTruth[index] == "Yes"):
-                if (analysesORResult):
-                    ReportAnalysis.updating_results(result, LOIGroundTruth[index], "True Positive", error)
-                else:
-                    ReportAnalysis.updating_results(result, LOIGroundTruth[index], "False Negative", error)
+                if (LOIGroundTruth[index] == "Yes"):
+                    if (analysesORResult):
+                        TP = TP + 1
+                    else:
+                        FN = FN + 1
+            index = index + 1
 
-            index = index+1
-
-        print(result)
-
-        FP = result["False Positive"]
-        TP = result["True Positive"]
-        FN = result["False Negative"]
-        TN = result["True Negative"]
-
-        sensitivity = (TP / (TP + FN))
-        precision = (TP / (TP + FP))
-        f1_score = (2*TP / (2*TP + FP + FN))
-        accuracy = ((TP + TN) / (FP + TP + TN + FN))
+        sensitivity = 0 if ((TP + FN) == 0) else (TP / (TP + FN))
+        precision = 0 if ((TP + FP) == 0) else (TP / (TP + FP))
+        f1_score = 0 if ((2*TP + FP + FN) == 0) else (2*TP / (2*TP + FP + FN))
+        accuracy = 0 if ((FP + TP + TN + FN) == 0) else ((TP + TN) / (FP + TP + TN + FN))
 
         # variable pdf
         pdf = FPDF()
@@ -142,16 +133,8 @@ class ReportAnalysis:
         pdf.image("confusion_matrix.jpg", x = None, y = None, w = 160, h = 110, type = 'jpg', link = 'confusion_matrix.jpg')
 
         # save the pdf with name .pdf
-        pdf.output("results.pdf")
-        print("Results in results.pdf")
-
-    @staticmethod
-    def updating_results(result, LOI, index, error):
-        if (LOI != "-" and not error):
-            if (result.get(index) != None):
-                result[index] = result.get(index) + 1
-            else:
-                result[index] = 1
+        pdf.output("output/data/results.pdf")
+        print("Results in output/data/results.pdf")
 
 path_ground_truth = "../miningframework/input/LOI.csv"
 ground_truth_name = "Locally Observable Interference"

@@ -55,7 +55,7 @@ Options:
  -pdge,--pdge                            Run pdg-e
  -r,--reachability                       Run reachability
  -report                                 Run report results for experiment using -icf -ioa -idfp -pdg
- -t,--timeout <timeout>                  timeout (default: 240)
+ -t,--timeout <timeout>                  Run -t time: time limit for each analysis (default: 240)
 ```
 
 For example: 
@@ -63,3 +63,5 @@ For example:
 ./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-icf -ioa -idfp -pdg"
 ```
 5. The result will be written in `output/data/soot-results.csv`
+   
+6. The result for report analysis will be written in `output/data/results.pdf`

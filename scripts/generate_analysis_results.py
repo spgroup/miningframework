@@ -40,30 +40,30 @@ class ReportAnalysis:
         for LOI in loi[ground_truth_name]:
             LOIGroundTruth.append(LOI)
 
-        index = 0
+        position = 0
         for (confluence, OA, lrPDG, rlPDG, lrDP, rlDF) in zip(soot_results["Confluence Inter"], soot_results["OA Inter"], soot_results["left right PDG"], soot_results["right left PDG"], soot_results["left right DFP-Inter"], soot_results["right left DFP-Inter"]):
             analysesORResult = False
             error = False
-            if ("true" in str(confluence).lower() or "true" in str(OA).lower() or "true" in str(lrPDG).lower() or "true" in str(rlPDG).lower() or "true" in str(lrDP).lower() or "true" in str(rlDF).lower()):
+            if ("true" == str(confluence).lower() or "true" == str(OA).lower() or "true" == str(lrPDG).lower() or "true" == str(rlPDG).lower() or "true" == str(lrDP).lower() or "true" == str(rlDF).lower()):
                 analysesORResult = True
-            elif ("false" in str(confluence).lower() or "false" in str(OA).lower() or "false" in str(lrPDG).lower() or "false" in str(rlPDG).lower() or "false" in str(lrDP).lower() or "false" in str(rlDF).lower()):
+            elif ("false" == str(confluence).lower() and "false" == str(OA).lower() and "false" == str(lrPDG).lower() and "false" == str(rlPDG).lower() and "false" == str(lrDP).lower() and "false" == str(rlDF).lower()):
                 analysesORResult = False
             else:
                 error = True
 
-            if (LOIGroundTruth[index] != "-" and not error):
-                if (LOIGroundTruth[index] == "No"):
+            if (LOIGroundTruth[position] != "-" and not error):
+                if (LOIGroundTruth[position] == "No"):
                     if (analysesORResult):
                         FP = FP + 1
                     else:
                         TN = TN + 1
 
-                if (LOIGroundTruth[index] == "Yes"):
+                if (LOIGroundTruth[position] == "Yes"):
                     if (analysesORResult):
                         TP = TP + 1
                     else:
                         FN = FN + 1
-            index = index + 1
+            position = position + 1
 
         sensitivity = 0 if ((TP + FN) == 0) else (TP / (TP + FN))
         precision = 0 if ((TP + FP) == 0) else (TP / (TP + FP))

@@ -37,11 +37,11 @@ class ReportAnalysis:
         print("Generating results...")
 
         LOIGroundTruth = []
-        for LOI in loi[ground_truth_name]:
-            LOIGroundTruth.append(LOI)
+        for (project, merge_commit, LOI) in zip(loi["Project"], loi["Merge Commit"], loi[ground_truth_name]):
+            LOIGroundTruth.append((project, merge_commit, LOI))
 
         position = 0
-        for (confluence, OA, lrPDG, rlPDG, lrDP, rlDF) in zip(soot_results["Confluence Inter"], soot_results["OA Inter"], soot_results["left right PDG"], soot_results["right left PDG"], soot_results["left right DFP-Inter"], soot_results["right left DFP-Inter"]):
+        for (project, merge_commit, confluence, OA, lrPDG, rlPDG, lrDP, rlDF) in zip(soot_results["project"], soot_results["merge commit"], soot_results["Confluence Inter"], soot_results["OA Inter"], soot_results["left right PDG"], soot_results["right left PDG"], soot_results["left right DFP-Inter"], soot_results["right left DFP-Inter"]):
             analysesORResult = False
             error = False
             if ("true" == str(confluence).lower() or "true" == str(OA).lower() or "true" == str(lrPDG).lower() or "true" == str(rlPDG).lower() or "true" == str(lrDP).lower() or "true" == str(rlDF).lower()):
@@ -51,14 +51,20 @@ class ReportAnalysis:
             else:
                 error = True
 
-            if (LOIGroundTruth[position] != "-" and not error):
-                if (LOIGroundTruth[position] == "No"):
+            project_actual, merge_commit_actual, loi_actual = ("", "", "")
+
+            for (project_current, merge_commit_current, loi_current) in LOIGroundTruth:
+                if (project_current, merge_commit_current) == (project, merge_commit):
+                    project_actual, merge_commit_actual, loi_actual = project_current, merge_commit_current, loi_current
+
+            if (loi_actual != "-" and not error and project_actual == project and merge_commit_actual == merge_commit):
+                if (loi_actual == "No"):
                     if (analysesORResult):
                         FP = FP + 1
                     else:
                         TN = TN + 1
 
-                if (LOIGroundTruth[position] == "Yes"):
+                if (loi_actual == "Yes"):
                     if (analysesORResult):
                         TP = TP + 1
                     else:

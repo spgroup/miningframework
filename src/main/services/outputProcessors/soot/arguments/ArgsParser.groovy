@@ -32,6 +32,7 @@ class ArgsParser {
         this.cli.pdg(longOpt: 'pdg',  "Run pdg")
         this.cli.pdge(longOpt: 'pdge',  "Run pdg-e")
         this.cli.pd(longOpt: 'pessimistic-dataflow',  "Run pessimistic-dataflow")
+        this.cli.report(longOpt: 'report',  "Run report results for experiment using -icf -ioa -idfp -pdg")
         this.cli.r(longOpt: 'reachability',  "Run reachability")
     }
 
@@ -77,7 +78,6 @@ class ArgsParser {
         if (this.options.ioa) {
             args.setOaInter(true)
         }
-
         if (this.options.dfp) {
             args.setDfpIntra(true)
         }
@@ -87,7 +87,6 @@ class ArgsParser {
         if (this.options.cd) {
             args.setCd(true)
         }
-
         if (this.options.cde) {
             args.setCde(true)
         }
@@ -99,6 +98,9 @@ class ArgsParser {
         }
         if (this.options.pd) {
             args.setPessimisticDataflow(true)
+        }
+        if (this.options.report) {
+            args.setReport(true)
         }
         if (this.options.r) {
             args.setReachability(true)

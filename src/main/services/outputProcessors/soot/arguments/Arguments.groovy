@@ -17,6 +17,7 @@ class Arguments {
     private boolean pdge
     private boolean pessimisticDataflow
     private boolean reachability
+    private boolean report
     private int timeout
 
     Arguments() { // set the default values for all parameters
@@ -36,6 +37,7 @@ class Arguments {
         pdge = false
         pessimisticDataflow = false
         reachability = false
+        report = false
         timeout = 240
     }
 
@@ -165,6 +167,16 @@ class Arguments {
 
     void setReachability(boolean reachability) {
         this.reachability = reachability
+    }
+
+    boolean getIsHelp() {
+        return isHelp
+    }
+    boolean isReport() {
+        return report
+    }
+    void setReport(boolean report) {
+        this.report = report
     }
 
     int getTimeout() {

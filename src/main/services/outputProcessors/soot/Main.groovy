@@ -1,10 +1,15 @@
 package services.outputProcessors.soot
 
+import exception.ExternalScriptException
 import exception.InvalidArgsException
 import services.outputProcessors.soot.arguments.ArgsParser
 import services.outputProcessors.soot.arguments.Arguments
+import util.ProcessRunner
 
 class Main {
+
+    private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/generate_analysis_results.py"
+    private static final String SCRIPT_RUNNER = "python3"
 
     static main(args) {
         SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
@@ -36,8 +41,12 @@ class Main {
                 }
 
                 sootRunner.executeAnalyses(outputPath)
-            }
 
+                if (appArguments.isReport()) {
+                    reportResults(outputPath)
+                }
+
+            }
 
         } catch (IOException e) {
             if (file != null) {
@@ -49,6 +58,19 @@ class Main {
             println 'Run the miningframework with --help to see the possible arguments'
         }
 
+    }
+
+    public static void reportResults(outputPath){
+        println "Running generate_analysis_results"
+        ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, RESULT_ANALYSIS_PATH, outputPath)
+        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
+
+        Process process = ProcessRunner.startProcess(builder)
+        int exitStatus = process.waitFor()
+
+        if (exitStatus != 0) {
+            throw new ExternalScriptException(RESULT_ANALYSIS_PATH, exitStatus);
+        }
     }
 
     private static ArrayList<ConflictDetectionAlgorithm> configureDetectionAlgorithms(Arguments appArguments, SootAnalysisWrapper sootWrapper) {

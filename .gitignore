@@ -2,11 +2,13 @@ results.csv
 /output/
 *.iml
 /bin/
-
+dependencies/.fuse_hidden*
 /build/
 .gradle
 /build/
-
+results.pdf
+confusion_matrix.jpg
+.vscode
 # Ignore Gradle GUI config
 gradle-app.setting
 

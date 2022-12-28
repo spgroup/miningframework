@@ -34,8 +34,7 @@
    
 > The CLI has the following help page:
 ```
-usage: ./gradlew run -DmainClass="services.outputProcessors.soot.Main
-                 --args="[options]"
+usage: ./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="[options]"
 Options:
  -a,--allanalysis                        Excute all analysis
  -cd,--cd                                Run cd
@@ -55,6 +54,14 @@ Options:
  -pdg,--pdg                              Run pdg
  -pdge,--pdge                            Run pdg-e
  -r,--reachability                       Run reachability
- -t,--timeout <timeout>                  timeout (default: 240)
+ -report                                 Run report results for experiment using -icf -ioa -idfp -pdg
+ -t,--timeout <timeout>                  Run -t time: time limit for each analysis (default: 240)
+```
+
+For example: 
+```
+./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-icf -ioa -idfp -pdg"
 ```
 5. The result will be written in `output/data/soot-results.csv`
+   
+6. The result for report analysis will be written in `output/data/results.pdf`

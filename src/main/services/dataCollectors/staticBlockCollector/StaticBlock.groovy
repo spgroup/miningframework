@@ -1,35 +1,22 @@
 package services.dataCollectors.staticBlockCollector
 
-import services.dataCollectors.modifiedLinesCollector.ModifiedLine
-
 /**
- * This class represents a staticBlock's difference from a base to commit to
- * another, it uses the identifier(generated number) to identify it and has a list of the modified
- * lines from one commit to another
+ * This class represents a staticBlock's , it uses the identifier(generated number) to identify a initialization block
+ *  which file does this initialization block belong to
  */
 class StaticBlock {
 
     private String identifier;
-    private Set<ModifiedLine> modifiedLines;
     private String path;
 
-
-    StaticBlock(String identifier, Set<ModifiedLine> lines) {
+    StaticBlock(String identifier, path) {
         this.identifier = identifier;
-        this.modifiedLines = lines;
-    }
-    StaticBlock(String identifier, Set<ModifiedLine> lines, path) {
-        this.identifier = identifier;
-        this.modifiedLines = lines;
         this.path = path;
     }
     public String getIdentifier() {
         return this.identifier;
     }
 
-    public Set<ModifiedLine> getModifiedLines() {
-        return this.modifiedLines;
-    }
     public String getPath(){
         return path;
     }
@@ -45,14 +32,4 @@ class StaticBlock {
     public int hashCode() {
         return this.identifier.hashCode();
     }
-
-    @Override
-    public String toString() {
-        String result = this.identifier + "\n"
-        for (def line : this.modifiedLines) {
-            result += line.toString()    + "\n";
-        }
-        return result;
-    }
-
 }

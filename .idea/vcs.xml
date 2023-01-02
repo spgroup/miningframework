@@ -5,6 +5,7 @@
     <mapping directory="$PROJECT_DIR$/clonedRepositories/accumulo" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/jFSTMerge" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/jdk" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clonedRepositories/lucene" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/orientdb" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/spring-framework" vcs="Git" />
   </component>

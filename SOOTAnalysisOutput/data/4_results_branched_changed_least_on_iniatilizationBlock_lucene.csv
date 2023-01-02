@@ -1,0 +1,4 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+lucene;6b87cfb88c1ad428f3b6affb53aef1ed49949ab8;4d46caa05d01e6f7e2b3a3b432906eb45732bbfe;a8099d63679;7b8e72e5531;solr/core/src/java/org/apache/solr/core/CoreContainer.java;4
+lucene;08d2c2d0df7d030a2f68e63e2660ee7f38d1a3cf;2cda4184c943206a01927eb7bcfa14df895cc413;fb5ba8c9de6;567706041d9;lucene/core/src/java/org/apache/lucene/util/RamUsageEstimator.java;4
+lucene;6a8768e3959e6bb1beb8082ed9f4cc6807f94aff;faeb1fe8c16f9e02aa5c3bba295bc24325b94a07;ee2be2024e6;ea79c668c7e;solr/solrj/src/java/org/apache/solr/client/solrj/impl/LBHttpSolrClient.java;4

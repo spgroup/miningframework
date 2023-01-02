@@ -42,7 +42,7 @@ class MergeSummary {
         Map<String, Path> mergeOutputPaths = getMergeOutputPaths()
         Map<String, String> mergeOutputs = getMergeOutputs(mergeOutputPaths)
         Map<String, Set<MergeConflict>> mergeConflicts = getMergeConflicts(mergeOutputPaths)
-        Map<String, Integer> mergeConflictsInitializationBlcok = getMergeConflictsForStaticBlock(mergeOutputPaths)
+        Map<String, Integer> mergeConflictsInitializationBlock = getMergeConflictsForStaticBlock(mergeOutputPaths)
 
         this.numberOfConflictsPerApproach = [:]
         mergeConflicts.each { approach, conflicts ->
@@ -50,7 +50,7 @@ class MergeSummary {
         }
 
         this.numberOfConflictsPerInitializationBlockAndApproach = [:]
-        mergeConflictsInitializationBlcok.each { approach, conflicts ->
+        mergeConflictsInitializationBlock.each { approach, conflicts ->
             this.numberOfConflictsPerInitializationBlockAndApproach[approach] = conflicts
         }
 
@@ -125,10 +125,7 @@ class MergeSummary {
 
         return outputs
     }
-    private boolean verifyExistFile(Path mergeOutPath){
-        File file = new File(mergeOutPath.toString())
-        return file.getAbsoluteFile().exists();
-    }
+
     private String getMergeOutput(Path mergeOutputPath) {
         return mergeOutputPath.getText()
     }

@@ -37,26 +37,27 @@ class ReportAnalysis:
         print("Generating results...")
 
         LOIGroundTruth = []
-        for (project, merge_commit, LOI) in zip(loi["Project"], loi["Merge Commit"], loi[ground_truth_name]):
-            LOIGroundTruth.append((project, merge_commit, LOI))
+        for (project, merge_commit, class_name, method, LOI) in zip(loi["Project"], loi["Merge Commit"], loi["Class Name"], loi["Method or field declaration changed by the two merged branches"], loi[ground_truth_name]):
+            LOIGroundTruth.append((project, merge_commit, class_name, method, LOI))
 
         position = 0
-        for (project, merge_commit, confluence, OA, lrPDG, rlPDG, lrDP, rlDF) in zip(soot_results["project"], soot_results["merge commit"], soot_results["Confluence Inter"], soot_results["OA Inter"], soot_results["left right PDG"], soot_results["right left PDG"], soot_results["left right DFP-Inter"], soot_results["right left DFP-Inter"]):
+        for (project, class_name, method, merge_commit, confluence, OA, lrPDG, rlPDG, lrDP, rlDF) in zip(soot_results["project"],  soot_results["class"],  soot_results["method"],  soot_results["merge commit"], soot_results["Confluence Inter"], soot_results["OA Inter"], soot_results["left right PDG"], soot_results["right left PDG"], soot_results["left right DFP-Inter"], soot_results["right left DFP-Inter"]):
+
             analysesORResult = False
             error = False
+            list_results = [str(confluence).lower(), str(OA).lower(), str(lrPDG).lower(), str(rlPDG).lower(), str(lrDP).lower(), str(rlDF).lower()]
             if ("true" == str(confluence).lower() or "true" == str(OA).lower() or "true" == str(lrPDG).lower() or "true" == str(rlPDG).lower() or "true" == str(lrDP).lower() or "true" == str(rlDF).lower()):
                 analysesORResult = True
-            elif ("false" == str(confluence).lower() and "false" == str(OA).lower() and "false" == str(lrPDG).lower() and "false" == str(rlPDG).lower() and "false" == str(lrDP).lower() and "false" == str(rlDF).lower()):
+            elif ("false" in list_results):
                 analysesORResult = False
             else:
                 error = True
 
-            project_actual, merge_commit_actual, loi_actual = ("", "", "")
+            project_actual, merge_commit_actual, class_name_actual, method_actual, loi_actual = ("", "", "", "", "")
+            for (project_current, merge_commit_current, class_name_current, method_current, LOI_current) in LOIGroundTruth:
 
-            for (project_current, merge_commit_current, loi_current) in LOIGroundTruth:
-                if (project_current, merge_commit_current) == (project, merge_commit):
-                    project_actual, merge_commit_actual, loi_actual = project_current, merge_commit_current, loi_current
-
+                if (project_current, merge_commit_current, class_name_current, method_current) == (project, merge_commit, class_name, method):
+                    project_actual, merge_commit_actual, class_name_actual, method_actual, loi_actual = project_current, merge_commit_current, class_name_current, method_current, LOI_current
             if (loi_actual != "-" and not error and project_actual == project and merge_commit_actual == merge_commit):
                 if (loi_actual == "No"):
                     if (analysesORResult):
@@ -70,7 +71,6 @@ class ReportAnalysis:
                     else:
                         FN = FN + 1
             position = position + 1
-
         sensitivity = 0 if ((TP + FN) == 0) else (TP / (TP + FN))
         precision = 0 if ((TP + FP) == 0) else (TP / (TP + FP))
         f1_score = 0 if ((2*TP + FP + FN) == 0) else (2*TP / (2*TP + FP + FN))
@@ -102,6 +102,18 @@ class ReportAnalysis:
         pdf.cell(200, 10, txt = ("Accuracy: "+str(round(accuracy, 4))),
                  ln = 2, align = 'L')
 
+        pdf.cell(200, 10, txt = ("False Positive: "+str(FP)),
+                 ln = 2, align = 'L')
+
+        pdf.cell(200, 10, txt = ("False Negative: "+str(FN)),
+                 ln = 2, align = 'L')
+
+        pdf.cell(200, 10, txt = ("True Positive: "+str(TP)),
+                 ln = 2, align = 'L')
+
+        pdf.cell(200, 10, txt = ("True Negative: "+str(TN)),
+                 ln = 2, align = 'L')
+
         cm = np.array([[TP,  FP], [FN, TN]])
         normalize = False
         target_names = ['Positive', 'Negative']
@@ -127,11 +139,11 @@ class ReportAnalysis:
             if normalize:
                 plt.text(j, i, "{:0.4f}".format(cm[i, j]),
                          horizontalalignment="center",
-                         color="white" if cm[i, j] > thresh else "black", fontsize=23)
+                         color="yellow" if cm[i, j] > thresh/2 else "black", fontsize=23)
             else:
                 plt.text(j, i, "{:,}".format(cm[i, j]),
                          horizontalalignment="center",
-                         color="white" if cm[i, j] > thresh else "black", fontsize=23)
+                         color="yellow" if cm[i, j] > thresh/2 else "black", fontsize=23)
         plt.tight_layout()
 
         plt.savefig("confusion_matrix.jpg")

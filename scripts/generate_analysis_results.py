@@ -116,7 +116,8 @@ class ReportAnalysis:
 
         cm = np.array([[TP,  FP], [FN, TN]])
         normalize = False
-        target_names = ['Positive', 'Negative']
+        target_names = ['Actual Positive', ' Actual Negative']
+        target_names2 = ['Predicted Positive', ' Predicted Negative']
         title = "Confusion Matrix"
 
         cmap = plt.get_cmap('Blues')
@@ -128,7 +129,7 @@ class ReportAnalysis:
 
         if target_names is not None:
             tick_marks = np.arange(len(target_names))
-            plt.xticks(tick_marks, target_names, rotation=45, fontsize=16)
+            plt.xticks(tick_marks, target_names2, rotation=45, fontsize=16)
             plt.yticks(tick_marks, target_names, fontsize=16)
 
         if normalize:
@@ -139,11 +140,11 @@ class ReportAnalysis:
             if normalize:
                 plt.text(j, i, "{:0.4f}".format(cm[i, j]),
                          horizontalalignment="center",
-                         color="yellow" if cm[i, j] > thresh/2 else "black", fontsize=23)
+                         color="yellow" if cm[i, j] > thresh else "black", fontsize=23)
             else:
                 plt.text(j, i, "{:,}".format(cm[i, j]),
                          horizontalalignment="center",
-                         color="yellow" if cm[i, j] > thresh/2 else "black", fontsize=23)
+                         color="yellow" if cm[i, j] > thresh else "black", fontsize=23)
         plt.tight_layout()
 
         plt.savefig("confusion_matrix.jpg")

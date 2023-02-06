@@ -102,21 +102,21 @@ class ReportAnalysis:
         pdf.cell(200, 10, txt = ("Accuracy: "+str(round(accuracy, 4))),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("False Positive: "+str(FP)),
+        pdf.cell(200, 10, txt = ("False Positives: "+str(FP)),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("False Negative: "+str(FN)),
+        pdf.cell(200, 10, txt = ("False Negatives: "+str(FN)),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("True Positive: "+str(TP)),
+        pdf.cell(200, 10, txt = ("True Positives: "+str(TP)),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("True Negative: "+str(TN)),
+        pdf.cell(200, 10, txt = ("True Negatives: "+str(TN)),
                  ln = 2, align = 'L')
 
         cm = np.array([[TP,  FP], [FN, TN]])
         normalize = False
-        target_names = ['Actual Positive', ' Actual Negative']
+        target_names = ['Actually Positive', ' Actually Negative']
         target_names2 = ['Predicted Positive', ' Predicted Negative']
         title = "Confusion Matrix"
 
@@ -129,8 +129,8 @@ class ReportAnalysis:
 
         if target_names is not None:
             tick_marks = np.arange(len(target_names))
-            plt.xticks(tick_marks, target_names2, rotation=45, fontsize=16)
-            plt.yticks(tick_marks, target_names, fontsize=16)
+            plt.xticks(tick_marks, target_names, fontsize=16)
+            plt.yticks(tick_marks, target_names2, fontsize=16)
 
         if normalize:
             cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]

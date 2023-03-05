@@ -23,7 +23,8 @@ public class BeanDeserializerFactory extends BasicDeserializerFactory implements
 
     protected final static Set<String> DEFAULT_NO_DESER_CLASS_NAMES;
 
-    static {
+    static {<<<<<<< MINE
+
         Set<String> s = new HashSet<>();
         s.add("org.apache.commons.collections.functors.InvokerTransformer");
         s.add("org.apache.commons.collections.functors.InstantiateTransformer");
@@ -34,9 +35,9 @@ public class BeanDeserializerFactory extends BasicDeserializerFactory implements
         s.add("org.springframework.beans.factory.ObjectFactory");
         s.add("com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl");
         DEFAULT_NO_DESER_CLASS_NAMES = Collections.unmodifiableSet(s);
-    }
+    
+=======
 
-    static {
         Set<String> s = new HashSet<String>();
         s.add("org.apache.commons.collections.functors.InvokerTransformer");
         s.add("org.apache.commons.collections.functors.InstantiateTransformer");
@@ -47,7 +48,9 @@ public class BeanDeserializerFactory extends BasicDeserializerFactory implements
         s.add("org.springframework.beans.factory.ObjectFactory");
         s.add("com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl");
         DEFAULT_NO_DESER_CLASS_NAMES = Collections.unmodifiableSet(s);
-    }
+    
+>>>>>>> YOURS
+}
 
     protected Set<String> _cfgIllegalClassNames = DEFAULT_NO_DESER_CLASS_NAMES;
 

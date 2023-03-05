@@ -36,14 +36,14 @@ class MutuallyModifiedStaticBlocksCommitFilter implements CommitFilter {
             SpreadsheetBuilder.obtainResultsSpreadsheetForProject(project, mergeCommit, SpreadsheetBuilder.FILTER_BRANCHES_CHANGED_LEAST_ONE_COMMON_FILE);
         }
         for(file in mutuallyModifiedNamesFiles) {
-              Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
-              Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
+                Set<String> leftModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA(), mergeCommit)
+                Set<String> rightModifiedContextStaticBlocks = getModifiedContextStaticBlocks(project, file, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA(), mergeCommit)
 
-              //Step 4 of filter: both branches changed at least one initialization block
-              if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
-                  SpreadsheetBuilder.obtainResultsSpreadsheetForProject(project, mergeCommit, file, leftModifiedContextStaticBlocks.size() + rightModifiedContextStaticBlocks.size())
-                  return true
-              }
+                //Step 4 of filter: both branches changed at least one initialization block
+                if (leftModifiedContextStaticBlocks.size() > 0 && rightModifiedContextStaticBlocks.size() > 0) {
+                    SpreadsheetBuilder.obtainResultsSpreadsheetForProject(project, mergeCommit, file, leftModifiedContextStaticBlocks.size() + rightModifiedContextStaticBlocks.size())
+                    return true
+                }
       }
         return false
     }

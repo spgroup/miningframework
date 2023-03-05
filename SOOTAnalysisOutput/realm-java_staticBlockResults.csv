@@ -1,5 +1,4 @@
 project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
-realm-java,68ef49b6f7392875ecec3b4ce5367e63dae9b768,RealmDefaultModuleMediator,1,1,0,0,0,0,true,false,false,true,false,false
 realm-java,f55c2eac027a42bd310f2750eb944750108199f1,RealmObjectSchema,1,1,0,0,0,0,true,false,false,true,false,false
 realm-java,1923c11018c5bdec5756f32f9a092dca20c95bb3,RealmObjectSchema,0,0,0,0,0,0,true,false,false,true,true,true
 realm-java,8a7a42e6b8646f17aa9534232b028c09e23465c8,RealmObjectSchema,0,0,0,0,0,0,true,true,true,true,true,true
@@ -9,15 +8,12 @@ realm-java,f1e87bc607ec4a0598c786966e0c1a5c36af1914,RealmObjectSchema,3,3,0,0,0,
 realm-java,86c8fa5e63ac2166f2805495a605b4873daa40af,RealmJsonTypeHelper,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,86c8fa5e63ac2166f2805495a605b4873daa40af,RealmObjectSchema,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,86c8fa5e63ac2166f2805495a605b4873daa40af,ObjectServerFacade,0,0,0,0,0,0,true,true,true,true,true,true
-realm-java,86c8fa5e63ac2166f2805495a605b4873daa40af,StandardRealmObjectSchema,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,86c8fa5e63ac2166f2805495a605b4873daa40af,Constants,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,3e1310755be871ec120633637f17afe3a439f4bc,ObjectServerFacade,1,1,0,1,1,0,true,false,false,true,false,false
 realm-java,38c90e5e885158e1b4cbae570b0a65f894b91f1e,ObjectServerFacade,1,1,0,1,1,0,true,false,false,true,false,false
 realm-java,8f735c63da0a65c6f331c8134d5a2f1bf5a3ddac,RealmObjectSchema,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,a42ae3a926faa7fd5486e5aab9e17813b5699706,RealmObjectSchema,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,4470f18dd3cd4f5bd8ee85c58327c63030ce0bec,RealmObjectSchema,0,0,0,0,0,0,true,true,true,true,true,true
-realm-java,f034db6a3357b79d1eec6806e47ce52931dbf33e,SyncManager,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,f034db6a3357b79d1eec6806e47ce52931dbf33e,ObjectServerFacade,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,f034db6a3357b79d1eec6806e47ce52931dbf33e,RealmObjectSchema,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,c79a4668e46bc8b2713be1e3a87dd9213cb215de,RealmObjectSchema,0,0,0,0,0,0,true,false,false,true,true,true
 realm-java,da21c0e578a879624f1535f02484df2d1750576a,BaseRealm,0,0,0,0,0,0,true,false,false,true,true,true
@@ -26,12 +22,6 @@ realm-java,be38d6b93b0ed753b5238b514d7a46aebe2d9a41,RealmObjectSchema,0,0,0,0,0,
 realm-java,fca44870b40e9b26d713ff83eab4f12190ae5086,Util,0,0,0,0,0,0,true,false,false,true,true,true
 realm-java,fca44870b40e9b26d713ff83eab4f12190ae5086,Group,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,fca44870b40e9b26d713ff83eab4f12190ae5086,SharedGroup,0,0,0,0,0,0,true,true,true,true,true,true
-realm-java,d00b959d82d4af0a5db537d43db62d75fe3b5c5d,AllTypesRealmProxy,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,d00b959d82d4af0a5db537d43db62d75fe3b5c5d,Constants,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,ee2d104ab6ff0a14694a8faa9944fba942c96e56,AllTypesRealmProxy,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,4cc10993c45c22a5506583ae4fb69934b808cd8a,RealmDefaultModuleMediator,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,0f5a8f4195c47d2779d114e61928504e8c092624,RealmJsonTypeHelper,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,0f5a8f4195c47d2779d114e61928504e8c092624,Constants,1,1,0,0,0,0,true,false,false,true,false,false
 realm-java,db48fa333fbfca35cd0598443be72dfaff148c44,RealmProxyClassGenerator,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,40e422cbf0628ab04cd68508abd7f793c464b0cf,RealmProxyClassGenerator,0,0,0,0,0,0,true,false,false,true,true,true
 realm-java,8c842ff501647d630b4e45645008001bf937b5a7,RealmProxyClassGenerator,1,1,0,0,0,0,true,false,false,true,false,false
@@ -66,18 +56,13 @@ realm-java,dd88e45b0ab43a3f3fb5cbce9059f6fa07f667ac,RealmProxyClassGenerator,1,1
 realm-java,81e10d751ebaf4609e06a6254e58230cc510f38f,RealmProxyClassGenerator,2,2,0,0,0,0,true,false,false,true,false,false
 realm-java,fb6dbf880d006181280b63850bfb4d989f9d88b0,RealmProxyClassGenerator,2,2,0,0,0,0,true,false,false,true,false,false
 realm-java,1ae89e3b7badfe39a49dc3d6b1b03d40544cea90,RealmProxyClassGenerator,0,0,0,0,0,0,true,false,false,true,true,true
-realm-java,47a26984d0d1b2337913e6d59952491218e9a573,RealmSourceCodeGenerator,1,1,0,0,0,0,true,false,false,true,false,false
 realm-java,cad5a62658a3750828aa4878b5efccd919154290,RealmSourceCodeGenerator,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,f36b37e439426f9cfbb3b4d85e63c37f0087b6a7,RealmSourceCodeGenerator,0,0,0,0,0,0,true,false,false,true,true,true
 realm-java,e0943569af1cbdda8d21c97ffae780a79965fc49,RealmSourceCodeGenerator,2,2,0,0,0,0,true,false,false,true,false,false
-realm-java,709da6b9466c4d8850a4cabea53637b4bb82708e,RealmSourceCodeGenerator,1,2,0,0,1,0,false,false,false,false,false,false
+realm-java,709da6b9466c4d8850a4cabea53637b4bb82708e,RealmSourceCodeGenerator,1,2,0,1,1,0,false,false,false,false,false,false
 realm-java,8bc21582a61220465799ccef5376c52b6531bdf9,RealmSourceCodeGenerator,1,1,0,0,0,0,true,false,false,true,false,false
 realm-java,2b2c80e40c6113c5be6071d35f7d8036fc7be15e,RealmSourceCodeGenerator,1,1,0,0,0,0,true,false,false,true,false,false
 realm-java,bbc2f506e0e477ccc404c123094008e48d446d86,RealmSourceCodeGenerator,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,63b0e8d5e113ec18d5b52b75380c2100e7fde055,RealmSourceCodeGenerator,0,0,0,0,0,0,true,true,true,true,true,true
 realm-java,e0c2555dc3b25ac42317b7b00294648122e5b5a0,RealmSourceCodeGenerator,0,0,0,0,0,0,true,false,false,true,true,true
-realm-java,cb1fec64391abccaaec8a08660932ed7c5f735d8,util,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,420b4e147c9dff449209f332155e66df108982bf,AbstractTable,1,1,0,0,0,0,true,false,false,true,false,false
-realm-java,420b4e147c9dff449209f332155e66df108982bf,TableBase,1,1,0,0,0,0,true,false,false,true,false,false
 realm-java,420b4e147c9dff449209f332155e66df108982bf,Table,0,0,0,0,0,0,true,true,true,true,true,true
-realm-java,fbea1a248dc7bae6ce94ffbdce08b0594e0d089e,AutoCodeGeneration,1,1,0,0,0,0,true,false,false,true,false,false

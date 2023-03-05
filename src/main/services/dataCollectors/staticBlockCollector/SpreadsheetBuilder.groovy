@@ -85,14 +85,14 @@ class SpreadsheetBuilder {
             spreadsheet << 'Merge commit; Ancestor; left; right;\n'
         }
         if(name.equals(FILTER_COMMON_FILES_INITIALIZATION_BLOCK_BOTH_BRANCHES) &&
-                printMergeCommitInitializationBlock(mergeCommit, spreadsheet.getAbsolutePath())) {
+                printMergeCommitInitializationBlock(mergeCommit, spreadsheet.getAbsolutePath().toString())) {
             spreadsheet << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};\n"
         }else{
             spreadsheet << "${mergeCommit.getSHA()};${mergeCommit.getAncestorSHA()};${mergeCommit.getLeftSHA()};${mergeCommit.getRightSHA()};\n"
         }
     }
 
-    private boolean printMergeCommitInitializationBlock( MergeCommit mergeCommit, String absolutePath){
+    private static boolean printMergeCommitInitializationBlock( MergeCommit mergeCommit, String absolutePath){
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(absolutePath)))
         def line = null;
         while ((line = reader.readLine()) != null) {

@@ -1,3 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
-libgdx;2d89744c3df4cd9264c5957d47af2ef782942caf;e7b8b55c1fa92550a21027c44a0e05f62a58a85f;c8c1c7c34;698666e6b;backends/gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/emu/org/jbox2d/common/MathUtils.java;2
-libgdx;d69890cf0c49557e5e9e22a8777dfaa98928cb36;291fedc4f37709813c3544740c0563ee79358e65;ffb11768d;ca0bc3e2f;backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidDaydream.java;2

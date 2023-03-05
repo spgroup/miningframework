@@ -135,7 +135,8 @@ public class RealmSourceCodeGenerator {
 
     private static final int EQUALS_COMPARE = 3;
 
-    static {
+    static {<<<<<<< MINE
+
         HOW_TO_EQUAL = new HashMap<String, Integer>();
         HOW_TO_EQUAL.put("boolean", EQUALS_DIRECT);
         HOW_TO_EQUAL.put("byte", EQUALS_DIRECT);
@@ -154,17 +155,9 @@ public class RealmSourceCodeGenerator {
         HOW_TO_EQUAL.put("java.lang.String", EQUALS_NULL);
         HOW_TO_EQUAL.put("java.util.Date", EQUALS_DIRECT);
         HOW_TO_EQUAL.put("byte[]", EQUALS_ARRAY);
-    }
+    
+=======
 
-    private static final int equals_direct = 0;
-
-    private static final int equals_null = 1;
-
-    private static final int equals_array = 2;
-
-    private static final int equals_compare = 3;
-
-    static {
         HOW_TO_EQUAL = new HashMap<String, Integer>();
         HOW_TO_EQUAL.put("boolean", equals_direct);
         HOW_TO_EQUAL.put("byte", equals_direct);
@@ -183,7 +176,17 @@ public class RealmSourceCodeGenerator {
         HOW_TO_EQUAL.put("java.lang.String", equals_null);
         HOW_TO_EQUAL.put("java.util.Date", equals_direct);
         HOW_TO_EQUAL.put("byte[]", equals_array);
-    }
+    
+>>>>>>> YOURS
+}
+
+    private static final int equals_direct = 0;
+
+    private static final int equals_null = 1;
+
+    private static final int equals_array = 2;
+
+    private static final int equals_compare = 3;
 
     public void generate() throws IOException, UnsupportedOperationException {
         String qualifiedGeneratedClassName = String.format("%s.%sRealmProxy", realmPackageName, className);

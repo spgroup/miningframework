@@ -9,7 +9,6 @@ kotlin,18b6b53288b1ab17facfad6509be238cbbeac64d,DefaultErrorMessages,0,0,0,0,0,0
 kotlin,d3041d410e140c8900289ea6565607638223a6e2,DefaultErrorMessages,0,0,0,0,0,0,true,true,true,true,true,true
 kotlin,d09916ca385e715ce8790e5cd2a8421fd2525471,JetMacro,0,0,0,0,0,0,true,true,true,true,true,true
 kotlin,d604591c5c51919d0541ce3e8d21568811c4088a,JetExpressionParsing,0,0,0,0,0,0,true,true,true,true,true,true
-kotlin,d604591c5c51919d0541ce3e8d21568811c4088a,frontend,0,0,0,0,0,0,true,true,true,true,true,true
 kotlin,639644d22768d6cf73bc104a3f3f3d32ce10e2e6,OperatorTable,0,0,0,0,0,0,true,true,true,true,true,true
 kotlin,bfac08235e2efcf51c4fd35edbf6116e6c53742d,JetExpressionParsing,0,0,0,0,0,0,true,true,true,true,true,true
 kotlin,9a7e43b0f15b1027fbd2c39dec56e677248648a1,JetTypeInferrer,0,0,0,0,0,0,true,true,true,true,true,true

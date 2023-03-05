@@ -1,0 +1,4 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+cxf;846d6c701c152f93e10a63ff110fd358c304e5b3;e5833e25c449f4e4b2ffba767a546907ffc173ec;1fc1fa0c79;1788c73628;rt/databinding/aegis/src/main/java/org/apache/cxf/aegis/type/XMLTypeCreator.java;4
+cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;rt/transports/http-jetty/src/main/java/org/apache/cxf/transport/http_jetty/JettyHTTPDestination.java;2
+cxf;eed15b403add8264f8ee8d670dae7f8a07788c83;9f9a1c741cc37201bab1f19a0742a47aedc91306;1eb6908651;925978effd;rt/ws/security/src/main/java/org/apache/cxf/ws/security/tokenstore/TokenStoreFactory.java;2

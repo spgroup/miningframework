@@ -13,6 +13,4 @@ spring-framework,1c1bc41e247a957ba749cef4bff1b773adf5f415,UrlPathHelper,0,0,0,0,
 spring-framework,929244215cdc49f5fab0ea3a0efe18c0fe0da42a,ClassUtils,0,0,0,0,0,0,true,true,true,true,true,true
 spring-framework,3c0233198353cc4bbaf8b19542be590cbfb140cb,ContextTypeMatchClassLoader,0,0,0,0,0,0,true,true,true,true,true,true
 spring-framework,3c0233198353cc4bbaf8b19542be590cbfb140cb,ReflectUtils,0,0,0,0,0,0,true,true,true,true,true,true
-spring-framework,3e81482760f742d078e71b166cc0f7c3c2eb6abb,MethodInvokingJobDetailFactoryBean,1,1,0,0,0,0,true,false,false,true,false,false
-spring-framework,3e81482760f742d078e71b166cc0f7c3c2eb6abb,VfsUtils,1,1,0,0,0,0,true,false,false,true,false,false
 spring-framework,e091e399dcf0323fbe509b267bfc5ce176571eb8,QuartzJobBean,0,0,0,0,0,0,true,true,true,true,true,true

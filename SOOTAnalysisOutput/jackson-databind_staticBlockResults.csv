@@ -51,14 +51,13 @@ jackson-databind,898e7de0540889db2116e4a24432524b17009f24,StdDateFormat,0,0,0,0,
 jackson-databind,4aceaa718ca1c09eabd363288d43d9a956b43fd5,OptionalHandlerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,752bb8a3f3e927013a97d06c219784be4e337f25,OptionalHandlerFactory,2,2,0,2,2,0,true,false,false,true,false,false
 jackson-databind,90042692085deeb05ae75c569c9909f7dba24415,BeanDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
-jackson-databind,ac3497208aa4a5d82e157ba28ba087be589ecd59,BeanDeserializerFactory,1,2,0,0,1,0,false,false,false,false,false,false
+jackson-databind,ac3497208aa4a5d82e157ba28ba087be589ecd59,BeanDeserializerFactory,1,2,0,1,1,0,false,false,false,false,false,false
 jackson-databind,28ec8a47d381311818f805ae76bf84da30f516f9,BasicDeserializerFactory,0,0,0,0,0,0,true,false,false,true,true,true
 jackson-databind,1b0e6b6aca16a0a795b3d65100372139c2f1d071,BasicDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,581ba1f56830e6b00877e2af4f7f2fb0c3404e2e,BasicDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,cc478a2b587b91cf7563847540472e57a2c9a7b2,BasicDeserializerFactory,1,1,0,0,0,0,true,false,false,true,false,false
 jackson-databind,a66b4e09541a79402f7d5773fab22d0de6bba709,BasicDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,55f0f3e95e5e1e8220d69bf8048a50a9513d866c,BasicDeserializerFactory,1,1,0,0,0,0,true,false,false,true,false,false
-jackson-databind,b2497a982016639ff22418611cc9c5f169c42b7c,SingleValueAsArray1421Test,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,29f19e177c9d014bb2ed730058d4fc3c60dc8cc4,BasicDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,95d3a0907f0f103911f293af30c49515d8439e37,BasicDeserializerFactory,0,0,0,0,0,0,true,true,true,true,true,true
 jackson-databind,c917a2a0da3a8ebc4a671654e481c979fe1dbe98,BasicDeserializerFactory,0,0,0,0,0,0,true,false,false,true,true,true

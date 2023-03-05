@@ -1,0 +1,10 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+antlr4;ca77cbe218465dd5e62a7951b8af20f51af2ca23;952aada158657cc24488bbb80b14ec3b14318bea;56df72ca6;ef659519a;runtime-testsuite/test/org/antlr/v4/test/runtime/go/GoRunner.java;2
+antlr4;80edad927c7f48bec615ec95305f4af2416f6f81;e4c1a74c66bd5290364ea2b36c97cd724b247357;6dc3eb7fa;77cb13b7d;tool/src/org/antlr/v4/codegen/target/SwiftTarget.java;2
+antlr4;0c4473ea1ae6186a2205d94d3b16eef0b63377d3;2b3dd222bdf7cac624253355904a204491dda6b4;cdfe310c5;ff13553a2;runtime-testsuite/test/org/antlr/v4/test/runtime/swift/BaseSwiftTest.java;2
+antlr4;185f8e963568cfb8402f06fb6d87f826240789c6;682e0341c128e607cb00085015db6ea600e97309;7332c1eb0;f11a38060;runtime-testsuite/test/org/antlr/v4/test/runtime/BaseRuntimeTest.java;2
+antlr4;cd9ed40ab0b31833477577a578f1bc50015909f9;67c0ff5d78ebd8a2d4cd9a8957d5f671c70b9cde;e4a425321;4bc708352;tool/src/org/antlr/v4/tool/Grammar.java;12
+antlr4;badc21bf49d2fea897e9c9928f09b86253a0a24b;3565c36db68ba6e82fc4222824a1150c9213bb97;aab59cb62;2777bc4d2;tool/src/org/antlr/v4/tool/Grammar.java;12
+antlr4;00eb4f89cafd323490dfe733623185609367ffab;c46acf0031e71e46780dc569ce52d71ab1bbc685;5778570fa;33fd1804f;tool/src/org/antlr/v4/codegen/ActionTranslator.java;6
+antlr4;b14ca56441196d63b8974455c0050bfaee4cb3a4;f7d0cacb09e9051af3f39f8f4c7be5f566665486;05b0f645e;b80ad5052;tool/src/org/antlr/v4/tool/Grammar.java;6
+antlr4;c0668a9caea5953d81ffa3d8969c7fca26d61c2d;9d3c7634705292b776f340adee246253ee999a3b;8df31df66;f7d0cacb0;runtime/Java/src/org/antlr/v4/runtime/atn/ATNSimulator.java;4

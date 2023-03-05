@@ -1,2 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
-graylog2-server;622734f442e486fb01da386695077d328cdfa214;3de64e993e9c4d7992899a037e46919fe67b49b6;63a7af7aa9;97cc357ba9;graylog2-server/src/main/java/org/graylog2/bootstrap/CmdLineTool.java;2

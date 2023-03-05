@@ -1,19 +1,14 @@
 project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
 robolectric,43387c6186016ae2e53a4c859e08e8c071cafc6f,SQLiteConnectionNatives,0,0,0,0,0,0,true,true,true,true,true,true
-robolectric,43387c6186016ae2e53a4c859e08e8c071cafc6f,NativeRuntimeLoader,1,1,0,0,0,0,true,false,false,true,false,false
 robolectric,43387c6186016ae2e53a4c859e08e8c071cafc6f,CursorWindowNatives,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,11db6fb8c2394c6c3d105a5dd517a162e36a8a8f,ShadowServiceManager,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,b33b61bba20d35ed12e4eb7fa8cbaf93382629af,ShadowServiceManager,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,d75c1a14d34f01c4bd75ec7860a38556acddf884,RobolectricTestRunner,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,08566da3e73ea2eba9bfe8fc3fd56a4ee45b13b2,DefaultSdkProvider,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,08566da3e73ea2eba9bfe8fc3fd56a4ee45b13b2,ShadowServiceManager,0,0,0,0,0,0,true,true,true,true,true,true
-robolectric,08566da3e73ea2eba9bfe8fc3fd56a4ee45b13b2,CleanerCompat,0,0,0,0,0,0,true,true,true,true,true,true
-robolectric,a1bb92ecfc50c072a9b0bc676a995a41ebf59cf8,UnsafeAccess,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,a1bb92ecfc50c072a9b0bc676a995a41ebf59cf8,Reflector,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,75041ed744db8f0bc7b62af049256dfa8c256492,ShadowContextImpl,0,0,0,0,0,0,true,true,true,true,true,true
-robolectric,cb71eb49a588b75dcc8736e21bbe6ceff0a9506b,LocaleDataTables,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,2c10825394b887720b31b11c6eb6edb0018a726a,ShadowContextImpl,0,0,0,0,0,0,true,true,true,true,true,true
-robolectric,2dc5520b2cf2b08be3f21a4d75e80a5b7176b106,RoboSharedPreferencesTest,1,1,0,0,0,0,true,false,false,true,false,false
 robolectric,2dc5520b2cf2b08be3f21a4d75e80a5b7176b106,ShadowContextImpl,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,db2f1e801945cdc140c3b688deae4c4c57c438ff,Robolectric_ClassNameOnly,0,0,0,0,0,0,true,true,true,true,true,true
 robolectric,db2f1e801945cdc140c3b688deae4c4c57c438ff,ShadowMap,0,0,0,0,0,0,true,true,true,true,true,true

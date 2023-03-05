@@ -43,11 +43,11 @@ class MiningWorker implements Runnable {
 
                 for (mergeCommit in mergeCommits) {
                         try {
-                            if (commitFilter.applyFilter(project, mergeCommit)) {
-                                println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
+                                if (commitFilter.applyFilter(project, mergeCommit)) {
+                                    println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
-                                runDataCollectors(project, mergeCommit)
-                            }
+                                    runDataCollectors(project, mergeCommit)
+                                }
                         } catch (Exception e) {
                             println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
                             e.printStackTrace();

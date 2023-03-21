@@ -1,9 +1,0 @@
-project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts
-gradle,c8a84a481265dafd88c75c94373d0ce63b8cb5b3,StartParameterBuildOptions,0,0,0,0,0,0,true,true,true,true,true,true
-gradle,35071203cb19154f3568d5eb6be0e0b949eaca3c,StartParameterBuildOptions,0,0,0,0,0,0,true,true,true,true,true,true
-gradle,b37a7d8a2dffbf9cd6efadb9c1da74d09e0e1de8,StartParameterBuildOptions,0,0,0,0,0,0,true,true,true,true,true,true
-gradle,d9315d6ec35297ce902d57eb7f7f11ebbc3a2809,StartParameterBuildOptions,0,0,0,0,0,0,true,true,true,true,true,true
-gradle,15e2cb4ee64781375eff871936cbe26bba109b50,HttpClientConfigurer,0,0,0,0,0,0,true,true,true,true,true,true
-gradle,bbee5bcc301af5e45262d31bbbd32f67eadd4295,ClassLoaderUtils,0,0,0,0,0,0,true,true,true,true,true,true
-gradle,36658c0bcc3f59bcd357f1dac21dc5b3ecc7acc0,ClassLoaderUtils,0,0,0,0,0,0,true,true,true,true,true,true
-gradle,a9bddf159f9931abbeb5e5a6c98f04bb2c577b1a,FileSystemServices,0,0,0,0,0,0,true,true,true,true,true,true

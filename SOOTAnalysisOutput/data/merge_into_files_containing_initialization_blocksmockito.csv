@@ -1,5 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
-mockito;a6e7132523d93d4974614167706f1e1ab271bd35;ce4e64dc782a132e4f32faf56a2630187a703a00;3f9ea84ad;02615ffb8;src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java;2
-mockito;ff32a690a2cc73d709ec7d079ee73d92eba99183;5c1fbea90aaaa870553a913a0bbd128a9f8cad93;5a2415278;2881aefc1;src/org/mockito/exceptions/verification/junit/JUnitTool.java;1
-mockito;ff32a690a2cc73d709ec7d079ee73d92eba99183;5c1fbea90aaaa870553a913a0bbd128a9f8cad93;5a2415278;2881aefc1;src/org/mockito/internal/util/Primitives.java;3
-mockito;ff32a690a2cc73d709ec7d079ee73d92eba99183;5c1fbea90aaaa870553a913a0bbd128a9f8cad93;5a2415278;2881aefc1;src/org/mockito/internal/runners/util/RunnerProvider.java;1

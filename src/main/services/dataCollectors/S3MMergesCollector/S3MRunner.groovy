@@ -98,7 +98,7 @@ class S3MRunner {
         Process S3M = ProcessRunner.startProcess(buildS3MProcessInizalizedDeclaration(leftFile, baseFile, rightFile, outputFileName, handler, additionalParameters, handlerNew , additionalParametersNew))
 
         S3M.getInputStream().eachLine {
-            println it
+            //println it
         }
         S3M.waitFor()
     }

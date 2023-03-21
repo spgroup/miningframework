@@ -42,24 +42,17 @@ class MiningWorker implements Runnable {
                 def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
 
                 for (mergeCommit in mergeCommits) {
-                   if (
-
-                            mergeCommit.getSHA().equals("dc5807ea51b189acc7090036f9b5a4732280139a") ||
-                            mergeCommit.getSHA().equals("4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4")
-
-                    ) {
                         try {
-                            if (commitFilter.applyFilter(project, mergeCommit)) {
-                                println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
+                                if (commitFilter.applyFilter(project, mergeCommit)) {
+                                    println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
-                                runDataCollectors(project, mergeCommit)
-                            }
+                                    runDataCollectors(project, mergeCommit)
+                                }
                         } catch (Exception e) {
                             println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
                             e.printStackTrace();
                         }
                    }
-                }
                 updateSkippedCommitsSpreadsheet(project, skipped)
 
                 if (arguments.isPushCommandActive()) // Will push.

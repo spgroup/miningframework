@@ -3,7 +3,6 @@ package services.dataCollectors.staticBlockCollector
 import project.MergeCommit
 import project.Project
 import util.ProcessRunner
-import util.TypeNameHelper
 import java.util.*;
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -11,6 +10,7 @@ import java.nio.file.Paths
 abstract class TriplaFilesRunner {
 
     protected String nameAlgoritm
+    //itens - Number of times the median will be collected
     protected List<Integer> itens = Arrays.asList(1, 2, 3, 4, 5);
 
     void collectResults(Project project, MergeCommit mergeCommit,List<Path> filesQuadruplePaths) {
@@ -28,10 +28,6 @@ abstract class TriplaFilesRunner {
 
     protected Path getContributionFile(Path filesQuadruplePath, String contributionFileName) {
         return filesQuadruplePath.resolve("${contributionFileName}.java").toAbsolutePath()
-    }
-
-    protected void createToolDirectory(Path filesQuadruplePath) {
-        filesQuadruplePath.resolve(nameAlgoritm).toFile().mkdir()
     }
 
     protected void runTool(Path leftFile, Path baseFile, Path rightFile) {

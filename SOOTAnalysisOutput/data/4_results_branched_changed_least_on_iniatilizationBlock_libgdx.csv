@@ -1,5 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
-libgdx;d5ecb0a68b00ee77af21aacea2eb41c4ea1fd439;ca2ff0c5a7abaf0e16b06fccaf5a08794368878e;149f82a46;5958def18;gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Skin.java;1
-libgdx;7dcfcd87f003223730bf11c7c295225cd9062e77;bb8adfd5bda230b878cc39af2a28743c821ea760;7496ed6be;fcb9c3d11;backends/gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSInput.java;2
-libgdx;2d89744c3df4cd9264c5957d47af2ef782942caf;e7b8b55c1fa92550a21027c44a0e05f62a58a85f;c8c1c7c34;698666e6b;extensions/gdx-setup/src/com/badlogic/gdx/setup/GdxSetupUI.java;2
-libgdx;cc30d7aa5b1e2a42530489ab53873e1baaa65d97;6f2793417f77b138c17d109b885a75898590fb28;e189d0d66;6807f5774;gdx/src/com/badlogic/gdx/utils/SharedLibraryLoader.java;2

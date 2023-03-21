@@ -12,7 +12,7 @@ class LoggerStatistics {
   
    public static long timeInitial;
    public static long timeFinal;
-    private static final String SPREADSHEET_NAME = 'logTime.csv'
+   private static final String SPREADSHEET_NAME = 'logTime.csv'
 
     public static void logTimeInitial(){
         timeInitial  = System.currentTimeMillis();
@@ -22,7 +22,6 @@ class LoggerStatistics {
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
         return df.format((timeFinal - timeInitial) / 1000d)
-	  //  return String.format("%.3f ms", (timeFinal - timeInitial) / 1000d);
     }
 
     static synchronized void updateSpreadsheet(Integer count, Project project, MergeCommit mergeCommit,Path fileName, String approach, String timeStamp){

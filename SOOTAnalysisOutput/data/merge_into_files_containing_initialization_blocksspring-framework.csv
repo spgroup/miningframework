@@ -1,4 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
-spring-framework;dc5807ea51b189acc7090036f9b5a4732280139a;bfa01b35df42c526253866a4b601e8be83746a4b;a4b74a320e;4f44ae3f28;spring-core/src/main/java/org/springframework/cglib/core/ReflectUtils.java;2
-spring-framework;4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4;3be2b32e21ad91b94346a1b9f8cf58fb3ea48ced;1e6c0d2f7b;040445612f;spring-context/src/main/java/org/springframework/context/annotation/CommonAnnotationBeanPostProcessor.java;1
-spring-framework;4d7fa9a632b08fd5e7fd7669e4d6c159e17783c4;3be2b32e21ad91b94346a1b9f8cf58fb3ea48ced;1e6c0d2f7b;040445612f;spring-jcl/src/main/java/org/apache/commons/logging/LogAdapter.java;1

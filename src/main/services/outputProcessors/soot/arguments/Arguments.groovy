@@ -18,7 +18,7 @@ class Arguments {
     private boolean pessimisticDataflow
     private boolean reachability
     private boolean report
-    private int timeout
+    private long timeout
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -183,7 +183,7 @@ class Arguments {
         return timeout
     }
 
-    void setTimeout(int timeout) {
+    void setTimeout(long timeout) {
         this.timeout = timeout
     }
 }

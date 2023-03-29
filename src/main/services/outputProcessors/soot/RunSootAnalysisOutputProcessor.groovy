@@ -15,7 +15,7 @@ import static app.MiningFramework.arguments
 class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
-    private final Long TIMEOUT = 240
+    private final long TIMEOUT = 240
 
     private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
 
@@ -40,7 +40,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
         this.detectionAlgorithms = detectionAlgorithms
     }
 
-    void configureDetectionAlgorithmsTimeout(int timeout) {
+    void configureDetectionAlgorithmsTimeout(long timeout) {
         for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
             algorithm.setTimeout(timeout);
         }

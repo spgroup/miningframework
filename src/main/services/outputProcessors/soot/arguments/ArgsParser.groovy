@@ -58,7 +58,7 @@ class ArgsParser {
             args.setIsHelp(true)
         }
         if (this.options.t) {
-            args.setTimeout(this.options.t.toInteger())
+            args.setTimeout(this.options.t.toLong());
         }
         if (this.options.df) {
             args.setDfIntra(true)

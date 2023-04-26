@@ -1,3 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
-kotlin;d604591c5c51919d0541ce3e8d21568811c4088a;3cf7a44840b5c9a5d17f2bc618e46a7f48582337;a984b609bc9;076768b4751;compiler/frontend.java/src/org/jetbrains/jet/lang/resolve/java/JetSignatureUtils.java;2
-kotlin;639644d22768d6cf73bc104a3f3f3d32ce10e2e6;cc52c0f1c1a84821b0d020d7f210ffaadec3949e;dca537ce702;ebf29263f13;translator/src/org/jetbrains/k2js/translate/OperatorTable.java;6

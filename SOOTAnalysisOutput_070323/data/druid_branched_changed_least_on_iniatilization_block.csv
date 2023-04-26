@@ -1,0 +1,2 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+druid;852e863425312c053d6f8c5d678d6ac3e5404aef;63df70cbe25d44a36cab6dbcd5a21894c7977f34;ab0ddc0d7;7c8d4a743;indexing-hadoop/src/main/java/io/druid/indexer/HadoopDruidIndexerConfig.java;2

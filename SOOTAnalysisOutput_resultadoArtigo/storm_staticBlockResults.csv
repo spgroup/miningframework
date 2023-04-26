@@ -1,0 +1,25 @@
+project,merge commit,file,number of InsertionLevelInitializationBlockHandler conflicts,number of SimpleInitializationBlockHandler conflicts,number of GitMergeFile conflicts,number of Actual conflicts,number of InsertionLevelInitializationBlockHandler for initialization block conflicts,number of SimpleInitializationBlockHandler for initialization block conflicts,number of GitMergeFile for initialization block conflicts,number of Actual for initialization block conflicts,InsertionLevelInitializationBlockHandler output = SimpleInitializationBlockHandler output,InsertionLevelInitializationBlockHandler output = GitMergeFile output,InsertionLevelInitializationBlockHandler output = Actual output,SimpleInitializationBlockHandler output = GitMergeFile output,SimpleInitializationBlockHandler output = Actual output,GitMergeFile output = Actual output,InsertionLevelInitializationBlockHandler conflicts = SimpleInitializationBlockHandler conflicts,InsertionLevelInitializationBlockHandler conflicts = GitMergeFile conflicts,InsertionLevelInitializationBlockHandler conflicts = Actual conflicts,SimpleInitializationBlockHandler conflicts = GitMergeFile conflicts,SimpleInitializationBlockHandler conflicts = Actual conflicts,GitMergeFile conflicts = Actual conflicts
+storm,ece2a1c8a7acef86152f81a8f031d6be0e6f98e3,TopologyPageInfo,0,0,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,4645c190d094d334894acbdea0a51c67cdef7c14,TopologyInfo,1,1,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,7f9d00dba940addb854f7f7f765cb711102857e0,TopologyPageInfo,1,1,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,7f9d00dba940addb854f7f7f765cb711102857e0,TopologySummary,1,1,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,7f9d00dba940addb854f7f7f765cb711102857e0,TopologyInfo,1,1,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,Credentials,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,NodeInfo,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,Assignment,29,29,0,0,12,12,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,LocalAssignment,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,RebalanceOptions,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,SupervisorInfo,13,13,0,0,12,12,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,LSApprovedWorkers,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,ClusterWorkerHeartbeat,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,LSSupervisorAssignments,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,LocalStateData,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,StormBase,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5d84794521b2f581d2ccf3b144f8c73cfb277e75,LSWorkerHeartbeat,5,5,0,0,4,4,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,0151b441b0a68d490074d415d408caa522e47ffb,TopologyInfo,13,13,0,0,6,6,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,d1afefde51e34dc993591ad79d3fe217bef86f87,TopologySummary,1,1,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,5b67b571fe45e14fd52b835bc1de056538de1e70,ExecutorStats,3,3,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,85e4d5efce66352469cb4c9947922731e834ca5d,ClusterSummary,9,9,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,85e4d5efce66352469cb4c9947922731e834ca5d,TopologySummary,3,3,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,85e4d5efce66352469cb4c9947922731e834ca5d,TopologyInfo,3,3,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true
+storm,65aee65af54dd29434af8f5ee403233b597561b6,ErrorInfo,0,0,0,0,0,0,0,0,true,false,false,false,false,true,true,false,false,false,false,true

@@ -1,5 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
-cgeo;e116e23c2d3a04544f56bdde57212015e554b131;469786311b169e96dce8dba9cd6656d7034e314e;e7a11e4;71ba88c;main/src/cgeo/geocaching/utils/calc/Calculator.java;2
-cgeo;7f3bc27fe8af7ee6ba3aef01d8b526e40c0b4667;2676f997e9b42f142926ec04285662d99ec068fc;c9297ea;00c8474;tests/src/cgeo/geocaching/utils/RxUtilsTest.java;2
-cgeo;5be9d97e0c4ad128ea64f45b9de4b5e73fee7c4e;ae68c806e906b2447cc3231529c9f667210200e3;9fab228;00516d1;main/src/cgeo/geocaching/enumerations/CacheType.java;2
-cgeo;a3cd74d282d76416e35a9886b770954b9042f194;14796b42b2b14f799294ba955504bc0064ef5d11;588424a;d5c26a3;main/src/cgeo/geocaching/export/FieldnoteExport.java;2

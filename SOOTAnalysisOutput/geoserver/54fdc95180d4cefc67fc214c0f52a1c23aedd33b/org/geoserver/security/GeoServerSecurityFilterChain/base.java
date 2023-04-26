@@ -1,0 +1,293 @@
+package org.geoserver.security;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class GeoServerSecurityFilterChain implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    List<RequestFilterChain> requestChains = new ArrayList<RequestFilterChain>();
+
+    public static final String WEB_CHAIN = "/web/**";
+
+    public static final String FORM_LOGIN_CHAIN = "/j_spring_security_check,/j_spring_security_check/";
+
+    public static final String FORM_LOGOUT_CHAIN = "/j_spring_security_logout,/j_spring_security_logout/";
+
+    public static final String REST_CHAIN = "/rest/**";
+
+    public static final String GWC_WEB_CHAIN = "/gwc/rest/web/**";
+
+    public static final String GWC_REST_CHAIN = "/gwc/rest/**";
+
+    public static final String DEFAULT_CHAIN = "/**";
+
+    public static final String SECURITY_CONTEXT_ASC_FILTER = "contextAsc";
+
+    public static final String SECURITY_CONTEXT_NO_ASC_FILTER = "contextNoAsc";
+
+    public static final String ROLE_FILTER = "roleFilter";
+
+    public static final String SSL_FILTER = "sslFilter";
+
+    public static final String FORM_LOGIN_FILTER = "form";
+
+    public static final String FORM_LOGOUT_FILTER = "formLogout";
+
+    public static final String REMEMBER_ME_FILTER = "rememberme";
+
+    public static final String ANONYMOUS_FILTER = "anonymous";
+
+    public static final String BASIC_AUTH_FILTER = "basic";
+
+    public static final String DYNAMIC_EXCEPTION_TRANSLATION_FILTER = "exception";
+
+    public static final String GUI_EXCEPTION_TRANSLATION_FILTER = "guiException";
+
+    public static final String FILTER_SECURITY_INTERCEPTOR = "interceptor";
+
+    public static final String FILTER_SECURITY_REST_INTERCEPTOR = "restInterceptor";
+
+    public static final String WEB_CHAIN_NAME = "web";
+
+    public static final String WEB_LOGIN_CHAIN_NAME = "webLogin";
+
+    public static final String WEB_LOGOUT_CHAIN_NAME = "webLogout";
+
+    public static final String REST_CHAIN_NAME = "rest";
+
+    public static final String GWC_CHAIN_NAME = "gwc";
+
+    public static final String DEFAULT_CHAIN_NAME = "default";
+
+    static HtmlLoginFilterChain WEB = new HtmlLoginFilterChain(WEB_CHAIN, GWC_WEB_CHAIN);
+
+    static {
+        WEB.setName(WEB_CHAIN_NAME);
+        WEB.setFilterNames(REMEMBER_ME_FILTER, FORM_LOGIN_FILTER, ANONYMOUS_FILTER);
+        WEB.setAllowSessionCreation(true);
+    }
+
+    private static ConstantFilterChain WEB_LOGIN = new ConstantFilterChain(FORM_LOGIN_CHAIN);
+
+    static {
+        WEB_LOGIN.setName(WEB_LOGIN_CHAIN_NAME);
+        WEB_LOGIN.setFilterNames(FORM_LOGIN_FILTER);
+        WEB_LOGIN.setAllowSessionCreation(true);
+    }
+
+    private static LogoutFilterChain WEB_LOGOUT = new LogoutFilterChain(FORM_LOGOUT_CHAIN);
+
+    static {
+        WEB_LOGOUT.setName(WEB_LOGOUT_CHAIN_NAME);
+        WEB_LOGOUT.setFilterNames(FORM_LOGOUT_FILTER);
+    }
+
+    private static ServiceLoginFilterChain REST = new ServiceLoginFilterChain(REST_CHAIN);
+
+    static {
+        REST.setName(REST_CHAIN_NAME);
+        REST.setFilterNames(BASIC_AUTH_FILTER, ANONYMOUS_FILTER);
+        REST.setInterceptorName(FILTER_SECURITY_REST_INTERCEPTOR);
+    }
+
+    private static ServiceLoginFilterChain GWC = new ServiceLoginFilterChain(GWC_REST_CHAIN);
+
+    static {
+        GWC.setName(GWC_CHAIN_NAME);
+        GWC.setFilterNames(BASIC_AUTH_FILTER);
+        GWC.setInterceptorName(FILTER_SECURITY_REST_INTERCEPTOR);
+    }
+
+    private static ServiceLoginFilterChain DEFAULT = new ServiceLoginFilterChain(DEFAULT_CHAIN);
+
+    static {
+        DEFAULT.setName(DEFAULT_CHAIN_NAME);
+        DEFAULT.setFilterNames(BASIC_AUTH_FILTER, ANONYMOUS_FILTER);
+    }
+
+    private static List<RequestFilterChain> INITIAL = new ArrayList<RequestFilterChain>();
+
+    static {
+        INITIAL.add(WEB);
+        INITIAL.add(WEB_LOGIN);
+        INITIAL.add(WEB_LOGOUT);
+        INITIAL.add(REST);
+        INITIAL.add(GWC);
+        INITIAL.add(DEFAULT);
+    }
+
+    public GeoServerSecurityFilterChain() {
+        requestChains = new ArrayList<RequestFilterChain>();
+    }
+
+    public GeoServerSecurityFilterChain(List<RequestFilterChain> requestChains) {
+        this.requestChains = requestChains;
+    }
+
+    public GeoServerSecurityFilterChain(GeoServerSecurityFilterChain other) {
+        this.requestChains = new ArrayList<RequestFilterChain>(other.getRequestChains());
+    }
+
+    public static GeoServerSecurityFilterChain createInitialChain() {
+        return new GeoServerSecurityFilterChain(new ArrayList<RequestFilterChain>(INITIAL));
+    }
+
+    public void postConfigure(GeoServerSecurityManager secMgr) {
+        for (GeoServerSecurityProvider p : secMgr.lookupSecurityProviders()) {
+            p.configureFilterChain(this);
+        }
+    }
+
+    public static RequestFilterChain lookupRequestChainByName(String name, GeoServerSecurityManager secMgr) {
+        GeoServerSecurityFilterChain filterChain = createInitialChain();
+        filterChain.postConfigure(secMgr);
+        for (RequestFilterChain requestChain : filterChain.getRequestChains()) {
+            if (requestChain.getName().equals(name)) {
+                return requestChain;
+            }
+        }
+        return null;
+    }
+
+    public static RequestFilterChain lookupRequestChainByPattern(String pattern, GeoServerSecurityManager secMgr) {
+        GeoServerSecurityFilterChain filterChain = createInitialChain();
+        filterChain.postConfigure(secMgr);
+        for (RequestFilterChain requestChain : filterChain.getRequestChains()) {
+            if (requestChain.getPatterns().contains(pattern)) {
+                return requestChain;
+            }
+        }
+        return null;
+    }
+
+    public List<RequestFilterChain> getRequestChains() {
+        return requestChains;
+    }
+
+    public List<RequestFilterChain> getVariableRequestChains() {
+        List<RequestFilterChain> result = new ArrayList<RequestFilterChain>();
+        for (RequestFilterChain chain : getRequestChains()) if (chain.isConstant() == false)
+            result.add(chain);
+        return result;
+    }
+
+    public RequestFilterChain getRequestChainByName(String name) {
+        for (RequestFilterChain requestChain : requestChains) {
+            if (requestChain.getName().equals(name)) {
+                return requestChain;
+            }
+        }
+        return null;
+    }
+
+    public boolean insertFirst(String pattern, String filterName) {
+        RequestFilterChain requestChain = findAndCheck(pattern, filterName);
+        if (requestChain == null) {
+            return false;
+        }
+        requestChain.getFilterNames().add(0, filterName);
+        return false;
+    }
+
+    public boolean insertLast(String pattern, String filterName) {
+        RequestFilterChain requestChain = findAndCheck(pattern, filterName);
+        if (requestChain == null) {
+            return false;
+        }
+        return requestChain.getFilterNames().add(filterName);
+    }
+
+    public boolean insertBefore(String pattern, String filterName, String positionName) {
+        RequestFilterChain requestChain = findAndCheck(pattern, filterName);
+        if (requestChain == null) {
+            return false;
+        }
+        List<String> filterNames = requestChain.getFilterNames();
+        int index = filterNames.indexOf(positionName);
+        if (index == -1) {
+            return false;
+        }
+        filterNames.add(index, filterName);
+        return true;
+    }
+
+    public boolean insertAfter(String pattern, String filterName, String positionName) {
+        RequestFilterChain requestChain = findAndCheck(pattern, filterName);
+        if (requestChain == null) {
+            return false;
+        }
+        List<String> filterNames = requestChain.getFilterNames();
+        int index = filterNames.indexOf(positionName);
+        if (index == -1) {
+            return false;
+        }
+        filterNames.add(index + 1, filterName);
+        return true;
+    }
+
+    public RequestFilterChain find(String pattern) {
+        return requestChain(pattern);
+    }
+
+    public List<String> patternsForFilter(String filterName, boolean includeAll) {
+        List<String> result = new ArrayList<String>();
+        for (RequestFilterChain requestChain : requestChains) {
+            List<String> filterNames = includeAll ? requestChain.getCompiledFilterNames() : requestChain.getFilterNames();
+            if (filterNames.contains(filterName)) {
+                result.addAll(requestChain.getPatterns());
+            }
+        }
+        return result;
+    }
+
+    public List<String> filtersFor(String pattern) {
+        RequestFilterChain requestChain = requestChain(pattern);
+        if (requestChain == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return new ArrayList(requestChain.getFilterNames());
+    }
+
+    public boolean removeForPattern(String pattern) {
+        RequestFilterChain requestChain = requestChain(pattern);
+        if (requestChain != null) {
+            return requestChains.remove(requestChain);
+        }
+        return false;
+    }
+
+    public boolean remove(String filterName) {
+        boolean removed = false;
+        for (RequestFilterChain requestChain : requestChains) {
+            removed |= requestChain.getFilterNames().remove(filterName);
+        }
+        return removed;
+    }
+
+    RequestFilterChain findAndCheck(String pattern, String filterName) {
+        RequestFilterChain requestChain = requestChain(pattern);
+        if (requestChain == null) {
+            return null;
+        }
+        if (requestChain.getFilterNames().contains(filterName)) {
+            return null;
+        }
+        return requestChain;
+    }
+
+    RequestFilterChain requestChain(String pattern) {
+        for (RequestFilterChain requestChain : requestChains) {
+            if (requestChain.getPatterns().contains(pattern)) {
+                return requestChain;
+            }
+        }
+        return null;
+    }
+}

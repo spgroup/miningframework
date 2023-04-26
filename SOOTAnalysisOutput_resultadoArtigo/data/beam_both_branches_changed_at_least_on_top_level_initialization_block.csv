@@ -1,0 +1,8 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+beam;25d14a7f12a3388cc3a437a10096c804a6e14c1e;f90379a67f9cbc89425cd161452cdf6172354e93;238d7b99b9;5343f1a606;runners/google-cloud-dataflow-java/src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java;6
+beam;3e472e2711da82b3a7fa88715d403bb9d42180b3;f7d9e6ac93e1e9e9ed4aa9047c1b432c429f13bc;0510cecb8a;eb5fbd3354;runners/google-cloud-dataflow-java/src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java;6
+beam;88365f69a06dc076620df62f38b959baafbdb3a4;6a06352ccd7149c9e9abc11272a894f04b6a9dd3;28280ee898;c2d4e5162a;runners/google-cloud-dataflow-java/src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java;6
+beam;9dc9be9e6d0aa202e170d64e1a1d7b5a57828c5a;2a1055dd8e669ee9181bda3d944e377f7e33b5ea;8f4334cf8a;f2fe1ae466;runners/spark/src/main/java/org/apache/beam/runners/spark/translation/streaming/StreamingTransformTranslator.java;3
+beam;c39881186d4625d935efd9a717d9978cd1252979;d53e96a0d1f5f26ad0e3efc90dc9f7b53135443b;65152cab8e;c584b37b8a;sdks/java/core/src/main/java/org/apache/beam/sdk/transforms/ParDo.java;4
+beam;c26eef5beb809bee75ae98879b618a6530fc6ded;706fc537645c64adf87f9003fc6d8e43b0ece843;6c34f3a343;4f99635a33;sdks/java/core/src/main/java/com/google/cloud/dataflow/sdk/transforms/GroupByKey.java;2
+beam;2f902582c1a52c1bb95edc647007eb4a83964508;91de07245ad2470265d1d0d4a23873cc7680b495;8d87ee02b1;1504ba7b77;sdk/src/main/java/com/google/cloud/dataflow/sdk/transforms/ParDo.java;4

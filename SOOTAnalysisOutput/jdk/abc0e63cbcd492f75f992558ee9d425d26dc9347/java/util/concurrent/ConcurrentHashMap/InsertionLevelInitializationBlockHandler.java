@@ -61,6 +61,16 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
         static final sun.misc.Unsafe UNSAFE;
 
         static final long nextOffset;
+
+        static {
+            try {
+                UNSAFE = sun.misc.Unsafe.getUnsafe();
+                Class k = HashEntry.class;
+                nextOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("next"));
+            } catch (Exception e) {
+                throw new Error(e);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -909,8 +919,7 @@ private void readObject(java.io.ObjectInputStream s) throws IOException, ClassNo
 
     private static final int TSHIFT;
 
-    static {<<<<<<< MINE
-
+    static {
         int ss, ts;
         try {
             UNSAFE = sun.misc.Unsafe.getUnsafe();
@@ -927,17 +936,5 @@ private void readObject(java.io.ObjectInputStream s) throws IOException, ClassNo
             throw new Error("data type scale not a power of two");
         SSHIFT = 31 - Integer.numberOfLeadingZeros(ss);
         TSHIFT = 31 - Integer.numberOfLeadingZeros(ts);
-    
-=======
-
-            try {
-                UNSAFE = sun.misc.Unsafe.getUnsafe();
-                Class k = HashEntry.class;
-                nextOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("next"));
-            } catch (Exception e) {
-                throw new Error(e);
-            }
-        
->>>>>>> YOURS
-}
+    }
 }

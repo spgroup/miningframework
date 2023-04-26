@@ -1,0 +1,3 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+hibernate-orm;346418c4ef7b9a21dc659af43ff614d5db2343f9;39d2d53968fcf9725dc55b1558d0c0dd67b01f26;98058c2aea;0b10334e40;hibernate-core/src/main/java/org/hibernate/hql/classic/WhereParser.java;4
+hibernate-orm;79080f74d6ffe9415c9047b2cbf0031442b1027b;126592a55d61195d55c73f36f8427badb79a713f;094bfc4def;39d2d53968;hibernate-core/src/main/java/org/hibernate/cfg/Environment.java;2

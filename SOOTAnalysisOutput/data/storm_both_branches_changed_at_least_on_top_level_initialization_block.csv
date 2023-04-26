@@ -1,0 +1,10 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+storm;ece2a1c8a7acef86152f81a8f031d6be0e6f98e3;779e5665696f5f10cf9674283420278f38c7a05c;385fdd71f;185101dd8;storm-client/src/jvm/org/apache/storm/generated/TopologyPageInfo.java;4
+storm;4645c190d094d334894acbdea0a51c67cdef7c14;2b6884b30fbc77203cdc0c9e8e737041125c61b0;62d725a85;77015f073;storm-core/src/jvm/backtype/storm/generated/TopologyInfo.java;4
+storm;7f9d00dba940addb854f7f7f765cb711102857e0;0bba2baf92bb4042b2c47b2266ff1e4df006a6a3;444ec05e5;ffb5d0338;storm-core/src/jvm/backtype/storm/generated/TopologyPageInfo.java;4
+storm;5d84794521b2f581d2ccf3b144f8c73cfb277e75;512d3def033e2a66ce8f2c8a401c7cef99cbedea;5266a1671;99285bb71;storm-core/src/jvm/backtype/storm/generated/Credentials.java;4
+storm;0151b441b0a68d490074d415d408caa522e47ffb;544e55cb8ab8878c4af500aab49bd35d4b69cd3e;e5265d851;154e9ec55;storm-core/src/jvm/backtype/storm/generated/TopologyInfo.java;4
+storm;d1afefde51e34dc993591ad79d3fe217bef86f87;2aaa718094af0d0e931eb3a7a66251268d64896b;c54cea116;765e4c2fa;storm-core/src/jvm/backtype/storm/generated/TopologySummary.java;4
+storm;5b67b571fe45e14fd52b835bc1de056538de1e70;8036109f68d77802cfd8c4a1e1bb14d4f9e9ff82;f23b3c871;5eff2e761;storm-core/src/jvm/backtype/storm/generated/ExecutorStats.java;3
+storm;85e4d5efce66352469cb4c9947922731e834ca5d;8036109f68d77802cfd8c4a1e1bb14d4f9e9ff82;8d4e5618e;559f0f200;storm-core/src/jvm/backtype/storm/generated/ClusterSummary.java;3
+storm;65aee65af54dd29434af8f5ee403233b597561b6;24d4a14de310cbbfebdc4a50d8cc9d86f9943087;d7c1d1d0a;79f258ec6;storm-core/src/jvm/backtype/storm/generated/ErrorInfo.java;2

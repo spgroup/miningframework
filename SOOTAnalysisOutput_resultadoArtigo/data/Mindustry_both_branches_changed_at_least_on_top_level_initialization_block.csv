@@ -1,0 +1,7 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+Mindustry;56d291c9631a64cce137f3b5ce39151fe59c5bbe;dcb84f9faf0c8dbf3ff1adf5ad15a81dfb80d95a;ef399d349;b855849e4;core/src/mindustry/mod/ClassMap.java;2
+Mindustry;082edbff6f9df863ea31c9db0c7a11bf2c0d5b24;d5f7fc842c6709e2a6349763ee18045233584b8f;f96700320;dcb84f9fa;core/src/mindustry/mod/ClassMap.java;2
+Mindustry;e6bd259c0eaf5061f285618aaf913cec0b2975f0;53214f0ddc4a02ea263fa082fccce60147b66caf;385f493f3;e7e64379d;core/src/mindustry/mod/ClassMap.java;2
+Mindustry;ebf0c71db62f132016e3ff0ee6be1313be1d05f3;5c803594fbd378be40d61a04a046d6f5161e6500;0d280ea77;178cb12f8;core/src/mindustry/mod/ClassMap.java;2
+Mindustry;afe963ca5de7ada5bb4549400ed13f55c640cf24;7ec713ab66d0bd40bede2941df954a022f41d230;c623e6669;15affaad9;core/src/mindustry/mod/ClassMap.java;2
+Mindustry;ad6e0bcd0f98a1fde8e85d2adfd4efa9d38346c8;5675565c9621a0fe27176e8f17efd6474cf83895;4f144c8f3;a2933e030;core/src/mindustry/game/Team.java;2

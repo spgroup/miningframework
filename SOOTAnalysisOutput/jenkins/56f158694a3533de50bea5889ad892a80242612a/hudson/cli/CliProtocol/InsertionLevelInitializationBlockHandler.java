@@ -81,16 +81,8 @@ public class CliProtocol extends AgentProtocol {
 
     private static final boolean OPT_IN;
 
-    static {<<<<<<< MINE
-
+    static {
         byte hash = Util.fromHexString(Jenkins.getInstance().getLegacyInstanceId())[0];
         OPT_IN = (hash % 10) == 0;
-    
-=======
-
-        byte hash = Util.fromHexString(Jenkins.getInstance().getLegacyInstanceId())[0];
-        OPT_IN = (hash % 10) == 0;
-    
->>>>>>> YOURS
-}
+    }
 }

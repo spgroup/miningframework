@@ -18,10 +18,14 @@ abstract class TriplaFilesRunner {
             Path leftFile = getContributionFile(filesQuadruplePath, 'left')
             Path baseFile = getContributionFile(filesQuadruplePath, 'base')
             Path rightFile = getContributionFile(filesQuadruplePath, 'right')
-            for(Integer count : itens) {
+            if(!nameAlgoritm.equals("GitMergeFile")){
+              for(Integer count : itens) {
                 LoggerStatistics.logTimeInitial()
                 runTool(leftFile, baseFile, rightFile)
                 LoggerStatistics.updateSpreadsheet(count,project, mergeCommit, filesQuadruplePath, nameAlgoritm, LoggerStatistics.logTimeFinal())
+              }
+            }else{
+                runTool(leftFile, baseFile, rightFile)
             }
         }
     }

@@ -1,2 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
-cxf;d9a1164c341c10db5d34cea3265eb8d5099f3edf;72287e2764a309412025fba0a27ce4acbfe96203;36b262360f;e5f565792b;rt/transports/http-jetty/src/main/java/org/apache/cxf/transport/http_jetty/JettyHTTPDestination.java;2

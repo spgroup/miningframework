@@ -8,18 +8,10 @@ public class Logger {
 
     private static final StackWalker WALKER;
 
-    static {<<<<<<< MINE
-
+    static {
         final PrivilegedAction<StackWalker> action = () -> StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
         WALKER = AccessController.doPrivileged(action);
-    
-=======
-
-        final PrivilegedAction<StackWalker> action = () -> StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
-        WALKER = AccessController.doPrivileged(action);
-    
->>>>>>> YOURS
-}
+    }
 
     private final java.util.logging.Logger impl;
 

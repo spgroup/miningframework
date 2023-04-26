@@ -1,0 +1,2 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+thingsboard;0c9bbeb6b3b7e7329c7a284bdcac7ebf784fcfa2;fe58206bbe7f6ddab867bc5d249e612245c1e95e;623f621d64;97565ff9df;dao/src/main/java/org/thingsboard/server/dao/sql/query/EntityKeyMapping.java;2

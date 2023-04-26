@@ -1,0 +1,1 @@
+fatal: failed to stat 'ea55bb32a2eeb3065289260af633e729831a0dfd:spring-boot-project/spring-boot-actuator-autoconfigure/src/test/java/org/springframework/boot/actuate/autoconfigure/endpoint/web/documentation/LoggersEndpointDocumentationTests.java': Filename too long

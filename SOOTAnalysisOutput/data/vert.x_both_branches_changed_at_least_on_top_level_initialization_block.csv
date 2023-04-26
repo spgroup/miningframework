@@ -1,0 +1,3 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+vert.x;bdbaece4b9d258ffa17b6cee790e7e57ee319a18;a30703379a06502faaae0aeda1eaa9a9b1152004;4d2d6b095;a64efd523;src/main/java/io/vertx/core/net/impl/SSLHelper.java;4
+vert.x;7cd4ed8ed03f3a9255956ca8fa19d3f45edd94cd;2d818ad6b8e9585d50e2541b40d5c5252aa8a0f9;73a8273b2;e5a90dcaa;src/main/java/io/vertx/core/net/impl/SSLHelper.java;4

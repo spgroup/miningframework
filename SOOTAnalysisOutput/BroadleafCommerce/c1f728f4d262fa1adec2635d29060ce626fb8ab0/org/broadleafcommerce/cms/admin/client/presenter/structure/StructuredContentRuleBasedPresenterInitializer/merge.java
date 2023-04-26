@@ -1,0 +1,1 @@
+fatal: failed to stat 'c1f728f4d262fa1adec2635d29060ce626fb8ab0:admin/broadleaf-contentmanagement-module/src/main/java/org/broadleafcommerce/cms/admin/client/presenter/structure/StructuredContentRuleBasedPresenterInitializer.java': Filename too long

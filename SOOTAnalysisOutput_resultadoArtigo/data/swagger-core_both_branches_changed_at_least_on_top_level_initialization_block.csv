@@ -1,0 +1,3 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+swagger-core;6b51d91ecb3f4ce060a1a099e5132546c3b82929;6f9edb89108387c190a703839e284ac5176b65d6;a689f4d69;649cfeea6;modules/swagger-core/src/main/java/io/swagger/util/PrimitiveType.java;2
+swagger-core;aeda643c2eaeca40daf5c7520bcbbe41de563017;f8f7054631c92c6b897459303ba4acf2d49823d3;279a69570;e9ac84a8b;samples/java-jaxrs/src/main/java/com/wordnik/swagger/sample/Bootstrap.java;2

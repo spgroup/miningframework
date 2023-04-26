@@ -1,0 +1,7 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+reactor-core;c6e95f8cdc7c74e1f63b310c5afd72241de1dc9f;de9668acb42c64ba139b347860fd7a0f8b3acbb5;4cb8ac301;898bfc123;reactor-core/src/main/java/reactor/core/publisher/RingBuffer.java;6
+reactor-core;cd47b623a7591a3cebd0ec6d423917552f6425b2;6869924aa33325e1eb0f30bc2745c47bc04bec24;d889961d0;840dd5583;reactor-core/src/main/java/reactor/core/publisher/RingBuffer.java;6
+reactor-core;628258f644bdddd095e72d1fc81c5d6ac0e3fa12;ad81b524a5c6731d015a6e0ff3537f5e21f1fa30;cee2cd34d;832d870a2;reactor-core/src/main/java/reactor/core/publisher/RingBuffer.java;6
+reactor-core;49271e2fca27f5daa68390066f28ccdb42c037c5;50db4dac928241783b82081a2f31f870e38bec8c;ad81b524a;6869924aa;reactor-core/src/main/java/reactor/core/publisher/RingBuffer.java;6
+reactor-core;0d8e16e547ede731b3193cb768821e3556fe9a9b;9da9e50e0e052f1bcbbf87e18ab39019e823ab48;e20808a82;eda4e80c1;reactor-core/src/main/java/reactor/core/publisher/RingBuffer.java;6
+reactor-core;b577ee0802264002541ac4c9b53851aebfead505;da929494adcdf27d7bc83d73c0ca5d275c5867f5;befa46dc0;506aa7e62;src/main/java/reactor/core/converter/DependencyUtils.java;2

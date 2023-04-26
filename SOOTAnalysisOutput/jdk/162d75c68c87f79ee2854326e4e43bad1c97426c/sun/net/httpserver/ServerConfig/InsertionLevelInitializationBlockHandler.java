@@ -51,8 +51,7 @@ private static boolean noDelay;
 >>>>>>> YOURS
 
 
-    static {<<<<<<< MINE
-
+    static {
         java.security.AccessController.doPrivileged(new PrivilegedAction<Void>() {
 
             @Override
@@ -69,9 +68,9 @@ private static boolean noDelay;
                 return null;
             }
         });
-    
-=======
+    }
 
+    static {
         java.security.AccessController.doPrivileged(new PrivilegedAction<Void>() {
 
             @Override
@@ -89,9 +88,7 @@ private static boolean noDelay;
                 return null;
             }
         });
-    
->>>>>>> YOURS
-}
+    }
 
     static void checkLegacyProperties(final Logger logger) {
         java.security.AccessController.doPrivileged(new PrivilegedAction<Void>() {

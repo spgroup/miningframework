@@ -1,0 +1,94 @@
+package org.apache.accumulo.test.functional;
+
+import static org.apache.accumulo.fate.util.UtilWaitThread.sleepUninterruptibly;
+import static org.junit.Assert.assertEquals;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import org.apache.accumulo.cluster.ClusterControl;
+import org.apache.accumulo.core.client.Accumulo;
+import org.apache.accumulo.core.client.AccumuloClient;
+import org.apache.accumulo.core.conf.Property;
+import org.apache.accumulo.harness.AccumuloClusterHarness;
+import org.apache.accumulo.minicluster.ServerType;
+import org.apache.accumulo.miniclusterImpl.MiniAccumuloConfigImpl;
+import org.apache.accumulo.test.TestIngest;
+import org.apache.accumulo.test.VerifyIngest;
+import org.apache.accumulo.test.VerifyIngest.VerifyParams;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.RawLocalFileSystem;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class RestartStressIT extends AccumuloClusterHarness {
+
+    private static final Logger log = LoggerFactory.getLogger(RestartStressIT.class);
+
+    @Override
+    public void configureMiniCluster(MiniAccumuloConfigImpl cfg, Configuration hadoopCoreSite) {
+        Map<String, String> opts = cfg.getSiteConfig();
+        opts.put(Property.TSERV_MAXMEM.getKey(), "100K");
+        opts.put(Property.TSERV_MAJC_DELAY.getKey(), "100ms");
+        opts.put(Property.TSERV_WALOG_MAX_SIZE.getKey(), "1M");
+        opts.put(Property.INSTANCE_ZK_TIMEOUT.getKey(), "15s");
+        opts.put(Property.MASTER_RECOVERY_DELAY.getKey(), "1s");
+        cfg.setSiteConfig(opts);
+        hadoopCoreSite.set("fs.file.impl", RawLocalFileSystem.class.getName());
+    }
+
+    @Override
+    protected int defaultTimeoutSeconds() {
+        return 10 * 60;
+    }
+
+    private ExecutorService svc;
+
+    @Before
+    public void setup() {
+        svc = Executors.newFixedThreadPool(1);
+    }
+
+    @After
+    public void teardown() throws Exception {
+        if (svc == null) {
+            return;
+        }
+        if (!svc.isShutdown()) {
+            svc.shutdown();
+        }
+        while (!svc.awaitTermination(10, TimeUnit.SECONDS)) {
+            log.info("Waiting for threadpool to terminate");
+        }
+    }
+
+    @Test
+    public void test() throws Exception {
+        try (AccumuloClient c = Accumulo.newClient().from(getClientProps()).build()) {
+            final String tableName = getUniqueNames(1)[0];
+            c.tableOperations().create(tableName);
+            c.tableOperations().setProperty(tableName, Property.TABLE_SPLIT_THRESHOLD.getKey(), "500K");
+            final ClusterControl control = getCluster().getClusterControl();
+            VerifyParams params = new VerifyParams(getClientProps(), tableName, 10_000);
+            Future<Integer> retCode = svc.submit(() -> {
+                try {
+                    return control.exec(TestIngest.class, new String[] { "-c", cluster.getClientPropsPath(), "--rows", "" + params.rows, "--table", tableName });
+                } catch (Exception e) {
+                    log.error("Error running TestIngest", e);
+                    return -1;
+                }
+            });
+            for (int i = 0; i < 2; i++) {
+                sleepUninterruptibly(10, TimeUnit.SECONDS);
+                control.stopAllServers(ServerType.TABLET_SERVER);
+                control.startAllServers(ServerType.TABLET_SERVER);
+            }
+            assertEquals(0, retCode.get().intValue());
+            VerifyIngest.verifyIngest(c, params);
+        }
+    }
+}

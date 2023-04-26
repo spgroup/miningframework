@@ -1,0 +1,4 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+MinecraftForge;31b3825069c3d9369aaed8597baae8247725ce54;cc0e6a182568a282c1daa61ad300c0d29d422f45;cace1f00b;7ed5fc7e0;src/main/java/net/minecraftforge/client/ForgeHooksClient.java;4
+MinecraftForge;30be6d4babbd52ef2eaa6d1ae7525bbcebeb4fa8;f515ebcb125192923d94fa8e31685814e480a6f6;1169ba9ef;ab62ca7b1;client/net/minecraftforge/client/ForgeHooksClient.java;2
+MinecraftForge;64226c3d7e02e1533540127aecf9770d8a084d37;fa34555efafb5f0bcc10241a45b8a6a749f833c0;29348240f;f97b33060;fml/common/cpw/mods/fml/common/network/FMLPacket.java;2

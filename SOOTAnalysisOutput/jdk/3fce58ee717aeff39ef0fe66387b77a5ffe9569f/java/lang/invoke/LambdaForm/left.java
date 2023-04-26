@@ -1,0 +1,1749 @@
+package java.lang.invoke;
+
+import jdk.internal.perf.PerfCounter;
+import jdk.internal.vm.annotation.DontInline;
+import jdk.internal.vm.annotation.Stable;
+import sun.invoke.util.Wrapper;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import static java.lang.invoke.LambdaForm.BasicType.*;
+import static java.lang.invoke.MethodHandleNatives.Constants.REF_invokeStatic;
+import static java.lang.invoke.MethodHandleStatics.*;
+
+class LambdaForm {
+
+    final int arity;
+
+    final int result;
+
+    final boolean forceInline;
+
+    final MethodHandle customized;
+
+    @Stable
+    final Name[] names;
+
+    final String debugName;
+
+    MemberName vmentry;
+
+    private boolean isCompiled;
+
+    volatile Object transformCache;
+
+    public static final int VOID_RESULT = -1, LAST_RESULT = -2;
+
+    enum BasicType {
+
+        L_TYPE('L', Object.class, Wrapper.OBJECT),
+        I_TYPE('I', int.class, Wrapper.INT),
+        J_TYPE('J', long.class, Wrapper.LONG),
+        F_TYPE('F', float.class, Wrapper.FLOAT),
+        D_TYPE('D', double.class, Wrapper.DOUBLE),
+        V_TYPE('V', void.class, Wrapper.VOID);
+
+        static final BasicType[] ALL_TYPES = BasicType.values();
+
+        static final BasicType[] ARG_TYPES = Arrays.copyOf(ALL_TYPES, ALL_TYPES.length - 1);
+
+        static final int ARG_TYPE_LIMIT = ARG_TYPES.length;
+
+        static final int TYPE_LIMIT = ALL_TYPES.length;
+
+        private final char btChar;
+
+        private final Class<?> btClass;
+
+        private final Wrapper btWrapper;
+
+        private BasicType(char btChar, Class<?> btClass, Wrapper wrapper) {
+            this.btChar = btChar;
+            this.btClass = btClass;
+            this.btWrapper = wrapper;
+        }
+
+        char basicTypeChar() {
+            return btChar;
+        }
+
+        Class<?> basicTypeClass() {
+            return btClass;
+        }
+
+        Wrapper basicTypeWrapper() {
+            return btWrapper;
+        }
+
+        int basicTypeSlots() {
+            return btWrapper.stackSlots();
+        }
+
+        static BasicType basicType(byte type) {
+            return ALL_TYPES[type];
+        }
+
+        static BasicType basicType(char type) {
+            switch(type) {
+                case 'L':
+                    return L_TYPE;
+                case 'I':
+                    return I_TYPE;
+                case 'J':
+                    return J_TYPE;
+                case 'F':
+                    return F_TYPE;
+                case 'D':
+                    return D_TYPE;
+                case 'V':
+                    return V_TYPE;
+                case 'Z':
+                case 'B':
+                case 'S':
+                case 'C':
+                    return I_TYPE;
+                default:
+                    throw newInternalError("Unknown type char: '" + type + "'");
+            }
+        }
+
+        static BasicType basicType(Wrapper type) {
+            char c = type.basicTypeChar();
+            return basicType(c);
+        }
+
+        static BasicType basicType(Class<?> type) {
+            if (!type.isPrimitive())
+                return L_TYPE;
+            return basicType(Wrapper.forPrimitiveType(type));
+        }
+
+        static BasicType[] basicTypes(String types) {
+            BasicType[] btypes = new BasicType[types.length()];
+            for (int i = 0; i < btypes.length; i++) {
+                btypes[i] = basicType(types.charAt(i));
+            }
+            return btypes;
+        }
+
+        static String basicTypeDesc(BasicType[] types) {
+            if (types == null) {
+                return null;
+            }
+            if (types.length == 0) {
+                return "";
+            }
+            StringBuilder sb = new StringBuilder();
+            for (BasicType bt : types) {
+                sb.append(bt.basicTypeChar());
+            }
+            return sb.toString();
+        }
+
+        static int[] basicTypeOrds(BasicType[] types) {
+            if (types == null) {
+                return null;
+            }
+            int[] a = new int[types.length];
+            for (int i = 0; i < types.length; ++i) {
+                a[i] = types[i].ordinal();
+            }
+            return a;
+        }
+
+        static char basicTypeChar(Class<?> type) {
+            return basicType(type).btChar;
+        }
+
+        static byte[] basicTypesOrd(Class<?>[] types) {
+            byte[] ords = new byte[types.length];
+            for (int i = 0; i < ords.length; i++) {
+                ords[i] = (byte) basicType(types[i]).ordinal();
+            }
+            return ords;
+        }
+
+        static boolean isBasicTypeChar(char c) {
+            return "LIJFDV".indexOf(c) >= 0;
+        }
+
+        static boolean isArgBasicTypeChar(char c) {
+            return "LIJFD".indexOf(c) >= 0;
+        }
+
+        static {
+            assert (checkBasicType());
+        }
+
+        private static boolean checkBasicType() {
+            for (int i = 0; i < ARG_TYPE_LIMIT; i++) {
+                assert ARG_TYPES[i].ordinal() == i;
+                assert ARG_TYPES[i] == ALL_TYPES[i];
+            }
+            for (int i = 0; i < TYPE_LIMIT; i++) {
+                assert ALL_TYPES[i].ordinal() == i;
+            }
+            assert ALL_TYPES[TYPE_LIMIT - 1] == V_TYPE;
+            assert !Arrays.asList(ARG_TYPES).contains(V_TYPE);
+            return true;
+        }
+    }
+
+    LambdaForm(String debugName, int arity, Name[] names, int result) {
+        this(debugName, arity, names, result, true, null);
+    }
+
+    LambdaForm(String debugName, int arity, Name[] names, int result, boolean forceInline, MethodHandle customized) {
+        assert (namesOK(arity, names));
+        this.arity = arity;
+        this.result = fixResult(result, names);
+        this.names = names.clone();
+        this.debugName = fixDebugName(debugName);
+        this.forceInline = forceInline;
+        this.customized = customized;
+        int maxOutArity = normalize();
+        if (maxOutArity > MethodType.MAX_MH_INVOKER_ARITY) {
+            assert (maxOutArity <= MethodType.MAX_JVM_ARITY);
+            compileToBytecode();
+        }
+    }
+
+    LambdaForm(String debugName, int arity, Name[] names) {
+        this(debugName, arity, names, LAST_RESULT, true, null);
+    }
+
+    LambdaForm(String debugName, int arity, Name[] names, boolean forceInline) {
+        this(debugName, arity, names, LAST_RESULT, forceInline, null);
+    }
+
+    LambdaForm(String debugName, Name[] formals, Name[] temps, Name result) {
+        this(debugName, formals.length, buildNames(formals, temps, result), LAST_RESULT, true, null);
+    }
+
+    LambdaForm(String debugName, Name[] formals, Name[] temps, Name result, boolean forceInline) {
+        this(debugName, formals.length, buildNames(formals, temps, result), LAST_RESULT, forceInline, null);
+    }
+
+    private static Name[] buildNames(Name[] formals, Name[] temps, Name result) {
+        int arity = formals.length;
+        int length = arity + temps.length + (result == null ? 0 : 1);
+        Name[] names = Arrays.copyOf(formals, length);
+        System.arraycopy(temps, 0, names, arity, temps.length);
+        if (result != null)
+            names[length - 1] = result;
+        return names;
+    }
+
+    private LambdaForm(MethodType mt) {
+        this.arity = mt.parameterCount();
+        this.result = (mt.returnType() == void.class || mt.returnType() == Void.class) ? -1 : arity;
+        this.names = buildEmptyNames(arity, mt, result == -1);
+        this.debugName = "LF.zero";
+        this.forceInline = true;
+        this.customized = null;
+        assert (nameRefsAreLegal());
+        assert (isEmpty());
+        String sig = null;
+        assert (isValidSignature(sig = basicTypeSignature()));
+        assert (sig.equals(basicTypeSignature())) : sig + " != " + basicTypeSignature();
+    }
+
+    private static Name[] buildEmptyNames(int arity, MethodType mt, boolean isVoid) {
+        Name[] names = arguments(isVoid ? 0 : 1, mt);
+        if (!isVoid) {
+            Name zero = new Name(constantZero(basicType(mt.returnType())));
+            names[arity] = zero.newIndex(arity);
+        }
+        return names;
+    }
+
+    private static int fixResult(int result, Name[] names) {
+        if (result == LAST_RESULT)
+            result = names.length - 1;
+        if (result >= 0 && names[result].type == V_TYPE)
+            result = VOID_RESULT;
+        return result;
+    }
+
+    private static String fixDebugName(String debugName) {
+        if (DEBUG_NAME_COUNTERS != null) {
+            int under = debugName.indexOf('_');
+            int length = debugName.length();
+            if (under < 0)
+                under = length;
+            String debugNameStem = debugName.substring(0, under);
+            Integer ctr;
+            synchronized (DEBUG_NAME_COUNTERS) {
+                ctr = DEBUG_NAME_COUNTERS.get(debugNameStem);
+                if (ctr == null)
+                    ctr = 0;
+                DEBUG_NAME_COUNTERS.put(debugNameStem, ctr + 1);
+            }
+            StringBuilder buf = new StringBuilder(debugNameStem);
+            buf.append('_');
+            int leadingZero = buf.length();
+            buf.append((int) ctr);
+            for (int i = buf.length() - leadingZero; i < 3; i++) buf.insert(leadingZero, '0');
+            if (under < length) {
+                ++under;
+                while (under < length && Character.isDigit(debugName.charAt(under))) {
+                    ++under;
+                }
+                if (under < length && debugName.charAt(under) == '_')
+                    ++under;
+                if (under < length)
+                    buf.append('_').append(debugName, under, length);
+            }
+            return buf.toString();
+        }
+        return debugName;
+    }
+
+    private static boolean namesOK(int arity, Name[] names) {
+        for (int i = 0; i < names.length; i++) {
+            Name n = names[i];
+            assert (n != null) : "n is null";
+            if (i < arity)
+                assert (n.isParam()) : n + " is not param at " + i;
+            else
+                assert (!n.isParam()) : n + " is param at " + i;
+        }
+        return true;
+    }
+
+    LambdaForm customize(MethodHandle mh) {
+        LambdaForm customForm = new LambdaForm(debugName, arity, names, result, forceInline, mh);
+        if (COMPILE_THRESHOLD >= 0 && isCompiled) {
+            customForm.compileToBytecode();
+        }
+        customForm.transformCache = this;
+        return customForm;
+    }
+
+    LambdaForm uncustomize() {
+        if (customized == null) {
+            return this;
+        }
+        assert (transformCache != null);
+        LambdaForm uncustomizedForm = (LambdaForm) transformCache;
+        if (COMPILE_THRESHOLD >= 0 && isCompiled) {
+            uncustomizedForm.compileToBytecode();
+        }
+        return uncustomizedForm;
+    }
+
+    private int normalize() {
+        Name[] oldNames = null;
+        int maxOutArity = 0;
+        int changesStart = 0;
+        for (int i = 0; i < names.length; i++) {
+            Name n = names[i];
+            if (!n.initIndex(i)) {
+                if (oldNames == null) {
+                    oldNames = names.clone();
+                    changesStart = i;
+                }
+                names[i] = n.cloneWithIndex(i);
+            }
+            if (n.arguments != null && maxOutArity < n.arguments.length)
+                maxOutArity = n.arguments.length;
+        }
+        if (oldNames != null) {
+            int startFixing = arity;
+            if (startFixing <= changesStart)
+                startFixing = changesStart + 1;
+            for (int i = startFixing; i < names.length; i++) {
+                Name fixed = names[i].replaceNames(oldNames, names, changesStart, i);
+                names[i] = fixed.newIndex(i);
+            }
+        }
+        assert (nameRefsAreLegal());
+        int maxInterned = Math.min(arity, INTERNED_ARGUMENT_LIMIT);
+        boolean needIntern = false;
+        for (int i = 0; i < maxInterned; i++) {
+            Name n = names[i], n2 = internArgument(n);
+            if (n != n2) {
+                names[i] = n2;
+                needIntern = true;
+            }
+        }
+        if (needIntern) {
+            for (int i = arity; i < names.length; i++) {
+                names[i].internArguments();
+            }
+        }
+        assert (nameRefsAreLegal());
+        return maxOutArity;
+    }
+
+    boolean nameRefsAreLegal() {
+        assert (arity >= 0 && arity <= names.length);
+        assert (result >= -1 && result < names.length);
+        for (int i = 0; i < arity; i++) {
+            Name n = names[i];
+            assert (n.index() == i) : Arrays.asList(n.index(), i);
+            assert (n.isParam());
+        }
+        for (int i = arity; i < names.length; i++) {
+            Name n = names[i];
+            assert (n.index() == i);
+            for (Object arg : n.arguments) {
+                if (arg instanceof Name) {
+                    Name n2 = (Name) arg;
+                    int i2 = n2.index;
+                    assert (0 <= i2 && i2 < names.length) : n.debugString() + ": 0 <= i2 && i2 < names.length: 0 <= " + i2 + " < " + names.length;
+                    assert (names[i2] == n2) : Arrays.asList("-1-", i, "-2-", n.debugString(), "-3-", i2, "-4-", n2.debugString(), "-5-", names[i2].debugString(), "-6-", this);
+                    assert (i2 < i);
+                }
+            }
+        }
+        return true;
+    }
+
+    BasicType returnType() {
+        if (result < 0)
+            return V_TYPE;
+        Name n = names[result];
+        return n.type;
+    }
+
+    BasicType parameterType(int n) {
+        return parameter(n).type;
+    }
+
+    Name parameter(int n) {
+        assert (n < arity);
+        Name param = names[n];
+        assert (param.isParam());
+        return param;
+    }
+
+    Object parameterConstraint(int n) {
+        return parameter(n).constraint;
+    }
+
+    int arity() {
+        return arity;
+    }
+
+    int expressionCount() {
+        return names.length - arity;
+    }
+
+    MethodType methodType() {
+        Class<?>[] ptypes = new Class<?>[arity];
+        for (int i = 0; i < arity; ++i) {
+            ptypes[i] = parameterType(i).btClass;
+        }
+        return MethodType.methodType(returnType().btClass, ptypes);
+    }
+
+    final String basicTypeSignature() {
+        StringBuilder buf = new StringBuilder(arity() + 3);
+        for (int i = 0, a = arity(); i < a; i++) buf.append(parameterType(i).basicTypeChar());
+        return buf.append('_').append(returnType().basicTypeChar()).toString();
+    }
+
+    static int signatureArity(String sig) {
+        assert (isValidSignature(sig));
+        return sig.indexOf('_');
+    }
+
+    static BasicType signatureReturn(String sig) {
+        return basicType(sig.charAt(signatureArity(sig) + 1));
+    }
+
+    static boolean isValidSignature(String sig) {
+        int arity = sig.indexOf('_');
+        if (arity < 0)
+            return false;
+        int siglen = sig.length();
+        if (siglen != arity + 2)
+            return false;
+        for (int i = 0; i < siglen; i++) {
+            if (i == arity)
+                continue;
+            char c = sig.charAt(i);
+            if (c == 'V')
+                return (i == siglen - 1 && arity == siglen - 2);
+            if (!isArgBasicTypeChar(c))
+                return false;
+        }
+        return true;
+    }
+
+    static MethodType signatureType(String sig) {
+        Class<?>[] ptypes = new Class<?>[signatureArity(sig)];
+        for (int i = 0; i < ptypes.length; i++) ptypes[i] = basicType(sig.charAt(i)).btClass;
+        Class<?> rtype = signatureReturn(sig).btClass;
+        return MethodType.methodType(rtype, ptypes);
+    }
+
+    boolean isSelectAlternative(int pos) {
+        if (pos + 1 >= names.length)
+            return false;
+        Name name0 = names[pos];
+        Name name1 = names[pos + 1];
+        return name0.refersTo(MethodHandleImpl.class, "selectAlternative") && name1.isInvokeBasic() && name1.lastUseIndex(name0) == 0 && lastUseIndex(name0) == pos + 1;
+    }
+
+    private boolean isMatchingIdiom(int pos, String idiomName, int nArgs) {
+        if (pos + 2 >= names.length)
+            return false;
+        Name name0 = names[pos];
+        Name name1 = names[pos + 1];
+        Name name2 = names[pos + 2];
+        return name1.refersTo(MethodHandleImpl.class, idiomName) && name0.isInvokeBasic() && name2.isInvokeBasic() && name1.lastUseIndex(name0) == nArgs && lastUseIndex(name0) == pos + 1 && name2.lastUseIndex(name1) == 1 && lastUseIndex(name1) == pos + 2;
+    }
+
+    boolean isGuardWithCatch(int pos) {
+        return isMatchingIdiom(pos, "guardWithCatch", 3);
+    }
+
+    boolean isTryFinally(int pos) {
+        return isMatchingIdiom(pos, "tryFinally", 2);
+    }
+
+    boolean isLoop(int pos) {
+        return isMatchingIdiom(pos, "loop", 5);
+    }
+
+    public void prepare() {
+        if (COMPILE_THRESHOLD == 0 && !forceInterpretation() && !isCompiled) {
+            compileToBytecode();
+        }
+        if (this.vmentry != null) {
+            return;
+        }
+        MethodType mtype = methodType();
+        LambdaForm prep = mtype.form().cachedLambdaForm(MethodTypeForm.LF_INTERPRET);
+        if (prep == null) {
+            assert (isValidSignature(basicTypeSignature()));
+            prep = new LambdaForm(mtype);
+            prep.vmentry = InvokerBytecodeGenerator.generateLambdaFormInterpreterEntryPoint(mtype);
+            prep = mtype.form().setCachedLambdaForm(MethodTypeForm.LF_INTERPRET, prep);
+        }
+        this.vmentry = prep.vmentry;
+    }
+
+    @Stable
+    private static PerfCounter LF_FAILED;
+
+    private static PerfCounter failedCompilationCounter() {
+        if (LF_FAILED == null) {
+            LF_FAILED = PerfCounter.newPerfCounter("java.lang.invoke.failedLambdaFormCompilations");
+        }
+        return LF_FAILED;
+    }
+
+    void compileToBytecode() {
+        if (forceInterpretation()) {
+            return;
+        }
+        if (vmentry != null && isCompiled) {
+            return;
+        }
+        MethodType invokerType = methodType();
+        assert (vmentry == null || vmentry.getMethodType().basicType().equals(invokerType));
+        try {
+            vmentry = InvokerBytecodeGenerator.generateCustomizedCode(this, invokerType);
+            if (TRACE_INTERPRETER)
+                traceInterpreter("compileToBytecode", this);
+            isCompiled = true;
+        } catch (InvokerBytecodeGenerator.BytecodeGenerationException bge) {
+            invocationCounter = -1;
+            failedCompilationCounter().increment();
+            if (LOG_LF_COMPILATION_FAILURE) {
+                System.out.println("LambdaForm compilation failed: " + this);
+                bge.printStackTrace(System.out);
+            }
+        } catch (Error | Exception e) {
+            throw newInternalError(this.toString(), e);
+        }
+    }
+
+    private static void computeInitialPreparedForms() {
+        for (MemberName m : MemberName.getFactory().getMethods(LambdaForm.class, false, null, null, null)) {
+            if (!m.isStatic() || !m.isPackage())
+                continue;
+            MethodType mt = m.getMethodType();
+            if (mt.parameterCount() > 0 && mt.parameterType(0) == MethodHandle.class && m.getName().startsWith("interpret_")) {
+                String sig = null;
+                assert ((sig = basicTypeSignature(mt)) != null && m.getName().equals("interpret" + sig.substring(sig.indexOf('_'))));
+                LambdaForm form = new LambdaForm(mt);
+                form.vmentry = m;
+                form = mt.form().setCachedLambdaForm(MethodTypeForm.LF_INTERPRET, form);
+            }
+        }
+    }
+
+    private static final boolean USE_PREDEFINED_INTERPRET_METHODS = true;
+
+    static Object interpret_L(MethodHandle mh) throws Throwable {
+        Object[] av = { mh };
+        String sig = null;
+        assert (argumentTypesMatch(sig = "L_L", av));
+        Object res = mh.form.interpretWithArguments(av);
+        assert (returnTypesMatch(sig, av, res));
+        return res;
+    }
+
+    static Object interpret_L(MethodHandle mh, Object x1) throws Throwable {
+        Object[] av = { mh, x1 };
+        String sig = null;
+        assert (argumentTypesMatch(sig = "LL_L", av));
+        Object res = mh.form.interpretWithArguments(av);
+        assert (returnTypesMatch(sig, av, res));
+        return res;
+    }
+
+    static Object interpret_L(MethodHandle mh, Object x1, Object x2) throws Throwable {
+        Object[] av = { mh, x1, x2 };
+        String sig = null;
+        assert (argumentTypesMatch(sig = "LLL_L", av));
+        Object res = mh.form.interpretWithArguments(av);
+        assert (returnTypesMatch(sig, av, res));
+        return res;
+    }
+
+    private static boolean argumentTypesMatch(String sig, Object[] av) {
+        int arity = signatureArity(sig);
+        assert (av.length == arity) : "av.length == arity: av.length=" + av.length + ", arity=" + arity;
+        assert (av[0] instanceof MethodHandle) : "av[0] not instace of MethodHandle: " + av[0];
+        MethodHandle mh = (MethodHandle) av[0];
+        MethodType mt = mh.type();
+        assert (mt.parameterCount() == arity - 1);
+        for (int i = 0; i < av.length; i++) {
+            Class<?> pt = (i == 0 ? MethodHandle.class : mt.parameterType(i - 1));
+            assert (valueMatches(basicType(sig.charAt(i)), pt, av[i]));
+        }
+        return true;
+    }
+
+    private static boolean valueMatches(BasicType tc, Class<?> type, Object x) {
+        if (type == void.class)
+            tc = V_TYPE;
+        assert tc == basicType(type) : tc + " == basicType(" + type + ")=" + basicType(type);
+        switch(tc) {
+            case I_TYPE:
+                assert checkInt(type, x) : "checkInt(" + type + "," + x + ")";
+                break;
+            case J_TYPE:
+                assert x instanceof Long : "instanceof Long: " + x;
+                break;
+            case F_TYPE:
+                assert x instanceof Float : "instanceof Float: " + x;
+                break;
+            case D_TYPE:
+                assert x instanceof Double : "instanceof Double: " + x;
+                break;
+            case L_TYPE:
+                assert checkRef(type, x) : "checkRef(" + type + "," + x + ")";
+                break;
+            case V_TYPE:
+                break;
+            default:
+                assert (false);
+        }
+        return true;
+    }
+
+    private static boolean returnTypesMatch(String sig, Object[] av, Object res) {
+        MethodHandle mh = (MethodHandle) av[0];
+        return valueMatches(signatureReturn(sig), mh.type().returnType(), res);
+    }
+
+    private static boolean checkInt(Class<?> type, Object x) {
+        assert (x instanceof Integer);
+        if (type == int.class)
+            return true;
+        Wrapper w = Wrapper.forBasicType(type);
+        assert (w.isSubwordOrInt());
+        Object x1 = Wrapper.INT.wrap(w.wrap(x));
+        return x.equals(x1);
+    }
+
+    private static boolean checkRef(Class<?> type, Object x) {
+        assert (!type.isPrimitive());
+        if (x == null)
+            return true;
+        if (type.isInterface())
+            return true;
+        return type.isInstance(x);
+    }
+
+    private static final int COMPILE_THRESHOLD;
+
+    static {
+        COMPILE_THRESHOLD = Math.max(-1, MethodHandleStatics.COMPILE_THRESHOLD);
+    }
+
+    private int invocationCounter = 0;
+
+    private boolean forceInterpretation() {
+        return invocationCounter == -1;
+    }
+
+    @Hidden
+    @DontInline
+    Object interpretWithArguments(Object... argumentValues) throws Throwable {
+        if (TRACE_INTERPRETER)
+            return interpretWithArgumentsTracing(argumentValues);
+        checkInvocationCounter();
+        assert (arityCheck(argumentValues));
+        Object[] values = Arrays.copyOf(argumentValues, names.length);
+        for (int i = argumentValues.length; i < values.length; i++) {
+            values[i] = interpretName(names[i], values);
+        }
+        Object rv = (result < 0) ? null : values[result];
+        assert (resultCheck(argumentValues, rv));
+        return rv;
+    }
+
+    @Hidden
+    @DontInline
+    Object interpretName(Name name, Object[] values) throws Throwable {
+        if (TRACE_INTERPRETER)
+            traceInterpreter("| interpretName", name.debugString(), (Object[]) null);
+        Object[] arguments = Arrays.copyOf(name.arguments, name.arguments.length, Object[].class);
+        for (int i = 0; i < arguments.length; i++) {
+            Object a = arguments[i];
+            if (a instanceof Name) {
+                int i2 = ((Name) a).index();
+                assert (names[i2] == a);
+                a = values[i2];
+                arguments[i] = a;
+            }
+        }
+        return name.function.invokeWithArguments(arguments);
+    }
+
+    private void checkInvocationCounter() {
+        if (COMPILE_THRESHOLD != 0 && !forceInterpretation() && invocationCounter < COMPILE_THRESHOLD) {
+            invocationCounter++;
+            if (invocationCounter >= COMPILE_THRESHOLD) {
+                compileToBytecode();
+            }
+        }
+    }
+
+    Object interpretWithArgumentsTracing(Object... argumentValues) throws Throwable {
+        traceInterpreter("[ interpretWithArguments", this, argumentValues);
+        if (!forceInterpretation() && invocationCounter < COMPILE_THRESHOLD) {
+            int ctr = invocationCounter++;
+            traceInterpreter("| invocationCounter", ctr);
+            if (invocationCounter >= COMPILE_THRESHOLD) {
+                compileToBytecode();
+            }
+        }
+        Object rval;
+        try {
+            assert (arityCheck(argumentValues));
+            Object[] values = Arrays.copyOf(argumentValues, names.length);
+            for (int i = argumentValues.length; i < values.length; i++) {
+                values[i] = interpretName(names[i], values);
+            }
+            rval = (result < 0) ? null : values[result];
+        } catch (Throwable ex) {
+            traceInterpreter("] throw =>", ex);
+            throw ex;
+        }
+        traceInterpreter("] return =>", rval);
+        return rval;
+    }
+
+    static void traceInterpreter(String event, Object obj, Object... args) {
+        if (TRACE_INTERPRETER) {
+            System.out.println("LFI: " + event + " " + (obj != null ? obj : "") + (args != null && args.length != 0 ? Arrays.asList(args) : ""));
+        }
+    }
+
+    static void traceInterpreter(String event, Object obj) {
+        traceInterpreter(event, obj, (Object[]) null);
+    }
+
+    private boolean arityCheck(Object[] argumentValues) {
+        assert (argumentValues.length == arity) : arity + "!=" + Arrays.asList(argumentValues) + ".length";
+        assert (argumentValues[0] instanceof MethodHandle) : "not MH: " + argumentValues[0];
+        MethodHandle mh = (MethodHandle) argumentValues[0];
+        assert (mh.internalForm() == this);
+        argumentTypesMatch(basicTypeSignature(), argumentValues);
+        return true;
+    }
+
+    private boolean resultCheck(Object[] argumentValues, Object result) {
+        MethodHandle mh = (MethodHandle) argumentValues[0];
+        MethodType mt = mh.type();
+        assert (valueMatches(returnType(), mt.returnType(), result));
+        return true;
+    }
+
+    private boolean isEmpty() {
+        if (result < 0)
+            return (names.length == arity);
+        else if (result == arity && names.length == arity + 1)
+            return names[arity].isConstantZero();
+        else
+            return false;
+    }
+
+    public String toString() {
+        StringBuilder buf = new StringBuilder(debugName + "=Lambda(");
+        for (int i = 0; i < names.length; i++) {
+            if (i == arity)
+                buf.append(")=>{");
+            Name n = names[i];
+            if (i >= arity)
+                buf.append("\n    ");
+            buf.append(n.paramString());
+            if (i < arity) {
+                if (i + 1 < arity)
+                    buf.append(",");
+                continue;
+            }
+            buf.append("=").append(n.exprString());
+            buf.append(";");
+        }
+        if (arity == names.length)
+            buf.append(")=>{");
+        buf.append(result < 0 ? "void" : names[result]).append("}");
+        if (TRACE_INTERPRETER) {
+            buf.append(":").append(basicTypeSignature());
+            buf.append("/").append(vmentry);
+        }
+        return buf.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof LambdaForm && equals((LambdaForm) obj);
+    }
+
+    public boolean equals(LambdaForm that) {
+        if (this.result != that.result)
+            return false;
+        return Arrays.equals(this.names, that.names);
+    }
+
+    public int hashCode() {
+        return result + 31 * Arrays.hashCode(names);
+    }
+
+    LambdaFormEditor editor() {
+        return LambdaFormEditor.lambdaFormEditor(this);
+    }
+
+    boolean contains(Name name) {
+        int pos = name.index();
+        if (pos >= 0) {
+            return pos < names.length && name.equals(names[pos]);
+        }
+        for (int i = arity; i < names.length; i++) {
+            if (name.equals(names[i]))
+                return true;
+        }
+        return false;
+    }
+
+    static class NamedFunction {
+
+        final MemberName member;
+
+        @Stable
+        private MethodHandle resolvedHandle;
+
+        @Stable
+        MethodHandle invoker;
+
+        NamedFunction(MethodHandle resolvedHandle) {
+            this(resolvedHandle.internalMemberName(), resolvedHandle);
+        }
+
+        NamedFunction(MemberName member, MethodHandle resolvedHandle) {
+            this.member = member;
+            this.resolvedHandle = resolvedHandle;
+        }
+
+        NamedFunction(MethodType basicInvokerType) {
+            assert (basicInvokerType == basicInvokerType.basicType()) : basicInvokerType;
+            if (basicInvokerType.parameterSlotCount() < MethodType.MAX_MH_INVOKER_ARITY) {
+                this.resolvedHandle = basicInvokerType.invokers().basicInvoker();
+                this.member = resolvedHandle.internalMemberName();
+            } else {
+                this.member = Invokers.invokeBasicMethod(basicInvokerType);
+            }
+            assert (isInvokeBasic());
+        }
+
+        private boolean isInvokeBasic() {
+            return member != null && member.isMethodHandleInvoke() && "invokeBasic".equals(member.getName());
+        }
+
+        NamedFunction(Method method) {
+            this(new MemberName(method));
+        }
+
+        NamedFunction(MemberName member) {
+            this(member, null);
+        }
+
+        MethodHandle resolvedHandle() {
+            if (resolvedHandle == null)
+                resolve();
+            return resolvedHandle;
+        }
+
+        synchronized void resolve() {
+            if (resolvedHandle == null) {
+                resolvedHandle = DirectMethodHandle.make(member);
+            }
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other)
+                return true;
+            if (other == null)
+                return false;
+            if (!(other instanceof NamedFunction))
+                return false;
+            NamedFunction that = (NamedFunction) other;
+            return this.member != null && this.member.equals(that.member);
+        }
+
+        @Override
+        public int hashCode() {
+            if (member != null)
+                return member.hashCode();
+            return super.hashCode();
+        }
+
+        static void initializeInvokers() {
+            for (MemberName m : MemberName.getFactory().getMethods(NamedFunction.class, false, null, null, null)) {
+                if (!m.isStatic() || !m.isPackage())
+                    continue;
+                MethodType type = m.getMethodType();
+                if (type.equals(INVOKER_METHOD_TYPE) && m.getName().startsWith("invoke_")) {
+                    String sig = m.getName().substring("invoke_".length());
+                    int arity = LambdaForm.signatureArity(sig);
+                    MethodType srcType = MethodType.genericMethodType(arity);
+                    if (LambdaForm.signatureReturn(sig) == V_TYPE)
+                        srcType = srcType.changeReturnType(void.class);
+                    MethodTypeForm typeForm = srcType.form();
+                    typeForm.setCachedMethodHandle(MethodTypeForm.MH_NF_INV, DirectMethodHandle.make(m));
+                }
+            }
+        }
+
+        @Hidden
+        static Object invoke__V(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(0, void.class, mh, a));
+            mh.invokeBasic();
+            return null;
+        }
+
+        @Hidden
+        static Object invoke_L_V(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(1, void.class, mh, a));
+            mh.invokeBasic(a[0]);
+            return null;
+        }
+
+        @Hidden
+        static Object invoke_LL_V(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(2, void.class, mh, a));
+            mh.invokeBasic(a[0], a[1]);
+            return null;
+        }
+
+        @Hidden
+        static Object invoke_LLL_V(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(3, void.class, mh, a));
+            mh.invokeBasic(a[0], a[1], a[2]);
+            return null;
+        }
+
+        @Hidden
+        static Object invoke_LLLL_V(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(4, void.class, mh, a));
+            mh.invokeBasic(a[0], a[1], a[2], a[3]);
+            return null;
+        }
+
+        @Hidden
+        static Object invoke_LLLLL_V(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(5, void.class, mh, a));
+            mh.invokeBasic(a[0], a[1], a[2], a[3], a[4]);
+            return null;
+        }
+
+        @Hidden
+        static Object invoke__L(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(0, mh, a));
+            return mh.invokeBasic();
+        }
+
+        @Hidden
+        static Object invoke_L_L(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(1, mh, a));
+            return mh.invokeBasic(a[0]);
+        }
+
+        @Hidden
+        static Object invoke_LL_L(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(2, mh, a));
+            return mh.invokeBasic(a[0], a[1]);
+        }
+
+        @Hidden
+        static Object invoke_LLL_L(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(3, mh, a));
+            return mh.invokeBasic(a[0], a[1], a[2]);
+        }
+
+        @Hidden
+        static Object invoke_LLLL_L(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(4, mh, a));
+            return mh.invokeBasic(a[0], a[1], a[2], a[3]);
+        }
+
+        @Hidden
+        static Object invoke_LLLLL_L(MethodHandle mh, Object[] a) throws Throwable {
+            assert (arityCheck(5, mh, a));
+            return mh.invokeBasic(a[0], a[1], a[2], a[3], a[4]);
+        }
+
+        private static boolean arityCheck(int arity, MethodHandle mh, Object[] a) {
+            return arityCheck(arity, Object.class, mh, a);
+        }
+
+        private static boolean arityCheck(int arity, Class<?> rtype, MethodHandle mh, Object[] a) {
+            assert (a.length == arity) : Arrays.asList(a.length, arity);
+            assert (mh.type().basicType() == MethodType.genericMethodType(arity).changeReturnType(rtype)) : Arrays.asList(mh, rtype, arity);
+            MemberName member = mh.internalMemberName();
+            if (member != null && member.getName().equals("invokeBasic") && member.isMethodHandleInvoke()) {
+                assert (arity > 0);
+                assert (a[0] instanceof MethodHandle);
+                MethodHandle mh2 = (MethodHandle) a[0];
+                assert (mh2.type().basicType() == MethodType.genericMethodType(arity - 1).changeReturnType(rtype)) : Arrays.asList(member, mh2, rtype, arity);
+            }
+            return true;
+        }
+
+        static final MethodType INVOKER_METHOD_TYPE = MethodType.methodType(Object.class, MethodHandle.class, Object[].class);
+
+        private static MethodHandle computeInvoker(MethodTypeForm typeForm) {
+            typeForm = typeForm.basicType().form();
+            MethodHandle mh = typeForm.cachedMethodHandle(MethodTypeForm.MH_NF_INV);
+            if (mh != null)
+                return mh;
+            MemberName invoker = InvokerBytecodeGenerator.generateNamedFunctionInvoker(typeForm);
+            mh = DirectMethodHandle.make(invoker);
+            MethodHandle mh2 = typeForm.cachedMethodHandle(MethodTypeForm.MH_NF_INV);
+            if (mh2 != null)
+                return mh2;
+            if (!mh.type().equals(INVOKER_METHOD_TYPE))
+                throw newInternalError(mh.debugString());
+            return typeForm.setCachedMethodHandle(MethodTypeForm.MH_NF_INV, mh);
+        }
+
+        @Hidden
+        Object invokeWithArguments(Object... arguments) throws Throwable {
+            if (TRACE_INTERPRETER)
+                return invokeWithArgumentsTracing(arguments);
+            assert (checkArgumentTypes(arguments, methodType()));
+            return invoker().invokeBasic(resolvedHandle(), arguments);
+        }
+
+        @Hidden
+        Object invokeWithArgumentsTracing(Object[] arguments) throws Throwable {
+            Object rval;
+            try {
+                traceInterpreter("[ call", this, arguments);
+                if (invoker == null) {
+                    traceInterpreter("| getInvoker", this);
+                    invoker();
+                }
+                if (resolvedHandle == null) {
+                    traceInterpreter("| resolve", this);
+                    resolvedHandle();
+                }
+                assert (checkArgumentTypes(arguments, methodType()));
+                rval = invoker().invokeBasic(resolvedHandle(), arguments);
+            } catch (Throwable ex) {
+                traceInterpreter("] throw =>", ex);
+                throw ex;
+            }
+            traceInterpreter("] return =>", rval);
+            return rval;
+        }
+
+        private MethodHandle invoker() {
+            if (invoker != null)
+                return invoker;
+            return invoker = computeInvoker(methodType().form());
+        }
+
+        private static boolean checkArgumentTypes(Object[] arguments, MethodType methodType) {
+            if (true)
+                return true;
+            MethodType dstType = methodType.form().erasedType();
+            MethodType srcType = dstType.basicType().wrap();
+            Class<?>[] ptypes = new Class<?>[arguments.length];
+            for (int i = 0; i < arguments.length; i++) {
+                Object arg = arguments[i];
+                Class<?> ptype = arg == null ? Object.class : arg.getClass();
+                ptypes[i] = dstType.parameterType(i).isPrimitive() ? ptype : Object.class;
+            }
+            MethodType argType = MethodType.methodType(srcType.returnType(), ptypes).wrap();
+            assert (argType.isConvertibleTo(srcType)) : "wrong argument types: cannot convert " + argType + " to " + srcType;
+            return true;
+        }
+
+        MethodType methodType() {
+            if (resolvedHandle != null)
+                return resolvedHandle.type();
+            else
+                return member.getInvocationType();
+        }
+
+        MemberName member() {
+            assert (assertMemberIsConsistent());
+            return member;
+        }
+
+        private boolean assertMemberIsConsistent() {
+            if (resolvedHandle instanceof DirectMethodHandle) {
+                MemberName m = resolvedHandle.internalMemberName();
+                assert (m.equals(member));
+            }
+            return true;
+        }
+
+        Class<?> memberDeclaringClassOrNull() {
+            return (member == null) ? null : member.getDeclaringClass();
+        }
+
+        BasicType returnType() {
+            return basicType(methodType().returnType());
+        }
+
+        BasicType parameterType(int n) {
+            return basicType(methodType().parameterType(n));
+        }
+
+        int arity() {
+            return methodType().parameterCount();
+        }
+
+        public String toString() {
+            if (member == null)
+                return String.valueOf(resolvedHandle);
+            return member.getDeclaringClass().getSimpleName() + "." + member.getName();
+        }
+
+        public boolean isIdentity() {
+            return this.equals(identity(returnType()));
+        }
+
+        public boolean isConstantZero() {
+            return this.equals(constantZero(returnType()));
+        }
+
+        public MethodHandleImpl.Intrinsic intrinsicName() {
+            return resolvedHandle == null ? MethodHandleImpl.Intrinsic.NONE : resolvedHandle.intrinsicName();
+        }
+    }
+
+    public static String basicTypeSignature(MethodType type) {
+        char[] sig = new char[type.parameterCount() + 2];
+        int sigp = 0;
+        for (Class<?> pt : type.parameterList()) {
+            sig[sigp++] = basicTypeChar(pt);
+        }
+        sig[sigp++] = '_';
+        sig[sigp++] = basicTypeChar(type.returnType());
+        assert (sigp == sig.length);
+        return String.valueOf(sig);
+    }
+
+    public static String shortenSignature(String signature) {
+        final int NO_CHAR = -1, MIN_RUN = 3;
+        int c0, c1 = NO_CHAR, c1reps = 0;
+        StringBuilder buf = null;
+        int len = signature.length();
+        if (len < MIN_RUN)
+            return signature;
+        for (int i = 0; i <= len; i++) {
+            c0 = c1;
+            c1 = (i == len ? NO_CHAR : signature.charAt(i));
+            if (c1 == c0) {
+                ++c1reps;
+                continue;
+            }
+            int c0reps = c1reps;
+            c1reps = 1;
+            if (c0reps < MIN_RUN) {
+                if (buf != null) {
+                    while (--c0reps >= 0) buf.append((char) c0);
+                }
+                continue;
+            }
+            if (buf == null)
+                buf = new StringBuilder().append(signature, 0, i - c0reps);
+            buf.append((char) c0).append(c0reps);
+        }
+        return (buf == null) ? signature : buf.toString();
+    }
+
+    static final class Name {
+
+        final BasicType type;
+
+        private short index;
+
+        final NamedFunction function;
+
+        final Object constraint;
+
+        @Stable
+        final Object[] arguments;
+
+        private Name(int index, BasicType type, NamedFunction function, Object[] arguments) {
+            this.index = (short) index;
+            this.type = type;
+            this.function = function;
+            this.arguments = arguments;
+            this.constraint = null;
+            assert (this.index == index);
+        }
+
+        private Name(Name that, Object constraint) {
+            this.index = that.index;
+            this.type = that.type;
+            this.function = that.function;
+            this.arguments = that.arguments;
+            this.constraint = constraint;
+            assert (constraint == null || isParam());
+            assert (constraint == null || constraint instanceof BoundMethodHandle.SpeciesData || constraint instanceof Class);
+        }
+
+        Name(MethodHandle function, Object... arguments) {
+            this(new NamedFunction(function), arguments);
+        }
+
+        Name(MethodType functionType, Object... arguments) {
+            this(new NamedFunction(functionType), arguments);
+            assert (arguments[0] instanceof Name && ((Name) arguments[0]).type == L_TYPE);
+        }
+
+        Name(MemberName function, Object... arguments) {
+            this(new NamedFunction(function), arguments);
+        }
+
+        Name(NamedFunction function, Object... arguments) {
+            this(-1, function.returnType(), function, arguments = Arrays.copyOf(arguments, arguments.length, Object[].class));
+            assert (typesMatch(function, arguments));
+        }
+
+        Name(int index, BasicType type) {
+            this(index, type, null, null);
+        }
+
+        Name(BasicType type) {
+            this(-1, type);
+        }
+
+        BasicType type() {
+            return type;
+        }
+
+        int index() {
+            return index;
+        }
+
+        boolean initIndex(int i) {
+            if (index != i) {
+                if (index != -1)
+                    return false;
+                index = (short) i;
+            }
+            return true;
+        }
+
+        char typeChar() {
+            return type.btChar;
+        }
+
+        void resolve() {
+            if (function != null)
+                function.resolve();
+        }
+
+        Name newIndex(int i) {
+            if (initIndex(i))
+                return this;
+            return cloneWithIndex(i);
+        }
+
+        Name cloneWithIndex(int i) {
+            Object[] newArguments = (arguments == null) ? null : arguments.clone();
+            return new Name(i, type, function, newArguments).withConstraint(constraint);
+        }
+
+        Name withConstraint(Object constraint) {
+            if (constraint == this.constraint)
+                return this;
+            return new Name(this, constraint);
+        }
+
+        Name replaceName(Name oldName, Name newName) {
+            if (oldName == newName)
+                return this;
+            @SuppressWarnings("LocalVariableHidesMemberVariable")
+            Object[] arguments = this.arguments;
+            if (arguments == null)
+                return this;
+            boolean replaced = false;
+            for (int j = 0; j < arguments.length; j++) {
+                if (arguments[j] == oldName) {
+                    if (!replaced) {
+                        replaced = true;
+                        arguments = arguments.clone();
+                    }
+                    arguments[j] = newName;
+                }
+            }
+            if (!replaced)
+                return this;
+            return new Name(function, arguments);
+        }
+
+        Name replaceNames(Name[] oldNames, Name[] newNames, int start, int end) {
+            if (start >= end)
+                return this;
+            @SuppressWarnings("LocalVariableHidesMemberVariable")
+            Object[] arguments = this.arguments;
+            boolean replaced = false;
+            eachArg: for (int j = 0; j < arguments.length; j++) {
+                if (arguments[j] instanceof Name) {
+                    Name n = (Name) arguments[j];
+                    int check = n.index;
+                    if (check >= 0 && check < newNames.length && n == newNames[check])
+                        continue eachArg;
+                    for (int i = start; i < end; i++) {
+                        if (n == oldNames[i]) {
+                            if (n == newNames[i])
+                                continue eachArg;
+                            if (!replaced) {
+                                replaced = true;
+                                arguments = arguments.clone();
+                            }
+                            arguments[j] = newNames[i];
+                            continue eachArg;
+                        }
+                    }
+                }
+            }
+            if (!replaced)
+                return this;
+            return new Name(function, arguments);
+        }
+
+        void internArguments() {
+            @SuppressWarnings("LocalVariableHidesMemberVariable")
+            Object[] arguments = this.arguments;
+            for (int j = 0; j < arguments.length; j++) {
+                if (arguments[j] instanceof Name) {
+                    Name n = (Name) arguments[j];
+                    if (n.isParam() && n.index < INTERNED_ARGUMENT_LIMIT)
+                        arguments[j] = internArgument(n);
+                }
+            }
+        }
+
+        boolean isParam() {
+            return function == null;
+        }
+
+        boolean isConstantZero() {
+            return !isParam() && arguments.length == 0 && function.isConstantZero();
+        }
+
+        boolean refersTo(Class<?> declaringClass, String methodName) {
+            return function != null && function.member() != null && function.member().refersTo(declaringClass, methodName);
+        }
+
+        boolean isInvokeBasic() {
+            if (function == null)
+                return false;
+            if (arguments.length < 1)
+                return false;
+            MemberName member = function.member();
+            return member != null && member.refersTo(MethodHandle.class, "invokeBasic") && !member.isPublic() && !member.isStatic();
+        }
+
+        boolean isLinkerMethodInvoke() {
+            if (function == null)
+                return false;
+            if (arguments.length < 1)
+                return false;
+            MemberName member = function.member();
+            return member != null && member.getDeclaringClass() == MethodHandle.class && !member.isPublic() && member.isStatic() && member.getName().startsWith("linkTo");
+        }
+
+        public String toString() {
+            return (isParam() ? "a" : "t") + (index >= 0 ? index : System.identityHashCode(this)) + ":" + typeChar();
+        }
+
+        public String debugString() {
+            String s = paramString();
+            return (function == null) ? s : s + "=" + exprString();
+        }
+
+        public String paramString() {
+            String s = toString();
+            Object c = constraint;
+            if (c == null)
+                return s;
+            if (c instanceof Class)
+                c = ((Class<?>) c).getSimpleName();
+            return s + "/" + c;
+        }
+
+        public String exprString() {
+            if (function == null)
+                return toString();
+            StringBuilder buf = new StringBuilder(function.toString());
+            buf.append("(");
+            String cma = "";
+            for (Object a : arguments) {
+                buf.append(cma);
+                cma = ",";
+                if (a instanceof Name || a instanceof Integer)
+                    buf.append(a);
+                else
+                    buf.append("(").append(a).append(")");
+            }
+            buf.append(")");
+            return buf.toString();
+        }
+
+        private boolean typesMatch(NamedFunction function, Object... arguments) {
+            assert (arguments.length == function.arity()) : "arity mismatch: arguments.length=" + arguments.length + " == function.arity()=" + function.arity() + " in " + debugString();
+            for (int i = 0; i < arguments.length; i++) {
+                assert (typesMatch(function.parameterType(i), arguments[i])) : "types don't match: function.parameterType(" + i + ")=" + function.parameterType(i) + ", arguments[" + i + "]=" + arguments[i] + " in " + debugString();
+            }
+            return true;
+        }
+
+        private static boolean typesMatch(BasicType parameterType, Object object) {
+            if (object instanceof Name) {
+                return ((Name) object).type == parameterType;
+            }
+            switch(parameterType) {
+                case I_TYPE:
+                    return object instanceof Integer;
+                case J_TYPE:
+                    return object instanceof Long;
+                case F_TYPE:
+                    return object instanceof Float;
+                case D_TYPE:
+                    return object instanceof Double;
+            }
+            assert (parameterType == L_TYPE);
+            return true;
+        }
+
+        int lastUseIndex(Name n) {
+            if (arguments == null)
+                return -1;
+            for (int i = arguments.length; --i >= 0; ) {
+                if (arguments[i] == n)
+                    return i;
+            }
+            return -1;
+        }
+
+        int useCount(Name n) {
+            if (arguments == null)
+                return 0;
+            int count = 0;
+            for (int i = arguments.length; --i >= 0; ) {
+                if (arguments[i] == n)
+                    ++count;
+            }
+            return count;
+        }
+
+        boolean contains(Name n) {
+            return this == n || lastUseIndex(n) >= 0;
+        }
+
+        public boolean equals(Name that) {
+            if (this == that)
+                return true;
+            if (isParam())
+                return false;
+            return this.type == that.type && this.function.equals(that.function) && Arrays.equals(this.arguments, that.arguments);
+        }
+
+        @Override
+        public boolean equals(Object x) {
+            return x instanceof Name && equals((Name) x);
+        }
+
+        @Override
+        public int hashCode() {
+            if (isParam())
+                return index | (type.ordinal() << 8);
+            return function.hashCode() ^ Arrays.hashCode(arguments);
+        }
+    }
+
+    int lastUseIndex(Name n) {
+        int ni = n.index, nmax = names.length;
+        assert (names[ni] == n);
+        if (result == ni)
+            return nmax;
+        for (int i = nmax; --i > ni; ) {
+            if (names[i].lastUseIndex(n) >= 0)
+                return i;
+        }
+        return -1;
+    }
+
+    int useCount(Name n) {
+        int nmax = names.length;
+        int end = lastUseIndex(n);
+        if (end < 0)
+            return 0;
+        int count = 0;
+        if (end == nmax) {
+            count++;
+            end--;
+        }
+        int beg = n.index() + 1;
+        if (beg < arity)
+            beg = arity;
+        for (int i = beg; i <= end; i++) {
+            count += names[i].useCount(n);
+        }
+        return count;
+    }
+
+    static Name argument(int which, BasicType type) {
+        if (which >= INTERNED_ARGUMENT_LIMIT)
+            return new Name(which, type);
+        return INTERNED_ARGUMENTS[type.ordinal()][which];
+    }
+
+    static Name internArgument(Name n) {
+        assert (n.isParam()) : "not param: " + n;
+        assert (n.index < INTERNED_ARGUMENT_LIMIT);
+        if (n.constraint != null)
+            return n;
+        return argument(n.index, n.type);
+    }
+
+    static Name[] arguments(int extra, MethodType types) {
+        int length = types.parameterCount();
+        Name[] names = new Name[length + extra];
+        for (int i = 0; i < length; i++) names[i] = argument(i, basicType(types.parameterType(i)));
+        return names;
+    }
+
+    static final int INTERNED_ARGUMENT_LIMIT = 10;
+
+    private static final Name[][] INTERNED_ARGUMENTS = new Name[ARG_TYPE_LIMIT][INTERNED_ARGUMENT_LIMIT];
+
+    static {
+        for (BasicType type : BasicType.ARG_TYPES) {
+            int ord = type.ordinal();
+            for (int i = 0; i < INTERNED_ARGUMENTS[ord].length; i++) {
+                INTERNED_ARGUMENTS[ord][i] = new Name(i, type);
+            }
+        }
+    }
+
+    private static final MemberName.Factory IMPL_NAMES = MemberName.getFactory();
+
+    static LambdaForm identityForm(BasicType type) {
+        int ord = type.ordinal();
+        LambdaForm form = LF_identity[ord];
+        if (form != null) {
+            return form;
+        }
+        createFormsFor(type);
+        return LF_identity[ord];
+    }
+
+    static LambdaForm zeroForm(BasicType type) {
+        int ord = type.ordinal();
+        LambdaForm form = LF_zero[ord];
+        if (form != null) {
+            return form;
+        }
+        createFormsFor(type);
+        return LF_zero[ord];
+    }
+
+    static NamedFunction identity(BasicType type) {
+        int ord = type.ordinal();
+        NamedFunction function = NF_identity[ord];
+        if (function != null) {
+            return function;
+        }
+        createFormsFor(type);
+        return NF_identity[ord];
+    }
+
+    static NamedFunction constantZero(BasicType type) {
+        int ord = type.ordinal();
+        NamedFunction function = NF_zero[ord];
+        if (function != null) {
+            return function;
+        }
+        createFormsFor(type);
+        return NF_zero[ord];
+    }
+
+    @Stable
+    private static final LambdaForm[] LF_identity = new LambdaForm[TYPE_LIMIT];
+
+    @Stable
+    private static final LambdaForm[] LF_zero = new LambdaForm[TYPE_LIMIT];
+
+    @Stable
+    private static final NamedFunction[] NF_identity = new NamedFunction[TYPE_LIMIT];
+
+    @Stable
+    private static final NamedFunction[] NF_zero = new NamedFunction[TYPE_LIMIT];
+
+    private static synchronized void createFormsFor(BasicType type) {
+        final int ord = type.ordinal();
+        LambdaForm idForm = LF_identity[ord];
+        if (idForm != null) {
+            return;
+        }
+        char btChar = type.basicTypeChar();
+        boolean isVoid = (type == V_TYPE);
+        Class<?> btClass = type.btClass;
+        MethodType zeType = MethodType.methodType(btClass);
+        MethodType idType = (isVoid) ? zeType : zeType.appendParameterTypes(btClass);
+        MemberName idMem = new MemberName(LambdaForm.class, "identity_" + btChar, idType, REF_invokeStatic);
+        MemberName zeMem = null;
+        try {
+            idMem = IMPL_NAMES.resolveOrFail(REF_invokeStatic, idMem, null, NoSuchMethodException.class);
+            if (!isVoid) {
+                zeMem = new MemberName(LambdaForm.class, "zero_" + btChar, zeType, REF_invokeStatic);
+                zeMem = IMPL_NAMES.resolveOrFail(REF_invokeStatic, zeMem, null, NoSuchMethodException.class);
+            }
+        } catch (IllegalAccessException | NoSuchMethodException ex) {
+            throw newInternalError(ex);
+        }
+        NamedFunction idFun;
+        LambdaForm zeForm;
+        NamedFunction zeFun;
+        if (isVoid) {
+            Name[] idNames = new Name[] { argument(0, L_TYPE) };
+            idForm = new LambdaForm(idMem.getName(), 1, idNames, VOID_RESULT);
+            idForm.compileToBytecode();
+            idFun = new NamedFunction(idMem, SimpleMethodHandle.make(idMem.getInvocationType(), idForm));
+            zeForm = idForm;
+            zeFun = idFun;
+        } else {
+            Name[] idNames = new Name[] { argument(0, L_TYPE), argument(1, type) };
+            idForm = new LambdaForm(idMem.getName(), 2, idNames, 1);
+            idForm.compileToBytecode();
+            idFun = new NamedFunction(idMem, SimpleMethodHandle.make(idMem.getInvocationType(), idForm));
+            Object zeValue = Wrapper.forBasicType(btChar).zero();
+            Name[] zeNames = new Name[] { argument(0, L_TYPE), new Name(idFun, zeValue) };
+            zeForm = new LambdaForm(zeMem.getName(), 1, zeNames, 1);
+            zeForm.compileToBytecode();
+            zeFun = new NamedFunction(zeMem, SimpleMethodHandle.make(zeMem.getInvocationType(), zeForm));
+        }
+        LF_zero[ord] = zeForm;
+        NF_zero[ord] = zeFun;
+        LF_identity[ord] = idForm;
+        NF_identity[ord] = idFun;
+        assert (idFun.isIdentity());
+        assert (zeFun.isConstantZero());
+        assert (new Name(zeFun).isConstantZero());
+    }
+
+    private static int identity_I(int x) {
+        return x;
+    }
+
+    private static long identity_J(long x) {
+        return x;
+    }
+
+    private static float identity_F(float x) {
+        return x;
+    }
+
+    private static double identity_D(double x) {
+        return x;
+    }
+
+    private static Object identity_L(Object x) {
+        return x;
+    }
+
+    private static void identity_V() {
+        return;
+    }
+
+    private static int zero_I() {
+        return 0;
+    }
+
+    private static long zero_J() {
+        return 0;
+    }
+
+    private static float zero_F() {
+        return 0;
+    }
+
+    private static double zero_D() {
+        return 0;
+    }
+
+    private static Object zero_L() {
+        return null;
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Compiled {
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Hidden {
+    }
+
+    private static final HashMap<String, Integer> DEBUG_NAME_COUNTERS;
+
+    static {
+        if (debugEnabled())
+            DEBUG_NAME_COUNTERS = new HashMap<>();
+        else
+            DEBUG_NAME_COUNTERS = null;
+    }
+
+    static {
+        if (USE_PREDEFINED_INTERPRET_METHODS)
+            computeInitialPreparedForms();
+        NamedFunction.initializeInvokers();
+    }
+
+    private static final boolean TRACE_INTERPRETER = MethodHandleStatics.TRACE_INTERPRETER;
+}

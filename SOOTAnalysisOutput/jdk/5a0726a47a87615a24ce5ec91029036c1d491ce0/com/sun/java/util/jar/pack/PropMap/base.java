@@ -1,0 +1,265 @@
+package com.sun.java.util.jar.pack;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.jar.Pack200;
+
+final class PropMap implements SortedMap<String, String> {
+
+    private final TreeMap<String, String> theMap = new TreeMap<>();
+
+    public String put(String key, String value) {
+        String oldValue = theMap.put(key, value);
+        return oldValue;
+    }
+
+    private static Map<String, String> defaultProps;
+
+    static {
+        Properties props = new Properties();
+        props.put(Utils.DEBUG_DISABLE_NATIVE, String.valueOf(Boolean.getBoolean(Utils.DEBUG_DISABLE_NATIVE)));
+        props.put(Utils.DEBUG_VERBOSE, String.valueOf(Integer.getInteger(Utils.DEBUG_VERBOSE, 0)));
+        props.put(Pack200.Packer.SEGMENT_LIMIT, "-1");
+        props.put(Pack200.Packer.KEEP_FILE_ORDER, Pack200.Packer.TRUE);
+        props.put(Pack200.Packer.MODIFICATION_TIME, Pack200.Packer.KEEP);
+        props.put(Pack200.Packer.DEFLATE_HINT, Pack200.Packer.KEEP);
+        props.put(Pack200.Packer.UNKNOWN_ATTRIBUTE, Pack200.Packer.PASS);
+        props.put(Utils.CLASS_FORMAT_ERROR, System.getProperty(Utils.CLASS_FORMAT_ERROR, Pack200.Packer.PASS));
+        props.put(Pack200.Packer.EFFORT, "5");
+        String propFile = "intrinsic.properties";
+        try (InputStream propStr = PackerImpl.class.getResourceAsStream(propFile)) {
+            if (propStr == null) {
+                throw new RuntimeException(propFile + " cannot be loaded");
+            }
+            props.load(propStr);
+        } catch (IOException ee) {
+            throw new RuntimeException(ee);
+        }
+        for (Map.Entry<Object, Object> e : props.entrySet()) {
+            String key = (String) e.getKey();
+            String val = (String) e.getValue();
+            if (key.startsWith("attribute.")) {
+                e.setValue(Attribute.normalizeLayoutString(val));
+            }
+        }
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        HashMap<String, String> temp = new HashMap(props);
+        defaultProps = temp;
+    }
+
+    PropMap() {
+        theMap.putAll(defaultProps);
+    }
+
+    SortedMap<String, String> prefixMap(String prefix) {
+        int len = prefix.length();
+        if (len == 0)
+            return this;
+        char nextch = (char) (prefix.charAt(len - 1) + 1);
+        String limit = prefix.substring(0, len - 1) + nextch;
+        return subMap(prefix, limit);
+    }
+
+    String getProperty(String s) {
+        return get(s);
+    }
+
+    String getProperty(String s, String defaultVal) {
+        String val = getProperty(s);
+        if (val == null)
+            return defaultVal;
+        return val;
+    }
+
+    String setProperty(String s, String val) {
+        return put(s, val);
+    }
+
+    List<String> getProperties(String prefix) {
+        Collection<String> values = prefixMap(prefix).values();
+        List<String> res = new ArrayList<>(values.size());
+        res.addAll(values);
+        while (res.remove(null)) ;
+        return res;
+    }
+
+    private boolean toBoolean(String val) {
+        return Boolean.valueOf(val).booleanValue();
+    }
+
+    boolean getBoolean(String s) {
+        return toBoolean(getProperty(s));
+    }
+
+    boolean setBoolean(String s, boolean val) {
+        return toBoolean(setProperty(s, String.valueOf(val)));
+    }
+
+    int toInteger(String val) {
+        return toInteger(val, 0);
+    }
+
+    int toInteger(String val, int def) {
+        if (val == null)
+            return def;
+        if (Pack200.Packer.TRUE.equals(val))
+            return 1;
+        if (Pack200.Packer.FALSE.equals(val))
+            return 0;
+        return Integer.parseInt(val);
+    }
+
+    int getInteger(String s, int def) {
+        return toInteger(getProperty(s), def);
+    }
+
+    int getInteger(String s) {
+        return toInteger(getProperty(s));
+    }
+
+    int setInteger(String s, int val) {
+        return toInteger(setProperty(s, String.valueOf(val)));
+    }
+
+    long toLong(String val) {
+        try {
+            return val == null ? 0 : Long.parseLong(val);
+        } catch (java.lang.NumberFormatException nfe) {
+            throw new IllegalArgumentException("Invalid value");
+        }
+    }
+
+    long getLong(String s) {
+        return toLong(getProperty(s));
+    }
+
+    long setLong(String s, long val) {
+        return toLong(setProperty(s, String.valueOf(val)));
+    }
+
+    int getTime(String s) {
+        String sval = getProperty(s, "0");
+        if (Utils.NOW.equals(sval)) {
+            return (int) ((System.currentTimeMillis() + 500) / 1000);
+        }
+        long lval = toLong(sval);
+        final long recentSecondCount = 1000000000;
+        if (lval < recentSecondCount * 10 && !"0".equals(sval))
+            Utils.log.warning("Supplied modtime appears to be seconds rather than milliseconds: " + sval);
+        return (int) ((lval + 500) / 1000);
+    }
+
+    void list(PrintStream out) {
+        PrintWriter outw = new PrintWriter(out);
+        list(outw);
+        outw.flush();
+    }
+
+    void list(PrintWriter out) {
+        out.println("#" + Utils.PACK_ZIP_ARCHIVE_MARKER_COMMENT + "[");
+        Set<Map.Entry<String, String>> defaults = defaultProps.entrySet();
+        for (Map.Entry<String, String> e : theMap.entrySet()) {
+            if (defaults.contains(e))
+                continue;
+            out.println("  " + e.getKey() + " = " + e.getValue());
+        }
+        out.println("#]");
+    }
+
+    @Override
+    public int size() {
+        return theMap.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return theMap.isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return theMap.containsKey(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return theMap.containsValue(value);
+    }
+
+    @Override
+    public String get(Object key) {
+        return theMap.get(key);
+    }
+
+    @Override
+    public String remove(Object key) {
+        return theMap.remove(key);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends String> m) {
+        theMap.putAll(m);
+    }
+
+    @Override
+    public void clear() {
+        theMap.clear();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return theMap.keySet();
+    }
+
+    @Override
+    public Collection<String> values() {
+        return theMap.values();
+    }
+
+    @Override
+    public Set<Map.Entry<String, String>> entrySet() {
+        return theMap.entrySet();
+    }
+
+    @Override
+    public Comparator<? super String> comparator() {
+        return theMap.comparator();
+    }
+
+    @Override
+    public SortedMap<String, String> subMap(String fromKey, String toKey) {
+        return theMap.subMap(fromKey, toKey);
+    }
+
+    @Override
+    public SortedMap<String, String> headMap(String toKey) {
+        return theMap.headMap(toKey);
+    }
+
+    @Override
+    public SortedMap<String, String> tailMap(String fromKey) {
+        return theMap.tailMap(fromKey);
+    }
+
+    @Override
+    public String firstKey() {
+        return theMap.firstKey();
+    }
+
+    @Override
+    public String lastKey() {
+        return theMap.lastKey();
+    }
+}

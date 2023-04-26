@@ -1,0 +1,1376 @@
+package org.apache.hadoop.hive.metastore;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.hive.metastore.api.Decimal;
+import org.apache.hadoop.hive.metastore.api.Order;
+import org.apache.hadoop.hive.metastore.api.SkewedInfo;
+import org.apache.hadoop.hive.shims.ShimLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
+import org.apache.hadoop.hive.common.JavaUtils;
+import org.apache.hadoop.hive.common.StatsSetupConst;
+import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.api.ColumnStatistics;
+import org.apache.hadoop.hive.metastore.api.ColumnStatisticsObj;
+import org.apache.hadoop.hive.metastore.api.Database;
+import org.apache.hadoop.hive.metastore.api.EnvironmentContext;
+import org.apache.hadoop.hive.metastore.api.FieldSchema;
+import org.apache.hadoop.hive.metastore.api.InvalidObjectException;
+import org.apache.hadoop.hive.metastore.api.InvalidOperationException;
+import org.apache.hadoop.hive.metastore.api.MetaException;
+import org.apache.hadoop.hive.metastore.api.Partition;
+import org.apache.hadoop.hive.metastore.api.SerDeInfo;
+import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
+import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.metastore.api.hive_metastoreConstants;
+import org.apache.hadoop.hive.metastore.columnstats.aggr.ColumnStatsAggregator;
+import org.apache.hadoop.hive.metastore.columnstats.aggr.ColumnStatsAggregatorFactory;
+import org.apache.hadoop.hive.metastore.columnstats.merge.ColumnStatsMerger;
+import org.apache.hadoop.hive.metastore.columnstats.merge.ColumnStatsMergerFactory;
+import org.apache.hadoop.hive.metastore.partition.spec.PartitionSpecProxy;
+import org.apache.hadoop.hive.serde.serdeConstants;
+import org.apache.hadoop.hive.serde2.Deserializer;
+import org.apache.hadoop.hive.serde2.SerDeException;
+import org.apache.hadoop.hive.serde2.SerDeUtils;
+import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
+import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector.Category;
+import org.apache.hadoop.hive.serde2.objectinspector.StructField;
+import org.apache.hadoop.hive.serde2.objectinspector.StructObjectInspector;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
+import org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils;
+import org.apache.hadoop.security.SaslRpcServer;
+import org.apache.hive.common.util.HiveStringUtils;
+import org.apache.hive.common.util.ReflectionUtil;
+import javax.annotation.Nullable;
+
+public class MetaStoreUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger("hive.log");
+
+    public static final char[] specialCharactersInTableNames = new char[] { '/' };
+
+    final static Charset ENCODING = StandardCharsets.UTF_8;
+
+    public static Table createColumnsetSchema(String name, List<String> columns, List<String> partCols, Configuration conf) throws MetaException {
+        if (columns == null) {
+            throw new MetaException("columns not specified for table " + name);
+        }
+        Table tTable = new Table();
+        tTable.setTableName(name);
+        tTable.setSd(new StorageDescriptor());
+        StorageDescriptor sd = tTable.getSd();
+        sd.setSerdeInfo(new SerDeInfo());
+        SerDeInfo serdeInfo = sd.getSerdeInfo();
+        serdeInfo.setSerializationLib(LazySimpleSerDe.class.getName());
+        serdeInfo.setParameters(new HashMap<String, String>());
+        serdeInfo.getParameters().put(org.apache.hadoop.hive.serde.serdeConstants.SERIALIZATION_FORMAT, Warehouse.DEFAULT_SERIALIZATION_FORMAT);
+        List<FieldSchema> fields = new ArrayList<FieldSchema>(columns.size());
+        sd.setCols(fields);
+        for (String col : columns) {
+            FieldSchema field = new FieldSchema(col, org.apache.hadoop.hive.serde.serdeConstants.STRING_TYPE_NAME, "'default'");
+            fields.add(field);
+        }
+        tTable.setPartitionKeys(new ArrayList<FieldSchema>());
+        for (String partCol : partCols) {
+            FieldSchema part = new FieldSchema();
+            part.setName(partCol);
+            part.setType(org.apache.hadoop.hive.serde.serdeConstants.STRING_TYPE_NAME);
+            tTable.getPartitionKeys().add(part);
+        }
+        sd.setNumBuckets(-1);
+        return tTable;
+    }
+
+    static public void recursiveDelete(File f) throws IOException {
+        if (f.isDirectory()) {
+            File[] fs = f.listFiles();
+            for (File subf : fs) {
+                recursiveDelete(subf);
+            }
+        }
+        if (!f.delete()) {
+            throw new IOException("could not delete: " + f.getPath());
+        }
+    }
+
+    public static boolean containsAllFastStats(Map<String, String> partParams) {
+        for (String stat : StatsSetupConst.fastStats) {
+            if (!partParams.containsKey(stat)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean updateTableStatsFast(Database db, Table tbl, Warehouse wh, boolean madeDir, EnvironmentContext environmentContext) throws MetaException {
+        return updateTableStatsFast(db, tbl, wh, madeDir, false, environmentContext);
+    }
+
+    public static boolean updateTableStatsFast(Database db, Table tbl, Warehouse wh, boolean madeDir, boolean forceRecompute, EnvironmentContext environmentContext) throws MetaException {
+        if (tbl.getPartitionKeysSize() == 0) {
+            FileStatus[] fileStatuses = wh.getFileStatusesForUnpartitionedTable(db, tbl);
+            return updateTableStatsFast(tbl, fileStatuses, madeDir, forceRecompute, environmentContext);
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean updateTableStatsFast(Table tbl, FileStatus[] fileStatus, boolean newDir, boolean forceRecompute, EnvironmentContext environmentContext) throws MetaException {
+        Map<String, String> params = tbl.getParameters();
+        if ((params != null) && params.containsKey(StatsSetupConst.DO_NOT_UPDATE_STATS)) {
+            boolean doNotUpdateStats = Boolean.valueOf(params.get(StatsSetupConst.DO_NOT_UPDATE_STATS));
+            params.remove(StatsSetupConst.DO_NOT_UPDATE_STATS);
+            tbl.setParameters(params);
+            if (doNotUpdateStats) {
+                return false;
+            }
+        }
+        boolean updated = false;
+        if (forceRecompute || params == null || !containsAllFastStats(params)) {
+            if (params == null) {
+                params = new HashMap<String, String>();
+            }
+            if (!newDir) {
+                LOG.info("Updating table stats fast for " + tbl.getTableName());
+                populateQuickStats(fileStatus, params);
+                LOG.info("Updated size of table " + tbl.getTableName() + " to " + params.get(StatsSetupConst.TOTAL_SIZE));
+                if (environmentContext != null && environmentContext.isSetProperties() && StatsSetupConst.TASK.equals(environmentContext.getProperties().get(StatsSetupConst.STATS_GENERATED))) {
+                    StatsSetupConst.setBasicStatsState(params, StatsSetupConst.TRUE);
+                } else {
+                    StatsSetupConst.setBasicStatsState(params, StatsSetupConst.FALSE);
+                }
+            }
+            tbl.setParameters(params);
+            updated = true;
+        }
+        return updated;
+    }
+
+    public static void populateQuickStats(FileStatus[] fileStatus, Map<String, String> params) {
+        int numFiles = 0;
+        long tableSize = 0L;
+        String s = "LOG14535 Populating quick stats for: ";
+        for (FileStatus status : fileStatus) {
+            s += status.getPath() + ", ";
+            if (!status.isDir()) {
+                tableSize += status.getLen();
+                numFiles += 1;
+            }
+        }
+        LOG.info(s);
+        params.put(StatsSetupConst.NUM_FILES, Integer.toString(numFiles));
+        params.put(StatsSetupConst.TOTAL_SIZE, Long.toString(tableSize));
+    }
+
+    public static boolean requireCalStats(Configuration hiveConf, Partition oldPart, Partition newPart, Table tbl, EnvironmentContext environmentContext) {
+        if (environmentContext != null && environmentContext.isSetProperties() && StatsSetupConst.TRUE.equals(environmentContext.getProperties().get(StatsSetupConst.DO_NOT_UPDATE_STATS))) {
+            return false;
+        }
+        if (MetaStoreUtils.isView(tbl)) {
+            return false;
+        }
+        if (oldPart == null && newPart == null) {
+            return true;
+        }
+        if ((newPart == null) || (newPart.getParameters() == null) || !containsAllFastStats(newPart.getParameters())) {
+            return true;
+        }
+        if (environmentContext != null && environmentContext.isSetProperties()) {
+            String statsType = environmentContext.getProperties().get(StatsSetupConst.STATS_GENERATED);
+            if (StatsSetupConst.TASK.equals(statsType) || StatsSetupConst.USER.equals(statsType)) {
+                return true;
+            }
+        }
+        return !isFastStatsSame(oldPart, newPart);
+    }
+
+    static boolean isFastStatsSame(Partition oldPart, Partition newPart) {
+        if ((oldPart != null) && (oldPart.getParameters() != null)) {
+            for (String stat : StatsSetupConst.fastStats) {
+                if (oldPart.getParameters().containsKey(stat)) {
+                    Long oldStat = Long.parseLong(oldPart.getParameters().get(stat));
+                    Long newStat = Long.parseLong(newPart.getParameters().get(stat));
+                    if (!oldStat.equals(newStat)) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean updatePartitionStatsFast(Partition part, Warehouse wh, EnvironmentContext environmentContext) throws MetaException {
+        return updatePartitionStatsFast(part, wh, false, false, environmentContext);
+    }
+
+    public static boolean updatePartitionStatsFast(Partition part, Warehouse wh, boolean madeDir, EnvironmentContext environmentContext) throws MetaException {
+        return updatePartitionStatsFast(part, wh, madeDir, false, environmentContext);
+    }
+
+    public static boolean updatePartitionStatsFast(Partition part, Warehouse wh, boolean madeDir, boolean forceRecompute, EnvironmentContext environmentContext) throws MetaException {
+        return updatePartitionStatsFast(new PartitionSpecProxy.SimplePartitionWrapperIterator(part), wh, madeDir, forceRecompute, environmentContext);
+    }
+
+    public static boolean updatePartitionStatsFast(PartitionSpecProxy.PartitionIterator part, Warehouse wh, boolean madeDir, boolean forceRecompute, EnvironmentContext environmentContext) throws MetaException {
+        Map<String, String> params = part.getParameters();
+        boolean updated = false;
+        if (forceRecompute || params == null || !containsAllFastStats(params)) {
+            if (params == null) {
+                params = new HashMap<String, String>();
+            }
+            if (!madeDir) {
+                LOG.warn("Updating partition stats fast for: " + part.getTableName());
+                FileStatus[] fileStatus = wh.getFileStatusesForLocation(part.getLocation());
+                populateQuickStats(fileStatus, params);
+                LOG.warn("Updated size to " + params.get(StatsSetupConst.TOTAL_SIZE));
+                updateBasicState(environmentContext, params);
+            }
+            part.setParameters(params);
+            updated = true;
+        }
+        return updated;
+    }
+
+    static void updateBasicState(EnvironmentContext environmentContext, Map<String, String> params) {
+        if (params == null) {
+            return;
+        }
+        if (environmentContext != null && environmentContext.isSetProperties() && StatsSetupConst.TASK.equals(environmentContext.getProperties().get(StatsSetupConst.STATS_GENERATED))) {
+            StatsSetupConst.setBasicStatsState(params, StatsSetupConst.TRUE);
+        } else {
+            StatsSetupConst.setBasicStatsState(params, StatsSetupConst.FALSE);
+        }
+    }
+
+    static public Deserializer getDeserializer(Configuration conf, org.apache.hadoop.hive.metastore.api.Table table, boolean skipConfError) throws MetaException {
+        String lib = table.getSd().getSerdeInfo().getSerializationLib();
+        if (lib == null) {
+            return null;
+        }
+        return getDeserializer(conf, table, skipConfError, lib);
+    }
+
+    public static Deserializer getDeserializer(Configuration conf, org.apache.hadoop.hive.metastore.api.Table table, boolean skipConfError, String lib) throws MetaException {
+        try {
+            Deserializer deserializer = ReflectionUtil.newInstance(conf.getClassByName(lib).asSubclass(Deserializer.class), conf);
+            if (skipConfError) {
+                SerDeUtils.initializeSerDeWithoutErrorCheck(deserializer, conf, MetaStoreUtils.getTableMetadata(table), null);
+            } else {
+                SerDeUtils.initializeSerDe(deserializer, conf, MetaStoreUtils.getTableMetadata(table), null);
+            }
+            return deserializer;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Throwable e) {
+            LOG.error("error in initSerDe: " + e.getClass().getName() + " " + e.getMessage(), e);
+            throw new MetaException(e.getClass().getName() + " " + e.getMessage());
+        }
+    }
+
+    public static Class<? extends Deserializer> getDeserializerClass(Configuration conf, org.apache.hadoop.hive.metastore.api.Table table) throws Exception {
+        String lib = table.getSd().getSerdeInfo().getSerializationLib();
+        return lib == null ? null : conf.getClassByName(lib).asSubclass(Deserializer.class);
+    }
+
+    static public Deserializer getDeserializer(Configuration conf, org.apache.hadoop.hive.metastore.api.Partition part, org.apache.hadoop.hive.metastore.api.Table table) throws MetaException {
+        String lib = part.getSd().getSerdeInfo().getSerializationLib();
+        try {
+            Deserializer deserializer = ReflectionUtil.newInstance(conf.getClassByName(lib).asSubclass(Deserializer.class), conf);
+            SerDeUtils.initializeSerDe(deserializer, conf, MetaStoreUtils.getTableMetadata(table), MetaStoreUtils.getPartitionMetadata(part, table));
+            return deserializer;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Throwable e) {
+            LOG.error("error in initSerDe: " + e.getClass().getName() + " " + e.getMessage(), e);
+            throw new MetaException(e.getClass().getName() + " " + e.getMessage());
+        }
+    }
+
+    static public void deleteWHDirectory(Path path, Configuration conf, boolean use_trash) throws MetaException {
+        try {
+            if (!path.getFileSystem(conf).exists(path)) {
+                LOG.warn("drop data called on table/partition with no directory: " + path);
+                return;
+            }
+            if (use_trash) {
+                int count = 0;
+                Path newPath = new Path("/Trash/Current" + path.getParent().toUri().getPath());
+                if (path.getFileSystem(conf).exists(newPath) == false) {
+                    path.getFileSystem(conf).mkdirs(newPath);
+                }
+                do {
+                    newPath = new Path("/Trash/Current" + path.toUri().getPath() + "." + count);
+                    if (path.getFileSystem(conf).exists(newPath)) {
+                        count++;
+                        continue;
+                    }
+                    if (path.getFileSystem(conf).rename(path, newPath)) {
+                        break;
+                    }
+                } while (++count < 50);
+                if (count >= 50) {
+                    throw new MetaException("Rename failed due to maxing out retries");
+                }
+            } else {
+                path.getFileSystem(conf).delete(path, true);
+            }
+        } catch (IOException e) {
+            LOG.error("Got exception trying to delete data dir: " + e);
+            throw new MetaException(e.getMessage());
+        } catch (MetaException e) {
+            LOG.error("Got exception trying to delete data dir: " + e);
+            throw e;
+        }
+    }
+
+    public static List<String> getPvals(List<FieldSchema> partCols, Map<String, String> partSpec) {
+        List<String> pvals = new ArrayList<String>(partCols.size());
+        for (FieldSchema field : partCols) {
+            String val = StringUtils.defaultString(partSpec.get(field.getName()));
+            pvals.add(val);
+        }
+        return pvals;
+    }
+
+    static public boolean validateName(String name, Configuration conf) {
+        Pattern tpat = null;
+        String allowedCharacters = "\\w_";
+        if (conf != null && HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVE_SUPPORT_SPECICAL_CHARACTERS_IN_TABLE_NAMES)) {
+            for (Character c : specialCharactersInTableNames) {
+                allowedCharacters += c;
+            }
+        }
+        tpat = Pattern.compile("[" + allowedCharacters + "]+");
+        Matcher m = tpat.matcher(name);
+        return m.matches();
+    }
+
+    public static final boolean validateColumnName(String name) {
+        return true;
+    }
+
+    static public String validateTblColumns(List<FieldSchema> cols) {
+        for (FieldSchema fieldSchema : cols) {
+            if (!validateColumnName(fieldSchema.getName())) {
+                return "name: " + fieldSchema.getName();
+            }
+            String typeError = validateColumnType(fieldSchema.getType());
+            if (typeError != null) {
+                return typeError;
+            }
+        }
+        return null;
+    }
+
+    static void throwExceptionIfIncompatibleColTypeChange(List<FieldSchema> oldCols, List<FieldSchema> newCols) throws InvalidOperationException {
+        List<String> incompatibleCols = new ArrayList<String>();
+        int maxCols = Math.min(oldCols.size(), newCols.size());
+        for (int i = 0; i < maxCols; i++) {
+            if (!areColTypesCompatible(oldCols.get(i).getType(), newCols.get(i).getType())) {
+                incompatibleCols.add(newCols.get(i).getName());
+            }
+        }
+        if (!incompatibleCols.isEmpty()) {
+            throw new InvalidOperationException("The following columns have types incompatible with the existing " + "columns in their respective positions :\n" + StringUtils.join(incompatibleCols, ','));
+        }
+    }
+
+    static boolean areSameColumns(List<FieldSchema> oldCols, List<FieldSchema> newCols) {
+        return ListUtils.isEqualList(oldCols, newCols);
+    }
+
+    static boolean columnsIncludedByNameType(List<FieldSchema> oldCols, List<FieldSchema> newCols) {
+        if (oldCols.size() > newCols.size()) {
+            return false;
+        }
+        Map<String, String> columnNameTypePairMap = new HashMap<String, String>(newCols.size());
+        for (FieldSchema newCol : newCols) {
+            columnNameTypePairMap.put(newCol.getName().toLowerCase(), newCol.getType());
+        }
+        for (final FieldSchema oldCol : oldCols) {
+            if (!columnNameTypePairMap.containsKey(oldCol.getName()) || !columnNameTypePairMap.get(oldCol.getName()).equalsIgnoreCase(oldCol.getType())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static private boolean areColTypesCompatible(String oldType, String newType) {
+        return TypeInfoUtils.implicitConvertible(TypeInfoUtils.getTypeInfoFromTypeString(oldType), TypeInfoUtils.getTypeInfoFromTypeString(newType));
+    }
+
+    public static final String TYPE_FROM_DESERIALIZER = "<derived from deserializer>";
+
+    static public String validateColumnType(String type) {
+        if (type.equals(TYPE_FROM_DESERIALIZER)) {
+            return null;
+        }
+        int last = 0;
+        boolean lastAlphaDigit = isValidTypeChar(type.charAt(last));
+        for (int i = 1; i <= type.length(); i++) {
+            if (i == type.length() || isValidTypeChar(type.charAt(i)) != lastAlphaDigit) {
+                String token = type.substring(last, i);
+                last = i;
+                if (!hiveThriftTypeMap.contains(token)) {
+                    return "type: " + type;
+                }
+                break;
+            }
+        }
+        return null;
+    }
+
+    private static boolean isValidTypeChar(char c) {
+        return Character.isLetterOrDigit(c) || c == '_';
+    }
+
+    public static String validateSkewedColNames(List<String> cols) {
+        if (CollectionUtils.isEmpty(cols)) {
+            return null;
+        }
+        for (String col : cols) {
+            if (!validateColumnName(col)) {
+                return col;
+            }
+        }
+        return null;
+    }
+
+    public static String validateSkewedColNamesSubsetCol(List<String> skewedColNames, List<FieldSchema> cols) {
+        if (CollectionUtils.isEmpty(skewedColNames)) {
+            return null;
+        }
+        List<String> colNames = new ArrayList<String>(cols.size());
+        for (FieldSchema fieldSchema : cols) {
+            colNames.add(fieldSchema.getName());
+        }
+        List<String> copySkewedColNames = new ArrayList<String>(skewedColNames);
+        copySkewedColNames.removeAll(colNames);
+        if (copySkewedColNames.isEmpty()) {
+            return null;
+        }
+        return copySkewedColNames.toString();
+    }
+
+    public static String getListType(String t) {
+        return "array<" + t + ">";
+    }
+
+    public static String getMapType(String k, String v) {
+        return "map<" + k + "," + v + ">";
+    }
+
+    public static void setSerdeParam(SerDeInfo sdi, Properties schema, String param) {
+        String val = schema.getProperty(param);
+        if (org.apache.commons.lang.StringUtils.isNotBlank(val)) {
+            sdi.getParameters().put(param, val);
+        }
+    }
+
+    static HashMap<String, String> typeToThriftTypeMap;
+
+    static {
+        typeToThriftTypeMap = new HashMap<String, String>();
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.BOOLEAN_TYPE_NAME, "bool");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.TINYINT_TYPE_NAME, "byte");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.SMALLINT_TYPE_NAME, "i16");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.INT_TYPE_NAME, "i32");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.BIGINT_TYPE_NAME, "i64");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.DOUBLE_TYPE_NAME, "double");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.FLOAT_TYPE_NAME, "float");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.LIST_TYPE_NAME, "list");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.MAP_TYPE_NAME, "map");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.STRING_TYPE_NAME, "string");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.BINARY_TYPE_NAME, "binary");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.DATE_TYPE_NAME, "date");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.DATETIME_TYPE_NAME, "datetime");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.TIMESTAMP_TYPE_NAME, "timestamp");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.DECIMAL_TYPE_NAME, "decimal");
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.INTERVAL_YEAR_MONTH_TYPE_NAME, org.apache.hadoop.hive.serde.serdeConstants.INTERVAL_YEAR_MONTH_TYPE_NAME);
+        typeToThriftTypeMap.put(org.apache.hadoop.hive.serde.serdeConstants.INTERVAL_DAY_TIME_TYPE_NAME, org.apache.hadoop.hive.serde.serdeConstants.INTERVAL_DAY_TIME_TYPE_NAME);
+    }
+
+    static Set<String> hiveThriftTypeMap;
+
+    static {
+        hiveThriftTypeMap = new HashSet<String>();
+        hiveThriftTypeMap.addAll(serdeConstants.PrimitiveTypes);
+        hiveThriftTypeMap.addAll(org.apache.hadoop.hive.serde.serdeConstants.CollectionTypes);
+        hiveThriftTypeMap.add(org.apache.hadoop.hive.serde.serdeConstants.UNION_TYPE_NAME);
+        hiveThriftTypeMap.add(org.apache.hadoop.hive.serde.serdeConstants.STRUCT_TYPE_NAME);
+    }
+
+    public static String typeToThriftType(String type) {
+        StringBuilder thriftType = new StringBuilder();
+        int last = 0;
+        boolean lastAlphaDigit = Character.isLetterOrDigit(type.charAt(last));
+        for (int i = 1; i <= type.length(); i++) {
+            if (i == type.length() || Character.isLetterOrDigit(type.charAt(i)) != lastAlphaDigit) {
+                String token = type.substring(last, i);
+                last = i;
+                String thriftToken = typeToThriftTypeMap.get(token);
+                thriftType.append(thriftToken == null ? token : thriftToken);
+                lastAlphaDigit = !lastAlphaDigit;
+            }
+        }
+        return thriftType.toString();
+    }
+
+    public static String getFullDDLFromFieldSchema(String structName, List<FieldSchema> fieldSchemas) {
+        StringBuilder ddl = new StringBuilder();
+        ddl.append(getDDLFromFieldSchema(structName, fieldSchemas));
+        ddl.append('#');
+        StringBuilder colnames = new StringBuilder();
+        StringBuilder coltypes = new StringBuilder();
+        boolean first = true;
+        for (FieldSchema col : fieldSchemas) {
+            if (first) {
+                first = false;
+            } else {
+                colnames.append(',');
+                coltypes.append(':');
+            }
+            colnames.append(col.getName());
+            coltypes.append(col.getType());
+        }
+        ddl.append(colnames);
+        ddl.append('#');
+        ddl.append(coltypes);
+        return ddl.toString();
+    }
+
+    public static String getDDLFromFieldSchema(String structName, List<FieldSchema> fieldSchemas) {
+        StringBuilder ddl = new StringBuilder();
+        ddl.append("struct ");
+        ddl.append(structName);
+        ddl.append(" { ");
+        boolean first = true;
+        for (FieldSchema col : fieldSchemas) {
+            if (first) {
+                first = false;
+            } else {
+                ddl.append(", ");
+            }
+            ddl.append(typeToThriftType(col.getType()));
+            ddl.append(' ');
+            ddl.append(col.getName());
+        }
+        ddl.append("}");
+        LOG.trace("DDL: {}", ddl);
+        return ddl.toString();
+    }
+
+    public static Properties getTableMetadata(org.apache.hadoop.hive.metastore.api.Table table) {
+        return MetaStoreUtils.getSchema(table.getSd(), table.getSd(), table.getParameters(), table.getDbName(), table.getTableName(), table.getPartitionKeys());
+    }
+
+    public static Properties getPartitionMetadata(org.apache.hadoop.hive.metastore.api.Partition partition, org.apache.hadoop.hive.metastore.api.Table table) {
+        return MetaStoreUtils.getSchema(partition.getSd(), partition.getSd(), partition.getParameters(), table.getDbName(), table.getTableName(), table.getPartitionKeys());
+    }
+
+    public static Properties getSchema(org.apache.hadoop.hive.metastore.api.Partition part, org.apache.hadoop.hive.metastore.api.Table table) {
+        return MetaStoreUtils.getSchema(part.getSd(), table.getSd(), table.getParameters(), table.getDbName(), table.getTableName(), table.getPartitionKeys());
+    }
+
+    public static Properties getPartSchemaFromTableSchema(org.apache.hadoop.hive.metastore.api.StorageDescriptor sd, org.apache.hadoop.hive.metastore.api.StorageDescriptor tblsd, Map<String, String> parameters, String databaseName, String tableName, List<FieldSchema> partitionKeys, Properties tblSchema) {
+        Properties schema = (Properties) tblSchema.clone();
+        String inputFormat = sd.getInputFormat();
+        if (inputFormat == null || inputFormat.length() == 0) {
+            String tblInput = schema.getProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.FILE_INPUT_FORMAT);
+            if (tblInput == null) {
+                inputFormat = org.apache.hadoop.mapred.SequenceFileInputFormat.class.getName();
+            } else {
+                inputFormat = tblInput;
+            }
+        }
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.FILE_INPUT_FORMAT, inputFormat);
+        String outputFormat = sd.getOutputFormat();
+        if (outputFormat == null || outputFormat.length() == 0) {
+            String tblOutput = schema.getProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.FILE_OUTPUT_FORMAT);
+            if (tblOutput == null) {
+                outputFormat = org.apache.hadoop.mapred.SequenceFileOutputFormat.class.getName();
+            } else {
+                outputFormat = tblOutput;
+            }
+        }
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.FILE_OUTPUT_FORMAT, outputFormat);
+        if (sd.getLocation() != null) {
+            schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_LOCATION, sd.getLocation());
+        }
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.BUCKET_COUNT, Integer.toString(sd.getNumBuckets()));
+        if (sd.getBucketCols() != null && sd.getBucketCols().size() > 0) {
+            schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.BUCKET_FIELD_NAME, sd.getBucketCols().get(0));
+        }
+        if (sd.getSerdeInfo() != null) {
+            String cols = org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_COLUMNS;
+            String colTypes = org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_COLUMN_TYPES;
+            String parts = org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_PARTITION_COLUMNS;
+            for (Map.Entry<String, String> param : sd.getSerdeInfo().getParameters().entrySet()) {
+                String key = param.getKey();
+                if (schema.get(key) != null && (key.equals(cols) || key.equals(colTypes) || key.equals(parts))) {
+                    continue;
+                }
+                schema.put(key, (param.getValue() != null) ? param.getValue() : StringUtils.EMPTY);
+            }
+            if (sd.getSerdeInfo().getSerializationLib() != null) {
+                schema.setProperty(org.apache.hadoop.hive.serde.serdeConstants.SERIALIZATION_LIB, sd.getSerdeInfo().getSerializationLib());
+            }
+        }
+        if (parameters != null) {
+            for (Entry<String, String> e : parameters.entrySet()) {
+                schema.setProperty(e.getKey(), e.getValue());
+            }
+        }
+        return schema;
+    }
+
+    public static Properties addCols(Properties schema, List<FieldSchema> cols) {
+        StringBuilder colNameBuf = new StringBuilder();
+        StringBuilder colTypeBuf = new StringBuilder();
+        StringBuilder colComment = new StringBuilder();
+        boolean first = true;
+        String columnNameDelimiter = getColumnNameDelimiter(cols);
+        for (FieldSchema col : cols) {
+            if (!first) {
+                colNameBuf.append(columnNameDelimiter);
+                colTypeBuf.append(":");
+                colComment.append('\0');
+            }
+            colNameBuf.append(col.getName());
+            colTypeBuf.append(col.getType());
+            colComment.append((null != col.getComment()) ? col.getComment() : StringUtils.EMPTY);
+            first = false;
+        }
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_COLUMNS, colNameBuf.toString());
+        schema.setProperty(serdeConstants.COLUMN_NAME_DELIMITER, columnNameDelimiter);
+        String colTypes = colTypeBuf.toString();
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_COLUMN_TYPES, colTypes);
+        schema.setProperty("columns.comments", colComment.toString());
+        return schema;
+    }
+
+    public static Properties getSchemaWithoutCols(org.apache.hadoop.hive.metastore.api.StorageDescriptor sd, org.apache.hadoop.hive.metastore.api.StorageDescriptor tblsd, Map<String, String> parameters, String databaseName, String tableName, List<FieldSchema> partitionKeys) {
+        Properties schema = new Properties();
+        String inputFormat = sd.getInputFormat();
+        if (inputFormat == null || inputFormat.length() == 0) {
+            inputFormat = org.apache.hadoop.mapred.SequenceFileInputFormat.class.getName();
+        }
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.FILE_INPUT_FORMAT, inputFormat);
+        String outputFormat = sd.getOutputFormat();
+        if (outputFormat == null || outputFormat.length() == 0) {
+            outputFormat = org.apache.hadoop.mapred.SequenceFileOutputFormat.class.getName();
+        }
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.FILE_OUTPUT_FORMAT, outputFormat);
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_NAME, databaseName + "." + tableName);
+        if (sd.getLocation() != null) {
+            schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_LOCATION, sd.getLocation());
+        }
+        schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.BUCKET_COUNT, Integer.toString(sd.getNumBuckets()));
+        if (sd.getBucketCols() != null && sd.getBucketCols().size() > 0) {
+            schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.BUCKET_FIELD_NAME, sd.getBucketCols().get(0));
+        }
+        if (sd.getSerdeInfo() != null) {
+            for (Map.Entry<String, String> param : sd.getSerdeInfo().getParameters().entrySet()) {
+                schema.put(param.getKey(), (param.getValue() != null) ? param.getValue() : StringUtils.EMPTY);
+            }
+            if (sd.getSerdeInfo().getSerializationLib() != null) {
+                schema.setProperty(org.apache.hadoop.hive.serde.serdeConstants.SERIALIZATION_LIB, sd.getSerdeInfo().getSerializationLib());
+            }
+        }
+        if (sd.getCols() != null) {
+            schema.setProperty(org.apache.hadoop.hive.serde.serdeConstants.SERIALIZATION_DDL, getDDLFromFieldSchema(tableName, sd.getCols()));
+        }
+        String partString = StringUtils.EMPTY;
+        String partStringSep = StringUtils.EMPTY;
+        String partTypesString = StringUtils.EMPTY;
+        String partTypesStringSep = StringUtils.EMPTY;
+        for (FieldSchema partKey : partitionKeys) {
+            partString = partString.concat(partStringSep);
+            partString = partString.concat(partKey.getName());
+            partTypesString = partTypesString.concat(partTypesStringSep);
+            partTypesString = partTypesString.concat(partKey.getType());
+            if (partStringSep.length() == 0) {
+                partStringSep = "/";
+                partTypesStringSep = ":";
+            }
+        }
+        if (partString.length() > 0) {
+            schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_PARTITION_COLUMNS, partString);
+            schema.setProperty(org.apache.hadoop.hive.metastore.api.hive_metastoreConstants.META_TABLE_PARTITION_COLUMN_TYPES, partTypesString);
+        }
+        if (parameters != null) {
+            for (Entry<String, String> e : parameters.entrySet()) {
+                if (e.getValue() != null) {
+                    schema.setProperty(e.getKey(), e.getValue());
+                }
+            }
+        }
+        return schema;
+    }
+
+    public static Properties getSchema(org.apache.hadoop.hive.metastore.api.StorageDescriptor sd, org.apache.hadoop.hive.metastore.api.StorageDescriptor tblsd, Map<String, String> parameters, String databaseName, String tableName, List<FieldSchema> partitionKeys) {
+        return addCols(getSchemaWithoutCols(sd, tblsd, parameters, databaseName, tableName, partitionKeys), tblsd.getCols());
+    }
+
+    public static List<String> getColumnNamesForTable(Table table) {
+        List<String> colNames = new ArrayList<String>();
+        Iterator<FieldSchema> colsIterator = table.getSd().getColsIterator();
+        while (colsIterator.hasNext()) {
+            colNames.add(colsIterator.next().getName());
+        }
+        return colNames;
+    }
+
+    public static String getColumnNameDelimiter(List<FieldSchema> fieldSchemas) {
+        for (int i = 0; i < fieldSchemas.size(); i++) {
+            if (fieldSchemas.get(i).getName().contains(",")) {
+                return String.valueOf(SerDeUtils.COLUMN_COMMENTS_DELIMITER);
+            }
+        }
+        return String.valueOf(SerDeUtils.COMMA);
+    }
+
+    public static String getColumnNamesFromFieldSchema(List<FieldSchema> fieldSchemas) {
+        String delimiter = getColumnNameDelimiter(fieldSchemas);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fieldSchemas.size(); i++) {
+            if (i > 0) {
+                sb.append(delimiter);
+            }
+            sb.append(fieldSchemas.get(i).getName());
+        }
+        return sb.toString();
+    }
+
+    public static String getColumnTypesFromFieldSchema(List<FieldSchema> fieldSchemas) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fieldSchemas.size(); i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(fieldSchemas.get(i).getType());
+        }
+        return sb.toString();
+    }
+
+    public static String getColumnCommentsFromFieldSchema(List<FieldSchema> fieldSchemas) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fieldSchemas.size(); i++) {
+            if (i > 0) {
+                sb.append(SerDeUtils.COLUMN_COMMENTS_DELIMITER);
+            }
+            sb.append(fieldSchemas.get(i).getComment());
+        }
+        return sb.toString();
+    }
+
+    public static void makeDir(Path path, HiveConf hiveConf) throws MetaException {
+        FileSystem fs;
+        try {
+            fs = path.getFileSystem(hiveConf);
+            if (!fs.exists(path)) {
+                fs.mkdirs(path);
+            }
+        } catch (IOException e) {
+            throw new MetaException("Unable to : " + path);
+        }
+    }
+
+    static void logAndThrowMetaException(Exception e) throws MetaException {
+        String exInfo = "Got exception: " + e.getClass().getName() + " " + e.getMessage();
+        LOG.error(exInfo, e);
+        LOG.error("Converting exception to MetaException");
+        throw new MetaException(exInfo);
+    }
+
+    public static List<FieldSchema> getFieldsFromDeserializer(String tableName, Deserializer deserializer) throws SerDeException, MetaException {
+        ObjectInspector oi = deserializer.getObjectInspector();
+        String[] names = tableName.split("\\.");
+        String last_name = names[names.length - 1];
+        for (int i = 1; i < names.length; i++) {
+            if (oi instanceof StructObjectInspector) {
+                StructObjectInspector soi = (StructObjectInspector) oi;
+                StructField sf = soi.getStructFieldRef(names[i]);
+                if (sf == null) {
+                    throw new MetaException("Invalid Field " + names[i]);
+                } else {
+                    oi = sf.getFieldObjectInspector();
+                }
+            } else if (oi instanceof ListObjectInspector && names[i].equalsIgnoreCase("$elem$")) {
+                ListObjectInspector loi = (ListObjectInspector) oi;
+                oi = loi.getListElementObjectInspector();
+            } else if (oi instanceof MapObjectInspector && names[i].equalsIgnoreCase("$key$")) {
+                MapObjectInspector moi = (MapObjectInspector) oi;
+                oi = moi.getMapKeyObjectInspector();
+            } else if (oi instanceof MapObjectInspector && names[i].equalsIgnoreCase("$value$")) {
+                MapObjectInspector moi = (MapObjectInspector) oi;
+                oi = moi.getMapValueObjectInspector();
+            } else {
+                throw new MetaException("Unknown type for " + names[i]);
+            }
+        }
+        ArrayList<FieldSchema> str_fields = new ArrayList<FieldSchema>();
+        if (oi.getCategory() != Category.STRUCT) {
+            str_fields.add(new FieldSchema(last_name, oi.getTypeName(), FROM_SERIALIZER));
+        } else {
+            List<? extends StructField> fields = ((StructObjectInspector) oi).getAllStructFieldRefs();
+            for (int i = 0; i < fields.size(); i++) {
+                StructField structField = fields.get(i);
+                String fieldName = structField.getFieldName();
+                String fieldTypeName = structField.getFieldObjectInspector().getTypeName();
+                String fieldComment = determineFieldComment(structField.getFieldComment());
+                str_fields.add(new FieldSchema(fieldName, fieldTypeName, fieldComment));
+            }
+        }
+        return str_fields;
+    }
+
+    private static final String FROM_SERIALIZER = "from deserializer";
+
+    private static String determineFieldComment(String comment) {
+        return (comment == null) ? FROM_SERIALIZER : comment;
+    }
+
+    public static FieldSchema getFieldSchemaFromTypeInfo(String fieldName, TypeInfo typeInfo) {
+        return new FieldSchema(fieldName, typeInfo.getTypeName(), "generated by TypeInfoUtils.getFieldSchemaFromTypeInfo");
+    }
+
+    public static boolean isExternalTable(Table table) {
+        if (table == null) {
+            return false;
+        }
+        Map<String, String> params = table.getParameters();
+        if (params == null) {
+            return false;
+        }
+        return "TRUE".equalsIgnoreCase(params.get("EXTERNAL"));
+    }
+
+    public static boolean isImmutableTable(Table table) {
+        if (table == null) {
+            return false;
+        }
+        Map<String, String> params = table.getParameters();
+        if (params == null) {
+            return false;
+        }
+        return "TRUE".equalsIgnoreCase(params.get(hive_metastoreConstants.IS_IMMUTABLE));
+    }
+
+    public static boolean isArchived(org.apache.hadoop.hive.metastore.api.Partition part) {
+        Map<String, String> params = part.getParameters();
+        return "TRUE".equalsIgnoreCase(params.get(hive_metastoreConstants.IS_ARCHIVED));
+    }
+
+    public static Path getOriginalLocation(org.apache.hadoop.hive.metastore.api.Partition part) {
+        Map<String, String> params = part.getParameters();
+        assert (isArchived(part));
+        String originalLocation = params.get(hive_metastoreConstants.ORIGINAL_LOCATION);
+        assert (originalLocation != null);
+        return new Path(originalLocation);
+    }
+
+    public static boolean isNonNativeTable(Table table) {
+        if (table == null || table.getParameters() == null) {
+            return false;
+        }
+        return (table.getParameters().get(hive_metastoreConstants.META_TABLE_STORAGE) != null);
+    }
+
+    private static final PathFilter hiddenFileFilter = new PathFilter() {
+
+        @Override
+        public boolean accept(Path p) {
+            String name = p.getName();
+            return !name.startsWith("_") && !name.startsWith(".");
+        }
+    };
+
+    public static boolean isDirEmpty(FileSystem fs, Path path) throws IOException {
+        if (fs.exists(path)) {
+            FileStatus[] status = fs.globStatus(new Path(path, "*"), hiddenFileFilter);
+            if (status.length > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean pvalMatches(List<String> partial, List<String> full) {
+        if (partial.size() > full.size()) {
+            return false;
+        }
+        Iterator<String> p = partial.iterator();
+        Iterator<String> f = full.iterator();
+        while (p.hasNext()) {
+            String pval = p.next();
+            String fval = f.next();
+            if (pval.length() != 0 && !pval.equals(fval)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static String getIndexTableName(String dbName, String baseTblName, String indexName) {
+        return dbName + "__" + baseTblName + "_" + indexName + "__";
+    }
+
+    public static boolean isIndexTable(Table table) {
+        if (table == null) {
+            return false;
+        }
+        return TableType.INDEX_TABLE.toString().equals(table.getTableType());
+    }
+
+    public static boolean isMaterializedViewTable(Table table) {
+        if (table == null) {
+            return false;
+        }
+        return TableType.MATERIALIZED_VIEW.toString().equals(table.getTableType());
+    }
+
+    public static String makeFilterStringFromMap(Map<String, String> m) {
+        StringBuilder filter = new StringBuilder();
+        for (Entry<String, String> e : m.entrySet()) {
+            String col = e.getKey();
+            String val = e.getValue();
+            if (filter.length() == 0) {
+                filter.append(col + "=\"" + val + "\"");
+            } else {
+                filter.append(" and " + col + "=\"" + val + "\"");
+            }
+        }
+        return filter.toString();
+    }
+
+    public static boolean isView(Table table) {
+        if (table == null) {
+            return false;
+        }
+        return TableType.VIRTUAL_VIEW.toString().equals(table.getTableType());
+    }
+
+    static <T> List<T> getMetaStoreListeners(Class<T> clazz, HiveConf conf, String listenerImplList) throws MetaException {
+        List<T> listeners = new ArrayList<T>();
+        if (StringUtils.isBlank(listenerImplList)) {
+            return listeners;
+        }
+        String[] listenerImpls = listenerImplList.split(",");
+        for (String listenerImpl : listenerImpls) {
+            try {
+                T listener = (T) Class.forName(listenerImpl.trim(), true, JavaUtils.getClassLoader()).getConstructor(Configuration.class).newInstance(conf);
+                listeners.add(listener);
+            } catch (InvocationTargetException ie) {
+                throw new MetaException("Failed to instantiate listener named: " + listenerImpl + ", reason: " + ie.getCause());
+            } catch (Exception e) {
+                throw new MetaException("Failed to instantiate listener named: " + listenerImpl + ", reason: " + e);
+            }
+        }
+        return listeners;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Class<? extends RawStore> getClass(String rawStoreClassName) throws MetaException {
+        try {
+            return (Class<? extends RawStore>) Class.forName(rawStoreClassName, true, JavaUtils.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new MetaException(rawStoreClassName + " class not found");
+        }
+    }
+
+    public static <T> T newInstance(Class<T> theClass, Class<?>[] parameterTypes, Object[] initargs) {
+        if (parameterTypes.length != initargs.length) {
+            throw new IllegalArgumentException("Number of constructor parameter types doesn't match number of arguments");
+        }
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Class<?> clazz = parameterTypes[i];
+            if (initargs[i] != null && !(clazz.isInstance(initargs[i]))) {
+                throw new IllegalArgumentException("Object : " + initargs[i] + " is not an instance of " + clazz);
+            }
+        }
+        try {
+            Constructor<T> meth = theClass.getDeclaredConstructor(parameterTypes);
+            meth.setAccessible(true);
+            return meth.newInstance(initargs);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to instantiate " + theClass.getName(), e);
+        }
+    }
+
+    public static void validatePartitionNameCharacters(List<String> partVals, Pattern partitionValidationPattern) throws MetaException {
+        String invalidPartitionVal = HiveStringUtils.getPartitionValWithInvalidCharacter(partVals, partitionValidationPattern);
+        if (invalidPartitionVal != null) {
+            throw new MetaException("Partition value '" + invalidPartitionVal + "' contains a character " + "not matched by whitelist pattern '" + partitionValidationPattern.toString() + "'.  " + "(configure with " + HiveConf.ConfVars.METASTORE_PARTITION_NAME_WHITELIST_PATTERN.varname + ")");
+        }
+    }
+
+    public static boolean partitionNameHasValidCharacters(List<String> partVals, Pattern partitionValidationPattern) {
+        return HiveStringUtils.getPartitionValWithInvalidCharacter(partVals, partitionValidationPattern) == null;
+    }
+
+    public static boolean compareFieldColumns(List<FieldSchema> schema1, List<FieldSchema> schema2) {
+        if (schema1.size() != schema2.size()) {
+            return false;
+        }
+        Iterator<FieldSchema> its1 = schema1.iterator();
+        Iterator<FieldSchema> its2 = schema2.iterator();
+        while (its1.hasNext()) {
+            FieldSchema f1 = its1.next();
+            FieldSchema f2 = its2.next();
+            if (!StringUtils.equals(f1.getName(), f2.getName()) || !StringUtils.equals(f1.getType(), f2.getType())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Map<String, String> getMetaStoreSaslProperties(HiveConf conf, boolean useSSL) {
+        String hadoopRpcProtectionVal = conf.get(CommonConfigurationKeysPublic.HADOOP_RPC_PROTECTION);
+        String hadoopRpcProtectionAuth = SaslRpcServer.QualityOfProtection.AUTHENTICATION.toString();
+        if (useSSL && hadoopRpcProtectionVal != null && !hadoopRpcProtectionVal.equals(hadoopRpcProtectionAuth)) {
+            LOG.warn("Overriding value of " + CommonConfigurationKeysPublic.HADOOP_RPC_PROTECTION + " setting it from " + hadoopRpcProtectionVal + " to " + hadoopRpcProtectionAuth + " because SSL is enabled");
+            conf.set(CommonConfigurationKeysPublic.HADOOP_RPC_PROTECTION, hadoopRpcProtectionAuth);
+        }
+        return ShimLoader.getHadoopThriftAuthBridge().getHadoopSaslProperties(conf);
+    }
+
+    public static String ARCHIVING_LEVEL = "archiving_level";
+
+    public static int getArchivingLevel(Partition part) throws MetaException {
+        if (!isArchived(part)) {
+            throw new MetaException("Getting level of unarchived partition");
+        }
+        String lv = part.getParameters().get(ARCHIVING_LEVEL);
+        if (lv != null) {
+            return Integer.parseInt(lv);
+        }
+        return part.getValues().size();
+    }
+
+    public static String[] getQualifiedName(String defaultDbName, String tableName) {
+        String[] names = tableName.split("\\.");
+        if (names.length == 1) {
+            return new String[] { defaultDbName, tableName };
+        }
+        return names;
+    }
+
+    private static final com.google.common.base.Function<String, String> transFormNullsToEmptyString = new com.google.common.base.Function<String, String>() {
+
+        @Override
+        public java.lang.String apply(@Nullable java.lang.String string) {
+            return StringUtils.defaultString(string);
+        }
+    };
+
+    public static Map<String, String> trimMapNulls(Map<String, String> dnMap, boolean retrieveMapNullsAsEmptyStrings) {
+        if (dnMap == null) {
+            return null;
+        }
+        if (retrieveMapNullsAsEmptyStrings) {
+            return Maps.newLinkedHashMap(Maps.transformValues(dnMap, transFormNullsToEmptyString));
+        } else {
+            return Maps.newLinkedHashMap(Maps.filterValues(dnMap, Predicates.notNull()));
+        }
+    }
+
+    private static URL urlFromPathString(String onestr) {
+        URL oneurl = null;
+        try {
+            if (onestr.startsWith("file:/")) {
+                oneurl = new URL(onestr);
+            } else {
+                oneurl = new File(onestr).toURL();
+            }
+        } catch (Exception err) {
+            LOG.error("Bad URL " + onestr + ", ignoring path");
+        }
+        return oneurl;
+    }
+
+    public static ClassLoader addToClassPath(ClassLoader cloader, String[] newPaths) throws Exception {
+        URLClassLoader loader = (URLClassLoader) cloader;
+        List<URL> curPath = Arrays.asList(loader.getURLs());
+        ArrayList<URL> newPath = new ArrayList<URL>(curPath.size());
+        for (URL onePath : curPath) {
+            newPath.add(onePath);
+        }
+        curPath = newPath;
+        for (String onestr : newPaths) {
+            URL oneurl = urlFromPathString(onestr);
+            if (oneurl != null && !curPath.contains(oneurl)) {
+                curPath.add(oneurl);
+            }
+        }
+        return new URLClassLoader(curPath.toArray(new URL[0]), loader);
+    }
+
+    public static void mergeColStats(ColumnStatistics csNew, ColumnStatistics csOld) throws InvalidObjectException {
+        List<ColumnStatisticsObj> list = new ArrayList<>();
+        if (csNew.getStatsObj().size() != csOld.getStatsObjSize()) {
+            LOG.debug("New ColumnStats size is {}, but old ColumnStats size is {}", csNew.getStatsObj().size(), csOld.getStatsObjSize());
+        }
+        Map<String, ColumnStatisticsObj> map = new HashMap<>();
+        for (ColumnStatisticsObj obj : csOld.getStatsObj()) {
+            map.put(obj.getColName(), obj);
+        }
+        for (int index = 0; index < csNew.getStatsObj().size(); index++) {
+            ColumnStatisticsObj statsObjNew = csNew.getStatsObj().get(index);
+            ColumnStatisticsObj statsObjOld = map.get(statsObjNew.getColName());
+            if (statsObjOld != null) {
+                ColumnStatsMerger merger = ColumnStatsMergerFactory.getColumnStatsMerger(statsObjNew, statsObjOld);
+                merger.merge(statsObjNew, statsObjOld);
+            }
+            list.add(statsObjNew);
+        }
+        csNew.setStatsObj(list);
+    }
+
+    public static MetaException newMetaException(Exception e) {
+        return newMetaException(e != null ? e.getMessage() : null, e);
+    }
+
+    public static MetaException newMetaException(String errorMessage, Exception e) {
+        MetaException metaException = new MetaException(errorMessage);
+        if (e != null) {
+            metaException.initCause(e);
+        }
+        return metaException;
+    }
+
+    public static List<String> getColumnNames(List<FieldSchema> schema) {
+        List<String> cols = new ArrayList<>(schema.size());
+        for (FieldSchema fs : schema) {
+            cols.add(fs.getName());
+        }
+        return cols;
+    }
+
+    public static boolean isInsertOnlyTable(Map<String, String> params) {
+        return isInsertOnlyTable(params, false);
+    }
+
+    public static boolean isInsertOnlyTable(Map<String, String> params, boolean isCtas) {
+        String transactionalProp = params.get(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES);
+        return (transactionalProp != null && "insert_only".equalsIgnoreCase(transactionalProp));
+    }
+
+    public static boolean isInsertOnlyTable(Properties params) {
+        HashMap<String, String> testMap = new HashMap<String, String>();
+        for (String n : params.stringPropertyNames()) {
+            testMap.put(n, params.getProperty(n));
+        }
+        return isInsertOnlyTable(testMap);
+    }
+
+    public static Boolean isToInsertOnlyTable(Map<String, String> props) {
+        String transactional = props.get(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL);
+        String transactionalProp = props.get(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES);
+        if (transactional == null && transactionalProp == null)
+            return null;
+        boolean isSetToTxn = "true".equalsIgnoreCase(transactional);
+        if (transactionalProp == null) {
+            if (isSetToTxn)
+                return false;
+            throw new RuntimeException("Cannot change '" + hive_metastoreConstants.TABLE_IS_TRANSACTIONAL + "' without '" + hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES + "'");
+        }
+        if (!"insert_only".equalsIgnoreCase(transactionalProp))
+            return false;
+        if (!isSetToTxn) {
+            throw new RuntimeException("Cannot set '" + hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES + "' to 'insert_only' without " + "setting '" + hive_metastoreConstants.TABLE_IS_TRANSACTIONAL + "' to 'true'");
+        }
+        return true;
+    }
+
+    public static boolean isRemovedInsertOnlyTable(Set<String> removedSet) {
+        boolean hasTxn = removedSet.contains(hive_metastoreConstants.TABLE_IS_TRANSACTIONAL), hasProps = removedSet.contains(hive_metastoreConstants.TABLE_TRANSACTIONAL_PROPERTIES);
+        return hasTxn || hasProps;
+    }
+
+    public static List<ColumnStatisticsObj> aggrPartitionStats(List<ColumnStatistics> partStats, String dbName, String tableName, List<String> partNames, List<String> colNames, boolean useDensityFunctionForNDVEstimation, double ndvTuner) throws MetaException {
+        Map<String, List<ColumnStatistics>> map = new HashMap<>();
+        for (ColumnStatistics css : partStats) {
+            List<ColumnStatisticsObj> objs = css.getStatsObj();
+            for (ColumnStatisticsObj obj : objs) {
+                List<ColumnStatisticsObj> singleObj = new ArrayList<>();
+                singleObj.add(obj);
+                ColumnStatistics singleCS = new ColumnStatistics(css.getStatsDesc(), singleObj);
+                if (!map.containsKey(obj.getColName())) {
+                    map.put(obj.getColName(), new ArrayList<ColumnStatistics>());
+                }
+                map.get(obj.getColName()).add(singleCS);
+            }
+        }
+        return aggrPartitionStats(map, dbName, tableName, partNames, colNames, useDensityFunctionForNDVEstimation, ndvTuner);
+    }
+
+    public static List<ColumnStatisticsObj> aggrPartitionStats(Map<String, List<ColumnStatistics>> map, String dbName, String tableName, final List<String> partNames, List<String> colNames, final boolean useDensityFunctionForNDVEstimation, final double ndvTuner) throws MetaException {
+        List<ColumnStatisticsObj> colStats = new ArrayList<>();
+        if (map.size() < 1) {
+            LOG.debug("No stats data found for: dbName=" + dbName + " tblName=" + tableName + " partNames= " + partNames + " colNames=" + colNames);
+            return colStats;
+        }
+        final ExecutorService pool = Executors.newFixedThreadPool(Math.min(map.size(), 16), new ThreadFactoryBuilder().setDaemon(true).setNameFormat("aggr-col-stats-%d").build());
+        final List<Future<ColumnStatisticsObj>> futures = Lists.newLinkedList();
+        long start = System.currentTimeMillis();
+        for (final Entry<String, List<ColumnStatistics>> entry : map.entrySet()) {
+            futures.add(pool.submit(new Callable<ColumnStatisticsObj>() {
+
+                @Override
+                public ColumnStatisticsObj call() throws Exception {
+                    List<ColumnStatistics> css = entry.getValue();
+                    ColumnStatsAggregator aggregator = ColumnStatsAggregatorFactory.getColumnStatsAggregator(css.iterator().next().getStatsObj().iterator().next().getStatsData().getSetField(), useDensityFunctionForNDVEstimation, ndvTuner);
+                    ColumnStatisticsObj statsObj = aggregator.aggregate(entry.getKey(), partNames, css);
+                    return statsObj;
+                }
+            }));
+        }
+        pool.shutdown();
+        for (Future<ColumnStatisticsObj> future : futures) {
+            try {
+                colStats.add(future.get());
+            } catch (InterruptedException | ExecutionException e) {
+                pool.shutdownNow();
+                LOG.debug(e.toString());
+                throw new MetaException(e.toString());
+            }
+        }
+        LOG.debug("Time for aggr col stats in seconds: {} Threads used: {}", ((System.currentTimeMillis() - (double) start)) / 1000, Math.min(map.size(), 16));
+        return colStats;
+    }
+
+    public static byte[] hashStorageDescriptor(StorageDescriptor sd, MessageDigest md) {
+        md.reset();
+        for (FieldSchema fs : sd.getCols()) {
+            md.update(fs.getName().getBytes(ENCODING));
+            md.update(fs.getType().getBytes(ENCODING));
+            if (fs.getComment() != null) {
+                md.update(fs.getComment().getBytes(ENCODING));
+            }
+        }
+        if (sd.getInputFormat() != null) {
+            md.update(sd.getInputFormat().getBytes(ENCODING));
+        }
+        if (sd.getOutputFormat() != null) {
+            md.update(sd.getOutputFormat().getBytes(ENCODING));
+        }
+        md.update(sd.isCompressed() ? "true".getBytes(ENCODING) : "false".getBytes(ENCODING));
+        md.update(Integer.toString(sd.getNumBuckets()).getBytes(ENCODING));
+        if (sd.getSerdeInfo() != null) {
+            SerDeInfo serde = sd.getSerdeInfo();
+            if (serde.getName() != null) {
+                md.update(serde.getName().getBytes(ENCODING));
+            }
+            if (serde.getSerializationLib() != null) {
+                md.update(serde.getSerializationLib().getBytes(ENCODING));
+            }
+            if (serde.getParameters() != null) {
+                SortedMap<String, String> params = new TreeMap<>(serde.getParameters());
+                for (Entry<String, String> param : params.entrySet()) {
+                    md.update(param.getKey().getBytes(ENCODING));
+                    md.update(param.getValue().getBytes(ENCODING));
+                }
+            }
+        }
+        if (sd.getBucketCols() != null) {
+            List<String> bucketCols = new ArrayList<>(sd.getBucketCols());
+            for (String bucket : bucketCols) {
+                md.update(bucket.getBytes(ENCODING));
+            }
+        }
+        if (sd.getSortCols() != null) {
+            SortedSet<Order> orders = new TreeSet<>(sd.getSortCols());
+            for (Order order : orders) {
+                md.update(order.getCol().getBytes(ENCODING));
+                md.update(Integer.toString(order.getOrder()).getBytes(ENCODING));
+            }
+        }
+        if (sd.getSkewedInfo() != null) {
+            SkewedInfo skewed = sd.getSkewedInfo();
+            if (skewed.getSkewedColNames() != null) {
+                SortedSet<String> colnames = new TreeSet<>(skewed.getSkewedColNames());
+                for (String colname : colnames) {
+                    md.update(colname.getBytes(ENCODING));
+                }
+            }
+            if (skewed.getSkewedColValues() != null) {
+                SortedSet<String> sortedOuterList = new TreeSet<>();
+                for (List<String> innerList : skewed.getSkewedColValues()) {
+                    SortedSet<String> sortedInnerList = new TreeSet<>(innerList);
+                    sortedOuterList.add(StringUtils.join(sortedInnerList, "."));
+                }
+                for (String colval : sortedOuterList) {
+                    md.update(colval.getBytes(ENCODING));
+                }
+            }
+            if (skewed.getSkewedColValueLocationMaps() != null) {
+                SortedMap<String, String> sortedMap = new TreeMap<>();
+                for (Entry<List<String>, String> smap : skewed.getSkewedColValueLocationMaps().entrySet()) {
+                    SortedSet<String> sortedKey = new TreeSet<>(smap.getKey());
+                    sortedMap.put(StringUtils.join(sortedKey, "."), smap.getValue());
+                }
+                for (Entry<String, String> e : sortedMap.entrySet()) {
+                    md.update(e.getKey().getBytes(ENCODING));
+                    md.update(e.getValue().getBytes(ENCODING));
+                }
+            }
+            md.update(sd.isStoredAsSubDirectories() ? "true".getBytes(ENCODING) : "false".getBytes(ENCODING));
+        }
+        return md.digest();
+    }
+
+    public static double decimalToDouble(Decimal decimal) {
+        return new BigDecimal(new BigInteger(decimal.getUnscaled()), decimal.getScale()).doubleValue();
+    }
+}

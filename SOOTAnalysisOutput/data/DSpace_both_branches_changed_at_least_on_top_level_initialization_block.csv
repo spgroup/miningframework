@@ -1,0 +1,6 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+DSpace;c65314db9d4f1df5539b4785a5b234ee3ab8a2a5;1047dca2fd4ea8d90f8ae03641e0588f873c61a7;32bafed548;ec0853ddad;dspace-api/src/main/java/org/dspace/sort/OrderFormatAuthor.java;2
+DSpace;30b8dff95e87c6abbc0165f1af666bc91358cf32;16e364615cc9907b7ba655414fc617eabee9fa36;ca483e2435;f20d2ca300;dspace-api/src/main/java/org/dspace/sort/OrderFormatTitle.java;2
+DSpace;ac29b3ec50a0314ea19b48ae8d658ebbe1c2e71f;0e7daab59c4f62c27f7cd250e36485fc64011e96;a036b99f1c;6e5605453e;dspace-api/src/main/java/org/dspace/app/mediafilter/ImageMagickThumbnailFilter.java;2
+DSpace;d3d141b6a5c7a78e63a3027907b28c52b58ef311;d34e7b89a30b5ffd35556d6fe8936e5d8659415d;f8f76b2e10;68be0c2f04;dspace-api/src/main/java/org/dspace/license/CreativeCommons.java;2
+DSpace;9e844c457c23c1d4e26e289ea6434b00759ad3ba;8c2692ea7dd2383aff32db2dec6827b0eb35e18c;baa26befeb;a68d37793d;dspace-api/src/main/java/org/dspace/text/filter/MARC21InitialArticleWord.java;2

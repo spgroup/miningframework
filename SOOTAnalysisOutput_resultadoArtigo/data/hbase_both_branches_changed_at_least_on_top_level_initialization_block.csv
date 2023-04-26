@@ -1,0 +1,7 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+hbase;156a8b2bad2577ace5d0958acc79f56b2bc23e0c;8855670cd701fdf9c2ab41907f9525d122608e6d;2ab3384669;77b327320a;hbase-common/src/main/java/org/apache/hadoop/hbase/util/ClassSize.java;4
+hbase;493f36c899bc990de0400fbf777a2bf29c5c60e3;74e5b26e57ef8d31723ff05ff913bad7f92a7518;20739542fd;7ddae3939e;hbase-client/src/main/java/org/apache/hadoop/hbase/protobuf/ProtobufUtil.java;4
+hbase;09a00efc0b37d6a43f684ee30f8b266d27c58c1c;ddab4726f6675943fc31b697a3d974bab74cd9ec;8a09d95c46;74e5b26e57;hbase-client/src/main/java/org/apache/hadoop/hbase/protobuf/ProtobufUtil.java;4
+hbase;0e20bbf6a3f1b8390c040230cc8b28e777c1d1f2;3dd220f8fdf6e34e11ffa309ff182172f6346091;eba8a708a5;ddab4726f6;hbase-client/src/main/java/org/apache/hadoop/hbase/protobuf/ProtobufUtil.java;4
+hbase;fe335b683c79e87278962f7ce911a792d7775581;bcfc6d65af7860c83ec147f673cd1ff8970290c4;8f5dae471a;3dd220f8fd;hbase-client/src/main/java/org/apache/hadoop/hbase/HColumnDescriptor.java;2
+hbase;1d2180687a0bb4bf9f1c6200487485117dbca76d;c001f73c3766a90f63f6d11ed4e41d5586f7c61e;2d503346ae;6657449eb4;hbase-protocol/src/main/java/org/apache/hadoop/hbase/protobuf/generated/HBaseProtos.java;2

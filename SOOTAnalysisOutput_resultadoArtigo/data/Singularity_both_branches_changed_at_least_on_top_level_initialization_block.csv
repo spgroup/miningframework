@@ -1,0 +1,3 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+Singularity;bfd86ce5a15f5fd5089f420704a4178cf3a19334;c5233cd80f9c332f8a3d9630f9b09768f232b813;4d55bbb25;328ad919d;SingularityBase/src/main/java/com/hubspot/singularity/ExtendedTaskState.java;2
+Singularity;328ad919dbc85d30fe29426ebad0bf09cff97cd0;a8a6a648bac1bdddaa64ad017204806755141d14;173823c72;a4b89f433;SingularityBase/src/main/java/com/hubspot/singularity/ExtendedTaskState.java;2

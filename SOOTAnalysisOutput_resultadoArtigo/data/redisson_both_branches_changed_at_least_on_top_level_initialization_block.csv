@@ -1,0 +1,4 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+redisson;6fa1768d6bcfd1841f4037e5a3108aba5b1b8fe7;7167b1d056a5aef42a1ae92edb762c948ef124de;74a05eed9;80b11e6eb;src/test/java/org/redisson/RedisRunner.java;2
+redisson;50ad8319540eaab9be46c6855bfcc1e3de20bc33;13664c3153300054855a52d80b8899f3c3745b79;c1cd57018;246fd7c06;src/test/java/org/redisson/RedisRunner.java;2
+redisson;d1c90f1ee214a14f7f380a3e1b0b61184161f0c8;d854ce0f3a0d13e16e84a6cdc0d3c0215b40c251;20218d567;e98f7680f;src/test/java/org/redisson/RedisRunner.java;4

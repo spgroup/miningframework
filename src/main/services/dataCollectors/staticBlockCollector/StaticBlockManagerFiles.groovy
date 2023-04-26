@@ -16,15 +16,21 @@ class StaticBlockManagerFiles {
 	}
 
 private  boolean forwentMergeScenariosWithBehaviorDifferent() {
-        Path newHandlerOutput = getContributionFile(this.filesQuadruplePath, MergesCollector.mergeApproaches[0])
-        Path oldHandlerOutput = getContributionFile(this.filesQuadruplePath, MergesCollector.mergeApproaches[1])
-
-        List<String> resultDiff =  runTextualDiff(newHandlerOutput, oldHandlerOutput)
-        if(resultDiff !=null && resultDiff.size() > 0){
+        Path insertionLevelOutput = getContributionFile(this.filesQuadruplePath, MergesCollector.mergeApproaches[0])
+        Path simpleOutput = getContributionFile(this.filesQuadruplePath, MergesCollector.mergeApproaches[1])
+        Path gitMergeOutput = getContributionFile(this.filesQuadruplePath, MergesCollector.mergeApproaches[2])
+        boolean flag = false
+        List<String> resultDiff =  runTextualDiff(insertionLevelOutput, simpleOutput)
+        List<String> resultDiffGitMI =  runTextualDiff(insertionLevelOutput, gitMergeOutput)
+        List<String> resultDiffGitMS =  runTextualDiff(simpleOutput, gitMergeOutput)
+        if(resultDiff !=null && resultDiff.size() > 0) {
+            return true;
+        }else if((resultDiffGitMI !=null && resultDiffGitMI.size() > 0) || (resultDiffGitMS !=null && resultDiffGitMS.size() > 0)){
             return true;
         }else{
 
             FileManager.delete(new File(this.filesQuadruplePath.toString()))
+
             this.filesQuadruplePath = null;
             return false;
         }

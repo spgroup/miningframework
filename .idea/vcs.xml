@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/clonedRepositories/FBReaderJ" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/accumulo" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/jFSTMerge" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/clonedRepositories/jdk" vcs="Git" />

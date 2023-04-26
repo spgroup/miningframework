@@ -1,0 +1,9 @@
+project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
+quarkus;0f1cb7b4bdcdca3f6e441c83ab11500d8f2fc182;3c3d3acee9da57bd7b19eec02060d477c0f9dc9e;8243740c44f;212d200886b;extensions/resteasy-classic/rest-client-config/runtime/src/main/java/io/quarkus/restclient/config/RestClientConfig.java;2
+quarkus;e13dbcc888bf588d57b2d62ec151850bac187954;1173262ba03430fe7fad65dc9ac2e31a351327fb;e28534bc3f0;d0db2159c2e;test-framework/junit5-internal/src/main/java/io/quarkus/test/QuarkusDevModeTest.java;4
+quarkus;f4bd978c3903fe60b2748edf820ebab51eb234e3;1af85040ea0c1fe31a1aabf28407db4fc23f3d24;78b20cc88b8;c988b9aef5c;test-framework/junit5-internal/src/main/java/io/quarkus/test/QuarkusDevModeTest.java;4
+quarkus;f6593818c17c11ea1b048a7c413aca169e2952a6;f0777b5f2e8b5113d64bca7ea25642499ebe11ef;6762300522e;8485eeeda39;independent-projects/bootstrap/core/src/main/java/io/quarkus/bootstrap/classloading/QuarkusClassLoader.java;4
+quarkus;03df125e714697a20074333f70e1a588ade80e3b;201704e7b447a059162536c3fb7d75b2e9b54377;c7b5494ecd9;7e5be033b0e;test-framework/junit5-internal/src/main/java/io/quarkus/test/QuarkusDevModeTest.java;4
+quarkus;674b4cf7641389d144c5582fc5f9bd5132d87054;2fbb0a6de59d12a974b04570b63ab46202e4d1eb;ac4565736da;7dbfae1aaf2;extensions/amazon-lambda-http/runtime/src/main/java/io/quarkus/amazon/lambda/http/LambdaHttpHandler.java;4
+quarkus;9ec48db65ba88bfca6e9175901a1777ce7a1781b;81602bbf938483fcd80e8d9213ca1a46421e3c0f;9ac89a0c44b;811c631355d;test-framework/junit5-internal/src/main/java/io/quarkus/test/QuarkusDevModeTest.java;4
+quarkus;de6ac207100d3cf344079382340752ae79f8a0df;50e9f5758456514235b7dc08760575519c279af7;8cd2f013f09;823a6a010fc;test-framework/junit5-internal/src/main/java/io/quarkus/test/QuarkusDevModeTest.java;4

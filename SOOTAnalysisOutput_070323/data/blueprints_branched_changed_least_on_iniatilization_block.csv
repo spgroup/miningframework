@@ -1,0 +1,3 @@
+project; merge commit ;ancestorSHA; left; right; hasIniatializationBlock;  qtd_static
+blueprints;f4f358d9ada52720fbb0fc99f85358c1cec5854d;38c85575a91fe02738e35c112c72fda0ba3d9c0d;33026c9b;c78f27a5;blueprints-sail-graph/src/main/java/com/tinkerpop/blueprints/impls/sail/SailGraph.java;4
+blueprints;5cee0a6e37584b207b58451b99e4ae138ce78f2c;6bd822ecaf44ed1c5d140c183045c2808dc5351a;74e1cfa5;961739b1;blueprints-sail-graph/src/main/java/com/tinkerpop/blueprints/impls/sail/SailGraph.java;4

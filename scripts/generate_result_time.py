@@ -96,7 +96,7 @@ class ResultAnalysis:
 		pdf.set_font("Arial", size = 15)
 
 		# create a cell
-		pdf.cell(200, 10, txt = "Results by scenarios",
+		pdf.cell(200, 10, txt = "Results",
 				ln = 1, align = 'C')
 
 		pdf.cell(200, 10, txt = ("Means: "+str(round(self.mean, 4))),

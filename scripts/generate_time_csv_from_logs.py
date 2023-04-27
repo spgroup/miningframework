@@ -1,16 +1,6 @@
 #!/usr/bin/python
 
 import pandas as pd
-import os
-import numpy as np
-import seaborn as sns
-import datetime
-import chardet
-import time
-from pandas.api.types import is_number
-from matplotlib import pyplot as plt
-import dask.dataframe as dd
-import datetime
 import sys
 
 n = 10
@@ -38,7 +28,6 @@ def getValue(listColunas, value):
     for (k, v) in listColunas.items():
         if (v in value):
             return k
-
 
 def generating(id_exec):
     df = pd.DataFrame(columns = colunas)
@@ -82,6 +71,6 @@ def generating(id_exec):
         df = pd.DataFrame([aux])
         df.to_csv('resultTimeFinal.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
     
-# Generating time of analysis
+# Generating csv times for n execution
 for i in range(n):
     generating(str(i+1))

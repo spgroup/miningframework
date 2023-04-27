@@ -1,21 +1,12 @@
 #!/usr/bin/python
 
 import pandas as pd
-import os
-import numpy as np
-import seaborn as sns
-import datetime
-import chardet
-import time
-from pandas.api.types import is_number
-from matplotlib import pyplot as plt
-import dask.dataframe as dd
-import datetime
 import numpy as np
 import statistics
 import matplotlib.pyplot as plt
 from fpdf import FPDF
 import sys
+import os
 
 class ResultAnalysis:
 
@@ -34,9 +25,9 @@ class ResultAnalysis:
 		self.stardard_deviation = 0
 		self.n = val
 		self.generate_results()
-		
 
-	def calcular(self):
+	# Calculate median, mean and standard deviation for results
+	def calculate(self):
 		# Median
 		self.median = statistics.median(self.results)
 
@@ -48,14 +39,20 @@ class ResultAnalysis:
 
 	#Loading files
 	def load_files(self):
-		arquivos_csv = [str('resultTime-'+str(i+1)+'.csv') for i in range(self.n)]
+		files_csv = [f"resultTime-{i+1}.csv" for i in range(self.n)]
 
-		for arquivo in arquivos_csv:
-			print(arquivo)
-			df = pd.read_csv(arquivo, sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
-			self.dataframes.append(df)
-	
-	#Sum the lines from files	
+		for file in files_csv:
+			if not os.path.isfile(file):
+				print(f"File {file} not found.")
+				continue
+
+			try:
+				df = pd.read_csv(file, sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
+				self.dataframes.append(df)
+			except Exception as e:
+				print(f"Error to read file {file}: {str(e)}")
+
+	#Sum the lines from files
 	def sum_lines(self):
 		mean_line = []
 		num_lines = self.dataframes[0].shape[0]
@@ -85,7 +82,7 @@ class ResultAnalysis:
 
 	# Save the result in a pdf file
 	def save_pdf(self, file_name, file_name_img):
-		self.calcular()
+		self.calculate()
 		pdf = FPDF()
 
 		# Add a page
@@ -160,12 +157,12 @@ class ResultAnalysis:
 
 		plt.subplots_adjust(left=0.25)
 		plt.yticks(np.arange(1,3), ['Means of the scenarios'])  # Set text labels.
+		plt.subplots_adjust(bottom=0.25)
 		plt.xlabel('Values')
 		plt.title("Results by scenarios")
 		plt.savefig("results_by_scenarios.jpg", dpi=300)
 
 		self.save_pdf("results_scenarios.pdf", "results_by_scenarios.jpg")
-
 
 	def plot_by_execution(self):
 		fig, ax = plt.subplots(figsize=(8, 3))
@@ -213,6 +210,7 @@ class ResultAnalysis:
 
 		plt.subplots_adjust(left=0.25)
 		plt.yticks(np.arange(1,3), ['Means of the executions'])  # Set text labels.
+		plt.subplots_adjust(bottom=0.25)
 		plt.xlabel('Values')
 		plt.title("Results by execution")
 		plt.savefig("results_by_execution.jpg", dpi=300)
@@ -234,4 +232,5 @@ if len(sys.argv) > 1:
 else:
 	n = 10
 
+print("Running with n:", n)
 ResultAnalysis(n)

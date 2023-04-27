@@ -55,9 +55,8 @@ def generating(id_exec):
     cont = 0
     aux = []
     with open("./output/results/execution-"+id_exec+"/time.txt") as infile:
-        chegouOA = False
         for i in infile:
-            
+            finish = False
             actual_value = [i.replace(y, "").replace("s", "").replace(" ","") for y in values_colunas if y in i][0]
             actual_value = actual_value.replace(",", ".")
             if (str(listColunas.get(cont)) in str(i)):
@@ -78,7 +77,10 @@ def generating(id_exec):
                 df.to_csv('resultTime-'+id_exec+'.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
                 aux = []
                 cont = 0
-                temOA = False
+                finish = True
+    if not finish:
+        df = pd.DataFrame([aux])
+        df.to_csv('resultTimeFinal.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
     
 # Generating time of analysis
 for i in range(n):

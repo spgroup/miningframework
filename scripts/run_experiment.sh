@@ -20,3 +20,16 @@ done
 rm -r output/results
 mkdir -p output/results
 mv -f execution-* output/results
+
+find . -name "results_*" -type f -delete
+find . -name "resultTime*" -type f -delete
+python3 scripts/generate_time.py $n
+python3 scripts/generate_result_time.py $n
+
+mv results_by_execution.jpg output/results
+mv results_by_scenarios.jpg output/results
+mv results_execution.pdf output/results
+mv results_scenarios.pdf output/results
+
+mkdir -p output/results/times
+mv resultTime* output/results/times

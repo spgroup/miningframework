@@ -99,7 +99,7 @@ class ResultAnalysis:
 		pdf.cell(200, 10, txt = "Results",
 				ln = 1, align = 'C')
 
-		pdf.cell(200, 10, txt = ("Means: "+str(round(self.mean, 4))),
+		pdf.cell(200, 10, txt = ("Mean: "+str(round(self.mean, 4))),
 				ln = 2, align = 'L')
 
 		pdf.cell(200, 10, txt = ("Median: "+str(round(self.median, 4))),

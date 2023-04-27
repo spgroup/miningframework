@@ -53,7 +53,7 @@ for file_name in file_names[1:]:
 				pdf.cell(200, 10, txt = st, ln = 1, align = 'C')
 	other_doc.close()
 
-# save the pdf with name file_name
+# save the pdf
 pdf.output("diff_files.pdf")
 print("Saving the differences of the results in", "diff_files.pdf")
 

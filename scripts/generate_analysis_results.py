@@ -79,7 +79,7 @@ class ReportAnalysis:
         # variable pdf
         pdf = FPDF()
 
-        # Add a page
+        # add a page
         pdf.add_page()
 
         # set style and size of font
@@ -151,7 +151,7 @@ class ReportAnalysis:
 
         pdf.image("confusion_matrix.jpg", x = None, y = None, w = 160, h = 110, type = 'jpg', link = 'confusion_matrix.jpg')
 
-        # save the pdf with name .pdf
+        # Save the pdf with name .pdf
         pdf.output("output/data/results.pdf")
         print("Results in output/data/results.pdf")
 

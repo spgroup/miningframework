@@ -37,7 +37,7 @@ class ResultAnalysis:
 		# Standard Deviation
 		self.stardard_deviation = statistics.stdev(self.results)
 
-	#Loading files
+	# Loading files
 	def load_files(self):
 		files_csv = [f"resultTime-{i+1}.csv" for i in range(self.n)]
 
@@ -52,7 +52,7 @@ class ResultAnalysis:
 			except Exception as e:
 				print(f"Error to read file {file}: {str(e)}")
 
-	#Sum the lines from files
+	# Sum the lines from files
 	def sum_lines(self):
 		mean_line = []
 		num_lines = self.dataframes[0].shape[0]

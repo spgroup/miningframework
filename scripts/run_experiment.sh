@@ -14,7 +14,7 @@ do
     ./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-icf -ioa -idfp -pdg -report -t 0"
 
     # Move os arquivos gerados pelo script para a pasta da execução atual
-    cp out.txt outConsole.txt time.txt output/data/soot-results.csv output/data/results.pdf $folder_name
+    mv out.txt outConsole.txt time.txt output/data/soot-results.csv output/data/results.pdf $folder_name
 done
 
 rm -r output/results

@@ -34,6 +34,8 @@ python3 scripts/summarize_time_results.py $n
 mv results_by_analysis.jpg output/results
 mv results_by_scenarios.jpg output/results
 mv results_analysis.pdf output/results
+mv results_by_only_analysis.jpg output/results
+mv results_only_analysis.pdf output/results
 mv results_scenarios.pdf output/results
 mv results_by_execution.jpg output/results
 mv results_execution.pdf output/results

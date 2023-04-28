@@ -16,6 +16,7 @@ class ResultAnalysis:
 	mean = 0
 	stardard_deviation = 0
 	n = 10
+	time_analysis = []
 
 	def __init__(self, val):
 		self.results = []
@@ -23,6 +24,7 @@ class ResultAnalysis:
 		self.median = 0
 		self.mean = 0
 		self.stardard_deviation = 0
+		self.time_analysis = []
 		self.n = val
 
 		self.generate_results()
@@ -89,10 +91,13 @@ class ResultAnalysis:
 			for c in dframe.columns:
 				total[cont] = total[cont] + dframe[c].sum()
 				cont = cont + 1
+
 		self.results = []
-		# Calculating mean
-		for i in total.values():
-			self.results.append(i/num_lines)
+		self.time_analysis = []
+		# Calculating mean of the configuration and performance analysis
+		for i in range(0, len(total.values()), 2):
+			self.results.append(total[i]+total[i+1])
+			self.time_analysis.append(total[i+1])
 
 	# Save the result in a pdf file
 	def save_pdf(self, file_name, file_name_img):
@@ -172,7 +177,7 @@ class ResultAnalysis:
 		plt.subplots_adjust(left=0.25)
 		plt.yticks(np.arange(1,3), ['Means of the '+variable])  # Set text labels.
 		plt.subplots_adjust(bottom=0.25)
-		plt.xlabel('Values')
+		plt.xlabel('Values (s)')
 		plt.title("Results by "+variable)
 		plt.savefig("results_by_"+variable+".jpg", dpi=300)
 
@@ -184,6 +189,8 @@ class ResultAnalysis:
 		self.plot_by_variable("scenarios")
 		self.sum_columns()
 		self.plot_by_variable("analysis")
+		self.results = self.time_analysis
+		self.plot_by_variable("only_analysis")
 		self.sum_executions()
 		self.plot_by_variable("execution")
 

@@ -96,8 +96,8 @@ class ResultAnalysis:
 		self.time_analysis = []
 		# Calculating mean of the configuration and performance analysis
 		for i in range(0, len(total.values()), 2):
-			self.results.append(total[i]+total[i+1])
-			self.time_analysis.append(total[i+1])
+			self.results.append((total[i]+total[i+1])/num_lines)
+			self.time_analysis.append(total[i+1]/num_lines)
 
 	# Save the result in a pdf file
 	def save_pdf(self, file_name, file_name_img):

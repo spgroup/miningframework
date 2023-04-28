@@ -60,10 +60,10 @@ class ResultAnalysis:
 		num_lines = self.dataframes[0].shape[0]
 
 		for j in range(num_lines):
-			sum_actual = 0
+			actual_sum = 0
 			for i in range(self.n):
-				sum_actual = sum_actual + float(self.dataframes[i].iloc[j].sum())
-			mean_line.append(sum_actual/14)
+				actual_sum = actual_sum + float(self.dataframes[i].iloc[j].sum())
+			mean_line.append(actual_sum/self.n)
 
 		self.results = mean_line
 

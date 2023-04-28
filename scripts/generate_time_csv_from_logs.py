@@ -55,6 +55,7 @@ def generating(id_exec):
                 while (cont < pos):
                     cont = cont + 1
                     aux.append("0")
+                    print("Error in scenario! With", str(i))
                     if (cont%14)+1 == 1:
                         cont = 0
                 aux.append(actual_value)

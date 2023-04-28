@@ -24,7 +24,9 @@ class ResultAnalysis:
 		self.mean = 0
 		self.stardard_deviation = 0
 		self.n = val
+
 		self.generate_results()
+
 
 	# Calculate median, mean and standard deviation for results
 	def calculate(self):
@@ -56,6 +58,7 @@ class ResultAnalysis:
 	def sum_lines(self):
 		mean_line = []
 		num_lines = self.dataframes[0].shape[0]
+
 		for j in range(num_lines):
 			sum_actual = 0
 			for i in range(self.n):
@@ -63,7 +66,18 @@ class ResultAnalysis:
 			mean_line.append(sum_actual/14)
 
 		self.results = mean_line
-	
+
+	# Sum the executions of the files
+	def sum_executions(self):
+		sum_by_execution = []
+		for i in range(self.n):
+			dframe = self.dataframes[i]
+			total = 0
+			for c in dframe.columns:
+				total = total + dframe[c].sum()
+			sum_by_execution.append(total)
+		self.results = sum_by_execution
+
 	# Sum the columns from files
 	def sum_columns(self):
 		total = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0}
@@ -111,7 +125,7 @@ class ResultAnalysis:
 		pdf.output(file_name)
 		print("Saving results in", "output/results/"+file_name)
 
-	def plot_by_scenarios(self):
+	def plot_by_variable(self, variable):
 		fig, ax = plt.subplots(figsize=(8, 3))
 
 		data_x = [self.results]
@@ -156,74 +170,22 @@ class ResultAnalysis:
 			plt.scatter(features, y, s=.3, c=scatter_colors[idx])
 
 		plt.subplots_adjust(left=0.25)
-		plt.yticks(np.arange(1,3), ['Means of the scenarios'])  # Set text labels.
+		plt.yticks(np.arange(1,3), ['Means of the '+variable])  # Set text labels.
 		plt.subplots_adjust(bottom=0.25)
 		plt.xlabel('Values')
-		plt.title("Results by scenarios")
-		plt.savefig("results_by_scenarios.jpg", dpi=300)
+		plt.title("Results by "+variable)
+		plt.savefig("results_by_"+variable+".jpg", dpi=300)
 
-		self.save_pdf("results_scenarios.pdf", "results_by_scenarios.jpg")
-
-	def plot_by_execution(self):
-		fig, ax = plt.subplots(figsize=(8, 3))
-
-		data_x = [self.results]
-
-		# Create a list of colors for the boxplots based on the number of features you have
-		boxplots_colors = ['yellowgreen']
-
-		# Boxplot data
-		bp = ax.boxplot(data_x, patch_artist = True, vert = False)
-
-		# Change to the desired color and add transparency
-		for patch, color in zip(bp['boxes'], boxplots_colors):
-			patch.set_facecolor(color)
-			patch.set_alpha(0.4)
-
-		# Create a list of colors for the violin plots based on the number of features you have
-		violin_colors = ['thistle']
-
-		# Violinplot data
-		vp = ax.violinplot(data_x, points=500, 
-					showmeans=False, showextrema=False, showmedians=False, vert=False)
-
-		for idx, b in enumerate(vp['bodies']):
-			# Get the center of the plot
-			m = np.mean(b.get_paths()[0].vertices[:, 0])
-			# Modify it so we only see the upper half of the violin plot
-			b.get_paths()[0].vertices[:, 1] = np.clip(b.get_paths()[0].vertices[:, 1], idx+1, idx+2)
-			# Change to the desired color
-			b.set_color(violin_colors[idx])
-
-		# Create a list of colors for the scatter plots based on the number of features you have
-		scatter_colors = ['tomato', 'darksalmon']
-
-		# Scatterplot data
-		for idx, features in enumerate(data_x):
-			# Add jitter effect so the features do not overlap on the y-axis
-			y = np.full(len(features), idx + .8)
-			idxs = np.arange(len(y))
-			out = y.astype(float)
-			out.flat[idxs] += np.random.uniform(low=-.05, high=.05, size=len(idxs))
-			y = out
-			plt.scatter(features, y, s=.3, c=scatter_colors[idx])
-
-		plt.subplots_adjust(left=0.25)
-		plt.yticks(np.arange(1,3), ['Means of the executions'])  # Set text labels.
-		plt.subplots_adjust(bottom=0.25)
-		plt.xlabel('Values')
-		plt.title("Results by execution")
-		plt.savefig("results_by_execution.jpg", dpi=300)
-
-		self.save_pdf("results_execution.pdf", "results_by_execution.jpg")
+		self.save_pdf("results_"+variable+".pdf", "results_by_"+variable+".jpg")
 
 	def generate_results(self):
 		self.load_files()
 		self.sum_lines()
-		self.plot_by_scenarios()
+		self.plot_by_variable("scenarios")
 		self.sum_columns()
-		self.plot_by_execution()
-
+		self.plot_by_variable("analysis")
+		self.sum_executions()
+		self.plot_by_variable("execution")
 
 n = 10
 

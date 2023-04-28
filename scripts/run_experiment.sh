@@ -3,6 +3,11 @@
 # Number of times the script will be executed.
 n=${1:-10}
 
+rm -f time.txt
+rm -f out.txt
+rm -f outConsole.txt
+rm -f output/data/soot-results.csv
+rm -f output/data/results.pdf
 rm -r output/results
 mkdir -p output/results
 
@@ -26,10 +31,12 @@ find . -name "resultTime*" -type f -delete
 python3 scripts/generate_time_csv_from_logs.py $n
 python3 scripts/summarize_time_results.py $n
 
-mv results_by_execution.jpg output/results
+mv results_by_analysis.jpg output/results
 mv results_by_scenarios.jpg output/results
-mv results_execution.pdf output/results
+mv results_analysis.pdf output/results
 mv results_scenarios.pdf output/results
+mv results_by_execution.jpg output/results
+mv results_execution.pdf output/results
 
 mkdir -p output/results/times
 mv resultTime* output/results/times

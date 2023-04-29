@@ -175,7 +175,7 @@ class ResultAnalysis:
 			plt.scatter(features, y, s=.3, c=scatter_colors[idx])
 
 		plt.subplots_adjust(left=0.25)
-		plt.yticks(np.arange(1,3), ['Means of the '+variable])  # Set text labels.
+		plt.yticks(np.arange(1,2), ['Means of the '+variable])  # Set text labels.
 		plt.subplots_adjust(bottom=0.25)
 		plt.xlabel('Values (seconds)')
 		plt.title("Results by "+variable)

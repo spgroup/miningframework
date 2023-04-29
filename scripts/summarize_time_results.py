@@ -17,6 +17,7 @@ class ResultAnalysis:
 	stardard_deviation = 0
 	n = 10
 	time_analysis = []
+	list_times = []
 
 	def __init__(self, val):
 		self.results = []
@@ -26,6 +27,7 @@ class ResultAnalysis:
 		self.stardard_deviation = 0
 		self.time_analysis = []
 		self.n = val
+		self.list_times = []
 
 		self.generate_results()
 
@@ -55,6 +57,39 @@ class ResultAnalysis:
 				self.dataframes.append(df)
 			except Exception as e:
 				print(f"Error to read file {file}: {str(e)}")
+
+	def calculate_metrics_by_scenarios(self):
+		# Median
+		median = statistics.median(self.list_times)
+
+		# Mean
+		mean = statistics.mean(self.list_times)
+
+		# Standard Deviation
+		stardard_deviation = statistics.stdev(self.list_times)
+
+		return [mean, median, stardard_deviation]
+
+	def create_sheets(self, list_data, idx):
+		df = pd.DataFrame(list_data, columns=['mean', 'median', 'stardard deviation'])
+		df['mean'] = df['mean'].round(2).astype(float)
+		df['median'] = df['median'].round(2).astype(float)
+		df['stardard deviation'] = df['stardard deviation'].round(2).astype(float)
+
+		print("Saving", 'output/results/sheets/results_by_scenario_execution_'+str(idx)+'.csv')
+		df.to_csv('results_by_scenario_execution_'+str(idx)+'.csv', index=False)
+
+	# Sum the lines from files and calculate the mean, median and stardard deviation
+	def calculate_by_scenarios(self):
+		num_lines = self.dataframes[0].shape[0]
+		for i in range(self.n):
+			actual_sum = 0
+			list_sheets = []
+			for j in range(num_lines):
+				self.list_times = self.dataframes[i].iloc[j].values.tolist()
+				result = self.calculate_metrics_by_scenarios()
+				list_sheets.append(result)
+			self.create_sheets(list_sheets, i)
 
 	# Sum the lines from files
 	def sum_lines(self):
@@ -186,6 +221,7 @@ class ResultAnalysis:
 	def generate_results(self):
 		self.load_files()
 		self.sum_lines()
+		self.calculate_by_scenarios()
 		self.plot_by_variable("scenarios")
 		self.sum_columns()
 		self.plot_by_variable("analysis")
@@ -201,5 +237,5 @@ if len(sys.argv) > 1:
 else:
 	n = 10
 
-print("Running with n:", n)
+print("Running with n =", n)
 ResultAnalysis(n)

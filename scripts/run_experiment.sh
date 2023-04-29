@@ -43,5 +43,8 @@ mv results_execution.pdf output/results
 mkdir -p output/results/times
 mv resultTime* output/results/times
 
+mkdir -p output/results/sheets
+mv results_by_scenario_execution_* output/results/sheets
+
 python3 scripts/check_diff_results_pdf.py $n
 mv diff_files.pdf output/results/

@@ -6,4 +6,4 @@ urllib3==1.26.5
 pandas==1.5.2
 seaborn==0.12.2
 fpdf==1.7.2
-PyMuPDF==1.18.13
+PyMuPDF~=1.18.13

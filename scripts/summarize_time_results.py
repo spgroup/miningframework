@@ -18,6 +18,7 @@ class ResultAnalysis:
 	n = 10
 	time_analysis = []
 	list_times = []
+	time_by_scenario = []
 
 	def __init__(self, val):
 		self.results = []
@@ -28,6 +29,7 @@ class ResultAnalysis:
 		self.time_analysis = []
 		self.n = val
 		self.list_times = []
+		self.time_by_scenario = []
 
 		self.generate_results()
 
@@ -98,10 +100,14 @@ class ResultAnalysis:
 
 		for j in range(num_lines):
 			actual_sum = 0
+			list_aux_by_scenario = []
 			for i in range(self.n):
-				actual_sum = actual_sum + float(self.dataframes[i].iloc[j].sum())
+				actual_sum = actual_sum + float(self.dataframes[i].iloc[j].astype(float).sum())
+				list_aux_by_scenario.append(self.dataframes[i].iloc[j].astype(float).sum())
+			self.list_times = list_aux_by_scenario
+			values = self.calculate_metrics_by_scenarios()
+			self.time_by_scenario.append(list_aux_by_scenario + values)
 			mean_line.append(actual_sum/self.n)
-
 		self.results = mean_line
 
 	# Sum the executions of the files
@@ -218,9 +224,19 @@ class ResultAnalysis:
 
 		self.save_pdf("results_"+variable+".pdf", "results_by_"+variable+".jpg")
 
+	def create_sheet_by_scenario(self):
+		columns_sheet_by_scenario = [str("Execution-"+str(i+1)) for i in range(self.n)]+['mean', 'median', 'stardard deviation']
+		df = pd.DataFrame(self.time_by_scenario, columns=columns_sheet_by_scenario)
+		df = df.astype(float)
+		df = df.round(2)
+
+		print("Saving", 'output/results/sheets/results_by_scenario_all_execution.csv')
+		df.to_csv('results_by_scenario_all_execution.csv', index=False)
+
 	def generate_results(self):
 		self.load_files()
 		self.sum_lines()
+		self.create_sheet_by_scenario()
 		self.calculate_by_scenarios()
 		self.plot_by_variable("scenarios")
 		self.sum_columns()

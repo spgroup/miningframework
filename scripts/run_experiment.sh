@@ -8,7 +8,7 @@ rm -f out.txt
 rm -f outConsole.txt
 rm -f output/data/soot-results.csv
 rm -f output/data/results.pdf
-rm -r output/results
+#rm -r output/results
 mkdir -p output/results
 
 # Loop to execute the script gradlew run n times
@@ -45,6 +45,7 @@ mv resultTime* output/results/times
 
 mkdir -p output/results/sheets
 mv results_by_scenario_execution_* output/results/sheets
+mv results_by_scenario_all_execution.csv output/results/
 
 python3 scripts/check_diff_results_pdf.py $n
 mv diff_files.pdf output/results/

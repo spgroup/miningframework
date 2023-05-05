@@ -8,7 +8,7 @@ rm -f out.txt
 rm -f outConsole.txt
 rm -f output/data/soot-results.csv
 rm -f output/data/results.pdf
-#rm -r output/results
+rm -r output/results
 mkdir -p output/results
 
 # Loop to execute the script gradlew run n times

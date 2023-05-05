@@ -74,9 +74,8 @@ class ResultAnalysis:
 
 	def create_sheets(self, list_data, idx):
 		df = pd.DataFrame(list_data, columns=['mean', 'median', 'stardard deviation'])
-		df['mean'] = df['mean'].round(2).astype(float)
-		df['median'] = df['median'].round(2).astype(float)
-		df['stardard deviation'] = df['stardard deviation'].round(2).astype(float)
+		df = df.astype(float)
+		df = df.round(2)
 
 		print("Saving", 'output/results/sheets/results_by_scenario_execution_'+str(idx)+'.csv')
 		df.to_csv('results_by_scenario_execution_'+str(idx)+'.csv', index=False)

@@ -5,8 +5,8 @@ import numpy as np
 import statistics
 import matplotlib.pyplot as plt
 from fpdf import FPDF
-import sys
 import os
+import sys
 
 class ResultAnalysis:
 
@@ -33,9 +33,21 @@ class ResultAnalysis:
 
 		self.generate_results()
 
+	def generate_results(self):
+		self.load_results_time_files()
+		self.sum_lines_by_scenario()
+		self.create_sheet_by_scenario()
+		self.calculate_by_scenarios()
+		self.plot_by_variable("scenarios")
+		self.sum_columns_by_scenario()
+		self.plot_by_variable("analysis")
+		self.results = self.time_analysis
+		self.plot_by_variable("only_analysis")
+		self.sum_executions()
+		self.plot_by_variable("execution")
 
-	# Calculate median, mean and standard deviation for results
-	def calculate(self):
+	# Calculate the mean, median, and standard deviation for each execution
+	def calculate_stats_by_execution(self):
 		# Median
 		self.median = statistics.median(self.results)
 
@@ -46,7 +58,7 @@ class ResultAnalysis:
 		self.stardard_deviation = statistics.stdev(self.results)
 
 	# Loading files
-	def load_files(self):
+	def load_results_time_files(self):
 		files_csv = [f"resultTime-{i+1}.csv" for i in range(self.n)]
 
 		for file in files_csv:
@@ -60,7 +72,8 @@ class ResultAnalysis:
 			except Exception as e:
 				print(f"Error to read file {file}: {str(e)}")
 
-	def calculate_metrics_by_scenarios(self):
+	#Calculate the mean, median, and standard deviation for each scenario
+	def calculate_stats_by_scenarios(self):
 		# Median
 		median = statistics.median(self.list_times)
 
@@ -72,7 +85,8 @@ class ResultAnalysis:
 
 		return [mean, median, stardard_deviation]
 
-	def create_sheets(self, list_data, idx):
+	# Create a spreadsheet with the mean, median, and standard deviation for each execution
+	def create_sheets_scenario_by_execution(self, list_data, idx):
 		df = pd.DataFrame(list_data, columns=['mean', 'median', 'stardard deviation'])
 		df = df.astype(float)
 		df = df.round(2)
@@ -88,12 +102,12 @@ class ResultAnalysis:
 			list_sheets = []
 			for j in range(num_lines):
 				self.list_times = self.dataframes[i].iloc[j].values.tolist()
-				result = self.calculate_metrics_by_scenarios()
+				result = self.calculate_stats_by_scenarios()
 				list_sheets.append(result)
-			self.create_sheets(list_sheets, i)
+			self.create_sheets_scenario_by_execution(list_sheets, i)
 
 	# Sum the lines from files
-	def sum_lines(self):
+	def sum_lines_by_scenario(self):
 		mean_line = []
 		num_lines = self.dataframes[0].shape[0]
 
@@ -104,7 +118,7 @@ class ResultAnalysis:
 				actual_sum = actual_sum + float(self.dataframes[i].iloc[j].astype(float).sum())
 				list_aux_by_scenario.append(self.dataframes[i].iloc[j].astype(float).sum())
 			self.list_times = list_aux_by_scenario
-			values = self.calculate_metrics_by_scenarios()
+			values = self.calculate_stats_by_scenarios()
 			self.time_by_scenario.append(list_aux_by_scenario + values)
 			mean_line.append(actual_sum/self.n)
 		self.results = mean_line
@@ -121,7 +135,7 @@ class ResultAnalysis:
 		self.results = sum_by_execution
 
 	# Sum the columns from files
-	def sum_columns(self):
+	def sum_columns_by_scenario(self):
 		total = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0}
 		num_lines = self.dataframes[0].shape[0]
 
@@ -140,15 +154,16 @@ class ResultAnalysis:
 			self.time_analysis.append(total[i+1]/num_lines/self.n)
 
 	# Save the result in a pdf file
-	def save_pdf(self, file_name, file_name_img):
-		self.calculate()
+	def save_results_pdf(self, file_name, file_name_img):
+		# Calculate the values to save in the PDF.
+		self.calculate_stats_by_execution()
+
 		pdf = FPDF()
 
 		# Add a page
 		pdf.add_page()
 
-		# set style and size of font
-		# that you want in the pdf
+		# set style and size of font that you want in the pdf
 		pdf.set_font("Arial", size = 15)
 
 		# create a cell
@@ -171,8 +186,10 @@ class ResultAnalysis:
 		print("Saving results in", "output/results/"+file_name)
 
 	def plot_by_variable(self, variable):
+		# Define the size of the figure
 		fig, ax = plt.subplots(figsize=(8, 3))
 
+		# Assign the data
 		data_x = [self.results]
 
 		# Create a list of colors for the boxplots based on the number of features you have
@@ -190,8 +207,7 @@ class ResultAnalysis:
 		violin_colors = ['thistle']
 
 		# Violinplot data
-		vp = ax.violinplot(data_x, points=500, 
-					showmeans=False, showextrema=False, showmedians=False, vert=False)
+		vp = ax.violinplot(data_x, points=500, showmeans=False, showextrema=False, showmedians=False, vert=False)
 
 		for idx, b in enumerate(vp['bodies']):
 			# Get the center of the plot
@@ -214,6 +230,7 @@ class ResultAnalysis:
 			y = out
 			plt.scatter(features, y, s=.3, c=scatter_colors[idx])
 
+		# Define cofigs for the plot
 		plt.subplots_adjust(left=0.25)
 		plt.yticks(np.arange(1,2), ['Means of the '+variable])  # Set text labels.
 		plt.subplots_adjust(bottom=0.25)
@@ -221,8 +238,9 @@ class ResultAnalysis:
 		plt.title("Results by "+variable)
 		plt.savefig("results_by_"+variable+".jpg", dpi=300)
 
-		self.save_pdf("results_"+variable+".pdf", "results_by_"+variable+".jpg")
+		self.save_results_pdf("results_" + variable + ".pdf", "results_by_" + variable + ".jpg")
 
+	# Create sheets by scenario
 	def create_sheet_by_scenario(self):
 		columns_sheet_by_scenario = [str("Execution-"+str(i+1)) for i in range(self.n)]+['mean', 'median', 'stardard deviation']
 		df = pd.DataFrame(self.time_by_scenario, columns=columns_sheet_by_scenario)
@@ -232,25 +250,13 @@ class ResultAnalysis:
 		print("Saving", 'output/results/sheets/results_by_scenario_all_execution.csv')
 		df.to_csv('results_by_scenario_all_execution.csv', index=False)
 
-	def generate_results(self):
-		self.load_files()
-		self.sum_lines()
-		self.create_sheet_by_scenario()
-		self.calculate_by_scenarios()
-		self.plot_by_variable("scenarios")
-		self.sum_columns()
-		self.plot_by_variable("analysis")
-		self.results = self.time_analysis
-		self.plot_by_variable("only_analysis")
-		self.sum_executions()
-		self.plot_by_variable("execution")
-
+# Check if n was passed as a parameter, otherwise it will default to 10
 n = 10
-
 if len(sys.argv) > 1:
 	n = int(sys.argv[1])
 else:
 	n = 10
 
 print("Running with n =", n)
+
 ResultAnalysis(n)

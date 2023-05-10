@@ -40,11 +40,11 @@ class ResultAnalysis:
 		self.calculate_by_scenarios()
 		self.plot_by_variable("scenarios")
 		self.sum_columns_by_scenario()
-		self.plot_by_variable("analysis")
+		self.plot_by_variable("analysis_and_configuration")
 		self.results = self.time_analysis
-		self.plot_by_variable("only_analysis")
+		self.plot_by_variable("analysis")
 		self.sum_executions()
-		self.plot_by_variable("execution")
+		self.plot_by_variable("experiment")
 
 	# Calculate the mean, median, and standard deviation for each execution
 	def calculate_stats_by_execution(self):
@@ -236,9 +236,9 @@ class ResultAnalysis:
 		plt.subplots_adjust(bottom=0.25)
 		plt.xlabel('Values (seconds)')
 		plt.title("Results by "+variable)
-		plt.savefig("results_by_"+variable+".jpg", dpi=300)
+		plt.savefig("rain_cloud_"+variable+"_time.jpg", dpi=300)
 
-		self.save_results_pdf("results_" + variable + ".pdf", "results_by_" + variable + ".jpg")
+		self.save_results_pdf("rain_cloud_" + variable + "_time.pdf", "rain_cloud_" + variable + "_time.jpg")
 
 	# Create sheets by scenario
 	def create_sheet_by_scenario(self):

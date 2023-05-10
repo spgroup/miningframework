@@ -27,12 +27,14 @@ file_names = ['./output/results/execution-'+str(i+1)+'/results.pdf' for i in ran
 ref_doc = fitz.open(file_names[0])
 ref_page_count = ref_doc.page_count
 
+has_difference = False
 # Compare the others file with the first
 for file_name in file_names[1:]:
 	other_doc = fitz.open(file_name)
 	other_page_count = other_doc.page_count
 	# Check the number of the pages
 	if ref_page_count != other_page_count:
+		has_difference = True
 		print(f"The file {file_name} has a different number of pages..")
 		continue
 	# Compara o conteúdo de cada página
@@ -42,6 +44,7 @@ for file_name in file_names[1:]:
 		ref_text = ref_page.get_text("text")
 		other_text = other_page.get_text("text")
 		if ref_text != other_text:
+			has_difference = True
 			text = f"The file {file_name} has a difference on the page {page_num + 1}."
 			print(text)
 			pdf.cell(200, 10, txt = text, ln = 1, align = 'C')
@@ -52,6 +55,11 @@ for file_name in file_names[1:]:
 			for st in save_string.split("\n"):
 				pdf.cell(200, 10, txt = st, ln = 1, align = 'C')
 	other_doc.close()
+
+if (not has_difference):
+	text = f"There was no difference between the results of the executions."
+	print(text)
+	pdf.cell(200, 10, txt = text, ln = 1, align = 'C')
 
 # save the pdf
 pdf.output("diff_files.pdf")

@@ -1,5 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-geoserver;733a4153cf675129b49ff818f5c9039741495c5c;35927a45b92b10c0efa386195d71dcc23ede1bad;de51aeb72f;6300103506;src/restconfig/src/main/java/org/geoserver/rest/catalog/DataStoreFileController.java;4
-geoserver;47e0b05c9e84554336862244fe558852d3e3dafc;bd3549517a672e2039e2bddf7d2c67f6d22bd557;aee32cbe56;cbcc792f69;src/web/core/src/main/java/org/geoserver/web/LoginFormHTMLInclude.java;2
-geoserver;3518cdb07ec159c1ac365fc8583da7ff4b9da89b;c02e3725adc172f2bbb809909b4966279b331958;bb6aa9f2ad;d85d5093ef;src/main/src/test/java/org/geoserver/catalog/impl/ReaderDimensionAccessorTest.java;2
-geoserver;54fdc95180d4cefc67fc214c0f52a1c23aedd33b;b2ff90460d5ab2eb483800835b7f4d9fbf5f8640;4ce530bcc4;7d7d56c77b;src/restconfig/src/main/java/org/geoserver/catalog/rest/StyleResource.java;2

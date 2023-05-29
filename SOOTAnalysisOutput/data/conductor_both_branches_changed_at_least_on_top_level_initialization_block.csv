@@ -1,3 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-conductor;f347aa24d742b18ef291bd7c89c9e9ad005b8968;a08510db398a7745fe524888f9329f0d306e3d54;8ec7cf3b2;39bee2360;rest/src/main/java/com/netflix/conductor/rest/controllers/ApplicationExceptionMapper.java;2
-conductor;55d3e13fbf0d074b6a996c8a155951c3e2f97141;b9d877df7296d82c9c0378bd50afb61ef235e238;9e783aa9c;bcddf719b;common/src/main/java/com/netflix/conductor/common/metadata/tasks/TaskResult.java;2

@@ -1,4 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-spring-security;fda0e9a2b6effa51796d9c90c8449653a0861859;fbfa13bd479eaa2f7c75ef7fb10ed88e650a048a;892bbcfe0f;3cfaf0d11d;saml2/saml2-service-provider/src/opensaml4Main/java/org/springframework/security/saml2/provider/service/authentication/OpenSaml4AuthenticationProvider.java;4
-spring-security;93d8983f8a6720e7e63ba8198c11db45a0cb3cae;11aa02c6fb6ade324979fcb56d7514db8441386c;38c05ad31c;d37c413460;saml2/saml2-service-provider/src/opensaml4Main/java/org/springframework/security/saml2/provider/service/authentication/OpenSaml4AuthenticationProvider.java;4
-spring-security;d37c413460d102db3581448cc064037e7af019d2;5ac5edc2e6d34ceac594d1cd570c5be66c4cff22;3826fca567;c7912c551b;saml2/saml2-service-provider/src/opensaml4Main/java/org/springframework/security/saml2/provider/service/authentication/OpenSaml4AuthenticationProvider.java;4

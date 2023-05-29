@@ -1,4 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
-RxJava;798fa7ed7581f944e331d6fa8dc2a12221225688;c6c17ccba2280187c82a2d6529045d84d7a96440;da9aa933e;15c385de5;rxjava-core/src/main/java/rx/subscriptions/CompositeSubscription.java;1
-RxJava;0ff4237f5bbfd9a9a9d44983a4bfd4a3a358f483;cbbf5144e12966d4a58a64ae61726e9ad8fa9d80;955bc509d;5753a925c;rxjava-contrib/rxjava-android/src/main/java/rx/android/observables/AndroidObservable.java;1
-RxJava;cd18923b8d26ae7a11766df3a33c510364ad14c5;0950c46beda335819928585f1262dfe1dca78a0b;f49c462e7;ff92254fc;rxjava-core/src/main/java/rx/concurrency/ExecutorScheduler.java;1

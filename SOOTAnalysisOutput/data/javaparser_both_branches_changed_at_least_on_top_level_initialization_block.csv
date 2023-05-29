@@ -1,7 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-javaparser;13aeac1ef5ba9e205de51d9f1daf5ef021bb7729;881c9dea1089d45ba7ab2f5632ae3d3fe12f5e5f;35721bfcb;b60b9f5b3;javaparser-core/src/main/java/com/github/javaparser/printer/ConcreteSyntaxModel.java;2
-javaparser;25c4bbf796034c987e7517d4d3c596026a0142e3;ce73feac8db5b262311ef2f519a7ab3c34d7c101;99747a041;2282299a1;javaparser-core/src/main/java/com/github/javaparser/printer/ConcreteSyntaxModel.java;2
-javaparser;9e13aaf139747aecce2944c7205cc592aa23d97a;110beee2162b833ffefe550a3828d8abac087348;d82a1b3e6;6494c9ff7;javaparser-core/src/main/java/com/github/javaparser/printer/ConcreteSyntaxModel.java;2
-javaparser;b24a131375ba1c534edb9cdb4c1f772e087299ac;cf47b14eaf6f70ca2be0bc6b51235964eb56e41a;7fd7c8385;8209c0306;javaparser-core/src/main/java/com/github/javaparser/printer/ConcreteSyntaxModel.java;2
-javaparser;21089d1b9159016af660a651a9b7c80b1400b8f3;999c27a35bb9beb477617945035d060cade7946d;6d06ae94c;c4aa779c9;javaparser-core/src/main/java/com/github/javaparser/printer/ConcreteSyntaxModel.java;2
-javaparser;587120a8a783cb60b64e010966daf61e05b499d5;de4a66969010abfc877c59c6a017d8e6a9b4d15a;366457d9a;8ea3e0dc2;javaparser-core/src/main/java/com/github/javaparser/printer/ConcreteSyntaxModel.java;2

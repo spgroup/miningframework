@@ -1,2 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-databus;dd39e049bb83bbacfea80ed5547270a812151211;0a3f6625b305073505bda9e0a1d37280b45b72a0;378fe05;120c5f8;databus-client/databus-client-common/src/test/java/com/linkedin/databus/client/consumer/TestMultiConsumerCallback.java;2

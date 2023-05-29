@@ -1,7 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-quasar;7a2dfabbe2244b78858507e90e693d1ec4f8d463;1a463dac05482e9425777b9510296d6d6af010d0;70dd10a66;73f5cef96;quasar-core/src/main/java/co/paralleluniverse/fibers/Fiber.java;4
-quasar;7a2930b920c8f7ea2f210e35bcfe291fcc0ec44b;b6e23eda63f8c0a64d485655984476da121b6875;55d3bcfcd;b93280647;quasar-core/src/main/java/co/paralleluniverse/fibers/Fiber.java;4
-quasar;77c46147002e3a300ec87f48e59aa8f89dcfaa19;5d48bbbb58e2fc82acd823e1b45cd99eaa645f92;fefcd841c;356a492e6;quasar-core/src/main/java/co/paralleluniverse/fibers/Fiber.java;4
-quasar;ae07bfcab56fe0968d843333c29f565a6707e853;c38b4d756dec054b8f3f509ccd27cc081773ad10;7ed4df819;5d294eed6;quasar-core/src/main/java/co/paralleluniverse/fibers/Fiber.java;4
-quasar;24e00e8e4684dbe1047a5db7257dae33df41cd9b;1f946ed13bfa7566eead39845c73c3787a75790a;e755bf5fc;401768196;quasar-core/src/main/java/co/paralleluniverse/fibers/Fiber.java;4
-quasar;56e00d8042aa64df78c0695d9854290ae10d49fa;0302ebd0b6ceddf310e4618df5f4a849005d4119;674aa68da;9648d6fbc;quasar-core/src/main/java/co/paralleluniverse/fibers/Fiber.java;4

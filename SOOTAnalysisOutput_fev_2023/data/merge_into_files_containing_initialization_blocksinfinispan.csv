@@ -1,2 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; pathFilesWithIniTBlock;  qtd_static
-infinispan;43a34f11bc815e6bd01c0040289b3ded15be494f;0752d88e3690f37932343bb271869a82a95f9d3c;577ea319e2;b52dc93faf;core/src/main/java/org/infinispan/notifications/cachelistener/CacheNotifierImpl.java;1

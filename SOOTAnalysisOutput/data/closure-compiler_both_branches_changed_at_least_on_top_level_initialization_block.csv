@@ -1,3 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-closure-compiler;8d906faa04eb691ab6049e4e531c071f6f2383cf;d47792a61a3f395d3b758e3278f4a6ddf2f21e35;e5d77b2df;bf776ecbe;src/com/google/javascript/jscomp/DiagnosticGroups.java;4
-closure-compiler;0b32d5dc8043be1c761524a24295409574b52280;c17c3d76c42520b61fd82cf44e9d473fc7f72d09;06504e544;527867ea2;src/com/google/javascript/jscomp/DiagnosticGroups.java;6

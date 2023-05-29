@@ -1,6 +1,0 @@
-[#, project, merge commit, file, approach, timeStamp]
-1;Sentinel;465b44b7e7bbb55832806ab23516869437dbe69f;C:/UFPE/miningframework/SOOTAnalysisOutput/Sentinel/465b44b7e7bbb55832806ab23516869437dbe69f/com/alibaba/csp/sentinel/slots/block/flow/FlowRuleManager;InsertionLevelInitializationBlockHandler;0,62
-2;Sentinel;465b44b7e7bbb55832806ab23516869437dbe69f;C:/UFPE/miningframework/SOOTAnalysisOutput/Sentinel/465b44b7e7bbb55832806ab23516869437dbe69f/com/alibaba/csp/sentinel/slots/block/flow/FlowRuleManager;InsertionLevelInitializationBlockHandler;0,675
-3;Sentinel;465b44b7e7bbb55832806ab23516869437dbe69f;C:/UFPE/miningframework/SOOTAnalysisOutput/Sentinel/465b44b7e7bbb55832806ab23516869437dbe69f/com/alibaba/csp/sentinel/slots/block/flow/FlowRuleManager;InsertionLevelInitializationBlockHandler;0,654
-4;Sentinel;465b44b7e7bbb55832806ab23516869437dbe69f;C:/UFPE/miningframework/SOOTAnalysisOutput/Sentinel/465b44b7e7bbb55832806ab23516869437dbe69f/com/alibaba/csp/sentinel/slots/block/flow/FlowRuleManager;InsertionLevelInitializationBlockHandler;0,632
-5;Sentinel;465b44b7e7bbb55832806ab23516869437dbe69f;C:/UFPE/miningframework/SOOTAnalysisOutput/Sentinel/465b44b7e7bbb55832806ab23516869437dbe69f/com/alibaba/csp/sentinel/slots/block/flow/FlowRuleManager;InsertionLevelInitializationBlockHandler;0,62

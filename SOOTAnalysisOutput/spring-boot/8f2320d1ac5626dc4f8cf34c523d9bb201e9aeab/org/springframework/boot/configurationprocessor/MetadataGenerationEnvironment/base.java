@@ -1,1 +1,0 @@
-fatal: failed to stat '3651ba348d0fc8a88b04df286d2cb9c378cae6c3:spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/main/java/org/springframework/boot/configurationprocessor/MetadataGenerationEnvironment.java': Filename too long

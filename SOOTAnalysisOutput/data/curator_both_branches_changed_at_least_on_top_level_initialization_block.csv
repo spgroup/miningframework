@@ -1,3 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-curator;540cd28a33bccc6423765851631a02dcd974b89f;0ad09eb4657861fece9fa4c12c87991a710eaac1;f6451907;2342578f;curator-test/src/main/java/org/apache/curator/test/BaseClassForTests.java;2
-curator;d5d12c88b075fd1fc51a29412b3c08918cceb983;ef2ca578648e3ab8bf927ada169614011ec1ff2a;44ee8547;f0a09db4;curator-test/src/main/java/org/apache/curator/test/BaseClassForTests.java;2

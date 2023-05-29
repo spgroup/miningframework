@@ -1,3 +1,0 @@
-project; merge commit ;ancestorSHA; left; right; hasInitializationBlock;  qtd_static
-jOOQ;865e074ec513d4a6feb6659b95fd36776c5408f4;1edf32b460ac0bde2205f1f4d7836e7dfd6f02ed;e87fe0ff44;9ff3dfed5d;jOOQ/src/main/java/org/jooq/tools/Convert.java;2
-jOOQ;7261e582df7e3c414c862b234746ce1496e339cf;fee7cbc344f2d43a8f9baa3d7c01a7fde8e1703e;6b095aac37;67cfb48741;jOOQ/src/main/java/org/jooq/impl/Factory.java;4

@@ -30,5 +30,38 @@
    directory. (You can use a [mergedataset](https://github.com/spgroup/mergedataset) clone or link)
 3. Configure the analyzes you want to run in the `detectionAlgorithms` array in
    the [RunSootAnalysisOutputProcessor](./RunSootAnalysisOutputProcessor.groovy) class
-4. At the miningframework root, run the command `./gradlew run -DmainClass="services.outputProcessors.soot.Main"`
+4. At the miningframework root, run the command `./gradlew run -DmainClass="services.outputProcessors.soot.Main"
+   
+> The CLI has the following help page:
+```
+usage: ./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="[options]"
+Options:
+ -a,--allanalysis                        Excute all analysis
+ -cd,--cd                                Run cd
+ -cde,--cde                              Run cd-e
+ -cf,--dfp-confluence-intraprocedural    Run
+                                         dfp-confluence-intraprocedural
+ -df,--svfa-intraprocedural              Run svfa-intraprocedural
+ -dfp,--dfp-intra                        Run dfp-intra
+ -h,--help                               Show help for executing commands
+ -icf,--dfp-confluence-interprocedural   Run
+                                         dfp-confluence-interprocedural
+ -idf,--svfa-interprocedural             Run svfa-interprocedural
+ -idfp,--dfp-inter                       Run dfp-inter
+ -ioa,--overriding-interprocedural       Run overriding-interprocedural
+ -oa,--overriding-intraprocedural        Run overriding-intraprocedural
+ -pd,--pessimistic-dataflow              Run pessimistic-dataflow
+ -pdg,--pdg                              Run pdg
+ -pdge,--pdge                            Run pdg-e
+ -r,--reachability                       Run reachability
+ -report                                 Run report results for experiment using -icf -ioa -idfp -pdg
+ -t,--timeout <timeout>                  Run -t time: time limit for each analysis (default: 240)
+```
+
+For example: 
+```
+./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-icf -ioa -idfp -pdg"
+```
 5. The result will be written in `output/data/soot-results.csv`
+   
+6. The result for report analysis will be written in `output/data/results.pdf`

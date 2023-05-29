@@ -15,7 +15,7 @@ class ConflictDetectionAlgorithm {
 
     private String name;
     private String mode;
-    private Long timeout;
+    private long timeout;
     private SootAnalysisWrapper sootWrapper;
 
     ConflictDetectionAlgorithm(String name, String mode,  SootAnalysisWrapper sootWrapper) {
@@ -34,6 +34,10 @@ class ConflictDetectionAlgorithm {
 
     String getName() {
         return name
+    }
+
+    void setTimeout(long timeout) {
+        this.timeout = timeout
     }
 
     @Override
@@ -84,7 +88,7 @@ class ConflictDetectionAlgorithm {
         processOutputThread.start(); // start processing the output
 
         boolean executionCompleted = true;
-        if (timeout != null) {
+        if (timeout > 0) {
             // wait for the execution to end setting a timeout
             executionCompleted = sootProcess.waitFor(timeout, TimeUnit.SECONDS)
         }

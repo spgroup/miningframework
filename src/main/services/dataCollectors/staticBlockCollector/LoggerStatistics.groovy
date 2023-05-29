@@ -25,13 +25,25 @@ class LoggerStatistics {
     }
 
     static synchronized void updateSpreadsheet(Integer count, Project project, MergeCommit mergeCommit,Path fileName, String approach, String timeStamp){
-        File spreadsheet = Utils.getOutputPath().resolve(project.getName() + "_" + SPREADSHEET_NAME).toFile()
+        File spreadsheet = Utils.getOutputPath().resolve(project.getName() + "_" + approach + "_" + SPREADSHEET_NAME).toFile()
         if (!spreadsheet.exists()) {
             String headerLine = getSpreadsheetHeaderLogStatisticLine()
             appendLineToSpreadsheet(spreadsheet, headerLine)
         }
 
-        String newLine = "${count},${project.getName()},${mergeCommit.getSHA()},${fileName.toAbsolutePath().toString()},${approach},${timeStamp}"
+        String newLine = "${count};${project.getName()};${mergeCommit.getSHA()};${fileName.toAbsolutePath().toString()};${approach};${timeStamp}"
+        appendLineToSpreadsheet(spreadsheet, newLine)
+
+        createFileTimestampForHandler(project,approach,timeStamp)
+    }
+    private static synchronized void createFileTimestampForHandler( Project project, String approach, String timeStamp){
+        File spreadsheet = Utils.getOutputPath().resolve(approach + "_" + SPREADSHEET_NAME).toFile()
+        if (!spreadsheet.exists()) {
+            String headerLine = 'project;' + 'timeStamp'
+            appendLineToSpreadsheet(spreadsheet, headerLine)
+        }
+
+        String newLine = "${project.getName()};${timeStamp}"
         appendLineToSpreadsheet(spreadsheet, newLine)
     }
     private static String getSpreadsheetHeaderLogStatisticLine() {

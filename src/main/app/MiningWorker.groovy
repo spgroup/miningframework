@@ -1,5 +1,7 @@
 package app
 
+import services.dataCollectors.staticBlockCollector.SpreadsheetBuilder
+
 import java.text.SimpleDateFormat
 
 import static app.MiningFramework.arguments
@@ -43,17 +45,20 @@ class MiningWorker implements Runnable {
 
                 for (mergeCommit in mergeCommits) {
                         try {
+
                                 if (commitFilter.applyFilter(project, mergeCommit)) {
                                     println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
                                     runDataCollectors(project, mergeCommit)
                                 }
+
                         } catch (Exception e) {
                             println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
                             e.printStackTrace();
                         }
                    }
                 updateSkippedCommitsSpreadsheet(project, skipped)
+                updateSumaryStaticBlock(project)
 
                 if (arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
@@ -146,5 +151,9 @@ class MiningWorker implements Runnable {
         skipped.each { mergeCommit ->
             FileManager.appendLineToFile(spreadsheet, "${project.getName()},${mergeCommit}")
         }
+    }
+    private void updateSumaryStaticBlock(Project project){
+        SpreadsheetBuilder.sumaryFilesProjectsCollector(project)
+        print "Sumarized all Spreedsheet Static blocks\n"
     }
 }

@@ -81,7 +81,8 @@ class MergeSummary {
         Map<String, Path> mergeOutputPaths = [:]
         mergeOutputPaths["SimpleInitializationBlockHandler"] = getNewHandlerMergeOutputPath()
         mergeOutputPaths["InsertionLevelInitializationBlockHandler"] = getOldHandlerMergeOutputPath()
-         mergeOutputPaths["Actual"] = getActualMergeOutputPath()
+        mergeOutputPaths["GitMergeFile"] = getGitMergeFileOutputPath()
+        mergeOutputPaths["Actual"] = getActualMergeOutputPath()
 
         for (String strategy: MergesCollector.strategies) {
             String key = "${strategy}"
@@ -98,7 +99,9 @@ class MergeSummary {
     private Path getOldHandlerMergeOutputPath() {
         return this.filesQuadruplePath.resolve("SimpleInitializationBlockHandler")
     }
-
+    private Path getGitMergeFileOutputPath() {
+        return this.filesQuadruplePath.resolve("GitMergeFile." + MERGE_FILE_NAME)
+    }
     private Path getActualMergeOutputPath() {
         return this.filesQuadruplePath.resolve(MERGE_FILE_NAME)
     }
@@ -111,6 +114,9 @@ class MergeSummary {
     private String getMergeStrategyOutputFileName(String strategy) {
         if(strategy.equals('Actual')){
             return MERGE_FILE_NAME
+        }
+        if(strategy.equals('GitMergeFile')){
+            return "${strategy}." + MERGE_FILE_NAME
         }
         return "${strategy}.java"
     }
@@ -160,22 +166,25 @@ class MergeSummary {
     @Override
     String toString() {
         List<String> values = [ this.filesQuadruplePath.getFileName() ]
-        for (String approach: MergesCollector.mergeApproaches) {
-            if(approach !=null) {
-                if (this.numberOfConflictsPerApproach != null || this.numberOfConflictsPerApproach[approach] != null) {
-                    values.add(Integer.toString(this.numberOfConflictsPerApproach[approach]))
-                } else {
-                    values.add(Integer.valueOf(0).toString())
-                }
-            }
-        }
-        for (String approach: MergesCollector.mergeApproaches) {
-                if (this.numberOfConflictsPerInitializationBlockAndApproach != null || this.numberOfConflictsPerInitializationBlockAndApproach[approach] != null) {
-                    values.add(Integer.toString(this.numberOfConflictsPerInitializationBlockAndApproach[approach]))
-                } else {
-                    values.add(Integer.valueOf(0).toString())
-                }
-        }
+
+            for (String approach: MergesCollector.mergeApproaches) {
+                 if(approach !=null) {
+                     if (this.numberOfConflictsPerApproach[approach] != null) {
+                         int value = this.numberOfConflictsPerApproach[approach]
+                         values.add(Integer.toString(value))
+                     } else {
+                         values.add(Integer.valueOf(0).toString())
+                     }
+                 }
+             }
+
+       for (String approach: MergesCollector.mergeApproaches) {
+               if (this.numberOfConflictsPerInitializationBlockAndApproach[approach] != null) {
+                   values.add(Integer.toString(this.numberOfConflictsPerInitializationBlockAndApproach[approach]))
+               } else {
+                   values.add(Integer.valueOf(0).toString())
+               }
+       }
 
         for (int i = 0; i < MergesCollector.mergeApproaches.size(); i++) {
             String approach1 = MergesCollector.mergeApproaches[i]

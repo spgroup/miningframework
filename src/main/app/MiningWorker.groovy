@@ -1,5 +1,7 @@
 package app
 
+import services.dataCollectors.staticBlockCollector.SpreadsheetBuilder
+
 import java.text.SimpleDateFormat
 
 import static app.MiningFramework.arguments
@@ -40,20 +42,23 @@ class MiningWorker implements Runnable {
                 }
 
                 def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+
                 for (mergeCommit in mergeCommits) {
-                    try {
-                        if (commitFilter.applyFilter(project, mergeCommit)) {
-                            println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
+                        try {
 
-                            runDataCollectors(project, mergeCommit)
+                                if (commitFilter.applyFilter(project, mergeCommit)) {
+                                    println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
+
+                                    runDataCollectors(project, mergeCommit)
+                                }
+
+                        } catch (Exception e) {
+                            println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
-                        e.printStackTrace();
-                    }
-                }
-
+                   }
                 updateSkippedCommitsSpreadsheet(project, skipped)
+                updateSumaryStaticBlock(project)
 
                 if (arguments.isPushCommandActive()) // Will push.
                     pushResults(project, arguments.getResultsRemoteRepositoryURL())
@@ -110,7 +115,6 @@ class MiningWorker implements Runnable {
         project.setPath(target)
     }
 
-
     private void pushResults(Project project, String remoteRepositoryURL) {
         Project resultsRepository = new Project('', remoteRepositoryURL)
         String targetPath = "/resultsRepository"
@@ -147,5 +151,9 @@ class MiningWorker implements Runnable {
         skipped.each { mergeCommit ->
             FileManager.appendLineToFile(spreadsheet, "${project.getName()},${mergeCommit}")
         }
+    }
+    private void updateSumaryStaticBlock(Project project){
+        SpreadsheetBuilder.sumaryFilesProjectsCollector(project)
+        print "Sumarized all Spreedsheet Static blocks\n"
     }
 }

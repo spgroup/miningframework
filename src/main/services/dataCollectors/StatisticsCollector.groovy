@@ -153,7 +153,7 @@ class StatisticsCollector implements DataCollector {
                 long diff = parentDate.getTime() - ancestorDate.getTime()
                 numberOfDaysPassed[i] = Math.abs(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS))
             
-            } catch(IOException | ParseException e) {
+            } catch(IOException | NullPointerException | ParseException e) {
                 println e
             }
         }

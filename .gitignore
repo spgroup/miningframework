@@ -26,3 +26,7 @@ gradle-app.setting
 out.txt
 outConsole.txt
 time.txt
+
+resultTime*
+results_*
+execution-*

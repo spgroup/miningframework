@@ -24,7 +24,7 @@ okhttp;1151c9853ccc3c9c3211c613b9b845b925f8c6a6;com.squareup.okhttp.internal.byt
 okhttp;35166168529bd27281685e56a0a122eff44460e9;com.squareup.okhttp.OkHttpClient;copyWithDefaults();DeSouza;No
 HikariCP;1bca94af9ec625f21d1b58ff10efb5be71ab87a6;com.zaxxer.hikari.HikariConfig;validate();Roberto;Yes
 HikariCP;1bca94af9ec625f21d1b58ff10efb5be71ab87a6;com.zaxxer.hikari.HikariPool;addConnection();Mining;Yes
-pushy;58901c846e4f0874977c5aabbc34bcb4de3670e0;com.relayrides.pushy.apns.PushManager;handleConnectionFailure(ApnsConnection<T>, Throwable);Mining;-
+pushy;58901c846e4f0874977c5aabbc34bcb4de3670e0;com.relayrides.pushy.apns.PushManager;handleConnectionFailure(ApnsConnection<T>, Throwable);Mining;No
 pushy;58901c846e4f0874977c5aabbc34bcb4de3670e0;com.relayrides.pushy.apns.PushManager;handleConnectionClosure(ApnsConnection<T>);Guilherme;No
 java-faker;ca42fcfaf45cae1754c58e02e1d5d2a58ec03561;com.github.javafaker.Faker;Faker(Locale, Random);Guilherme;No
 swagger-core;e7fea7c4889dbdd6a4e0b2d059c8aa0f126ab1c2;io.swagger.jaxrs2.OperationParser;getSchemaFromAnnotation(io.swagger.oas.annotations.media.Schema);Guilherme;No
@@ -40,7 +40,7 @@ voldemort;b30fdfebe30c9b6e37b9fbc3fec0ff74cd19f997;voldemort.VoldemortClientShel
 voldemort;4cc1c145819030c8e2baffe4c92383de14b8d880;voldemort.server.VoldemortConfig;VoldemortConfig(Props);Roberto;No
 libgdx;da27e2dae56be0a159e82231e5c3a5b83b099063;com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;newWindow(ApplicationListener, Lwjgl3WindowConfiguration);DeSouza;No
 libgdx;da27e2dae56be0a159e82231e5c3a5b83b099063;com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;copy(Lwjgl3ApplicationConfiguration);DeSouza;No
-RxJava;a40a4130edcdadc2340da5787ca30353018173f2;rx.internal.operators.OperatorMulticast;connect(Action1<?superSubscription>);Roberto;-
+RxJava;a40a4130edcdadc2340da5787ca30353018173f2;rx.internal.operators.OperatorMulticast;connect(Action1<?superSubscription>);Roberto;No
 RxJava;1c47b0cb26e6d971eefa42ebb3479099236b0125;rx.concurrency.TestScheduler;triggerActions(long);DeSouza;No
 elasticsearch-river-mongodb;3d4f99516ba3177f7d88a1f600923138a8b77cc8;org.elasticsearch.river.mongodb.MongoDBRiverDefinition;parseSettings(String, String, RiverSettings, ScriptService);Roberto;No
 elasticsearch-river-mongodb;3d4f99516ba3177f7d88a1f600923138a8b77cc8;org.elasticsearch.river.mongodb.Slurper;assignCollections();Roberto;Yes
@@ -56,14 +56,14 @@ hector;213f7887ea70eabdf0705cf8454de29af89e8c38;me.prettyprint.cassandra.connect
 titan;387c16ea05ef9fa312f37139228d2bbf61455ff4;com.thinkaurelius.titan.graphdb.database.serialize.SerializerInitialization;initialize(Serializer);Roberto;No
 titan;04edd7f0e7eab2e8255a497922e34dc707d84c19;com.thinkaurelius.titan.graphdb.transaction.StandardTitanTx;StandardTitanTx(StandardTitanGraph, TransactionConfiguration, BackendTransaction);Roberto;No
 MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.fragments.SimpleFragment;generateScatterData(int, float, int);DeSouza;No
-MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.ScatterChartActivity;onProgressChanged(SeekBar, int, boolean);Mining;-
-MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.ScatterChartActivity;onCreate(Bundle);DeSouza;-
+MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.ScatterChartActivity;onProgressChanged(SeekBar, int, boolean);Mining;No
+MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.ScatterChartActivity;onCreate(Bundle);DeSouza;No
 MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.LineChartActivity2;onCreate(Bundle);DeSouza;No
-MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.RadarChartActivitry;onCreate(Bundle);DeSouza;-
-MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.StackedBarActivityNegative;onCreate(Bundle);DeSouza;-
-MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.LineChartActivity1;onCreate(Bundle);DeSouza;-
-MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.LineChartRenderer;drawData(Canvas);DeSouza;-
-MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.PieChartRenderer;drawData(Canvas);DeSouza;-
+MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.RadarChartActivitry;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.StackedBarActivityNegative;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.LineChartActivity1;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.LineChartRenderer;drawData(Canvas);DeSouza;Yes
+MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.PieChartRenderer;drawData(Canvas);DeSouza;Yes
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.common.settings.IndexScopedSettings;BUILT_IN_INDEX_SETTINGS;Mining;Yes
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.index.TransportIndexAction;executeIndexRequestOnPrimary(IndexRequest, IndexShard, MappingUpdatedAction);Mining;No
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.support.replication.ReplicationOperationTests;testReplication();Mining;No
@@ -94,7 +94,7 @@ elasticsearch;36884807b3cc9d660db4da062275c7fdbec8ba67;org.elasticsearch.index.q
 fitnesse;4d9ba9d221d879507440feb084fa7521b95111ec;fitnesse.testsystems.slim.tables.SlimTableFactoryTest;setUp();Roberto;Yes
 fitnesse;4d9ba9d221d879507440feb084fa7521b95111ec;fitnesse.testsystems.slim.tables.SlimTableFactory;SlimTableFactory();Roberto;Yes
 cloud-slang;20bac30d9bd76569aa6a4fa1e8261c1a9b5e6f76;io.cloudslang.lang.api.SlangImpl;getAllEventTypes();Leuson;Yes
-cloud-slang;20bac30d9bd76569aa6a4fa1e8261c1a9b5e6f76;io.cloudslang.lang.api.SlangImplTest;ALL_EVENTS_SIZE;Leuson;-
+cloud-slang;20bac30d9bd76569aa6a4fa1e8261c1a9b5e6f76;io.cloudslang.lang.api.SlangImplTest;ALL_EVENTS_SIZE;Leuson;Yes
 spring-boot;6664ce19d6f2388ebd6cf54763f54fdddd226b9a;org.springframework.boot.jta.atomikos.AtomikosProperties;asProperties();DeSouza;Yes
 spring-boot;6664ce19d6f2388ebd6cf54763f54fdddd226b9a;org.springframework.boot.jta.atomikos.AtomikosPropertiesTests;testProperties();Mining;Yes
 spring-boot;6664ce19d6f2388ebd6cf54763f54fdddd226b9a;org.springframework.boot.jta.atomikos.AtomikosPropertiesTests;testDefaultProperties();Mining;Yes

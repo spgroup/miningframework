@@ -62,8 +62,8 @@ MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpch
 MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.RadarChartActivitry;onCreate(Bundle);[59, 60, 61, 62];true;[];[72];[];
 MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.StackedBarActivityNegative;onCreate(Bundle);[64, 65];true;[];[];[];
 MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.LineChartActivity1;onCreate(Bundle);[135];true;[];[];[];
-MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.LineChartRenderer;drawData(Canvas);[];true;[];[];[];
-MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.PieChartRenderer;drawData(Canvas);[];true;[];[94];[];
+MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.LineChartRenderer;drawData(Canvas);[76, 77, 78];true;[];[76, 78];[];
+MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.PieChartRenderer;drawData(Canvas);[91, 92];true;[];[92, 94];[];
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.common.settings.IndexScopedSettings;BUILT_IN_INDEX_SETTINGS;[119, 120];true;[];[121];[];
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.index.TransportIndexAction;executeIndexRequestOnPrimary(IndexRequest, IndexShard, MappingUpdatedAction);[196];true;[];[201];[];
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.support.replication.ReplicationOperationTests;testReplication();[106, 108, 125, 126];true;[];[116, 103];[];

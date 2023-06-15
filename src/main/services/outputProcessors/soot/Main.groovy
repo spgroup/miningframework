@@ -8,7 +8,7 @@ import util.ProcessRunner
 
 class Main {
 
-    private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/generate_analysis_results.py"
+    private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/experiment_static_analysis/generate_analysis_results.py"
     private static final String SCRIPT_RUNNER = "python3"
 
     static main(args) {

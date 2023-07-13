@@ -10,7 +10,7 @@ if len(sys.argv) > 1:
 else:
     n = 10
 
-columnsFromExperiment = ["Config CF source", "Confluence source", "Config CF sink", "Confluence sink", "Config OA", "OA", "Config DFP left", "DFP left", "Config DFP right", "DFP right", "Config PDG left", "PDG left", "Config PDG right", "PDG right"]
+columnsFromExperiment = ["Config CF left-base", "Confluence left-base", "Config CF right-base", "Confluence right-base", "Config OA", "OA", "Config DFP left", "DFP left", "Config DFP right", "DFP right", "Config PDG left", "PDG left", "Config PDG right", "PDG right"]
 
 mapColumnsFromLogs = {0: "Configure Soot Confluence 1", 1: "Time to perform Confluence 1",
                       2: "Configure Soot Confluence 2", 3: "Time to perform Confluence 2",

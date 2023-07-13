@@ -72,6 +72,6 @@ def generatingSheetResultTime(id_exec):
     df = pd.DataFrame([aux_list])
     df.to_csv('resultTime-'+id_exec+'.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
 
-# generating csv times for n execution
+# generating a CSV file of times for the Nth execution
 for i in range(n):
     generatingSheetResultTime(str(i + 1))

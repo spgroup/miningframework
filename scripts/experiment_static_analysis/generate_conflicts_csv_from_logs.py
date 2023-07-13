@@ -51,7 +51,7 @@ def generatingSheetResultTime(id_exec):
                 df.to_csv('conflicts_log-'+id_exec+'.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
                 aux_list = ["0" for i in range(6)]
 
-            actual_line_split = actual_line.split(" [")
+            actual_line_split = actual_line.split(": [")
             actual_analysis = actual_line_split[0]
             actual_log = actual_line_split[1]
 

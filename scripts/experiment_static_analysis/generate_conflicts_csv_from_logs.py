@@ -53,13 +53,13 @@ def generatingSheetResultTime(id_exec):
 
             actual_line_split = actual_line.split(": [")
             actual_analysis = actual_line_split[0]
+            print(actual_line)
             actual_log = actual_line_split[1]
 
-            # print(actual_line_split)
             aux_pos = getValue(mapColumnsFromLogs, str(actual_analysis))
             actual_position = updateIfOccurred(aux_pos, aux_list)
 
-            if "]" in actual_log:
+            if len(actual_log) < 5:
                 aux_list[actual_position] = "[]"
             else:
                 aux_list[actual_position] = actual_log

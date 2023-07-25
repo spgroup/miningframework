@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# generate a csv file with the messages from the conflicts found by scenario and analysis
 
 import pandas as pd
 import sys

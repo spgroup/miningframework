@@ -10,67 +10,95 @@ if len(sys.argv) > 1:
 else:
     n = 10
 
-columnsFromExperiment = ["Config CF left-base", "Confluence left-base", "Config CF right-base", "Confluence right-base", "Config OA", "OA", "Config DFP left", "DFP left", "Config DFP right", "DFP right", "Config PDG left", "PDG left", "Config PDG right", "PDG right"]
 
-mapColumnsFromLogs = {0: "Configure Soot Confluence 1", 1: "Time to perform Confluence 1",
-                      2: "Configure Soot Confluence 2", 3: "Time to perform Confluence 2",
-                      4: "Configure Soot OA Inter", 5: "Time to perform OA Inter",
-                      6: "Configure Soot DFP", 7: "Time to perform DFP",
-                      8: "Configure Soot DFP", 9: "Time to perform DFP",
-                      10: "Configure Soot PDG", 11: "Time to perform PDG",
-                      12: "Configure Soot PDG", 13: "Time to perform PDG"}
+def menor_tamanho_chave(dicionario):
+    menor_chave = None
+    menor_tamanho = float('inf')  # Inicialmente, consideramos o tamanho infinito
 
-values_columns = []
-for (key, value) in mapColumnsFromLogs.items():
-    values_columns.append(value)
+    for chave, valor in dicionario.items():
+        if isinstance(valor, list) and len(valor) < menor_tamanho:
+            menor_chave = chave
+            menor_tamanho = len(valor)
 
-def getValue(mapCols, value):
-    for (key, val) in mapCols.items():
-        if (val in value):
-            return key
+    return menor_tamanho
+def chaves_com_tamanho_n(dicionario, tamanho):
+    chaves = []
+    for chave, valor in dicionario.items():
+        if isinstance(valor, list) and len(valor) > tamanho:
+            chaves.append(chave)
+    return chaves
 
-# there are columns with repeated names, we check if the first one has already been filled and
-# return the value of the next one to be filled
-def updateIfOccurred(pos, aux_list):
-    result_pos = pos
-    if (pos == 6 and aux_list[pos] != "0"): #if is the first dfp occurrence
-        result_pos = 8
-    if (pos == 7 and aux_list[pos] != "0"): #if is the second dfp occurrence
-        result_pos = 9
-    if (pos == 10 and aux_list[pos] != "0"): #if is the first pdg occurrence
-        result_pos = 12
-    if (pos == 11 and aux_list[pos] != "0"): #if is the secont pdg occurrence
-        result_pos = 13
-    return result_pos
+def adjusting_dict(dados_dict):
+    # Chave que voce deseja dividir
+    dicionario = dados_dict
+
+    len_dic = menor_tamanho_chave(dados_dict)
+
+    chaves = chaves_com_tamanho_n(dados_dict, len_dic)
+
+    for chave in chaves:
+        # Verifica se a chave existe no dicionario
+        if chave in dicionario:
+            # Obtem a lista de valores correspondente a chave
+            lista_valores = dicionario[chave]
+
+            # Verifica se a lista tem mais de len_dic elementos
+            if len(lista_valores) > len_dic:
+
+                # Divide a lista em duas partes
+                primeira_parte = lista_valores[::2]
+                segunda_parte = lista_valores[1::2]
+
+                # Cria duas novas chaves no dicionario com as partes divididas
+                dicionario[chave + ' left-right'] = primeira_parte
+                dicionario[chave + ' right-left'] = segunda_parte
+
+                # Exclui a chave antiga
+                del dicionario[chave]
+            else:
+                dicionario[chave] = lista_valores
+
+    # Exibe o dicionario atualizado
+    return dicionario
+
+
+def normalize_dict(dic):
+    # Encontre o tamanho maximo entre todas as listas
+    tamanho_maximo = max(len(valor) for valor in dic.values())
+
+    # Percorra as chaves do dicionario
+    for chave, valor in dic.items():
+        if isinstance(valor, list):
+            # Se a lista for menor que o tamanho maximo, preencha com zeros
+            while len(valor) < tamanho_maximo:
+                valor.append(0)
+
+    return dic
 
 # generating sheets with result time by id execution
 def generatingSheetResultTime(id_exec):
-    df = pd.DataFrame(columns = columnsFromExperiment)
+    df = pd.DataFrame()
     df.to_csv('resultTime-'+id_exec+'.csv', header=True, sep=';', mode='a', index=False, encoding='utf-8-sig')
 
+    dados_dict = {}
+
     with open("./output/results/execution-"+id_exec+"/time.txt") as infile:
-        aux_list = ["0" for i in range(14)]
-        count = 0
         for actual_line in infile:
-            #if there is a complete group, save in file
-            if count > 2 and "Configure Soot Confluence 1" in str(actual_line):
-                df = pd.DataFrame([aux_list])
-                df.to_csv('resultTime-'+id_exec+'.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
-                aux_list = ["0" for i in range(14)]
-                count = 0
+            partes = actual_line.strip().split(';')
+            if len(partes) == 2:
+                coluna, valor = partes[0].strip(), partes[1].strip().replace("s","")
+                if coluna in dados_dict:
+                    dados_dict[coluna].append(valor)
+                else:
+                    dados_dict[coluna] = [valor]
 
-            actual_value = [actual_line.replace(y, "").replace("s", "").replace(" ","") for y in values_columns if y in actual_line][0]
-            actual_value = actual_value.replace(",", ".")
+    aux_dic = adjusting_dict(dados_dict)
 
-            aux_pos = getValue(mapColumnsFromLogs, str(actual_line))
-            actual_position = updateIfOccurred(aux_pos, aux_list)
-
-            aux_list[actual_position] = actual_value
-            count = count + 1
+    final_dic = normalize_dict(aux_dic)
 
     #save the last group
-    df = pd.DataFrame([aux_list])
-    df.to_csv('resultTime-'+id_exec+'.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
+    df = pd.DataFrame(final_dic)
+    df.to_csv('resultTime-'+id_exec+'.csv', sep=';', index=False, encoding='utf-8-sig')
 
 # generating a CSV file of times for the Nth execution
 for i in range(n):

@@ -11,63 +11,100 @@ if len(sys.argv) > 1:
 else:
     n = 10
 
-columnsFromExperiment = ["Confluence", "OA", "DFP left", "DFP right", "PDG left", "PDG right"]
 
-mapColumnsFromLogs = {0: "Confluence", 1: "OA",
-                      2: "DFP", 3: "DFP",
-                      4: "PDG", 5: "PDG"}
+def menor_tamanho_chave(dicionario):
+    menor_chave = None
+    menor_tamanho = float('inf')  # Inicialmente, consideramos o tamanho infinito
 
-values_columns = []
-for (key, value) in mapColumnsFromLogs.items():
-    values_columns.append(value)
+    for chave, valor in dicionario.items():
+        if isinstance(valor, list) and len(valor) < menor_tamanho:
+            menor_chave = chave
+            menor_tamanho = len(valor)
 
-def getValue(mapCols, value):
-    for (key, val) in mapCols.items():
-        if (val in value):
-            return key
+    return menor_tamanho
+def chaves_com_tamanho_n(dicionario, tamanho):
+    chaves = []
+    for chave, valor in dicionario.items():
+        if isinstance(valor, list) and len(valor) > tamanho:
+            chaves.append(chave)
+    return chaves
 
-# there are columns with repeated names, we check if the first one has already been filled and
-# return the value of the next one to be filled
-def updateIfOccurred(pos, aux_list):
-    result_pos = pos
-    if (pos == 2 and aux_list[pos] != "0"): #if is the first dfp occurrence
-        result_pos = 3
-    if (pos == 4 and aux_list[pos] != "0"): #if is the secont pdg occurrence
-        result_pos = 5
-    return result_pos
+def adjusting_dict(dados_dict):
+    # Chave que você deseja dividir
+    dicionario = dados_dict
+
+    len_dic = menor_tamanho_chave(dados_dict)
+
+    chaves = chaves_com_tamanho_n(dados_dict, len_dic)
+
+    for chave in chaves:
+        # Verifica se a chave existe no dicionário
+        if chave in dicionario:
+            # Obtém a lista de valores correspondente à chave
+            lista_valores = dicionario[chave]
+
+            # Verifica se a lista tem mais de len_dic elementos
+            if len(lista_valores) > len_dic:
+
+                # Divide a lista em duas partes
+                primeira_parte = lista_valores[::2]
+                segunda_parte = lista_valores[1::2]
+
+                # Cria duas novas chaves no dicionário com as partes divididas
+                dicionario[chave + ' left-right'] = primeira_parte
+                dicionario[chave + ' right-left'] = segunda_parte
+
+                # Exclui a chave antiga
+                del dicionario[chave]
+            else:
+                dicionario[chave] = lista_valores
+
+    # Exibe o dicionário atualizado
+    return dicionario
+
+
+def normalize_dict(dic):
+    # Encontre o tamanho máximo entre todas as listas
+    tamanho_maximo = max(len(valor) for valor in dic.values())
+
+    # Percorra as chaves do dicionário
+    for chave, valor in dic.items():
+        if isinstance(valor, list):
+            # Se a lista for menor que o tamanho máximo, preencha com zeros
+            while len(valor) < tamanho_maximo:
+                valor.append(0)
+
+    return dic
 
 # generating sheets with result time by id execution
 def generatingSheetResultTime(id_exec):
-    df = pd.DataFrame(columns = columnsFromExperiment)
+    df = pd.DataFrame()
     df.to_csv('conflicts_log-'+id_exec+'.csv', header=True, sep=';', mode='a', index=False, encoding='utf-8-sig')
 
+    dados_dict = {}
+
     with open("./output/results/execution-"+id_exec+"/conflicts_log.txt") as infile:
-        aux_list = ["0" for i in range(6)]
-        actual_position = 0
 
         for actual_line in infile:
-            #if there is a complete group, save in file
-            if actual_position == 5:
-                df = pd.DataFrame([aux_list])
-                df.to_csv('conflicts_log-'+id_exec+'.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
-                aux_list = ["0" for i in range(6)]
 
-            actual_line_split = actual_line.split(": [")
-            actual_analysis = actual_line_split[0]
-            print(actual_line)
-            actual_log = actual_line_split[1]
+            partes = actual_line.strip().split('=>')
 
-            aux_pos = getValue(mapColumnsFromLogs, str(actual_analysis))
-            actual_position = updateIfOccurred(aux_pos, aux_list)
+            if len(partes) == 2:
+                coluna, valor = partes[0].strip(), partes[1].strip()
 
-            if len(actual_log) < 5:
-                aux_list[actual_position] = "[]"
-            else:
-                aux_list[actual_position] = actual_log
+                if coluna in dados_dict:
+                    dados_dict[coluna].append(valor)
+                else:
+                    dados_dict[coluna] = [valor]
+
+
+    aux_dic = adjusting_dict(dados_dict)
+
+    final_dic = normalize_dict(aux_dic)
 
     #save the last group
-    df = pd.DataFrame([aux_list])
-    df.to_csv('conflicts_log-'+id_exec+'.csv', header=False, sep=';', mode='a', index=False, encoding='utf-8-sig')
+    df = pd.DataFrame(final_dic)
+    df.to_csv('conflicts_log-'+id_exec+'.csv', sep=';', index=False, encoding='utf-8-sig')
 
 # generating a CSV file of conflicts for the Nth execution
 for i in range(n):

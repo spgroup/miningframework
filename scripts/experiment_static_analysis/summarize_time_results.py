@@ -114,7 +114,7 @@ class ResultAnalysis:
 			actual_sum = 0
 			list_aux_by_scenario = []
 			for i in range(self.n):
-				self.dataframes[i].iloc[j] = self.dataframes[i].iloc[j].replace(',', '.').astype(float)
+				self.dataframes[i].iloc[j] = self.dataframes[i].iloc[j].str.replace(',', '.').astype(float)
 				sum = self.dataframes[i].iloc[j].sum()
 				actual_sum = actual_sum + float(sum)
 				list_aux_by_scenario.append(sum)

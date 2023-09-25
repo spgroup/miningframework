@@ -114,10 +114,16 @@ class ResultAnalysis:
 			actual_sum = 0
 			list_aux_by_scenario = []
 			for i in range(self.n):
-				self.dataframes[i].iloc[j] = self.dataframes[i].iloc[j].replace(',', '.').astype(float)
-				sum = self.dataframes[i].iloc[j].sum()
-				actual_sum = actual_sum + float(sum)
-				list_aux_by_scenario.append(sum)
+				try:
+					self.dataframes[i].iloc[j] = self.dataframes[i].iloc[j].str.replace(',', '.').astype(float)
+
+					sum = self.dataframes[i].iloc[j].sum()
+					actual_sum = actual_sum + float(sum)
+					list_aux_by_scenario.append(sum)
+
+				except ValueError as e:
+					print(f"Error during conversion: {e}")
+
 			self.list_times = list_aux_by_scenario
 			values = self.calculate_stats_by_scenarios()
 			self.time_by_scenario.append(list_aux_by_scenario + values)

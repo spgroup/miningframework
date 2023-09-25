@@ -183,7 +183,14 @@ class Longest:
                 if values_elem not in self.mAcuracia:
                     self.mAcuracia.append(values_elem)
 
-            # Imprimir as métricas
+            best_combination_file.write(f"\n\nCombination: {values_elem}")
+            best_combination_file.write(f"\nPrecision: {precision:.2f}")
+            best_combination_file.write(f"\nRecall: {recall:.2f}")
+            best_combination_file.write(f"\nF1 Score: {f1_score:.2f}")
+            best_combination_file.write(f"\nAccuracy: {accuracy:.2f}")
+
+            # printing metrics
+            print("Values:", values_elem)
             print(f"Precision: {precision:.2f}")
             print(f"Recall: {recall:.2f}")
             print(f"F1 Score: {f1_score:.2f}")
@@ -197,12 +204,12 @@ class Longest:
             }
             return result_metrics
         else:
-            print("Não foi possível extrair todos os valores necessários: ", tp, fp, tn, fn)
+            print("It was not possible to extract all the necessary values: ", tp, fp, tn, fn)
 
         return None
 
 def sum_n_esimo_element(lista_de_listas, n):
-    return sum(float(sublista[n].replace(",", ".")) for sublista in lista_de_listas)
+    return sum(float(str(sublista[n]).replace(",", ".")) for sublista in lista_de_listas)
 
 def get_sum_all_list(all_list):
     return [sum_n_esimo_element(all_list, i) for i in range(len(all_list[0]))]
@@ -331,7 +338,6 @@ for i in combinations_list:
     analysis_combination.append(get_name_analysis(i))
 print(analysis_combination)
 
-
 # Lista dos elementos
 elements = analysis_name
 combinations_list = []
@@ -353,18 +359,30 @@ print(analysis_combination)
 #Escolhendo qual o melhor resultado com base no Algoritmo de comparação
 best = Longest()
 
-for first in analysis_combination:
-    print(first)      
-    r_first = calculate_matrix(first)
+best_combination_name = "../miningframework/output/results/best_combination_log.txt"
 
-    print("Combination:", count_fp_fn(r_first))
-    best.confusion_matrix(count_fp_fn(r_first), first)
-    print()
+# Abra o arquivo para escrita
+with open(best_combination_name, "w") as best_combination_file:
+    # Escreva os valores das variáveis no arquivo
 
-print(f"Precision: {best.maiorPrecision:.2f}", best.mPrecision)
-print(f"Recall: {best.maiorRecall:.2f}", best.mRecall)
-print(f"F1-score: {best.maiorF1:.2f}", best.mF1)
-print(f"Accuracy: {best.maiorAcuracia:.2f}", best.mAcuracia)
+    for first in analysis_combination:
+        print(first)
+        r_first = calculate_matrix(first)
+
+        print("Combination:", count_fp_fn(r_first))
+        best.confusion_matrix(count_fp_fn(r_first), first)
+        print()
+
+    best_combination_file.write("\n\nThe best:")
+    best_combination_file.write(f"\nPrecision: {best.maiorPrecision:.2f}, {best.mPrecision}\n")
+    best_combination_file.write(f"\nRecall: {best.maiorRecall:.2f}, {best.mRecall}\n")
+    best_combination_file.write(f"\nF1-score: {best.maiorF1:.2f}, {best.mF1}\n")
+    best_combination_file.write(f"\nAccuracy: {best.maiorAcuracia:.2f}, {best.mAcuracia}\n")
+
+    print(f"Precision: {best.maiorPrecision:.2f}", best.mPrecision)
+    print(f"Recall: {best.maiorRecall:.2f}", best.mRecall)
+    print(f"F1-score: {best.maiorF1:.2f}", best.mF1)
+    print(f"Accuracy: {best.maiorAcuracia:.2f}", best.mAcuracia)
 
 
 data = {
@@ -457,7 +475,6 @@ std_p = get_std_metric(best.mAcuracia, with_config)
 
 # out_accuracy = f"Mean: {mean_p}\nMedian: {median_p}\nSum: {sum_p}\nStandard: {std_p}\n"
 out_accuracy = [mean_p, median_p, std_p]
-print(out_accuracy)
 
 data = {
     'Metric': ['Precision', 'Recall', 'F1-score', 'Accuracy'],

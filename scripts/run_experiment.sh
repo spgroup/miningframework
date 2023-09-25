@@ -70,5 +70,5 @@ python3 scripts/experiment_static_analysis/check_diff_results_pdf.py $n
 mv diff_files.pdf output/results/
 
 # analyzing the best combination
-#python3 scripts/experiment_static_analysis/generate_best_combination.py
-#python3 scripts/experiment_static_analysis/generate_exclusive_table.py
+python3 scripts/experiment_static_analysis/generate_best_combination.py
+python3 scripts/experiment_static_analysis/generate_exclusive_table.py

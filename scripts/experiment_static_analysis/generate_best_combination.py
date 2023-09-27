@@ -183,12 +183,6 @@ class Longest:
                 if values_elem not in self.mAcuracia:
                     self.mAcuracia.append(values_elem)
 
-            best_combination_file.write(f"\n\nCombination: {values_elem}")
-            best_combination_file.write(f"\nPrecision: {precision:.2f}")
-            best_combination_file.write(f"\nRecall: {recall:.2f}")
-            best_combination_file.write(f"\nF1 Score: {f1_score:.2f}")
-            best_combination_file.write(f"\nAccuracy: {accuracy:.2f}")
-
             # printing metrics
             print("Values:", values_elem)
             print(f"Precision: {precision:.2f}")
@@ -370,8 +364,13 @@ with open(best_combination_name, "w") as best_combination_file:
         r_first = calculate_matrix(first)
 
         print("Combination:", count_fp_fn(r_first))
-        best.confusion_matrix(count_fp_fn(r_first), first)
-        print()
+        actual_combination = best.confusion_matrix(count_fp_fn(r_first), first)
+
+        best_combination_file.write(f"\n\nCombination: {first}")
+        best_combination_file.write(f"\nPrecision: {actual_combination['precision']:.2f}")
+        best_combination_file.write(f"\nRecall: {actual_combination['recall']:.2f}")
+        best_combination_file.write(f"\nF1 Score: {actual_combination['f1_score']:.2f}")
+        best_combination_file.write(f"\nAccuracy: {actual_combination['accuracy']:.2f}")
 
     best_combination_file.write("\n\nThe best:")
     best_combination_file.write(f"\nPrecision: {best.maiorPrecision:.2f}, {best.mPrecision}\n")
@@ -488,4 +487,57 @@ dframe = pd.DataFrame(data)
 nome_arquivo = "../miningframework/output/results/best_combinations_time.csv"
 
 dframe.to_csv(nome_arquivo, sep=';', index=False)
+
+best_lists = [best.mPrecision, best.mRecall, best.mF1, best.mAcuracia]
+
+merged_dict = {'Metrics': ['precision', 'recall', 'f1_score', 'accuracy']}
+
+for actual_best in best_lists:
+    size_list = min(len(l) for l in actual_best)
+    smaller_lists = [l for l in actual_best if len(l) == size_list]
+    for smaller in smaller_lists:
+
+        if smaller not in list(merged_dict.keys()):
+            m_smaller = calculate_matrix(smaller)
+
+            actual_dict = best.confusion_matrix(count_fp_fn(m_smaller), smaller)
+            l_aux = []
+            for m in merged_dict['Metrics']:
+                l_aux.append(format(actual_dict[m], '.2f'))
+
+            original_name = sum(get_reverse_name([smaller]), [])
+            key = ' or '.join(original_name)
+            merged_dict[key] = l_aux
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Dicionário de dados
+data = merged_dict
+
+# Criar um DataFrame a partir do dicionário
+df = pd.DataFrame(data)
+
+# Criar uma figura vazia
+fig, ax = plt.subplots(figsize=(10, 5))
+
+# Desativar os eixos
+ax.axis('off')
+
+# Criar uma tabela a partir do DataFrame
+table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
+
+# Adicionar um título à tabela
+
+plt.title("Analyses with best metrics", y=0.7)
+
+# Ajustar o layout da tabela
+table.auto_set_font_size(False)
+table.set_fontsize(12)
+table.scale(1.2, 1.2)
+
+# Ajustar o tamanho das colunas com base no texto
+table.auto_set_column_width([0, 1, 2, 3])
+
+# Salvar a tabela como um arquivo JPG
+plt.savefig('../miningframework/output/results/table_with_best_analyses.jpg', format='jpg', bbox_inches='tight', dpi=300)
 

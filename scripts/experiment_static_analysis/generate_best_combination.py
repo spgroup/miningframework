@@ -126,70 +126,70 @@ class Longest:
        
         # Calcular as métricas se todos os valores foram extraídos
         if tp is not None and fp is not None and tn is not None and fn is not None:
-            if tp != 0 and fp != 0:
+            if tp == 0 and fp == 0:
+                precision = '-'
+            else:
                 precision = tp / (tp + fp)
-            else:
-                precision = 0.0
 
-            if tp != 0 and fn != 0:
+            if tp == 0 and fn == 0:
+                recall = '-'
+            else:
                 recall = tp / (tp + fn)
-            else:
-                recall = 0.0
 
-            if precision != 0 and recall != 0:
+            if (precision == 0 and recall == 0) or (precision == '-' and recall == '-'):
+                f1_score = '-'
+            else:
                 f1_score = 2 * (precision * recall) / (precision + recall)
-            else:
-                f1_score = 0.0
 
-            if tp != 0 and tn != 0 and fp != 0 and fn != 0:
+            if (tp == 0 and tn == 0 and fp == 0 and fn == 0) or (tp == '-' and tn == '-' and fp == '-' and fn == '-'):
+                accuracy = '-'
+            else:
                 accuracy = (tp + tn) / (tp + tn + fp + fn)
-            else:
-                accuracy = 0.0
 
-            if (precision > self.maiorPrecision):
+            if (precision != '-' and precision > self.maiorPrecision):
                 self.maiorPrecision = precision
                 self.mPrecision = []
                 self.mPrecision.append(values_elem)
 
-            if (precision == self.maiorPrecision):
+            if (precision != '-' and precision == self.maiorPrecision):
                 if values_elem not in self.mPrecision:
                     self.mPrecision.append(values_elem)
-                
-            if (recall > self.maiorRecall):
+
+            if (recall != '-' and recall > self.maiorRecall):
                 self.maiorRecall = recall
                 self.mRecall = []
                 self.mRecall.append(values_elem)
 
-            if (recall == self.maiorRecall):
+            if (recall != '-' and recall == self.maiorRecall):
                 if values_elem not in self.mRecall:
                     self.mRecall.append(values_elem)
 
-                
-            if (f1_score > self.maiorF1):
+
+            if (f1_score != '-' and f1_score > self.maiorF1):
                 self.maiorF1 = f1_score
                 self.mF1 = []
                 self.mF1.append(values_elem)
 
-            if (f1_score == self.maiorF1):
+            if (f1_score != '-' and f1_score == self.maiorF1):
                 if values_elem not in self.mF1:
                     self.mF1.append(values_elem)
-            
-            if (accuracy > self.maiorAcuracia):            
+
+            if (accuracy != '-' and accuracy > self.maiorAcuracia):
                 self.maiorAcuracia = accuracy
                 self.mAcuracia = []
                 self.mAcuracia.append(values_elem)
 
-            if (accuracy == self.maiorAcuracia):
+            if (accuracy != '-' and accuracy == self.maiorAcuracia):
                 if values_elem not in self.mAcuracia:
                     self.mAcuracia.append(values_elem)
 
-            # printing metrics
-            print("Values:", values_elem)
-            print(f"Precision: {precision:.2f}")
-            print(f"Recall: {recall:.2f}")
-            print(f"F1 Score: {f1_score:.2f}")
-            print(f"Accuracy: {accuracy:.2f}")
-                
+            # Imprimir as métricas
+
+            print(f"Precision: {precision:.2f}" if isinstance(precision, (int, float)) else f"Accuracy: {precision}")
+            print(f"Recall: {recall:.2f}" if isinstance(recall, (int, float)) else f"Accuracy: {recall}")
+            print(f"F1 Score: {f1_score:.2f}" if isinstance(f1_score, (int, float)) else f"Accuracy: {f1_score}")
+            print(f"Accuracy: {accuracy:.2f}" if isinstance(accuracy, (int, float)) else f"Accuracy: {accuracy}")
+
             result_metrics = {
                 "precision": precision,
                 "recall": recall,
@@ -367,10 +367,10 @@ with open(best_combination_name, "w") as best_combination_file:
         actual_combination = best.confusion_matrix(count_fp_fn(r_first), first)
 
         best_combination_file.write(f"\n\nCombination: {first}")
-        best_combination_file.write(f"\nPrecision: {actual_combination['precision']:.2f}")
-        best_combination_file.write(f"\nRecall: {actual_combination['recall']:.2f}")
-        best_combination_file.write(f"\nF1 Score: {actual_combination['f1_score']:.2f}")
-        best_combination_file.write(f"\nAccuracy: {actual_combination['accuracy']:.2f}")
+        best_combination_file.write(f"Precision: {actual_combination['precision']:.2f}" if isinstance(actual_combination['precision'], (int, float)) else f"Accuracy: {actual_combination['precision']}")
+        best_combination_file.write(f"Recall: {actual_combination['recall']:.2f}" if isinstance(actual_combination['recall'], (int, float)) else f"Accuracy: {actual_combination['recall']}")
+        best_combination_file.write(f"F1 Score: {actual_combination['f1_score']:.2f}" if isinstance(actual_combination['f1_score'], (int, float)) else f"Accuracy: {actual_combination['f1_score']}")
+        best_combination_file.write(f"Accuracy: {actual_combination['accuracy']:.2f}" if isinstance(actual_combination['accuracy'], (int, float)) else f"Accuracy: {actual_combination['accuracy']}")
 
     best_combination_file.write("\n\nThe best:")
     best_combination_file.write(f"\nPrecision: {best.maiorPrecision:.2f}, {best.mPrecision}\n")

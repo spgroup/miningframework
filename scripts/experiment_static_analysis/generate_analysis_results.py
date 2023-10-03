@@ -90,16 +90,16 @@ class ReportAnalysis:
         pdf.cell(200, 10, txt = "Results for execution",
                  ln = 1, align = 'C')
 
-        pdf.cell(200, 10, txt = ("Precision: "+str(round(precision, 4))),
+        pdf.cell(200, 10, txt = ("Precision: "+str(round(precision, 2))),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("Recall: "+str(round(sensitivity, 4))),
+        pdf.cell(200, 10, txt = ("Recall: "+str(round(sensitivity, 2))),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("F1 Score: "+str(round(f1_score, 4))),
+        pdf.cell(200, 10, txt = ("F1 Score: "+str(round(f1_score, 2))),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("Accuracy: "+str(round(accuracy, 4))),
+        pdf.cell(200, 10, txt = ("Accuracy: "+str(round(accuracy, 2))),
                  ln = 2, align = 'L')
 
         pdf.cell(200, 10, txt = ("False Positives: "+str(FP)),

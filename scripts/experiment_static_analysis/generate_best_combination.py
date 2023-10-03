@@ -298,6 +298,14 @@ def get_name_analysis_time(list_name, config):
 
     return names
 
+def remove_nested_best(best_list) :
+    return [i for i in best_list if not any(all(item in i for item in j) for j in best_list if i != j)]
+
+def to_string_as_set(best_list):
+    tranformed_list_in_set = [set(sub_list) for sub_list in best_list]
+    result = ' '.join(map(str, tranformed_list_in_set))
+    return result
+
 def convert_list_to_tuple(out):
     result = []
     for index in range(len(out[0])):
@@ -313,7 +321,6 @@ analysis = [coluna for coluna in list_values if coluna not in remove_columns]
 
 left_right_analysis = list(set([x.replace("left right ", "") for x in analysis if "left right " in x]))
 analysis_name = list(set([x.replace("left right ", "").replace("right left ", "") for x in analysis]))
-
 
 # Lista dos elementos
 elements = analysis_name
@@ -373,24 +380,24 @@ with open(best_combination_name, "w") as best_combination_file:
         best_combination_file.write(f"Accuracy: {actual_combination['accuracy']:.2f}" if isinstance(actual_combination['accuracy'], (int, float)) else f"Accuracy: {actual_combination['accuracy']}")
 
     best_combination_file.write("\n\nThe best:")
-    best_combination_file.write(f"\nPrecision: {best.maiorPrecision:.2f}, {best.mPrecision}\n")
-    best_combination_file.write(f"\nRecall: {best.maiorRecall:.2f}, {best.mRecall}\n")
-    best_combination_file.write(f"\nF1-score: {best.maiorF1:.2f}, {best.mF1}\n")
-    best_combination_file.write(f"\nAccuracy: {best.maiorAcuracia:.2f}, {best.mAcuracia}\n")
+    best_combination_file.write(f"\nPrecision: {best.maiorPrecision:.2f}, {remove_nested_best(best.mPrecision)}\n")
+    best_combination_file.write(f"\nRecall: {best.maiorRecall:.2f}, {remove_nested_best(best.mRecall)}\n")
+    best_combination_file.write(f"\nF1-score: {best.maiorF1:.2f}, {remove_nested_best(best.mF1)}\n")
+    best_combination_file.write(f"\nAccuracy: {best.maiorAcuracia:.2f}, {remove_nested_best(best.mAcuracia)}\n")
 
-    print(f"Precision: {best.maiorPrecision:.2f}", best.mPrecision)
-    print(f"Recall: {best.maiorRecall:.2f}", best.mRecall)
-    print(f"F1-score: {best.maiorF1:.2f}", best.mF1)
-    print(f"Accuracy: {best.maiorAcuracia:.2f}", best.mAcuracia)
+    print(f"Precision: {best.maiorPrecision:.2f}", remove_nested_best(best.mPrecision))
+    print(f"Recall: {best.maiorRecall:.2f}", remove_nested_best(best.mRecall))
+    print(f"F1-score: {best.maiorF1:.2f}", remove_nested_best(best.mF1))
+    print(f"Accuracy: {best.maiorAcuracia:.2f}", remove_nested_best(best.mAcuracia))
 
 
 data = {
     'Metric': ['Precision', 'Recall', 'F1-score', 'Accuracy'],
     'Value': [round(best.maiorPrecision, 2), round(best.maiorRecall, 2), round(best.maiorF1, 2), round(best.maiorAcuracia, 2)],
-   'Analyses': [str(get_reverse_name(best.mPrecision))[:255], 
-                str(get_reverse_name(best.mRecall))[:255], 
-                str(get_reverse_name(best.mF1))[:255], 
-                str(get_reverse_name(best.mAcuracia))[:255]]
+   'Analyses': [str(to_string_as_set(get_reverse_name(remove_nested_best(best.mPrecision))))[:255],
+                str(to_string_as_set(get_reverse_name(remove_nested_best(best.mRecall))))[:255],
+                str(to_string_as_set(get_reverse_name(remove_nested_best(best.mF1))))[:255],
+                str(to_string_as_set(get_reverse_name(remove_nested_best(best.mAcuracia))))[:255]]
 }
 dframe = pd.DataFrame(data)
 
@@ -433,6 +440,11 @@ with_config = True
 
 colums = df_t.columns
 
+best.mPrecision = remove_nested_best(best.mPrecision)
+best.mRecall = remove_nested_best(best.mRecall)
+best.mF1 = remove_nested_best(best.mF1)
+best.mAcuracia = remove_nested_best(best.mAcuracia)
+
 print("Analyzing", best.mPrecision)
 mean_p = get_mean_metric(best.mPrecision, with_config)
 median_p = get_median_metric(best.mPrecision, with_config)
@@ -444,7 +456,7 @@ out_precision = [mean_p, median_p, std_p]
 
 print(out_precision)
 
-print("Analyzing", best.mRecall)
+print("Analyzing", remove_nested_best(best.mRecall))
 mean_p = get_mean_metric(best.mRecall, with_config)
 median_p = get_median_metric(best.mRecall, with_config)
 # sum_p = get_sum_metric(best.mRecall, with_config)
@@ -478,11 +490,30 @@ out_accuracy = [mean_p, median_p, std_p]
 data = {
     'Metric': ['Precision', 'Recall', 'F1-score', 'Accuracy'],
     'Value': [round(best.maiorPrecision, 2), round(best.maiorRecall, 2), round(best.maiorF1, 2), round(best.maiorAcuracia, 2)],
-    'Analyses': [get_reverse_name(best.mPrecision), get_reverse_name(best.mRecall), get_reverse_name(best.mF1), get_reverse_name(best.mAcuracia)],
+    'Analyses': [to_string_as_set(get_reverse_name(best.mPrecision)), to_string_as_set(get_reverse_name(best.mRecall)), to_string_as_set(get_reverse_name(best.mF1)), to_string_as_set(get_reverse_name(best.mAcuracia))],
     'Time (s) (mean, median, standard)': [convert_list_to_tuple(out_precision), convert_list_to_tuple(out_recall), convert_list_to_tuple(out_f1), convert_list_to_tuple(out_accuracy)]
 }
 
 dframe = pd.DataFrame(data)
+
+fig, ax = plt.subplots(figsize=(12, 4))
+ax.axis('tight')
+ax.axis('off')
+
+table = ax.table(cellText=dframe.values, colLabels=dframe.columns, cellLoc='center', loc='center')
+table.auto_set_font_size(False)
+table.set_fontsize(12)
+table.scale(1.2, 1.2)
+
+for i, col in enumerate(dframe.columns):
+    col_width = max([len(str(val)) for val in dframe[col]])
+    table.auto_set_column_width(i)
+    table.auto_set_column_width(col_width)
+
+plt.title("Result of the best combinations and time", y=0.8)
+
+plt.savefig('../miningframework/output/results/best_combinations_time.jpg', dpi=300, bbox_inches='tight', pad_inches=0.5)
+
 
 nome_arquivo = "../miningframework/output/results/best_combinations_time.csv"
 

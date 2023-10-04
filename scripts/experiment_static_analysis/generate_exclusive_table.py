@@ -1,12 +1,6 @@
 import pandas as pd
-import os
-import numpy as np
-import datetime
-import chardet
-import time
 from matplotlib import pyplot as plt
 from collections import Counter
-from itertools import combinations
 
 soot_results = pd.read_csv('../miningframework/output/results/execution-1/soot-results.csv', sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
 loi = pd.read_csv('../miningframework/input/LOI.csv', sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
@@ -60,7 +54,7 @@ def calculate_matrix(columns):
         actual_loi = get_loi(row['project'], row['class'], row['method'], row['merge commit'])
         or_value = any(value != 'false' for value in values)
         result = ""
-        # print("OR:", or_value, "LOI:", actual_loi)
+
         if or_value == True and actual_loi == 'Yes':
             result = "TRUE POSITIVE"
         elif or_value == False and actual_loi == 'No':
@@ -74,11 +68,9 @@ def calculate_matrix(columns):
     return results
 
 def count_fp_fn(list_result):
-    # Criar um contador dos elementos da lista
     element_count = Counter(list_result)
 
     result = []
-    # Imprimir a contagem de elementos repetidos
     for element, count in element_count.items():
         if count > 1:
             result.append((str(element)+": "+str(count)))
@@ -86,11 +78,10 @@ def count_fp_fn(list_result):
 
 def check_equals_all(val, dict, pos):
     result = False
-    for lista in dict.values():
-        if (lista[pos] in val):
+    for list_dict in dict.values():
+        if (list_dict[pos] in val):
             result = True 
     return result        
-
 
 def calculate_exclusive(data_dict, val):
     n = len(data_dict[next(iter(data_dict))])
@@ -103,7 +94,6 @@ def calculate_exclusive(data_dict, val):
             all_equals_val = check_equals_all(val, data_dict_exclude, i)
             if val in actual_item[i] and not all_equals_val:
                 cont = cont + 1
-                print(actual_key)
         final_dict[actual_key] = cont
     return final_dict
 
@@ -116,7 +106,7 @@ analysis = [coluna for coluna in list_values if coluna not in remove_columns]
 left_right_analysis = list(set([x.replace("left right ", "") for x in analysis if "left right " in x]))
 analysis_name = list(set([x.replace("left right ", "").replace("right left ", "") for x in analysis]))
 
-#Cálculo de TP e FP exclusivo para cada análise
+# calculation of TP (True Positives) and FP (False Positives) specific to each analysis.
 analysis_exclusive = []
 list_of_analysis = [[item] for item in analysis_name]
 
@@ -128,14 +118,9 @@ data_dict = {}
 for i in analysis_exclusive:
     data_dict[get_name(i)] = calculate_matrix(i) 
 
-print("Exclusive TP")
 res_tp = calculate_exclusive(data_dict, "TRUE POSITIVE")
-# print(res_tp)
 
-
-print("\nExclusive FP")
 res_fp = calculate_exclusive(data_dict, "FALSE POSITIVE")
-# print(res_fp)
 
 data = {
     'Analysis': res_tp.keys(),

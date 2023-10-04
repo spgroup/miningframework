@@ -1,16 +1,10 @@
 import pandas as pd
-import os
-import numpy as np
-import datetime
-import chardet
-import time
 from matplotlib import pyplot as plt
 from collections import Counter
 from itertools import combinations
 
 soot_results = pd.read_csv('../miningframework/output/results/execution-1/soot-results.csv', sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
 loi = pd.read_csv('../miningframework/input/LOI.csv', sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
-
 
 def get_loi(project, class_name,  method, merge_commit):
 
@@ -21,7 +15,6 @@ def get_loi(project, class_name,  method, merge_commit):
             value_LOI = loi.loc[filter_scenario, 'Locally Observable Interference'].values[0]
 
         return value_LOI
-
 
 def get_name_analysis(list_name):
     names = []
@@ -52,7 +45,7 @@ def calculate_matrix(columns):
         actual_loi = get_loi(row['project'], row['class'], row['method'], row['merge commit'])
         or_value = any(value != 'false' for value in values)
         result = ""
-        # print("OR:", or_value, "LOI:", actual_loi)
+
         if or_value == True and actual_loi == 'Yes':
             result = "TRUE POSITIVE"
         elif or_value == False and actual_loi == 'No':
@@ -66,54 +59,46 @@ def calculate_matrix(columns):
     return results
 
 def count_fp_fn(list_result):
-    # Criar um contador dos elementos da lista
     element_count = Counter(list_result)
-
     result = []
-    # Imprimir a contagem de elementos repetidos
     for element, count in element_count.items():
         if count > 1:
             result.append((str(element)+": "+str(count)))
     return result
 
 class Longest:
-    maiorPrecision = -1.0
-    maiorRecall = -1.0
-    maiorF1 = -1.0
-    maiorAcuracia = -1.0
-    mPrecision = []
-    mRecall = []
-    mF1 = []
-    mAcuracia = []
+    higher_precision_value = -1.0
+    higher_recall_value = -1.0
+    higher_F1_value = -1.0
+    higher_accuracy_value = -1.0
+    higher_precision_analyses_names = []
+    higher_recall_analyses_names = []
+    higher_F1_analyses_names = []
+    higher_accuracy_analyses_names = []
     mPrecision_t = []
     mRecall_t = []
     mF1_t = []
     mAcuracia_t = []
 
     def __init__(self):
-        self.maiorPrecision = -1.0
-        self.maiorRecall = -1.0
-        self.maiorF1 = -1.0
-        self.maiorAcuracia = -1.0
-        mPrecision = []
-        mRecall = []
-        mF1 = []
-        mAcuracia = []
-        mPrecision_t = []
-        mRecall_t = []
-        mF1_t = []
-        mAcuracia_t = []
+        self.higher_precision_value = -1.0
+        self.higher_recall_value = -1.0
+        self.higher_F1_value = -1.0
+        self.higher_accuracy_value = -1.0
+        self.higher_precision_analyses_names = []
+        self.higher_recall_analyses_names = []
+        self.higher_F1_analyses_names = []
+        self.higher_accuracy_analyses_names = []
+        self.mPrecision_t = []
+        self.mRecall_t = []
+        self.mF1_t = []
+        self.mAcuracia_t = []
 
 
     def confusion_matrix(self, options, values_elem):
 
-        # Inicializar as variáveis
-        tp = 0
-        fp = 0
-        tn = 0
-        fn = 0
-        
-        # Extrair os valores dos elementos da lista
+        tp, fp, tn, fn = 0, 0, 0, 0
+
         for option in options:
             if "TRUE POSITIVE" in option:
                 tp = int(option.split(': ')[1])
@@ -124,7 +109,7 @@ class Longest:
             elif "FALSE NEGATIVE" in option:
                 fn = int(option.split(': ')[1])
        
-        # Calcular as métricas se todos os valores foram extraídos
+        # Calculating metrics and values
         if tp is not None and fp is not None and tn is not None and fn is not None:
             if tp == 0 and fp == 0:
                 precision = '-'
@@ -146,44 +131,43 @@ class Longest:
             else:
                 accuracy = (tp + tn) / (tp + tn + fp + fn)
 
-            if (precision != '-' and precision > self.maiorPrecision):
-                self.maiorPrecision = precision
-                self.mPrecision = []
-                self.mPrecision.append(values_elem)
+            # selecting the best result based on the metrics
 
-            if (precision != '-' and precision == self.maiorPrecision):
-                if values_elem not in self.mPrecision:
-                    self.mPrecision.append(values_elem)
+            if precision != '-' and precision > self.higher_precision_value:
+                self.higher_precision_value = precision
+                self.higher_precision_analyses_names = []
+                self.higher_precision_analyses_names.append(values_elem)
 
-            if (recall != '-' and recall > self.maiorRecall):
-                self.maiorRecall = recall
-                self.mRecall = []
-                self.mRecall.append(values_elem)
+            if precision != '-' and precision == self.higher_precision_value:
+                if values_elem not in self.higher_precision_analyses_names:
+                    self.higher_precision_analyses_names.append(values_elem)
 
-            if (recall != '-' and recall == self.maiorRecall):
-                if values_elem not in self.mRecall:
-                    self.mRecall.append(values_elem)
+            if recall != '-' and recall > self.higher_recall_value:
+                self.higher_recall_value = recall
+                self.higher_recall_analyses_names = []
+                self.higher_recall_analyses_names.append(values_elem)
 
+            if recall != '-' and recall == self.higher_recall_value:
+                if values_elem not in self.higher_recall_analyses_names:
+                    self.higher_recall_analyses_names.append(values_elem)
 
-            if (f1_score != '-' and f1_score > self.maiorF1):
-                self.maiorF1 = f1_score
-                self.mF1 = []
-                self.mF1.append(values_elem)
+            if f1_score != '-' and f1_score > self.higher_F1_value:
+                self.higher_F1_value = f1_score
+                self.higher_F1_analyses_names = []
+                self.higher_F1_analyses_names.append(values_elem)
 
-            if (f1_score != '-' and f1_score == self.maiorF1):
-                if values_elem not in self.mF1:
-                    self.mF1.append(values_elem)
+            if f1_score != '-' and f1_score == self.higher_F1_value:
+                if values_elem not in self.higher_F1_analyses_names:
+                    self.higher_F1_analyses_names.append(values_elem)
 
-            if (accuracy != '-' and accuracy > self.maiorAcuracia):
-                self.maiorAcuracia = accuracy
-                self.mAcuracia = []
-                self.mAcuracia.append(values_elem)
+            if accuracy != '-' and accuracy > self.higher_accuracy_value:
+                self.higher_accuracy_value = accuracy
+                self.higher_accuracy_analyses_names = []
+                self.higher_accuracy_analyses_names.append(values_elem)
 
-            if (accuracy != '-' and accuracy == self.maiorAcuracia):
-                if values_elem not in self.mAcuracia:
-                    self.mAcuracia.append(values_elem)
-
-            # Imprimir as métricas
+            if accuracy != '-' and accuracy == self.higher_accuracy_value:
+                if values_elem not in self.higher_accuracy_analyses_names:
+                    self.higher_accuracy_analyses_names.append(values_elem)
 
             print(f"Precision: {precision:.2f}" if isinstance(precision, (int, float)) else f"Accuracy: {precision}")
             print(f"Recall: {recall:.2f}" if isinstance(recall, (int, float)) else f"Accuracy: {recall}")
@@ -202,8 +186,8 @@ class Longest:
 
         return None
 
-def sum_n_esimo_element(lista_de_listas, n):
-    return sum(float(str(sublista[n]).replace(",", ".")) for sublista in lista_de_listas)
+def sum_n_esimo_element(list_of_list, n):
+    return sum(float(str(sub_list[n]).replace(",", ".")) for sub_list in list_of_list)
 
 def get_sum_all_list(all_list):
     return [sum_n_esimo_element(all_list, i) for i in range(len(all_list[0]))]
@@ -266,7 +250,7 @@ def get_std_metric(metric, config):
 def get_name_analysis_time(list_name, config):
     names = []
     for i in list_name:
-        if ("Confluence" in i):
+        if "Confluence" in i:
             actual_name = i.replace("Confluence ", "Confluence 1 ")
             if config:
                 names.append("Configure Soot "+actual_name)
@@ -279,9 +263,9 @@ def get_name_analysis_time(list_name, config):
 
             names.append("Time to perform "+actual_name)
 
-        elif ("left right" in i):
+        elif "left right" in i:
             actual_name = i.replace("left right ", "")
-            if ("DF" in i):
+            if "DF" in i:
                 actual_name = actual_name.replace("-", " ")
             else:
                 actual_name = actual_name.replace("-", "")
@@ -291,7 +275,7 @@ def get_name_analysis_time(list_name, config):
                 names.append("Configure Soot "+actual_name+" right-left")
             names.append("Time to perform "+actual_name+" left-right")
             names.append("Time to perform "+actual_name+" right-left")
-        elif ("right left" not in str(i)):
+        elif "right left" not in str(i):
             if config:
                 names.append("Configure Soot "+i)
             names.append("Time to perform "+i)
@@ -325,83 +309,62 @@ analysis = [coluna for coluna in list_values if coluna not in remove_columns]
 left_right_analysis = list(set([x.replace("left right ", "") for x in analysis if "left right " in x]))
 analysis_name = list(set([x.replace("left right ", "").replace("right left ", "") for x in analysis]))
 
-# Lista dos elementos
+# list with the names of the executed analyses
 elements = analysis_name
 combinations_list = []
-# Gerar todas as combinações possíveis de 2 a 4 elementos sem repetições
+
+# generate all possible combinations of 2 to 4 elements without repetitions
 for length in range(1, len(elements) + 1):
     for combination in combinations(elements, length):
         combinations_list.append(list(combination))
 
-print(combinations_list)
-
-# gerando todas as combinações possíveis
-
+# returning the names of the combinations
 analysis_combination = []
 for i in combinations_list:
     analysis_combination.append(get_name_analysis(i))
-print(analysis_combination)
 
-# Lista dos elementos
-elements = analysis_name
-combinations_list = []
-# Gerar todas as combinações possíveis de 2 a 4 elementos sem repetições
-for length in range(1, len(elements) + 1):
-    for combination in combinations(elements, length):
-        combinations_list.append(list(combination))
-
-print(combinations_list)
-
-# gerando todas as combinações possíveis
-
-analysis_combination = []
-for i in combinations_list:
-    analysis_combination.append(get_name_analysis(i))
-print(analysis_combination)
-
-
-#Escolhendo qual o melhor resultado com base no Algoritmo de comparação
+# selecting the best result based on the Comparison Algorithm
 best = Longest()
 
 best_combination_name = "../miningframework/output/results/best_combination_log.txt"
 
-# Abra o arquivo para escrita
 with open(best_combination_name, "w") as best_combination_file:
-    # Escreva os valores das variáveis no arquivo
 
-    for first in analysis_combination:
-        print(first)
-        r_first = calculate_matrix(first)
+    for combination_value in analysis_combination:
 
-        print("Combination:", count_fp_fn(r_first))
-        actual_combination = best.confusion_matrix(count_fp_fn(r_first), first)
+        matrix_combination = calculate_matrix(combination_value)
 
-        best_combination_file.write(f"\n\nCombination: {first}")
-        best_combination_file.write(f"Precision: {actual_combination['precision']:.2f}" if isinstance(actual_combination['precision'], (int, float)) else f"Accuracy: {actual_combination['precision']}")
-        best_combination_file.write(f"Recall: {actual_combination['recall']:.2f}" if isinstance(actual_combination['recall'], (int, float)) else f"Accuracy: {actual_combination['recall']}")
-        best_combination_file.write(f"F1 Score: {actual_combination['f1_score']:.2f}" if isinstance(actual_combination['f1_score'], (int, float)) else f"Accuracy: {actual_combination['f1_score']}")
-        best_combination_file.write(f"Accuracy: {actual_combination['accuracy']:.2f}" if isinstance(actual_combination['accuracy'], (int, float)) else f"Accuracy: {actual_combination['accuracy']}")
+        print("Combination:", combination_value)
+        print(count_fp_fn(matrix_combination))
+        actual_combination = best.confusion_matrix(count_fp_fn(matrix_combination), combination_value)
+
+        best_combination_file.write(f"\n\nCombination: {combination_value}")
+        best_combination_file.write(f"\n\nConfusion Matrix: {count_fp_fn(matrix_combination)}")
+        best_combination_file.write(f"\nPrecision: {actual_combination['precision']:.2f}" if isinstance(actual_combination['precision'], (int, float)) else f"Accuracy: {actual_combination['precision']}")
+        best_combination_file.write(f"\nRecall: {actual_combination['recall']:.2f}" if isinstance(actual_combination['recall'], (int, float)) else f"Accuracy: {actual_combination['recall']}")
+        best_combination_file.write(f"\nF1 Score: {actual_combination['f1_score']:.2f}" if isinstance(actual_combination['f1_score'], (int, float)) else f"Accuracy: {actual_combination['f1_score']}")
+        best_combination_file.write(f"\nAccuracy: {actual_combination['accuracy']:.2f}" if isinstance(actual_combination['accuracy'], (int, float)) else f"Accuracy: {actual_combination['accuracy']}")
 
     best_combination_file.write("\n\nThe best:")
-    best_combination_file.write(f"\nPrecision: {best.maiorPrecision:.2f}, {remove_nested_best(best.mPrecision)}\n")
-    best_combination_file.write(f"\nRecall: {best.maiorRecall:.2f}, {remove_nested_best(best.mRecall)}\n")
-    best_combination_file.write(f"\nF1-score: {best.maiorF1:.2f}, {remove_nested_best(best.mF1)}\n")
-    best_combination_file.write(f"\nAccuracy: {best.maiorAcuracia:.2f}, {remove_nested_best(best.mAcuracia)}\n")
+    best_combination_file.write(f"\nPrecision: {best.higher_precision_value:.2f}, {remove_nested_best(best.higher_precision_analyses_names)}\n")
+    best_combination_file.write(f"\nRecall: {best.higher_recall_value:.2f}, {remove_nested_best(best.higher_recall_analyses_names)}\n")
+    best_combination_file.write(f"\nF1-score: {best.higher_F1_value:.2f}, {remove_nested_best(best.higher_F1_analyses_names)}\n")
+    best_combination_file.write(f"\nAccuracy: {best.higher_accuracy_value:.2f}, {remove_nested_best(best.higher_accuracy_analyses_names)}\n")
 
-    print(f"Precision: {best.maiorPrecision:.2f}", remove_nested_best(best.mPrecision))
-    print(f"Recall: {best.maiorRecall:.2f}", remove_nested_best(best.mRecall))
-    print(f"F1-score: {best.maiorF1:.2f}", remove_nested_best(best.mF1))
-    print(f"Accuracy: {best.maiorAcuracia:.2f}", remove_nested_best(best.mAcuracia))
-
+    print(f"Precision: {best.higher_precision_value:.2f}", remove_nested_best(best.higher_precision_analyses_names))
+    print(f"Recall: {best.higher_recall_value:.2f}", remove_nested_best(best.higher_recall_analyses_names))
+    print(f"F1-score: {best.higher_F1_value:.2f}", remove_nested_best(best.higher_F1_analyses_names))
+    print(f"Accuracy: {best.higher_accuracy_value:.2f}", remove_nested_best(best.higher_accuracy_analyses_names))
 
 data = {
     'Metric': ['Precision', 'Recall', 'F1-score', 'Accuracy'],
-    'Value': [round(best.maiorPrecision, 2), round(best.maiorRecall, 2), round(best.maiorF1, 2), round(best.maiorAcuracia, 2)],
-   'Analyses': [str(to_string_as_set(get_reverse_name(remove_nested_best(best.mPrecision))))[:255],
-                str(to_string_as_set(get_reverse_name(remove_nested_best(best.mRecall))))[:255],
-                str(to_string_as_set(get_reverse_name(remove_nested_best(best.mF1))))[:255],
-                str(to_string_as_set(get_reverse_name(remove_nested_best(best.mAcuracia))))[:255]]
+    'Value': [round(best.higher_precision_value, 2), round(best.higher_recall_value, 2), round(best.higher_F1_value, 2), round(best.higher_accuracy_value, 2)],
+   'Analyses': [str(to_string_as_set(get_reverse_name(remove_nested_best(best.higher_precision_analyses_names))))[:255],
+                str(to_string_as_set(get_reverse_name(remove_nested_best(best.higher_recall_analyses_names))))[:255],
+                str(to_string_as_set(get_reverse_name(remove_nested_best(best.higher_F1_analyses_names))))[:255],
+                str(to_string_as_set(get_reverse_name(remove_nested_best(best.higher_accuracy_analyses_names))))[:255]]
 }
+
 dframe = pd.DataFrame(data)
 
 fig, ax = plt.subplots(figsize=(12, 4))
@@ -424,11 +387,11 @@ plt.savefig('../miningframework/output/results/best_combinations.jpg', dpi=300, 
 
 data = {
     'Metric': ['Precision', 'Recall', 'F1-score', 'Accuracy'],
-    'Value': [round(best.maiorPrecision, 2), round(best.maiorRecall, 2), round(best.maiorF1, 2), round(best.maiorAcuracia, 2)],
-   'Analyses': [str(get_reverse_name(best.mPrecision)), 
-                str(get_reverse_name(best.mRecall)), 
-                str(get_reverse_name(best.mF1)), 
-                str(get_reverse_name(best.mAcuracia))]
+    'Value': [round(best.higher_precision_value, 2), round(best.higher_recall_value, 2), round(best.higher_F1_value, 2), round(best.higher_accuracy_value, 2)],
+    'Analyses': [str(get_reverse_name(best.higher_precision_analyses_names)),
+                 str(get_reverse_name(best.higher_recall_analyses_names)),
+                 str(get_reverse_name(best.higher_F1_analyses_names)),
+                 str(get_reverse_name(best.higher_accuracy_analyses_names))]
 }
 
 dframe = pd.DataFrame(data)
@@ -443,57 +406,51 @@ with_config = True
 
 colums = df_t.columns
 
-best.mPrecision = remove_nested_best(best.mPrecision)
-best.mRecall = remove_nested_best(best.mRecall)
-best.mF1 = remove_nested_best(best.mF1)
-best.mAcuracia = remove_nested_best(best.mAcuracia)
+best.higher_precision_analyses_names = remove_nested_best(best.higher_precision_analyses_names)
+best.higher_recall_analyses_names = remove_nested_best(best.higher_recall_analyses_names)
+best.higher_F1_analyses_names = remove_nested_best(best.higher_F1_analyses_names)
+best.higher_accuracy_analyses_names = remove_nested_best(best.higher_accuracy_analyses_names)
 
-print("Analyzing", best.mPrecision)
-mean_p = get_mean_metric(best.mPrecision, with_config)
-median_p = get_median_metric(best.mPrecision, with_config)
-# sum_p = get_sum_metric(best.mPrecision, with_config)
-std_p = get_std_metric(best.mPrecision, with_config)
+print("Analyzing", best.higher_precision_analyses_names)
+
+mean_p = get_mean_metric(best.higher_precision_analyses_names, with_config)
+median_p = get_median_metric(best.higher_precision_analyses_names, with_config)
+std_p = get_std_metric(best.higher_precision_analyses_names, with_config)
 
 # out_precision = f"Mean: {mean_p} Median: {median_p} Sum: {sum_p} Standard: {std_p}"
 out_precision = [mean_p, median_p, std_p]
 
-print(out_precision)
+print("Analyzing", best.higher_recall_analyses_names)
 
-print("Analyzing", remove_nested_best(best.mRecall))
-mean_p = get_mean_metric(best.mRecall, with_config)
-median_p = get_median_metric(best.mRecall, with_config)
-# sum_p = get_sum_metric(best.mRecall, with_config)
-std_p = get_std_metric(best.mRecall, with_config)
+mean_p = get_mean_metric(best.higher_recall_analyses_names, with_config)
+median_p = get_median_metric(best.higher_recall_analyses_names, with_config)
+std_p = get_std_metric(best.higher_recall_analyses_names, with_config)
 
 # out_recall = f"Mean: {mean_p} Median: {median_p} Sum: {sum_p} Standard: {std_p}"
 out_recall = [mean_p, median_p, std_p]
 
-print(out_recall)
+print("Analyzing", best.higher_F1_analyses_names)
 
-print("Analyzing", best.mF1)
-
-mean_p = get_mean_metric(best.mF1, with_config)
-median_p = get_median_metric(best.mF1, with_config)
-# sum_p = get_sum_metric(best.mF1, with_config)
-std_p = get_std_metric(best.mF1, with_config)
+mean_p = get_mean_metric(best.higher_F1_analyses_names, with_config)
+median_p = get_median_metric(best.higher_F1_analyses_names, with_config)
+std_p = get_std_metric(best.higher_F1_analyses_names, with_config)
 
 # out_f1 = f"Mean: {mean_p} Median: {median_p} Sum: {sum_p} Standard: {std_p}"
 out_f1 = [mean_p, median_p, std_p]
-print(out_f1)
 
-print("Analyzing", best.mAcuracia)
-mean_p = get_mean_metric(best.mAcuracia, with_config)
-median_p = get_median_metric(best.mAcuracia, with_config)
-# sum_p = get_sum_metric(best.mAcuracia, with_config)
-std_p = get_std_metric(best.mAcuracia, with_config)
+print("Analyzing", best.higher_accuracy_analyses_names)
+
+mean_p = get_mean_metric(best.higher_accuracy_analyses_names, with_config)
+median_p = get_median_metric(best.higher_accuracy_analyses_names, with_config)
+std_p = get_std_metric(best.higher_accuracy_analyses_names, with_config)
 
 # out_accuracy = f"Mean: {mean_p}\nMedian: {median_p}\nSum: {sum_p}\nStandard: {std_p}\n"
 out_accuracy = [mean_p, median_p, std_p]
 
 data = {
     'Metric': ['Precision', 'Recall', 'F1-score', 'Accuracy'],
-    'Value': [round(best.maiorPrecision, 2), round(best.maiorRecall, 2), round(best.maiorF1, 2), round(best.maiorAcuracia, 2)],
-    'Analyses': [to_string_as_set(get_reverse_name(best.mPrecision)), to_string_as_set(get_reverse_name(best.mRecall)), to_string_as_set(get_reverse_name(best.mF1)), to_string_as_set(get_reverse_name(best.mAcuracia))],
+    'Value': [round(best.higher_precision_value, 2), round(best.higher_recall_value, 2), round(best.higher_F1_value, 2), round(best.higher_accuracy_value, 2)],
+    'Analyses': [to_string_as_set(get_reverse_name(best.higher_precision_analyses_names)), to_string_as_set(get_reverse_name(best.higher_recall_analyses_names)), to_string_as_set(get_reverse_name(best.higher_F1_analyses_names)), to_string_as_set(get_reverse_name(best.higher_accuracy_analyses_names))],
     'Time (s) (mean, median, standard)': [convert_list_to_tuple(out_precision), convert_list_to_tuple(out_recall), convert_list_to_tuple(out_f1), convert_list_to_tuple(out_accuracy)]
 }
 
@@ -521,7 +478,7 @@ nome_arquivo = "../miningframework/output/results/best_combinations_time.csv"
 
 dframe.to_csv(nome_arquivo, sep=';', index=False)
 
-best_lists = [remove_nested_best(best.mPrecision), remove_nested_best(best.mRecall), remove_nested_best(best.mF1), remove_nested_best(best.mAcuracia)]
+best_lists = [remove_nested_best(best.higher_precision_analyses_names), remove_nested_best(best.higher_recall_analyses_names), remove_nested_best(best.higher_F1_analyses_names), remove_nested_best(best.higher_accuracy_analyses_names)]
 
 merged_dict = {'Metrics': ['precision', 'recall', 'f1_score', 'accuracy']}
 
@@ -538,36 +495,23 @@ for actual_best in best_lists:
             original_name = sum(get_reverse_name([smaller]), [])
             key = ' or '.join(original_name)
             merged_dict[key] = l_aux
-import pandas as pd
-import matplotlib.pyplot as plt
 
-# Dicionário de dados
 data = merged_dict
 
-# Criar um DataFrame a partir do dicionário
 df = pd.DataFrame(data)
 
-# Criar uma figura vazia
 fig, ax = plt.subplots(figsize=(10, 5))
 
-# Desativar os eixos
 ax.axis('off')
 
-# Criar uma tabela a partir do DataFrame
 table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
-
-# Adicionar um título à tabela
 
 plt.title("Analyses with best metrics", y=0.7)
 
-# Ajustar o layout da tabela
 table.auto_set_font_size(False)
 table.set_fontsize(12)
 table.scale(1.2, 1.2)
 
-# Ajustar o tamanho das colunas com base no texto
 table.auto_set_column_width(range(100))
 
-# Salvar a tabela como um arquivo JPG
 plt.savefig('../miningframework/output/results/table_with_best_analyses.jpg', format='jpg', bbox_inches='tight', dpi=300)
-

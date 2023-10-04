@@ -519,15 +519,12 @@ nome_arquivo = "../miningframework/output/results/best_combinations_time.csv"
 
 dframe.to_csv(nome_arquivo, sep=';', index=False)
 
-best_lists = [best.mPrecision, best.mRecall, best.mF1, best.mAcuracia]
+best_lists = [remove_nested_best(best.mPrecision), remove_nested_best(best.mRecall), remove_nested_best(best.mF1), remove_nested_best(best.mAcuracia)]
 
 merged_dict = {'Metrics': ['precision', 'recall', 'f1_score', 'accuracy']}
 
 for actual_best in best_lists:
-    size_list = min(len(l) for l in actual_best)
-    smaller_lists = [l for l in actual_best if len(l) == size_list]
-    for smaller in smaller_lists:
-
+    for smaller in actual_best:
         if smaller not in list(merged_dict.keys()):
             m_smaller = calculate_matrix(smaller)
 
@@ -567,7 +564,7 @@ table.set_fontsize(12)
 table.scale(1.2, 1.2)
 
 # Ajustar o tamanho das colunas com base no texto
-table.auto_set_column_width([0, 1, 2, 3])
+table.auto_set_column_width(range(100))
 
 # Salvar a tabela como um arquivo JPG
 plt.savefig('../miningframework/output/results/table_with_best_analyses.jpg', format='jpg', bbox_inches='tight', dpi=300)

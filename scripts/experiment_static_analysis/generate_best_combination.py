@@ -306,12 +306,15 @@ def to_string_as_set(best_list):
     result = ' '.join(map(str, tranformed_list_in_set))
     return result
 
+def concat_tuple(list_tuple):
+    return ' '.join([str(tuple) for tuple in list_tuple])
+
 def convert_list_to_tuple(out):
     result = []
     for index in range(len(out[0])):
         val = [x[index] for x in out]
         result.append(tuple(val))
-    return result
+    return concat_tuple(result)
 
 info_LOI = ['project', 'class', 'method', 'merge commit']
 
@@ -513,7 +516,6 @@ for i, col in enumerate(dframe.columns):
 plt.title("Result of the best combinations and time", y=0.8)
 
 plt.savefig('../miningframework/output/results/best_combinations_time.jpg', dpi=300, bbox_inches='tight', pad_inches=0.5)
-
 
 nome_arquivo = "../miningframework/output/results/best_combinations_time.csv"
 

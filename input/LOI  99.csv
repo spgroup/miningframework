@@ -1,0 +1,119 @@
+Project;Merge Commit;Class Name;Method or field declaration changed by the two merged branches;Original Sample;Locally Observable Interference
+antlr4;69ff2669eec265e25721dbc27cb00f6c381d0b41;org.antlr.v4.codegen.target.Python2Target;python2Keywords;Leuson;-
+antlr4;69ff2669eec265e25721dbc27cb00f6c381d0b41;org.antlr.v4.codegen.target.Python3Target;python3Keywords;Leuson;-
+druid;05168808c278c080c59c19e858d9471b316cd1f5;com.metamx.druid.loading.S3SegmentPusher;push(File, DataSegment);Roberto;No
+netty;193acdb36cd3da9bfc62dd69c4208dff3f0a2b1b;org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;decode(ChannelHandlerContext, Channel, ChannelBuffer);Roberto;Yes
+OpenTripPlanner;4c506dce43775704919d084f0acfba86d251bf4a;org.opentripplanner.routing.spt.MultiShortestPathTree;dominates(State, State);Roberto;Yes
+webbit;74d2d2b87704d003acacb34e4ca8fb5f897b938f;org.webbitserver.netty.WebSocketClient;adjustPipelineToWebSocket(ChannelHandlerContext, MessageEvent, ChannelHandler, ChannelHandler);Mining;No
+resty-gwt;867b917c43c32acbdcac55767e7f04334006c866;org.fusesource.restygwt.rebind.DirectRestServiceInterfaceClassCreator;getMethodCallback(JMethod);Guilherme;Yes
+storm;ad2be678831b3b060229fd936e3908110162b7ac;org.apache.storm.kafka.spout.KafkaSpout;open(Map, TopologyContext, SpoutOutputCollector);Mining;No
+storm;ad2be678831b3b060229fd936e3908110162b7ac;org.apache.storm.kafka.spout.KafkaSpoutConfig;KafkaSpoutConfig(Builder<K,V>);Mining;No
+storm;ad2be678831b3b060229fd936e3908110162b7ac;org.apache.storm.kafka.spout.KafkaSpoutConfig;toString();Leuson;Yes
+storm;bd1f5c54752f67b484a83c26667331234234d3a3;org.apache.storm.kafka.spout.KafkaSpout;emitTupleIfNotEmitted(ConsumerRecord<K,V>);Leuson;Yes
+swagger-maven-plugin;e825a7fdc6ef688f1253b93d2cb236e710acfc56;com.github.kongchen.swagger.docgen.reader.AbstractReader;hasValidAnnotations(List<Annotation>);Guilherme;-
+jsoup;a8b6982de98ff76ef254031d7152fff57f6bf941;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);Roberto;Yes
+jsoup;fee4762322f85a1109edd75ccb67f38cf5008c80;org.jsoup.helper.HttpConnection;createConnection(Connection.Request);Guilherme;No
+jsoup;3f7d2c71dbbbb289c684f339874eed8ac2747fa0;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);Roberto;Yes
+jsoup;a44e18aa3c1fcd25a68a5965f9490d8f7d026509;org.jsoup.nodes.TextNode;outerHtmlHead(StringBuilder, int, Document.OutputSettings);Roberto;Yes
+retrofit;2b6c719c6645f8e48dca6d0047c752069d321bc4;retrofit.RestAdapter;logAndReplaceResponse(String, Response, long);DeSouza;No
+retrofit;2b6c719c6645f8e48dca6d0047c752069d321bc4;retrofit.RestAdapter;logAndReplaceRequest(Request);DeSouza;Yes
+retrofit;71f622ce51031b152a0be6ad5facfb27a654bf5a;retrofit.RequestBuilder;build();Roberto;Yes
+activiti;50d8e43eb5917c63abfbcdec1e68e510943f325a;org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;deleteDeployment(String, boolean);Roberto;Yes
+activiti;bf46684ba62f5883673ea8fb0a14aecfe0aedea2;org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;execute(ActivityExecution);Roberto;Yes
+okhttp;1151c9853ccc3c9c3211c613b9b845b925f8c6a6;com.squareup.okhttp.internal.bytes.GzipSource;consumeHeader(Deadline);Roberto;No
+okhttp;35166168529bd27281685e56a0a122eff44460e9;com.squareup.okhttp.OkHttpClient;copyWithDefaults();DeSouza;No
+HikariCP;1bca94af9ec625f21d1b58ff10efb5be71ab87a6;com.zaxxer.hikari.HikariConfig;validate();Roberto;Yes
+HikariCP;1bca94af9ec625f21d1b58ff10efb5be71ab87a6;com.zaxxer.hikari.HikariPool;addConnection();Mining;Yes
+pushy;58901c846e4f0874977c5aabbc34bcb4de3670e0;com.relayrides.pushy.apns.PushManager;handleConnectionFailure(ApnsConnection<T>, Throwable);Mining;No
+pushy;58901c846e4f0874977c5aabbc34bcb4de3670e0;com.relayrides.pushy.apns.PushManager;handleConnectionClosure(ApnsConnection<T>);Guilherme;No
+java-faker;ca42fcfaf45cae1754c58e02e1d5d2a58ec03561;com.github.javafaker.Faker;Faker(Locale, Random);Guilherme;No
+swagger-core;e7fea7c4889dbdd6a4e0b2d059c8aa0f126ab1c2;io.swagger.jaxrs2.OperationParser;getSchemaFromAnnotation(io.swagger.oas.annotations.media.Schema);Guilherme;No
+cucumber-jvm;4505c156b6267c1b760deec570ddbfe047b42aa9;cuke4duke.internal.java.JavaLanguage;load(String);Roberto;No
+dropwizard;ddd15a681bf42360337844412cae4aba1556eb88;io.dropwizard.setup.Bootstrap;Bootstrap(Application<T>);Roberto;No
+jenkins;48b2b951dfb3438999ceda330093cac82b857ce6;jenkins.slaves.DefaultJnlpSlaveReceiver;handle(String, JnlpSlaveHandshake);Roberto;Yes
+logback;542843fd04a793fb9e0eea0c84d199e66d7c15af;ch.qos.logback.core.rolling.TimeBasedFileNamingAndTriggeringPolicyBase;start();Roberto;Yes
+orientdb;a5ce3bcc0a1d196745c575ad6602019f7a6b86f8;com.orientechnologies.orient.core.Orient;startup();Roberto;No
+SimianArmy;345ad9513aafff397050d613fa87ad06ddffe99d;com.netflix.simianarmy.basic.janitor.BasicJanitorMonkeyContext;getInstanceJanitor();Roberto;No
+SimianArmy;c39c19bc6b9231601f6bc7358e638a99adf37e0d;com.netflix.simianarmy.basic.BasicSimianArmyContext;BasicSimianArmyContext(String);Roberto;No
+alluxio;dafe76c90024a915224264b4862b33f40cb8478c;tachyon.hadoop.HdfsFileInputStream;HdfsFileInputStream(TachyonFS, int, Path, Configuration, int);Roberto;No
+voldemort;b30fdfebe30c9b6e37b9fbc3fec0ff74cd19f997;voldemort.VoldemortClientShell;VoldemortClientShell(ClientConfig, String, BufferedReader, PrintStream, PrintStream);Roberto;Yes
+voldemort;4cc1c145819030c8e2baffe4c92383de14b8d880;voldemort.server.VoldemortConfig;VoldemortConfig(Props);Roberto;No
+libgdx;da27e2dae56be0a159e82231e5c3a5b83b099063;com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;newWindow(ApplicationListener, Lwjgl3WindowConfiguration);DeSouza;No
+libgdx;da27e2dae56be0a159e82231e5c3a5b83b099063;com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;copy(Lwjgl3ApplicationConfiguration);DeSouza;No
+RxJava;a40a4130edcdadc2340da5787ca30353018173f2;rx.internal.operators.OperatorMulticast;connect(Action1<?superSubscription>);Roberto;No
+RxJava;1c47b0cb26e6d971eefa42ebb3479099236b0125;rx.concurrency.TestScheduler;triggerActions(long);DeSouza;No
+elasticsearch-river-mongodb;3d4f99516ba3177f7d88a1f600923138a8b77cc8;org.elasticsearch.river.mongodb.MongoDBRiverDefinition;parseSettings(String, String, RiverSettings, ScriptService);Roberto;No
+elasticsearch-river-mongodb;3d4f99516ba3177f7d88a1f600923138a8b77cc8;org.elasticsearch.river.mongodb.Slurper;assignCollections();Roberto;Yes
+elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.MongoDBRiverDefinition;parseSettings(String, String, RiverSettings, ScriptService);Roberto;No
+elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.Indexer;applyAdvancedTransformation(QueueEntry, String);Roberto;No
+elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.Indexer;processBlockingQueue(QueueEntry);Roberto;No
+elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.Slurper;run();Roberto;No
+elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.Slurper;addToStream(Operation, Timestamp<?>, DBObject, String);Roberto;Yes
+hector;0588608e7a2bdf974c985ff546207104f672bf6c;me.prettyprint.cassandra.connection.client.HSaslThriftClient;open();Roberto;Yes
+hector;a33a46506656a39d1b0f7780973905665d3b6145;me.prettyprint.cassandra.connection.client.HKerberosThriftClient;open();Roberto;Yes
+hector;a33a46506656a39d1b0f7780973905665d3b6145;me.prettyprint.cassandra.connection.client.HThriftClient;open();Roberto;Yes
+hector;213f7887ea70eabdf0705cf8454de29af89e8c38;me.prettyprint.cassandra.connection.HConnectionManager;operateWithFailover(Operation<?>);Roberto;No
+titan;387c16ea05ef9fa312f37139228d2bbf61455ff4;com.thinkaurelius.titan.graphdb.database.serialize.SerializerInitialization;initialize(Serializer);Roberto;No
+titan;04edd7f0e7eab2e8255a497922e34dc707d84c19;com.thinkaurelius.titan.graphdb.transaction.StandardTitanTx;StandardTitanTx(StandardTitanGraph, TransactionConfiguration, BackendTransaction);Roberto;No
+MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.fragments.SimpleFragment;generateScatterData(int, float, int);DeSouza;No
+MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.ScatterChartActivity;onProgressChanged(SeekBar, int, boolean);Mining;No
+MPAndroidChart;af114d180da6ec5633d32c701ff5467f7629fcf3;com.xxmassdeveloper.mpchartexample.ScatterChartActivity;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.LineChartActivity2;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.RadarChartActivitry;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.StackedBarActivityNegative;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9297923f09460d0484cd713b0abbeaea9b888ec0;com.xxmassdeveloper.mpchartexample.LineChartActivity1;onCreate(Bundle);DeSouza;No
+MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.LineChartRenderer;drawData(Canvas);DeSouza;Yes
+MPAndroidChart;9531ba69895cd64fce48038ffd8df2543eeea1d2;com.github.mikephil.charting.renderer.PieChartRenderer;drawData(Canvas);DeSouza;Yes
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.common.settings.IndexScopedSettings;BUILT_IN_INDEX_SETTINGS;Mining;-
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.index.TransportIndexAction;executeIndexRequestOnPrimary(IndexRequest, IndexShard, MappingUpdatedAction);Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.support.replication.ReplicationOperationTests;testReplication();Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.index.IndexSettings;IndexSettings(IndexMetaData, Settings, Predicate<String>, IndexScopedSettings);Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.bulk.TransportShardBulkAction;update(IndexMetaData, BulkShardRequest, IndexShard, long[], VersionType[], Translog.Location, int, BulkItemRequest);Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.support.replication.TransportReplicationAction;doRun();Mining;Yes
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.support.replication.ReplicationOperation;execute();Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.index.engine.InternalEngineTests;testRecoverFromForeignTranslog();Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.index.engine.InternalEngine;InternalEngine(EngineConfig);Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.DocWriteResponse;writeTo(StreamOutput);Mining;Yes
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.DocWriteResponse;readFrom(StreamInput);DeSouza;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.DocWriteResponse;toXContent(XContentBuilder, Params);DeSouza;Yes
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.cluster.metadata.MetaDataCreateIndexService;createIndex(CreateIndexClusterStateUpdateRequest, ActionListener<ClusterStateUpdateResponse>);Mining;Yes
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.update.TransportUpdateAction;shardOperation(UpdateRequest, ActionListener<UpdateResponse>, int);Mining;No
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.delete.TransportDeleteAction;executeDeleteRequestOnPrimary(DeleteRequest, IndexShard);Mining;No
+elasticsearch;3764b3ff800c94293aba0bb0fa18c7df80a764f7;org.elasticsearch.rest.action.cat.RestNodesAction;getTableWithHeader(RestRequest);DeSouza;No
+elasticsearch;3764b3ff800c94293aba0bb0fa18c7df80a764f7;org.elasticsearch.rest.action.cat.RestIndicesAction;getTableWithHeader(RestRequest);DeSouza;No
+elasticsearch;3764b3ff800c94293aba0bb0fa18c7df80a764f7;org.elasticsearch.rest.action.cat.RestShardsAction;getTableWithHeader(RestRequest);DeSouza;No
+elasticsearch;0404db65e3497452886173957729c8e82cfd4a03;org.elasticsearch.common.settings.ClusterSettings;BUILT_IN_CLUSTER_SETTINGS;Mining;-
+elasticsearch;0404db65e3497452886173957729c8e82cfd4a03;org.elasticsearch.test.ESSingleNodeTestCase;newNode();DeSouza;No
+elasticsearch;59cb67c7bd0ab6311115b20954e013412b676b29;org.elasticsearch.index.query.support.NestedInnerQueryParseSupport;setPathLevel();DeSouza;No
+elasticsearch;59cb67c7bd0ab6311115b20954e013412b676b29;org.elasticsearch.index.query.MultiMatchQueryBuilder;doXContent(XContentBuilder, Params);Mining;Yes
+elasticsearch;f3d63095dbcc985e24162fbac4ee0d6914dc757d;org.elasticsearch.index.analysis.synonyms.SynonymsAnalysisTest;testSynonymsAnalysis();DeSouza;No
+elasticsearch;f3d63095dbcc985e24162fbac4ee0d6914dc757d;org.elasticsearch.index.analysis.commongrams.CommonGramsTokenFilterFactoryTests;testQueryModeCommonGramsAnalysis();Mining;No
+elasticsearch;f3d63095dbcc985e24162fbac4ee0d6914dc757d;org.elasticsearch.index.analysis.commongrams.CommonGramsTokenFilterFactoryTests;testCommonGramsAnalysis();Mining;No
+elasticsearch;f3d63095dbcc985e24162fbac4ee0d6914dc757d;org.elasticsearch.index.analysis.KuromojiAnalysisTests;createAnalysisService();Mining;No
+elasticsearch;36884807b3cc9d660db4da062275c7fdbec8ba67;org.elasticsearch.index.query.SimpleIndexQueryParserTests;setup();DeSouza;No
+fitnesse;4d9ba9d221d879507440feb084fa7521b95111ec;fitnesse.testsystems.slim.tables.SlimTableFactoryTest;setUp();Roberto;Yes
+fitnesse;4d9ba9d221d879507440feb084fa7521b95111ec;fitnesse.testsystems.slim.tables.SlimTableFactory;SlimTableFactory();Roberto;Yes
+cloud-slang;20bac30d9bd76569aa6a4fa1e8261c1a9b5e6f76;io.cloudslang.lang.api.SlangImpl;getAllEventTypes();Leuson;Yes
+cloud-slang;20bac30d9bd76569aa6a4fa1e8261c1a9b5e6f76;io.cloudslang.lang.api.SlangImplTest;ALL_EVENTS_SIZE;Leuson;-
+spring-boot;6664ce19d6f2388ebd6cf54763f54fdddd226b9a;org.springframework.boot.jta.atomikos.AtomikosProperties;asProperties();DeSouza;-
+spring-boot;6664ce19d6f2388ebd6cf54763f54fdddd226b9a;org.springframework.boot.jta.atomikos.AtomikosPropertiesTests;testProperties();Mining;-
+spring-boot;6664ce19d6f2388ebd6cf54763f54fdddd226b9a;org.springframework.boot.jta.atomikos.AtomikosPropertiesTests;testDefaultProperties();Mining;-
+spring-boot;958a0a45f164601d01cb706c19f22ed3e25eff56;org.springframework.boot.autoconfigure.mongo.MongoProperties;builder(MongoClientOptions);DeSouza;No
+spring-boot;af20dc6cc45c032573413c401f9f73aa75371744;org.springframework.boot.loader.archive.ExplodedArchiveTests;getUrl();Mining;No
+spring-boot;af20dc6cc45c032573413c401f9f73aa75371744;org.springframework.boot.loader.archive.ExplodedArchive;getUrl();DeSouza;No
+spring-boot;c93ea54ea3e08eaa2a17640d5d2b3e60264c1a9c;org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration;cacheManager(RedisTemplate<Object,Object>);DeSouza;-
+spring-boot;ea8107b6a53fa60b5f23b33e1b6d2e88bb60133c;org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainerFactory;createDeploymentManager(ServletContextInitializer);DeSouza;No
+spring-boot;3444ebbc05b99a164474c14d6a6784f749514428;org.springframework.boot.context.web.SpringBootServletInitializer;createRootApplicationContext(ServletContext);DeSouza;No
+spring-boot;074771ec125dd407af0282b92960e9e9e3377e84;org.springframework.boot.context.web.SpringBootServletInitializer;createRootApplicationContext(ServletContext);DeSouza;No
+spring-boot;fdd3f12ee0f92ac18844c08bf71df39feebb6673;org.springframework.boot.autoconfigure.logging.AutoConfigurationReportLoggingInitializer;logAutoConfigurationReport(boolean);DeSouza;Yes
+spring-boot;2d4e68a9777601bfb8309c94d8b74bc21be80ad1;org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;customizeConnector(Connector);DeSouza;No
+quickml;bae968d9a85c0501ba8842a6f88e7fc2c6b78693;quickdt.experiments.OutOfTimeCrossValidatorRunner;getRandomForestBuilder(int, int);Guilherme;No
+vavr;204635d9156b498079c2f34b821dca7ca1711ef6;javaslang.collection.HashSet;of(T);Guilherme;-
+vavr;204635d9156b498079c2f34b821dca7ca1711ef6;javaslang.collection.LinkedHashSet;of(T);Guilherme;-
+vavr;204635d9156b498079c2f34b821dca7ca1711ef6;javaslang.collection.CharSeq;of(char);Guilherme;-
+vavr;204635d9156b498079c2f34b821dca7ca1711ef6;javaslang.collection.Iterator;of(T);Guilherme;-
+crawler4j;6fdb8f27b53c5d69b552341a459d0e1fa610f68d;edu.uci.ics.crawler4j.parser.Parser;parse(Page, String);Leuson;-
+eureka;6b09030e95e118a784ca7ec616398a4f0e384bcd;com.netflix.appinfo.ApplicationInfoManager;constructor();Roberto;-
+atmosphere;ffc0c6e274094c6423e29d1c45bab1593b8fac7d;org.atmosphere.cpr.AtmosphereConfig;constructor();Roberto;-
+elasticsearch;c1d44780675a9ff43e87a44f62969a0214928988;org.elasticsearch.action.IndexRequest;readFrom(StreamInput);DeSouza;-
+quickml;0d29fd9917e6e53993ea96798b84e945d17aa41e;quickdt.experiments.OutOfTimeCrossValidatorRunner;getRandomForest(int,int);Guilherme;-

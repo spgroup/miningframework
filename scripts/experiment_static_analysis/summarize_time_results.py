@@ -67,7 +67,7 @@ class ResultAnalysis:
 				continue
 
 			try:
-				df = pd.read_csv(file, sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
+				df = pd.read_csv(file, sep=';', encoding='utf-8', on_bad_lines='skip', low_memory=False)
 				self.dataframes.append(df)
 			except Exception as e:
 				print(f"Error to read file {file}: {str(e)}")
@@ -98,7 +98,6 @@ class ResultAnalysis:
 	def calculate_by_scenarios(self):
 		num_lines = self.dataframes[0].shape[0]
 		for i in range(self.n):
-			actual_sum = 0
 			list_sheets = []
 			for j in range(num_lines):
 				self.list_times = self.dataframes[i].iloc[j].values.tolist()
@@ -115,8 +114,19 @@ class ResultAnalysis:
 			actual_sum = 0
 			list_aux_by_scenario = []
 			for i in range(self.n):
-				actual_sum = actual_sum + float(self.dataframes[i].iloc[j].astype(float).sum())
-				list_aux_by_scenario.append(self.dataframes[i].iloc[j].astype(float).sum())
+
+				try:
+					# Replace comma with period and then convert to float
+					self.dataframes[i].iloc[j] = self.dataframes[i].iloc[j].str.replace(',', '').astype(float)
+				except AttributeError as e:
+					self.dataframes[i].iloc[j] = self.dataframes[i].iloc[j].replace(',', '').astype(float)
+				except ValueError as e:
+					print(f"ValueError during conversion: {e}")
+
+				sum = self.dataframes[i].iloc[j].sum()
+				actual_sum = actual_sum + float(sum)
+				list_aux_by_scenario.append(sum)
+
 			self.list_times = list_aux_by_scenario
 			values = self.calculate_stats_by_scenarios()
 			self.time_by_scenario.append(list_aux_by_scenario + values)
@@ -136,7 +146,8 @@ class ResultAnalysis:
 
 	# Sum the columns from files
 	def sum_columns_by_scenario(self):
-		total = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0, 11:0, 12:0, 13:0}
+		num_columns = self.dataframes[0].shape[1]
+		total = {i: 0 for i in range(num_columns)}
 		num_lines = self.dataframes[0].shape[0]
 
 		for i in range(self.n):

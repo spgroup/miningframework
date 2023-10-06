@@ -1,69 +1,76 @@
 import pandas as pd
 import numpy as np
 import itertools
-
+from collections import Counter
 from matplotlib import pyplot as plt
 from fpdf import FPDF
 
 class ReportAnalysis:
 
-    path_ground_truth = ''
-    ground_truth_name = ''
+    def __init__(self, path_result, path_ground_truth):
+        self.soot_results = pd.read_csv(path_result, sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
+        self.loi = pd.read_csv(path_ground_truth, sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
 
-    def __init__(self, path_ground_truth, ground_truth_name):
-        self.path_ground_truth = path_ground_truth
-        self.ground_truth_name = ground_truth_name
         self.generate_results()
 
-    @staticmethod
-    def generate_results():
-        FP = 0
-        TP = 0
-        FN = 0
-        TN = 0
+    def get_loi(self, project, class_name,  method, merge_commit):
 
-        print("Reading analyses execution results...")
-        soot_results = pd.read_csv('../miningframework/output/data/soot-results.csv', sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
+        filter_scenario = (self.loi['Project'] == str(project)) & (self.loi['Merge Commit'] == str(merge_commit)) & (self.loi['Class Name'] == str(class_name)) & (self.loi['Method or field declaration changed by the two merged branches'] == str(method))
+        value_LOI = ""
 
-        loi = pd.read_csv(path_ground_truth, sep=';', encoding='latin-1', on_bad_lines='skip', low_memory=False)
+        if filter_scenario.any():
+            value_LOI = self.loi.loc[filter_scenario, 'Locally Observable Interference'].values[0]
+
+        return value_LOI
+
+    def calculate_matrix_loi(self, columns):
+        results = []
+        info_LOI = ['project', 'class', 'method', 'merge commit']
+
+        for index, row in self.soot_results.iterrows():
+            list_values = self.soot_results.columns.tolist()
+            remove_columns = ['project', 'class', 'method', 'merge commit', 'Time']
+            list_values = [coluna for coluna in list_values if coluna not in remove_columns]
+            values = [row[column] for column in list_values]
+
+            values_LOI = [row[column] for column in info_LOI]
+
+            loi_actual = self.get_loi(*values_LOI)
+
+            or_value = any(str(value).lower() != 'false' for value in values)
+
+            result = ""
+            if or_value == True and loi_actual == 'Yes':
+                result = "TRUE POSITIVE"
+            elif or_value == False and loi_actual == 'No':
+                result = "TRUE NEGATIVE"
+            elif or_value == False and loi_actual == 'Yes':
+                result = "FALSE NEGATIVE"
+            elif or_value == True and loi_actual == 'No':
+                result = "FALSE POSITIVE"
+            results.append(result)
+        return results
+
+    def generate_results(self):
 
         print("Generating results...")
 
-        LOIGroundTruth = []
-        for (project, merge_commit, class_name, method, LOI) in zip(loi["Project"], loi["Merge Commit"], loi["Class Name"], loi["Method or field declaration changed by the two merged branches"], loi[ground_truth_name]):
-            LOIGroundTruth.append((project, merge_commit, class_name, method, LOI))
+        FP,TP, FN, TN = 0, 0, 0, 0
 
-        position = 0
-        for (project, class_name, method, merge_commit, confluence, OA, lrPDG, rlPDG, lrDP, rlDF) in zip(soot_results["project"],  soot_results["class"],  soot_results["method"],  soot_results["merge commit"], soot_results["Confluence Inter"], soot_results["OA Inter"], soot_results["left right PDG"], soot_results["right left PDG"], soot_results["left right DFP-Inter"], soot_results["right left DFP-Inter"]):
+        list_columns = self.soot_results.columns.tolist()
 
-            analysesORResult = False
-            error = False
-            list_results = [str(confluence).lower(), str(OA).lower(), str(lrPDG).lower(), str(rlPDG).lower(), str(lrDP).lower(), str(rlDF).lower()]
-            if ("true" == str(confluence).lower() or "true" == str(OA).lower() or "true" == str(lrPDG).lower() or "true" == str(rlPDG).lower() or "true" == str(lrDP).lower() or "true" == str(rlDF).lower()):
-                analysesORResult = True
-            elif ("false" in list_results):
-                analysesORResult = False
-            else:
-                error = True
+        result_matrix = self.calculate_matrix_loi(list_columns)
 
-            project_actual, merge_commit_actual, class_name_actual, method_actual, loi_actual = ("", "", "", "", "")
-            for (project_current, merge_commit_current, class_name_current, method_current, LOI_current) in LOIGroundTruth:
+        for elem, count in Counter(result_matrix).items():
+            if (elem == 'FALSE POSITIVE'):
+                FP = count
+            if (elem == 'FALSE NEGATIVE'):
+                FN = count
+            if (elem == 'TRUE POSITIVE'):
+                TP = count
+            if (elem == 'TRUE NEGATIVE'):
+                TN = count
 
-                if (project_current, merge_commit_current, class_name_current, method_current) == (project, merge_commit, class_name, method):
-                    project_actual, merge_commit_actual, class_name_actual, method_actual, loi_actual = project_current, merge_commit_current, class_name_current, method_current, LOI_current
-            if (loi_actual != "-" and not error and project_actual == project and merge_commit_actual == merge_commit):
-                if (loi_actual == "No"):
-                    if (analysesORResult):
-                        FP = FP + 1
-                    else:
-                        TN = TN + 1
-
-                if (loi_actual == "Yes"):
-                    if (analysesORResult):
-                        TP = TP + 1
-                    else:
-                        FN = FN + 1
-            position = position + 1
         sensitivity = 0 if ((TP + FN) == 0) else (TP / (TP + FN))
         precision = 0 if ((TP + FP) == 0) else (TP / (TP + FP))
         f1_score = 0 if ((2*TP + FP + FN) == 0) else (2*TP / (2*TP + FP + FN))
@@ -83,16 +90,16 @@ class ReportAnalysis:
         pdf.cell(200, 10, txt = "Results for execution",
                  ln = 1, align = 'C')
 
-        pdf.cell(200, 10, txt = ("Precision: "+str(round(precision, 4))),
+        pdf.cell(200, 10, txt = ("Precision: "+str(round(precision, 2))),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("Recall: "+str(round(sensitivity, 4))),
+        pdf.cell(200, 10, txt = ("Recall: "+str(round(sensitivity, 2))),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("F1 Score: "+str(round(f1_score, 4))),
+        pdf.cell(200, 10, txt = ("F1 Score: "+str(round(f1_score, 2))),
                  ln = 2, align = 'L')
 
-        pdf.cell(200, 10, txt = ("Accuracy: "+str(round(accuracy, 4))),
+        pdf.cell(200, 10, txt = ("Accuracy: "+str(round(accuracy, 2))),
                  ln = 2, align = 'L')
 
         pdf.cell(200, 10, txt = ("False Positives: "+str(FP)),
@@ -146,9 +153,16 @@ class ReportAnalysis:
 
         # Save the pdf with name .pdf
         pdf.output("output/data/results.pdf")
+        # pdf.output("results.pdf")
+
         print("Results in output/data/results.pdf")
 
 path_ground_truth = "../miningframework/input/LOI.csv"
-ground_truth_name = "Locally Observable Interference"
+path_result = '../miningframework/output/data/soot-results.csv'
+# path_ground_truth = "LOI.csv"
+# path_result = 'soot-results.csv'
 
-ReportAnalysis(path_ground_truth, ground_truth_name)
+print("Reading analyses execution results...")
+
+ReportAnalysis(path_result, path_ground_truth)
+

@@ -56,6 +56,7 @@ Options:
  -r,--reachability                       Run reachability
  -report                                 Run report results for experiment using -icf -ioa -idfp -pdg
  -t,--timeout <timeout>                  Run -t time: time limit for each analysis (default: 240)
+ -printDepthSVFA                         Print depth in SVFA analysis
 ```
 
 For example: 

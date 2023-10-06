@@ -62,7 +62,7 @@ def count_fp_fn(list_result):
     element_count = Counter(list_result)
     result = []
     for element, count in element_count.items():
-        if count > 1:
+        if count > 0:
             result.append((str(element)+": "+str(count)))
     return result
 

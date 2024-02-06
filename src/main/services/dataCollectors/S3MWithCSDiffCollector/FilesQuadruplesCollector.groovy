@@ -18,10 +18,10 @@ class FilesQuadruplesCollector {
 
     static List<Path> collectFilesQuadruples(Project project, MergeCommit mergeCommit) {
         String commitSHA = mergeCommit.getLeftSHA()
-        List<String> leftFilePaths = MutuallyModifiedFilesCommitFilter.getModifiedJavaFilePaths(project, mergeCommit, commitSHA)
+        List<String> leftFilePaths = MutuallyModifiedFilesCommitFilter.getModifiedFilePaths(project, mergeCommit, commitSHA)
 
         commitSHA = mergeCommit.getRightSHA()
-        List<String> rightFilePaths = MutuallyModifiedFilesCommitFilter.getModifiedJavaFilePaths(project, mergeCommit, commitSHA)
+        List<String> rightFilePaths = MutuallyModifiedFilesCommitFilter.getModifiedFilePaths(project, mergeCommit, commitSHA)
 
         List<String> mutuallyModifiedFilePaths = leftFilePaths.intersect(rightFilePaths)
         return mutuallyModifiedFilePaths.stream()

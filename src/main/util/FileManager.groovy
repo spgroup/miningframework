@@ -22,6 +22,18 @@ final class FileManager {
         return modifiedFiles
     }
 
+    public static Set<String> getModifiedFiles(Project project, String childSHA, String ancestorSHA, String fileExtension) {
+        Set<String> modifiedFiles = new HashSet<String>()
+        
+        Process gitDiff = ProcessRunner.runProcess(project.getPath(), 'git', 'diff', '--name-only', childSHA, ancestorSHA)
+        gitDiff.getInputStream().eachLine {
+            if(it.endsWith(fileExtension))
+                modifiedFiles.add(it)
+        }
+
+        return modifiedFiles
+    }
+
     public static Set<String> getModifiedFilesLocalOption(Project project, String pathCommitOne, String pathCommitTwo) {
         def command = "diff -qr "+pathCommitOne+" "+pathCommitTwo
         def proc = command.execute()

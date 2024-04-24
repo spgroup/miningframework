@@ -18,7 +18,11 @@ import static app.MiningFramework.arguments
 class ModifiedLinesCollector extends ModifiedLinesCollectorAbstract {
 
     public ModifiedLinesCollector() {
-        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar");
+        this("dependencies");
+    }
+
+    public ModifiedLinesCollector(String dependenciesPath) {
+        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar", dependenciesPath);
     }
 
     void collectData(Project project, MergeCommit mergeCommit) {

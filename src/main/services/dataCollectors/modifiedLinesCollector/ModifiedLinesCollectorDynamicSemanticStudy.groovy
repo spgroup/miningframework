@@ -22,7 +22,11 @@ class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorA
     protected String localPathRevisions = ""
 
     public ModifiedLinesCollectorDynamicSemanticStudy() {
-        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj-method-return-info.jar");
+        this("dependencies");
+    }
+
+    public ModifiedLinesCollectorDynamicSemanticStudy(String dependenciesPath) {
+        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj-method-return-info.jar", dependenciesPath);
     }
 
     void collectData(Project project, MergeCommit mergeCommit) {

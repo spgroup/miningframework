@@ -14,12 +14,18 @@ import util.ProcessRunner
 class ModifiedMethodsHelper {
     
     private String diffJOption;
+    private String dependenciesPath;
     private TextualDiffParser textualDiffParser = new TextualDiffParser();
     private DiffJParser modifiedMethodsParser = new DiffJParser();
     private MethodModifiedLinesMatcher modifiedMethodsMatcher = new MethodModifiedLinesMatcher();
 
     public ModifiedMethodsHelper(String diffj) {
-        this.diffJOption = diffj
+        this(diffj, "dependencies");
+    }
+
+    public ModifiedMethodsHelper(String diffj, String dependenciesPath) {
+        this.diffJOption = diffj;
+        this.dependenciesPath = dependenciesPath;
     }
 
     public Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
@@ -39,7 +45,7 @@ class ModifiedMethodsHelper {
     }
 
     private List<String> runDiffJ(File ancestorFile, File targetFile) {
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
+        Process diffJ = ProcessRunner.runProcess(this.dependenciesPath, 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
         def output = reader.readLines()
         reader.close()

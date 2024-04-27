@@ -14,15 +14,24 @@ import util.ProcessRunner
 class ModifiedMethodsHelper {
     
     private String diffJOption;
-    private String dependenciesPath;
+    private String dependenciesPath; // Path to the folder containing the DiffJ executable
     private TextualDiffParser textualDiffParser = new TextualDiffParser();
     private DiffJParser modifiedMethodsParser = new DiffJParser();
     private MethodModifiedLinesMatcher modifiedMethodsMatcher = new MethodModifiedLinesMatcher();
 
+    /**
+     * Assumes the path to diffj as the 'dependencies' directory in the root of the project.
+     * @param diffj Represents the diffJ file name.
+     */
     public ModifiedMethodsHelper(String diffj) {
         this(diffj, "dependencies");
     }
 
+    /**
+     * Receives the path to diffj as a parameter, in cases where the class is used as a library.
+     * @param diffj Represents the diffJ file name.
+     * @param dependenciesPath The path to the folder containing the DiffJ executable.
+     */
     public ModifiedMethodsHelper(String diffj, String dependenciesPath) {
         this.diffJOption = diffj;
         this.dependenciesPath = dependenciesPath;

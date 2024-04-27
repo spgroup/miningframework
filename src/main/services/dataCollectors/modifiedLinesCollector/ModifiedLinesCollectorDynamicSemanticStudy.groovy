@@ -13,7 +13,8 @@ import static app.MiningFramework.arguments
 
 
 /**
- * @requires: that a diffj cli is in the dependencies folder and that diff (textual diff tool) is installed
+ * @requires: that a diffj cli is in the dependencies folder (or that the path to the diffj cli is provided)
+              and that diff (textual diff tool) is installed
  * @provides: a [outputPath]/data/results.csv file with the following format:
  * project;merge commit;left commit;right commit;base commit;className;method;empty_diff_base_left;empty_diff_base_right;empty_diff_base_merge
  */
@@ -21,10 +22,18 @@ class ModifiedLinesCollectorDynamicSemanticStudy extends ModifiedLinesCollectorA
     
     protected String localPathRevisions = ""
 
+    /**
+     * Default constructor.
+     * Assumes the path to diffj as the 'dependencies' directory in the root of the project.
+     */
     public ModifiedLinesCollectorDynamicSemanticStudy() {
         this("dependencies");
     }
 
+    /**
+     * Receives the path to diffj as a parameter, in cases where the class is used as a library.
+     * @param dependenciesPath The path to the folder containing the DiffJ executable.
+     */
     public ModifiedLinesCollectorDynamicSemanticStudy(String dependenciesPath) {
         modifiedMethodsHelper = new ModifiedMethodsHelper("diffj-method-return-info.jar", dependenciesPath);
     }

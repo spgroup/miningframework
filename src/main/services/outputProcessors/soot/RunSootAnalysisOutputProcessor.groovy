@@ -20,22 +20,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     private dependenciesPath;
     private SootAnalysisWrapper sootWrapper;
 
-    private ConflictDetectionAlgorithm[] detectionAlgorithms = [
-        new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, TIMEOUT),
-        new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, TIMEOUT),
-        new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, TIMEOUT),
-        new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, TIMEOUT),
-        new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", sootWrapper, TIMEOUT),
-        new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, TIMEOUT),
-        new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, TIMEOUT),
-        new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, TIMEOUT),
-        new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, TIMEOUT),
-        new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, TIMEOUT),
-        new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", sootWrapper, TIMEOUT),
-        new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, TIMEOUT),
-        new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, TIMEOUT),
-        new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, TIMEOUT),
-    ]
+    private ConflictDetectionAlgorithm[] detectionAlgorithms;
 
     /**
      * Default constructor. Assumes the path to the soot analysis executable as the dependencies folder in the root of the project.
@@ -51,6 +36,22 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     RunSootAnalysisOutputProcessor(String dependenciesPath) {
         this.dependenciesPath = dependenciesPath;
         this.sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT", dependenciesPath)
+        this.detectionAlgorithms = [
+                new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("CD", "cd", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("Reachability", "reachability", this.sootWrapper, TIMEOUT),
+        ]
     }
 
     void setDetectionAlgorithms(List<ConflictDetectionAlgorithm> detectionAlgorithms) {

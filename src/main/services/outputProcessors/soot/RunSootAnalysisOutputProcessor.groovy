@@ -17,7 +17,8 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
     private final String RESULTS_FILE_PATH = "/data/results-with-build-information.csv"
     private final long TIMEOUT = 240
 
-    private final SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
+    private dependenciesPath;
+    private SootAnalysisWrapper sootWrapper;
 
     private ConflictDetectionAlgorithm[] detectionAlgorithms = [
         new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, TIMEOUT),
@@ -35,6 +36,22 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
         new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, TIMEOUT),
         new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, TIMEOUT),
     ]
+
+    /**
+     * Default constructor. Assumes the path to the soot analysis executable as the dependencies folder in the root of the project.
+     */
+    RunSootAnalysisOutputProcessor() {
+        this("dependencies");
+    }
+
+    /**
+     * Receives the path to the dependencies folder containing the soot-analysis jar as a parameter, in cases where the class is used as a library.
+     * @param dependenciesPath The path to the dependencies folder containing the soot-analysis jar.
+     */
+    RunSootAnalysisOutputProcessor(String dependenciesPath) {
+        this.dependenciesPath = dependenciesPath;
+        this.sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT", dependenciesPath)
+    }
 
     void setDetectionAlgorithms(List<ConflictDetectionAlgorithm> detectionAlgorithms) {
         this.detectionAlgorithms = detectionAlgorithms

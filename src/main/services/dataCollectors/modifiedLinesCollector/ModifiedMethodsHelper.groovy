@@ -14,12 +14,27 @@ import util.ProcessRunner
 class ModifiedMethodsHelper {
     
     private String diffJOption;
+    private String dependenciesPath; // Path to the folder containing the DiffJ executable
     private TextualDiffParser textualDiffParser = new TextualDiffParser();
     private DiffJParser modifiedMethodsParser = new DiffJParser();
     private MethodModifiedLinesMatcher modifiedMethodsMatcher = new MethodModifiedLinesMatcher();
 
+    /**
+     * Assumes the path to diffj as the 'dependencies' directory in the root of the project.
+     * @param diffj Represents the diffJ file name.
+     */
     public ModifiedMethodsHelper(String diffj) {
-        this.diffJOption = diffj
+        this(diffj, "dependencies");
+    }
+
+    /**
+     * Receives the path to diffj as a parameter, in cases where the class is used as a library.
+     * @param diffj Represents the diffJ file name.
+     * @param dependenciesPath The path to the folder containing the DiffJ executable.
+     */
+    public ModifiedMethodsHelper(String diffj, String dependenciesPath) {
+        this.diffJOption = diffj;
+        this.dependenciesPath = dependenciesPath;
     }
 
     public Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
@@ -39,7 +54,7 @@ class ModifiedMethodsHelper {
     }
 
     private List<String> runDiffJ(File ancestorFile, File targetFile) {
-        Process diffJ = ProcessRunner.runProcess('dependencies', 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
+        Process diffJ = ProcessRunner.runProcess(this.dependenciesPath, 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
         def output = reader.readLines()
         reader.close()

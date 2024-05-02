@@ -40,7 +40,7 @@ class GenerateSootInputFilesOutputProcessor implements OutputProcessor {
             convertToSootScript(arguments.getOutputPath())
     }
 
-    private void convertToSootScript (String outputPath) {
+    public void convertToSootScript (String outputPath) {
         println "Running parse_to_soot script"
         ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, this.parseToSootPath, outputPath)
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)

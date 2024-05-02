@@ -53,6 +53,21 @@ class ModifiedMethodsHelper {
         return modifiedMethodsMatcher.matchModifiedMethodsAndLines(parsedDiffJResult, parsedTextualDiffResult);
     }
 
+    public List<ModifiedLine> getModifiedLines(Project project, String filePath, String ancestorSHA, String targetSHA) {
+        File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
+        File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
+
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
+        List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
+
+        targetFile.delete()
+        ancestorFile.delete()
+
+        List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);
+
+        return parsedTextualDiffResult
+    }
+
     private List<String> runDiffJ(File ancestorFile, File targetFile) {
         Process diffJ = ProcessRunner.runProcess(this.dependenciesPath, 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))

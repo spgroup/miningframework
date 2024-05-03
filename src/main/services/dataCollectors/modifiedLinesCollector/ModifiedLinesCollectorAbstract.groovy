@@ -105,14 +105,14 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         }
     }
 
-    protected Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
+    Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
         Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA(), arguments.getFileExtension())
         Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA(), arguments.getFileExtension())
 
         return leftModifiedFiles.intersect(rightModifiedFiles)
     }
 
-    protected Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath) {
+    Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath) {
         Set<ModifiedMethod> leftModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
         Set<ModifiedMethod> rightModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         return intersectAndBuildMap(leftModifiedMethods, rightModifiedMethods)

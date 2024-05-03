@@ -37,11 +37,22 @@ class ModifiedMethodsHelper {
         this.dependenciesPath = dependenciesPath;
     }
 
-    public Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
+    Set<ModifiedMethod> getAllModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "--changed-methods-only");
+
+        targetFile.delete()
+        ancestorFile.delete()
+        return modifiedMethodsParser.parseAllModifiedMethods(diffJOutput);
+    }
+
+    Set<ModifiedMethod> getModifiedMethods(Project project, String filePath, String ancestorSHA, String targetSHA) {
+        File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
+        File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
+
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "-brief");
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
 
         targetFile.delete()
@@ -53,11 +64,11 @@ class ModifiedMethodsHelper {
         return modifiedMethodsMatcher.matchModifiedMethodsAndLines(parsedDiffJResult, parsedTextualDiffResult);
     }
 
-    public List<ModifiedLine> getModifiedLines(Project project, String filePath, String ancestorSHA, String targetSHA) {
+    List<ModifiedLine> getModifiedLines(Project project, String filePath, String ancestorSHA, String targetSHA) {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile);
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "-brief");
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
 
         targetFile.delete()
@@ -68,8 +79,8 @@ class ModifiedMethodsHelper {
         return parsedTextualDiffResult
     }
 
-    private List<String> runDiffJ(File ancestorFile, File targetFile) {
-        Process diffJ = ProcessRunner.runProcess(this.dependenciesPath, 'java', '-jar', this.diffJOption, "--brief", ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
+    private List<String> runDiffJ(File ancestorFile, File targetFile, String option) {
+        Process diffJ = ProcessRunner.runProcess(this.dependenciesPath, 'java', '-jar', this.diffJOption, option, ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(diffJ.getInputStream()))
         def output = reader.readLines()
         reader.close()

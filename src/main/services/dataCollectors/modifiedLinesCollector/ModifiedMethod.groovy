@@ -15,6 +15,11 @@ class ModifiedMethod {
         this.modifiedLines = lines;
     }
 
+    ModifiedMethod(String signature) {
+        this.signature = signature;
+        this.modifiedLines = new HashSet<>();
+    }
+
     public String getSignature() {
         return this.signature;
     }

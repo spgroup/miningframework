@@ -43,6 +43,18 @@ class DiffJParser {
         return result;
     }
 
+    List<ModifiedMethod> parseAllModifiedMethods(List<String> diffJResult) {
+        List<ModifiedMethod> modifiedMethods = new ArrayList<>();
+
+        for (int i = 1; i < diffJResult.size(); i++) {
+            String line = diffJResult.get(i);
+            String methodSignature = line.replaceAll("\\(changed\\)|\\(added\\)", "").trim();
+            modifiedMethods.add(new ModifiedMethod(methodSignature));
+        }
+
+        return modifiedMethods;
+    }
+
     private void addLineListToMethodKey(Map<String, int[]> result, String methodName, List<Integer> lineList) {
         if (result.containsKey(methodName)) {
             result.put(methodName, result.get(methodName) + lineList)
@@ -67,7 +79,7 @@ class DiffJParser {
 
     private boolean isMethodChangeLine(String line) {
         Matcher matcher = METHOD_CHANGE_HEADER_REGEX.matcher(line);
-        
+
         return matcher.find();
     }
 

@@ -9,12 +9,28 @@ import services.dataCollectors.modifiedLinesCollector.ModifiedMethodsHelper
 import java.util.stream.Collectors
 
 /**
- * @requires: that a diffj cli is in the dependencies folder
+ * @requires: that a diffj cli is in the dependencies folder, or that the path to the diffj cli is provided
  * @provides: returns true if both left and right of the merge scenario have a intersection on the modified methods list
  */
 class MutuallyModifiedMethodsCommitFilter implements CommitFilter {
 
-    private modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar");
+    private ModifiedMethodsHelper modifiedMethodsHelper;
+
+    /**
+     * Default constructor.
+     * Assumes the path to diffj as the 'dependencies' directory in the root of the project.
+     */
+    public MutuallyModifiedMethodsCommitFilter() {
+        this("dependencies");
+    }
+
+    /**
+     * Receives the path to diffj as a parameter, in cases where the class is used as a library.
+     * @param dependenciesPath The path to the folder containing the DiffJ executable.
+     */
+    public MutuallyModifiedMethodsCommitFilter(String dependenciesPath) {
+        this.modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar", dependenciesPath);
+    }
 
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
         return containsMutuallyModifiedMethods(project, mergeCommit)

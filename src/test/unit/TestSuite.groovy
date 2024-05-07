@@ -9,6 +9,7 @@ import org.junit.runners.Suite.SuiteClasses
         TextualDiffParserTest.class,
         DiffJParserTest.class,
         MethodModifiedLinesMatcherTest.class,
+        ModifiedMethodsHelperTest.class,
         JarHelperTest.class
 ])
 public class TestSuite {}

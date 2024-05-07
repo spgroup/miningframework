@@ -60,6 +60,38 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         printResults(project, mergeCommit, className, mergeMethod.getSignature(), leftAddedLines, leftDeletedLines, rightAddedLines, rightDeletedLines);
     }
 
+    protected void collectFileData(Set<ModifiedLine> leftModifiedLines, Set<ModifiedLine> rightModifiedLines, Project project, MergeCommit mergeCommit, String filePath) {
+        Set<Integer> leftAddedLines = new HashSet<Integer>();
+        Set<Integer> leftDeletedLines = new HashSet<Integer>();
+        Set<Integer> leftChangedLines = new HashSet<Integer>();
+        Set<Integer> rightAddedLines = new HashSet<Integer>();
+        Set<Integer> rightDeletedLines = new HashSet<Integer>();
+        Set<Integer> rightChangedLines = new HashSet<Integer>();
+
+        for (def line : leftModifiedLines) {
+            if (line.getType() == ModifiedLine.ModificationType.Removed) {
+                leftDeletedLines.add(line.getNumber());
+            } else if (line.getType() == ModifiedLine.ModificationType.Added){
+                leftAddedLines.add(line.getNumber());
+            } else {
+                leftChangedLines.add(line.getNumber())
+            }
+        }
+
+        for (def line : rightModifiedLines) {
+            if (line.getType() == ModifiedLine.ModificationType.Removed) {
+                rightDeletedLines.add(line.getNumber());
+            } else if (line.getType() == ModifiedLine.ModificationType.Added){
+                rightAddedLines.add(line.getNumber());
+            } else {
+                rightChangedLines.add(line.getNumber())
+            }
+        }
+
+        // prints results to a csv file
+        printResults(project, mergeCommit, filePath, leftAddedLines, leftDeletedLines, leftChangedLines, rightAddedLines, rightDeletedLines, rightChangedLines);
+    }
+
     protected void createOutputFiles(String outputPath) {
         createExperimentalDataDir(outputPath)
         createExperimentalDataFiles(outputPath)
@@ -73,14 +105,16 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         }
     }
 
-    public Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
-        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA())
-        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA())
+    Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
+        String fileExtension = arguments ? arguments.getFileExtension() : 'java'
+
+        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA(), fileExtension)
+        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA(), fileExtension)
 
         return leftModifiedFiles.intersect(rightModifiedFiles)
     }
 
-    public Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath) {
+    Map<String, Tuple2<ModifiedMethod, ModifiedMethod>> getMutuallyModifiedMethods(Project project, MergeCommit mergeCommit, String filePath) {
         Set<ModifiedMethod> leftModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getLeftSHA())
         Set<ModifiedMethod> rightModifiedMethods = modifiedMethodsHelper.getModifiedMethods(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA())
         return intersectAndBuildMap(leftModifiedMethods, rightModifiedMethods)

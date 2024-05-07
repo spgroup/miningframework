@@ -48,7 +48,7 @@ class DiffJParser {
 
         for (int i = 1; i < diffJResult.size(); i++) {
             String line = diffJResult.get(i);
-            String methodSignature = line.replaceAll("\\(changed\\)|\\(added\\)", "").trim();
+            String methodSignature = line.replaceAll("\\(changed\\)|\\(added\\)|\\(removed\\)", "").trim();
             modifiedMethods.add(new ModifiedMethod(methodSignature));
         }
 

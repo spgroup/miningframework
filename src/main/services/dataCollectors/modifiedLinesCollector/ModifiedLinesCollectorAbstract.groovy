@@ -106,8 +106,10 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
     }
 
     Set<String> getFilesModifiedByBothParents(Project project, MergeCommit mergeCommit) {
-        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA(), arguments.getFileExtension())
-        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA(), arguments.getFileExtension())
+        String fileExtension = arguments ? arguments.getFileExtension() : 'java'
+
+        Set<String> leftModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getLeftSHA(), mergeCommit.getAncestorSHA(), fileExtension)
+        Set<String> rightModifiedFiles = FileManager.getModifiedFiles(project, mergeCommit.getRightSHA(), mergeCommit.getAncestorSHA(), fileExtension)
 
         return leftModifiedFiles.intersect(rightModifiedFiles)
     }

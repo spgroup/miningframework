@@ -19,9 +19,9 @@ class ScenarioReader {
             String commitSHA = line["merge commit"]
 
             String scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA)
-            
-            String realisticCasePath = line["realistic case path"]
-            if (realisticCasePath != null && realisticCasePath != "") {
+
+            if (line.hasProperty("realistic case path")) {
+                String realisticCasePath = line["realistic case path"]
                 scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA, realisticCasePath)
             }
 

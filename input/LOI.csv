@@ -9,13 +9,13 @@ resty-gwt;867b917c43c32acbdcac55767e7f04334006c866;org.fusesource.restygwt.rebin
 storm;ad2be678831b3b060229fd936e3908110162b7ac;org.apache.storm.kafka.spout.KafkaSpout;open(Map, TopologyContext, SpoutOutputCollector);Mining;No
 storm;ad2be678831b3b060229fd936e3908110162b7ac;org.apache.storm.kafka.spout.KafkaSpoutConfig;KafkaSpoutConfig(Builder<K,V>);Mining;No
 storm;ad2be678831b3b060229fd936e3908110162b7ac;org.apache.storm.kafka.spout.KafkaSpoutConfig;toString();Leuson;Yes
-storm;bd1f5c54752f67b484a83c26667331234234d3a3;org.apache.storm.kafka.spout.KafkaSpout;emitTupleIfNotEmitted(ConsumerRecord<K,V>);Leuson;Yes
+storm;bd1f5c54752f67b484a83c26667331234234d3a3;org.apache.storm.kafka.spout.KafkaSpout;emitTupleIfNotEmitted(ConsumerRecord<K,V>);Leuson;No
 swagger-maven-plugin;e825a7fdc6ef688f1253b93d2cb236e710acfc56;com.github.kongchen.swagger.docgen.reader.AbstractReader;hasValidAnnotations(List<Annotation>);Guilherme;-
 jsoup;a8b6982de98ff76ef254031d7152fff57f6bf941;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);Roberto;Yes
 jsoup;fee4762322f85a1109edd75ccb67f38cf5008c80;org.jsoup.helper.HttpConnection;createConnection(Connection.Request);Guilherme;No
 jsoup;3f7d2c71dbbbb289c684f339874eed8ac2747fa0;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);Roberto;Yes
 jsoup;a44e18aa3c1fcd25a68a5965f9490d8f7d026509;org.jsoup.nodes.TextNode;outerHtmlHead(StringBuilder, int, Document.OutputSettings);Roberto;Yes
-retrofit;2b6c719c6645f8e48dca6d0047c752069d321bc4;retrofit.RestAdapter;logAndReplaceResponse(String, Response, long);DeSouza;No
+retrofit;2b6c719c6645f8e48dca6d0047c752069d321bc4;retrofit.RestAdapter;logAndReplaceResponse(String, Response, long);DeSouza;Yes
 retrofit;2b6c719c6645f8e48dca6d0047c752069d321bc4;retrofit.RestAdapter;logAndReplaceRequest(Request);DeSouza;Yes
 retrofit;71f622ce51031b152a0be6ad5facfb27a654bf5a;retrofit.RequestBuilder;build();Roberto;Yes
 activiti;50d8e43eb5917c63abfbcdec1e68e510943f325a;org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;deleteDeployment(String, boolean);Roberto;Yes
@@ -49,9 +49,9 @@ elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elastic
 elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.Indexer;processBlockingQueue(QueueEntry);Roberto;No
 elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.Slurper;run();Roberto;No
 elasticsearch-river-mongodb;6b6ce8e851c6613213c4508c3f277a80649e0c7b;org.elasticsearch.river.mongodb.Slurper;addToStream(Operation, Timestamp<?>, DBObject, String);Roberto;Yes
-hector;0588608e7a2bdf974c985ff546207104f672bf6c;me.prettyprint.cassandra.connection.client.HSaslThriftClient;open();Roberto;Yes
-hector;a33a46506656a39d1b0f7780973905665d3b6145;me.prettyprint.cassandra.connection.client.HKerberosThriftClient;open();Roberto;Yes
-hector;a33a46506656a39d1b0f7780973905665d3b6145;me.prettyprint.cassandra.connection.client.HThriftClient;open();Roberto;Yes
+hector;0588608e7a2bdf974c985ff546207104f672bf6c;me.prettyprint.cassandra.connection.client.HSaslThriftClient;open();Roberto;No
+hector;a33a46506656a39d1b0f7780973905665d3b6145;me.prettyprint.cassandra.connection.client.HKerberosThriftClient;open();Roberto;No
+hector;a33a46506656a39d1b0f7780973905665d3b6145;me.prettyprint.cassandra.connection.client.HThriftClient;open();Roberto;No
 hector;213f7887ea70eabdf0705cf8454de29af89e8c38;me.prettyprint.cassandra.connection.HConnectionManager;operateWithFailover(Operation<?>);Roberto;No
 titan;387c16ea05ef9fa312f37139228d2bbf61455ff4;com.thinkaurelius.titan.graphdb.database.serialize.SerializerInitialization;initialize(Serializer);Roberto;No
 titan;04edd7f0e7eab2e8255a497922e34dc707d84c19;com.thinkaurelius.titan.graphdb.transaction.StandardTitanTx;StandardTitanTx(StandardTitanGraph, TransactionConfiguration, BackendTransaction);Roberto;No
@@ -76,7 +76,7 @@ elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.index.e
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.DocWriteResponse;writeTo(StreamOutput);Mining;Yes
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.DocWriteResponse;readFrom(StreamInput);DeSouza;No
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.DocWriteResponse;toXContent(XContentBuilder, Params);DeSouza;Yes
-elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.cluster.metadata.MetaDataCreateIndexService;createIndex(CreateIndexClusterStateUpdateRequest, ActionListener<ClusterStateUpdateResponse>);Mining;Yes
+elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.cluster.metadata.MetaDataCreateIndexService;createIndex(CreateIndexClusterStateUpdateRequest, ActionListener<ClusterStateUpdateResponse>);Mining;No
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.update.TransportUpdateAction;shardOperation(UpdateRequest, ActionListener<UpdateResponse>, int);Mining;No
 elasticsearch;d896886973660785aac45275ddb110c1a6babc57;org.elasticsearch.action.delete.TransportDeleteAction;executeDeleteRequestOnPrimary(DeleteRequest, IndexShard);Mining;No
 elasticsearch;3764b3ff800c94293aba0bb0fa18c7df80a764f7;org.elasticsearch.rest.action.cat.RestNodesAction;getTableWithHeader(RestRequest);DeSouza;No

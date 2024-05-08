@@ -19,6 +19,8 @@ class Arguments {
     private boolean reachability
     private boolean report
     private long timeout
+    private long depthLimit
+    private boolean printDepthSVFA
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -39,8 +41,25 @@ class Arguments {
         reachability = false
         report = false
         timeout = 240
+        printDepthSVFA = false
+        depthLimit = 5
     }
 
+    void setDepthLimit(long depthLimit) {
+        this.depthLimit = depthLimit
+    }
+
+    void setPrintDepthSVFA(boolean printDepthSVFA) {
+        this.printDepthSVFA = printDepthSVFA
+    }
+
+    long getDepthLimit() {
+        return depthLimit
+    }
+
+    boolean getPrintDepthSVFA() {
+        return printDepthSVFA
+    }
     boolean isHelp() {
         return isHelp
     }

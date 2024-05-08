@@ -14,7 +14,7 @@ public class ModifiedMethodsHelperTest {
 
 
     private final ModifiedMethodsHelper modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar");
-    Project project = new Project("project", "test_repositories/TestProject");
+    Project project = new Project("project", "test_repositories/SSMTeste");
     @Test
     public void getAllModifiedMethodsTest() {
        Set<ModifiedMethod> allModifiedMethods = this.modifiedMethodsHelper

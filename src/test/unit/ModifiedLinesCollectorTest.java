@@ -14,7 +14,7 @@ public class ModifiedLinesCollectorTest {
 
 
     private final ModifiedLinesCollector modifiedLinesCollector = new ModifiedLinesCollector("../../dependencies/");
-    Project project = new Project("project", "test_repositories/TestProject");
+    Project project = new Project("project", "test_repositories/SSMTeste");
 
     @Test
     public void getFilesModifiedByBothParentsTest() {

@@ -16,7 +16,24 @@ import static app.MiningFramework.arguments
 class GenerateSootInputFilesOutputProcessor implements OutputProcessor {
     
     private final String SCRIPT_RUNNER = "python3"
-    private final String PARSE_TO_SOOT_PATH = "./scripts/parse_to_soot.py"
+    private static final String PARSE_TO_SOOT_FILENAME = "parse_to_soot.py"
+    private String parseToSootPath;
+
+    /**
+     * Default constructor.
+     * Assumes the path to the script parse_to_soot.py as the 'scripts' directory in the root of the project.
+     */
+    public GenerateSootInputFilesOutputProcessor() {
+        this("./scripts/" + PARSE_TO_SOOT_FILENAME);
+    }
+
+    /**
+     * Receives the path to the scripts folder containing the parse_to_soot.py script as a parameter, in cases where the class is used as a library.
+     * @param scriptsPath The path to the scripts folder containing the parse_to_soot.py script.
+     */
+    public GenerateSootInputFilesOutputProcessor(String scriptsPath) {
+        this.parseToSootPath = new File(scriptsPath).getPath() + "/" + PARSE_TO_SOOT_FILENAME;
+    }
 
     void processOutput() {
         if (arguments.providedAccessKey())
@@ -25,14 +42,14 @@ class GenerateSootInputFilesOutputProcessor implements OutputProcessor {
 
     void convertToSootScript (String outputPath) {
         println "Running parse_to_soot script"
-        ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, PARSE_TO_SOOT_PATH, outputPath)
+        ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, this.parseToSootPath, outputPath)
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
     
         Process process = ProcessRunner.startProcess(builder)
         int exitStatus = process.waitFor()
 
         if (exitStatus != 0) {
-            throw new ExternalScriptException(PARSE_TO_SOOT_PATH, exitStatus);
+            throw new ExternalScriptException(this.parseToSootPath, exitStatus);
         }
     }
 

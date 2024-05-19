@@ -7,3 +7,6 @@
 [submodule "test_repositories/commitfilter"]
 	path = test_repositories/commitfilter
 	url = https://github.com/rafaelmotaalves/commitfilter
+[submodule "test_repositories/SSMTeste"]
+	path = test_repositories/SSMTeste
+	url = https://github.com/barbosamaatheus/SSMTeste.git

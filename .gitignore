@@ -18,6 +18,8 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+scripts/experiment_static_analysis/__pycache__/
+
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 *.jimple

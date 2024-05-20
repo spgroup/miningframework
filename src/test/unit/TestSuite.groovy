@@ -10,6 +10,7 @@ import org.junit.runners.Suite.SuiteClasses
         DiffJParserTest.class,
         MethodModifiedLinesMatcherTest.class,
         ModifiedMethodsHelperTest.class,
+        ModifiedLinesCollectorTest.class,
         JarHelperTest.class
 ])
 public class TestSuite {}

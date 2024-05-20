@@ -52,7 +52,7 @@ class ModifiedMethodsHelper {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "-brief");
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "--brief");
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
 
         targetFile.delete()
@@ -68,7 +68,7 @@ class ModifiedMethodsHelper {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "-brief");
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "--brief");
         List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
 
         targetFile.delete()

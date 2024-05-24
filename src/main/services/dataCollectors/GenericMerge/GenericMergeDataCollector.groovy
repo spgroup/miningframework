@@ -37,13 +37,16 @@ class GenericMergeDataCollector implements DataCollector {
                 executor.runToolForMergeScenario(scenario)
             }
         }.forEach {
-            def line = List.of(project.getName(),
-                    mergeCommit.getSHA(),
-                    it.scenario.toAbsolutePath().toString(),
-                    anyParentEqualsBase(it.scenario).toString(),
-                    it.result,
-                    it.time).join(",")
-            reportFile << "${line.replaceAll('\\\\', '/')}\n"
+            def list = new ArrayList<String>();
+            list.add(project.getName())
+            list.add(it.tool)
+            list.add(mergeCommit.getSHA())
+            list.add(it.scenario.toAbsolutePath().toString())
+            list.add(anyParentEqualsBase(it.scenario).toString())
+            list.add(it.result.toString())
+            list.add(it.time.toString())
+
+            reportFile << "${list.join(",").replaceAll('\\\\', '/')}\n"
         }
     }
 

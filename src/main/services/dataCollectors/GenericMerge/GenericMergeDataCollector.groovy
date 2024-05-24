@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
-import services.dataCollectors.S3MMergesCollector.SpreadsheetBuilder
 import util.ProcessRunner
 
 import java.nio.file.Files
@@ -73,7 +72,7 @@ class GenericMergeDataCollector implements DataCollector {
 
     private static class MergeScenarioExecution{
         ScenarioResult result;
-        int time;
+        long time;
 
         MergeScenarioExecution(ScenarioResult result, long time) {
             this.result = result

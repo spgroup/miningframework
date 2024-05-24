@@ -27,13 +27,13 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
     }
 
     private static List<String> getBuildParameters() {
-        def list = new ArrayList<String>()
-        list.add(GENERIC_MERGE_BINARY_PATH)
-        list.add("--base-path=basejava")
-        list.add("--left-path=leftjava")
-        list.add("--right-path=rightjava")
-        list.add("--merge-path=merge.generic.java")
-        list.add("--language=java")
-        return list;
+        return List.of(
+                GENERIC_MERGE_BINARY_PATH,
+                "--base-path=basejava",
+                "--left-path=leftjava",
+                "--right-path=rightjava",
+                "--merge-path=merge.generic.java",
+                "--language=java"
+        )
     }
 }

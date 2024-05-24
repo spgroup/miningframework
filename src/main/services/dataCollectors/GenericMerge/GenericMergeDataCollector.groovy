@@ -15,11 +15,8 @@ import java.nio.file.Paths
 class GenericMergeDataCollector implements DataCollector {
     private static final BASE_EXPERIMENT_PATH = "/usr/src/app"
     private static final GENERIC_MERGE_REPORTS_PATH = "${BASE_EXPERIMENT_PATH}/output/reports/"
-    private final List<MergeToolExecutor> mergeToolExecutors;
+    private final List<MergeToolExecutor> mergeToolExecutors = List.of(new GenericMergeToolExecutor());
 
-    GenericMergeDataCollector() {
-        this.mergeToolExecutors = List.of(new GenericMergeToolExecutor())
-    }
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {

@@ -5,7 +5,7 @@ import org.apache.commons.io.FileUtils
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
-import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
+//import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 
@@ -21,7 +21,7 @@ class GenericMergeDataCollector implements DataCollector {
     GenericMergeDataCollector() {
         this.mergeToolExecutors = new ArrayList<MergeToolExecutor>()
         this.mergeToolExecutors.add(new GenericMergeToolExecutor())
-        this.mergeToolExecutors.add(new JDimeMergeToolExecutor())
+//        this.mergeToolExecutors.add(new JDimeMergeToolExecutor())
     }
 
     @Override

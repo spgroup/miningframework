@@ -26,6 +26,11 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
         return output.exitValue() == 0 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() == 1 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS : GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR;
     }
 
+    @Override
+    protected String getToolName() {
+        return "GENERIC_MERGE"
+    }
+
     private static List<String> getBuildParameters() {
         def list = new ArrayList<String>()
         list.add(GENERIC_MERGE_BINARY_PATH)

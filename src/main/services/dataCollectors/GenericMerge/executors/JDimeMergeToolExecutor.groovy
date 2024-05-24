@@ -22,6 +22,11 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         return output.exitValue() == 0 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() <= 127 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS : GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR;
     }
 
+    @Override
+    protected String getToolName() {
+        return "JDIME"
+    }
+
     private static List<String> getBuildParameters(String basePath) {
         def list = new ArrayList<String>()
         list.add("./JDime")

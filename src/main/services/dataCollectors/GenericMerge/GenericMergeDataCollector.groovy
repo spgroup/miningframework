@@ -4,16 +4,22 @@ import interfaces.DataCollector
 import org.apache.commons.io.FileUtils
 import project.MergeCommit
 import project.Project
+import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
+import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
-import util.ProcessRunner
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
 class GenericMergeDataCollector implements DataCollector {
-    private static final GENERIC_MERGE_BINARY_PATH = "/Users/jpedroh/Projetos/msc/generic-merge/target/release/generic-merge"
-    private static final GENERIC_MERGE_REPORTS_PATH = "/Users/jpedroh/Projetos/msc/miningframework/output/reports/"
+    private static final BASE_EXPERIMENT_PATH = "/usr/src/app"
+    private static final GENERIC_MERGE_REPORTS_PATH = "${BASE_EXPERIMENT_PATH}/output/reports/"
+    private final List<MergeToolExecutor> mergeToolExecutors;
+
+    GenericMergeDataCollector() {
+        this.mergeToolExecutors = List.of(new GenericMergeToolExecutor())
+    }
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
@@ -23,72 +29,43 @@ class GenericMergeDataCollector implements DataCollector {
         def reportFile = new File("${GENERIC_MERGE_REPORTS_PATH}/${project.getName()}.csv");
         reportFile.createNewFile();
 
-        scenarios.stream().forEach {
-            def result = runToolInMergeScenario(it)
-            def line = "${project.getName()},${mergeCommit.getSHA()},${it.toAbsolutePath().toString()},${anyParentEqualsBase(it)},${result.result},${result.time}"
+        scenarios.stream().flatMap { scenario -> mergeToolExecutors.stream().map { executor -> executor.runToolForMergeScenario(scenario) }
+        }.forEach {
+            def line = List.of(project.getName(),
+                    mergeCommit.getSHA(),
+                    it.scenario.toAbsolutePath().toString(),
+                    anyParentEqualsBase(it.scenario).toString(),
+                    it.result,
+                    it.time).join(",")
             reportFile << "${line.replaceAll('\\\\', '/')}\n"
         }
     }
 
     private static anyParentEqualsBase(Path scenario) {
-        def leftEqualsBase = FileUtils.contentEquals(
-                new File("${scenario.toAbsolutePath()}/basejava"),
-                new File("${scenario.toAbsolutePath()}/leftjava")
-        )
+        def leftEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/basejava"),
+                new File("${scenario.toAbsolutePath()}/leftjava"))
 
-        def rightEqualsBase = FileUtils.contentEquals(
-                new File("${scenario.toAbsolutePath()}/basejava"),
-                new File("${scenario.toAbsolutePath()}/rightjava")
-        )
+        def rightEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/basejava"),
+                new File("${scenario.toAbsolutePath()}/rightjava"))
 
         return leftEqualsBase || rightEqualsBase
     }
 
-    private static MergeScenarioExecution runToolInMergeScenario(Path scenario) {
-            def working_directory_path = scenario.toAbsolutePath().toString();
-
-            def processBuilder = ProcessRunner.buildProcess(working_directory_path);
-            processBuilder.command().addAll(getBuildParameters())
-
-            def startTime = System.nanoTime();
-            def output = ProcessRunner.startProcess(processBuilder);
-            output.waitFor()
-            def endTime = System.nanoTime();
-
-        if (output.exitValue() > 1) {
-                println("Error while merging ${scenario.toAbsolutePath()}: ${output.getInputStream().readLines()}")
-        }
-
-        def result = output.exitValue() == 0 ? ScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() == 1 ? ScenarioResult.SUCCESS_WITH_CONFLICTS : ScenarioResult.TOOL_ERROR;
-
-        return new MergeScenarioExecution(result, endTime - startTime);
-    }
-
-    private static enum ScenarioResult {
+    static enum MergeScenarioResult {
         SUCCESS_WITHOUT_CONFLICTS,
         SUCCESS_WITH_CONFLICTS,
         TOOL_ERROR
     }
 
-    private static class MergeScenarioExecution{
-        ScenarioResult result;
-        long time;
+    static class MergeScenarioExecutionSummary {
+        public final Path scenario;
+        public final MergeScenarioResult result;
+        public final long time;
 
-        MergeScenarioExecution(ScenarioResult result, long time) {
+        MergeScenarioExecutionSummary(Path scenario, MergeScenarioResult result, long time) {
+            this.scenario = scenario
             this.result = result
             this.time = time
         }
-    }
-
-    private static List<String> getBuildParameters() {
-        def list = new ArrayList<String>()
-        list.add(GENERIC_MERGE_BINARY_PATH)
-        list.add("--base-path=basejava")
-        list.add("--left-path=leftjava")
-        list.add("--right-path=rightjava")
-        list.add("--merge-path=merge.generic.java")
-        list.add("--language=java")
-
-        return list
     }
 }

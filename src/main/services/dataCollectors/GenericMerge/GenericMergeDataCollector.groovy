@@ -58,14 +58,16 @@ class GenericMergeDataCollector implements DataCollector {
     }
 
     static class MergeScenarioExecutionSummary {
+        public final String tool;
         public final Path scenario;
         public final MergeScenarioResult result;
         public final long time;
 
-        MergeScenarioExecutionSummary(Path scenario, MergeScenarioResult result, long time) {
+        MergeScenarioExecutionSummary(Path scenario, MergeScenarioResult result, long time, String tool) {
             this.scenario = scenario
             this.result = result
             this.time = time
+            this.tool = tool
         }
     }
 }

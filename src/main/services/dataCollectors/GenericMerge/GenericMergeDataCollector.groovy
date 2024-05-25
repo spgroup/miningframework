@@ -8,7 +8,7 @@ import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
-import services.util.BuildRequester
+import services.dataCollectors.GenericMerge.BuildRequester
 
 import java.nio.file.Files
 import java.nio.file.Path

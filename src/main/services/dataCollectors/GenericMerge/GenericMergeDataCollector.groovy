@@ -32,22 +32,24 @@ class GenericMergeDataCollector implements DataCollector {
         def reportFile = new File("${GENERIC_MERGE_REPORTS_PATH}/${project.getName()}.csv");
         reportFile.createNewFile();
 
-        scenarios.stream().flatMap { scenario ->
-            mergeToolExecutors.stream().map { executor ->
-                executor.runToolForMergeScenario(scenario)
-            }
-        }.forEach {
-            def list = new ArrayList<String>();
-            list.add(project.getName())
-            list.add(it.tool)
-            list.add(mergeCommit.getSHA())
-            list.add(it.scenario.toAbsolutePath().toString())
-            list.add(anyParentEqualsBase(it.scenario).toString())
-            list.add(it.result.toString())
-            list.add(it.time.toString())
+        scenarios.stream()
+                .filter { scenario -> !anyParentEqualsBase(scenario) }
+                .flatMap { scenario ->
+                    mergeToolExecutors.stream().map { executor ->
+                        executor.runToolForMergeScenario(scenario)
+                    }
+                }
+                .forEach {
+                    def list = new ArrayList<String>();
+                    list.add(project.getName())
+                    list.add(it.tool)
+                    list.add(mergeCommit.getSHA())
+                    list.add(it.scenario.toAbsolutePath().toString())
+                    list.add(it.result.toString())
+                    list.add(it.time.toString())
 
-            reportFile << "${list.join(",").replaceAll('\\\\', '/')}\n"
-        }
+                    reportFile << "${list.join(",").replaceAll('\\\\', '/')}\n"
+                }
     }
 
     private static anyParentEqualsBase(Path scenario) {

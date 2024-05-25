@@ -16,6 +16,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         def processBuilder = ProcessRunner.buildProcess(
                 JDIME_BINARY_PATH,
                 "./JDime",
+                "-s",
                 "--mode=structured",
                 "--output=${working_directory_path}/merge.generic.java",
                 "${working_directory_path}/leftjava",
@@ -26,7 +27,12 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         def output = ProcessRunner.startProcess(processBuilder);
         output.waitFor()
 
-        return output.exitValue() == 0 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() <= 127 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS : GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR;
+        if (output.exitValue() == 0) {
+            return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS
+        } else if (output.exitValue() >= 200) {
+            return GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
+        }
+        return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS
     }
 
     @Override

@@ -46,6 +46,7 @@ class GenericMergeDataCollector implements DataCollector {
                     def list = new ArrayList<String>();
                     list.add(project.getName())
                     list.add(mergeCommit.getSHA())
+                    list.add(eitherParentDiffersFromBase(it.scenario).toString())
                     list.add(it.tool)
                     list.add(it.scenario.toAbsolutePath().toString())
                     list.add(it.result.toString())
@@ -57,7 +58,6 @@ class GenericMergeDataCollector implements DataCollector {
 
     private executeMergeTools(List<Path> scenarios) {
         return scenarios.stream()
-                .filter { this::eitherParentDiffersFromBase }
                 .flatMap { scenario ->
                     mergeToolExecutors.stream().map { executor ->
                         executor.runToolForMergeScenario(scenario)

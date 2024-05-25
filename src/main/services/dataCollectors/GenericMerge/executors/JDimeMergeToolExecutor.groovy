@@ -30,6 +30,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         if (output.exitValue() == 0) {
             return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS
         } else if (output.exitValue() >= 200) {
+            println("Error while merging ${scenario.toAbsolutePath()}: ${output.getInputStream().readLines()}")
             return GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
         }
         return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS

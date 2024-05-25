@@ -16,7 +16,6 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         def processBuilder = ProcessRunner.buildProcess(
                 JDIME_BINARY_PATH,
                 "./JDime",
-                "-sf",
                 "--mode=structured",
                 "--output=${working_directory_path}/merge.jdime.java",
                 "${working_directory_path}/left.java",
@@ -27,28 +26,15 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         def output = ProcessRunner.startProcess(processBuilder);
         output.waitFor()
 
-        if (output.exitValue() == 0) {
-            return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS
-        } else if (output.exitValue() >= 200) {
+        if (output.exitValue() >= 200) {
             println("Error while merging ${scenario.toAbsolutePath()}: ${output.getInputStream().readLines()}")
             return GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
         }
-        return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS
+        return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS
     }
 
     @Override
     protected String getToolName() {
         return "JDIME"
-    }
-
-    private static List<String> getBuildParameters(String basePath) {
-        def list = new ArrayList<String>()
-        list.add("./JDime")
-        list.add("--mode=structured")
-        list.add("--output=${basePath}/merge.generic.java")
-        list.add("${basePath}/leftjava")
-        list.add("${basePath}/basejava")
-        list.add("${basePath}/rightjava")
-        return list;
     }
 }

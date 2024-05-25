@@ -8,10 +8,8 @@ RUN ./gradlew installDist
 
 FROM openjdk:8
 
-WORKDIR /usr/local/bin/miningframework
+WORKDIR /usr/src/miningframework
 
 COPY --from=build /usr/src/miningframework/build .
 
-WORKDIR /usr/local/bin/miningframework/install/miningframework/bin
-
-ENTRYPOINT ["./miningframework"]
+ENTRYPOINT ["./install/miningframework/bin/miningframework"]

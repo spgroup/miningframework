@@ -53,11 +53,11 @@ class GenericMergeDataCollector implements DataCollector {
     }
 
     private static anyParentEqualsBase(Path scenario) {
-        def leftEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/basejava"),
-                new File("${scenario.toAbsolutePath()}/leftjava"))
+        def leftEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/base.java"),
+                new File("${scenario.toAbsolutePath()}/left.java"))
 
-        def rightEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/basejava"),
-                new File("${scenario.toAbsolutePath()}/rightjava"))
+        def rightEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/base.java"),
+                new File("${scenario.toAbsolutePath()}/right.java"))
 
         return leftEqualsBase || rightEqualsBase
     }

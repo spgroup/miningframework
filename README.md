@@ -47,6 +47,15 @@ For those, the order which the they are injected will be followed by the framewo
 The framework uses [Google Guice](https://github.com/google/guice) to implement dependency injection, and inject the interface implementations. 
 So, to select the interface implementations you want to use in your desired instantiation of the framework, you also need to write a class such as [StaticAnalysisConflictsDetectionModule](https://github.com/spgroup/miningframework/blob/master/src/main/injectors/StaticAnalysisConflictsDetectionModule.groovy) in the injectors package, which acts as the dependency injector. This one, in particular, is used as a default injector if no other is specified when invoking the framework.
 
+## Running Mining Framework with Docker
+
+If you have Docker available on your machine, you might find it easier to start playing with Mining Framework by using our pre-built Docker image.
+
+The image is built upon OpenJDK 8, and provides an already compiled distribution of Mining Framework. To start running it with Docker, simply run:
+
+```
+docker run -v $PWD/output:./output/ -v $PWD/projects.csv:./projects.csv --rm ghcr.io/spgroup/miningframework:master projects.csv 
+```
 
 ## Running a specific framework instantiation
 

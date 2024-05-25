@@ -24,9 +24,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         )
 
         def output = ProcessRunner.startProcess(processBuilder);
-        println("Sarted merging ${scenario.toAbsolutePath()} with jdime")
         output.waitFor()
-        println("Finished merging ${scenario.toAbsolutePath()} with jdime")
 
         if (output.exitValue() >= 200) {
             println("Error while merging ${scenario.toAbsolutePath()}: ${output.getInputStream().readLines()}")

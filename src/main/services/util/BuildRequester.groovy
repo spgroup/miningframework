@@ -49,6 +49,17 @@ final class BuildRequester {
         return getBuildLink(project, branchName)
     }
 
+
+    static requestBuildWithRevision(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String mergeTool) {
+        String toReplaceFile = "merge.${mergeTool}.java"
+
+        String branchName = "${mergeCommit.getSHA().take(7)}-${mergeTool}"
+
+        createBranchFromCommit(project, mergeCommit, branchName)
+        replaceFilesInProject(project, mergeCommit, mergeScenarios, toReplaceFile)
+        stageAndPushChanges(project, branchName, "Mining Framework Analysis")
+    }
+
     private static String getBuildLink(Project project, String branchName) {
         String buildID = getBuildAttribute(project, 'id', branchName)
         return "https://travis-ci.com/${projectOwnerName}/${project.getName()}/builds/${buildID}"
@@ -149,17 +160,21 @@ script:
 """
     }
 
-    private static void stageAndPushChanges(Project project, String branchName) {
+    private static void stageAndPushChanges(Project project, String branchName, String commitMessage) {
         Path projectPath = Paths.get(project.getPath())
 
         // Stage changes
         Utils.runGitCommand(projectPath, 'add', '.')
 
         // Commit changes
-        Utils.runGitCommand(projectPath, 'commit', '-m', 'S3M Handlers Analysis new branch')
+        Utils.runGitCommand(projectPath, 'commit', '-m', commitMessage)
 
         // Push changes
         Utils.runGitCommand(projectPath, 'push', '--set-upstream', 'origin', branchName, '--force-with-lease')
+    }
+
+    private static void stageAndPushChanges(Project project, String branchName) {
+        stageAndPushChanges(project, branchName, 'S3M Handlers Analysis new branch')
     }
 
 

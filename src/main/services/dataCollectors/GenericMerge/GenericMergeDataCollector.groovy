@@ -8,6 +8,7 @@ import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
+import services.util.BuildRequester
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -32,18 +33,20 @@ class GenericMergeDataCollector implements DataCollector {
         def reportFile = new File("${GENERIC_MERGE_REPORTS_PATH}/${project.getName()}.csv");
         reportFile.createNewFile();
 
-        scenarios.stream()
-                .filter { scenario -> !anyParentEqualsBase(scenario) }
-                .flatMap { scenario ->
-                    mergeToolExecutors.stream().map { executor ->
-                        executor.runToolForMergeScenario(scenario)
-                    }
-                }
-                .forEach {
+        println "Starting execution of merge tools"
+        def mergeToolsExecutionResults = executeMergeTools(scenarios)
+        println "Finished execution of merge tools"
+
+        println "Starting commit analysis"
+        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, "generic")
+        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, "jdime")
+        println "Finished commit analysis"
+
+        mergeToolsExecutionResults.forEach {
                     def list = new ArrayList<String>();
                     list.add(project.getName())
-                    list.add(it.tool)
                     list.add(mergeCommit.getSHA())
+                    list.add(it.tool)
                     list.add(it.scenario.toAbsolutePath().toString())
                     list.add(it.result.toString())
                     list.add(it.time.toString())
@@ -52,14 +55,24 @@ class GenericMergeDataCollector implements DataCollector {
                 }
     }
 
-    private static anyParentEqualsBase(Path scenario) {
+    private executeMergeTools(List<Path> scenarios) {
+        return scenarios.stream()
+                .filter { this::eitherParentDiffersFromBase }
+                .flatMap { scenario ->
+                    mergeToolExecutors.stream().map { executor ->
+                        executor.runToolForMergeScenario(scenario)
+                    }
+                }
+    }
+
+    private static boolean eitherParentDiffersFromBase(Path scenario) {
         def leftEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/base.java"),
                 new File("${scenario.toAbsolutePath()}/left.java"))
 
         def rightEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/base.java"),
                 new File("${scenario.toAbsolutePath()}/right.java"))
 
-        return leftEqualsBase || rightEqualsBase
+        return !leftEqualsBase && !rightEqualsBase
     }
 
     static enum MergeScenarioResult {

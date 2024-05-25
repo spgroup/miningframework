@@ -13,8 +13,15 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
     protected GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario) {
         def working_directory_path = scenario.toAbsolutePath().toString();
 
-        def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH);
-        processBuilder.command().addAll(getBuildParameters(working_directory_path))
+        def processBuilder = ProcessRunner.buildProcess(
+                JDIME_BINARY_PATH,
+                "./JDime",
+                "--mode=structured",
+                "--output=${working_directory_path}/merge.generic.java",
+                "${working_directory_path}/leftjava",
+                "${working_directory_path}/basejava",
+                "${working_directory_path}/rightjava"
+        )
 
         def output = ProcessRunner.startProcess(processBuilder);
         output.waitFor()

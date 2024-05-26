@@ -28,7 +28,11 @@ class BuildRequester {
 
     private static void replaceFilesInProject(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String toReplaceFile) {
         mergeScenarios.stream()
-                .filter { Files.exists(getSource(it, toReplaceFile)) }
+                .filter {
+                    def fileExists = Files.exists(getSource(it, toReplaceFile));
+                    println "Checking if ${getSource(it, toReplaceFile)} exists -> ${fileExists}"
+                    return fileExists;
+                }
                 .forEach(mergeScenario -> Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING))
     }
 

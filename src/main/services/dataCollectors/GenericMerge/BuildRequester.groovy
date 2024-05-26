@@ -30,8 +30,8 @@ class BuildRequester {
         mergeScenarios.stream()
                 .filter {
                     def fileExists = new File(getSource(it, toReplaceFile).toAbsolutePath().toString()).isFile();
-                    println "Checking if ${getSource(it, toReplaceFile).toAbsolutePath()} exists -> ${fileExists}"
-                    return true;
+                    println "Checking if ${getSource(it, toReplaceFile).toAbsolutePath()} exists -> ${fileExists} ${Files.isRegularFile(getSource(it, toReplaceFile))}"
+                    return fileExists;
                 }
                 .forEach(mergeScenario -> Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING))
     }

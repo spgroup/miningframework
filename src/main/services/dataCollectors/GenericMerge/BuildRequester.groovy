@@ -32,14 +32,15 @@ class BuildRequester {
         mergeScenarios.stream()
                 .forEach(mergeScenario -> {
                     try {
-                        def process =  ProcessRunner.buildProcess("/usr/src/app",
-                        "cp",
+                        def process = ProcessRunner.buildProcess(
+                                "/usr/src/app",
+                                "cp",
                                 getSource(mergeScenario, toReplaceFile).toAbsolutePath().toString(),
                                 getTarget(project, mergeCommit, mergeScenario).toAbsolutePath().toString()
                         )
                         println "Starting copy of file ${getSource(mergeScenario, toReplaceFile)} to ${getTarget(project, mergeCommit, mergeScenario)}"
-                        process.start().waitFor()
-                        println "Finished copy of file ${getSource(mergeScenario, toReplaceFile)} to ${getTarget(project, mergeCommit, mergeScenario)}"
+                        def statusCode = process.start().waitFor()
+                        println "Finished copy of file with status: ${statusCode}"
                     } catch (e) {
                         println "Error while copying ${getSource(mergeScenario, toReplaceFile)} to ${getTarget(project, mergeCommit, mergeScenario)}"
                         println e.toString()

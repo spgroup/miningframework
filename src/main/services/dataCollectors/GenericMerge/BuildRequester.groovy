@@ -3,6 +3,8 @@ package services.dataCollectors.GenericMerge
 import project.MergeCommit
 import project.Project
 import services.util.Utils
+import util.ProcessRunner
+
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -30,10 +32,17 @@ class BuildRequester {
         mergeScenarios.stream()
                 .forEach(mergeScenario -> {
                     try {
-                        Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING)
+                        def process =  ProcessRunner.buildProcess("/usr/src/app",
+                        "cp",
+                                getSource(mergeScenario, toReplaceFile).toAbsolutePath().toString(),
+                                getTarget(project, mergeCommit, mergeScenario).toAbsolutePath().toString()
+                        )
+                        println "Starting copy of file ${getSource(mergeScenario, toReplaceFile)} to ${getTarget(project, mergeCommit, mergeScenario)}"
+                        process.start().waitFor()
+                        println "Finished copy of file ${getSource(mergeScenario, toReplaceFile)} to ${getTarget(project, mergeCommit, mergeScenario)}"
                     } catch (e) {
                         println "Error while copying ${getSource(mergeScenario, toReplaceFile)} to ${getTarget(project, mergeCommit, mergeScenario)}"
-                        println e.message
+                        println e.toString()
                     }
                 })
     }

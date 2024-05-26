@@ -32,7 +32,9 @@ class BuildRequester {
                     try {
                         Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING)
                     } catch (e) {
-                        println "Error while copying ${getSource(mergeScenario, toReplaceFile)} ${e.getMessage()}"
+                        println "Error while copying ${getSource(mergeScenario, toReplaceFile)} to ${getTarget(project, mergeCommit, mergeScenario)}"
+                        println e.cause.message
+                        println e.message
                     }
                 })
     }

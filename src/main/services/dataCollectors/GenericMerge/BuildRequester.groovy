@@ -28,12 +28,13 @@ class BuildRequester {
 
     private static void replaceFilesInProject(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String toReplaceFile) {
         mergeScenarios.stream()
-                .filter {
-                    def fileExists = new File(getSource(it, toReplaceFile).toAbsolutePath().toString()).isFile();
-                    println "Checking if ${getSource(it, toReplaceFile).toAbsolutePath()} exists -> ${fileExists} ${Files.isRegularFile(getSource(it, toReplaceFile))}"
-                    return fileExists;
-                }
-                .forEach(mergeScenario -> Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING))
+                .forEach(mergeScenario -> {
+                    try {
+                        Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING)
+                    } catch (e) {
+                        println "Error while copying ${getSource(mergeScenario, toReplaceFile)} ${e.getMessage()}"
+                    }
+                })
     }
 
     private static Path getSource(Path mergeScenario, String toReplaceFile) {

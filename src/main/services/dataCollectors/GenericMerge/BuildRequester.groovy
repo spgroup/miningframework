@@ -29,7 +29,7 @@ class BuildRequester {
     private static void replaceFilesInProject(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String toReplaceFile) {
         mergeScenarios.stream()
                 .filter {
-                    def fileExists = Files.exists(getSource(it, toReplaceFile).toAbsolutePath());
+                    def fileExists = new File(getSource(it, toReplaceFile).toAbsolutePath()).isFile();
                     println "Checking if ${getSource(it, toReplaceFile).toAbsolutePath()} exists -> ${fileExists}"
                     return fileExists;
                 }

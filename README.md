@@ -54,7 +54,7 @@ If you have Docker available on your machine, you might find it easier to start 
 The image is built upon OpenJDK 8, and provides an already compiled distribution of Mining Framework. To start running it with Docker, simply run:
 
 ```
-docker run -v $PWD/output:/usr/local/bin/miningframework/output/ -v $PWD/projects.csv:/usr/local/bin/miningframework/projects.csv --rm ghcr.io/spgroup/miningframework:master projects.csv 
+docker run -v $PWD/output:/usr/src/miningframework/output/ -v $PWD/projects.csv:/usr/src/miningframework/projects.csv --rm ghcr.io/spgroup/miningframework:master projects.csv 
 ```
 
 ## Running a specific framework instantiation

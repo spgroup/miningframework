@@ -24,7 +24,7 @@ class GenerateSootInputFilesOutputProcessor implements OutputProcessor {
      * Assumes the path to the script parse_to_soot.py as the 'scripts' directory in the root of the project.
      */
     public GenerateSootInputFilesOutputProcessor() {
-        this("./scripts/" + PARSE_TO_SOOT_FILENAME);
+        this("./scripts");
     }
 
     /**

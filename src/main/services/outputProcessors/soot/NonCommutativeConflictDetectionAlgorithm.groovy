@@ -32,11 +32,12 @@ class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorith
             String filePath = scenario.getLinesFilePath()
             String classPath = scenario.getClassPath()
             String filePathReverse = scenario.getLinesReverseFilePath()
+            String entrypoints = scenario.getEntrypoints()
 
             println "Running left right " + toString();
-            String leftRightResult = super.runAndReportResult(filePath, classPath)
+            String leftRightResult = super.runAndReportResult(filePath, classPath, entrypoints)
             println "Running right left " + toString();
-            String rightLeftResult = super.runAndReportResult(filePathReverse, classPath)
+            String rightLeftResult = super.runAndReportResult(filePathReverse, classPath, entrypoints)
 
             return "${leftRightResult};${rightLeftResult}";
         } catch (ClassNotFoundInJarException e) {

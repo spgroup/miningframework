@@ -27,14 +27,22 @@ class GenericMergeDataCollector implements DataCollector {
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
-        List<Path> scenarios = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
+        def scenarios = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
+                .stream()
+                .filter {
+                    eitherParentDiffersFromBase(it)
+                }
 
         Files.createDirectories(Paths.get("${GENERIC_MERGE_REPORTS_PATH}"));
         def reportFile = new File("${GENERIC_MERGE_REPORTS_PATH}/${project.getName()}.csv");
         reportFile.createNewFile();
 
         println "Starting execution of merge tools"
-        def mergeToolsExecutionResults = executeMergeTools(scenarios)
+        def mergeToolsExecutionResults = scenarios.flatMap { scenario ->
+            mergeToolExecutors.stream().map { executor ->
+                executor.runToolForMergeScenario(scenario)
+            }
+        }
         println "Finished execution of merge tools"
 
         println "Starting commit analysis"
@@ -43,26 +51,17 @@ class GenericMergeDataCollector implements DataCollector {
         println "Finished commit analysis"
 
         mergeToolsExecutionResults.forEach {
-                    def list = new ArrayList<String>();
-                    list.add(project.getName())
-                    list.add(mergeCommit.getSHA())
-                    list.add(eitherParentDiffersFromBase(it.scenario).toString())
-                    list.add(it.tool)
-                    list.add(it.scenario.toAbsolutePath().toString())
-                    list.add(it.result.toString())
-                    list.add(it.time.toString())
+            def list = new ArrayList<String>();
+            list.add(project.getName())
+            list.add(mergeCommit.getSHA())
+            list.add(eitherParentDiffersFromBase(it.scenario).toString())
+            list.add(it.tool)
+            list.add(it.scenario.toAbsolutePath().toString())
+            list.add(it.result.toString())
+            list.add(it.time.toString())
 
-                    reportFile << "${list.join(",").replaceAll('\\\\', '/')}\n"
-                }
-    }
-
-    private executeMergeTools(List<Path> scenarios) {
-        return scenarios.stream()
-                .flatMap { scenario ->
-                    mergeToolExecutors.stream().map { executor ->
-                        executor.runToolForMergeScenario(scenario)
-                    }
-                }
+            reportFile << "${list.join(",").replaceAll('\\\\', '/')}\n"
+        }
     }
 
     private static boolean eitherParentDiffersFromBase(Path scenario) {

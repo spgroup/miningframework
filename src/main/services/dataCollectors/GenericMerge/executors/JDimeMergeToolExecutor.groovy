@@ -1,6 +1,7 @@
 package services.dataCollectors.GenericMerge.executors
 
 import services.dataCollectors.GenericMerge.GenericMergeDataCollector
+import services.util.MergeConflict
 import util.ProcessRunner
 
 import java.nio.file.Path
@@ -30,6 +31,13 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
             println("Error while merging ${scenario.toAbsolutePath()}: ${output.getInputStream().readLines()}")
             return GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
         }
+
+        def mergeConflictsCount = MergeConflict.getConflictsNumber(scenario.resolve("merge.jdime.java"));
+        println("Found ${mergeConflictsCount} while merging")
+        if (mergeConflictsCount > 0) {
+            return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS
+        }
+
         return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS
     }
 

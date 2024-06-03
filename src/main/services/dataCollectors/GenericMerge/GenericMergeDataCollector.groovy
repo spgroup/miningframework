@@ -38,8 +38,8 @@ class GenericMergeDataCollector implements DataCollector {
         println "Finished execution of merge tools"
 
         println "Starting commit analysis"
-        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, "generic")
-        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, "jdime")
+//        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, "generic")
+//        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, "jdime")
         println "Finished commit analysis"
 
         mergeToolsExecutionResults.forEach {

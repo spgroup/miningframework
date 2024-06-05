@@ -51,7 +51,7 @@ So, to select the interface implementations you want to use in your desired inst
 
 If you have Docker available on your machine, you might find it easier to start playing with Mining Framework by using our pre-built Docker image.
 
-The image is built upon OpenJDK 8, and provides an already compiled distribution of Mining Framework. To start running it with Docker, simply run:
+The image is built upon [Amazon Corretto](https://hub.docker.com/_/amazoncorretto) with Java 8, and provides an already compiled distribution of Mining Framework. To start running it with Docker, simply run:
 
 ```
 docker run -v $PWD/output:/usr/src/miningframework/output/ -v $PWD/projects.csv:/usr/src/miningframework/projects.csv --rm ghcr.io/spgroup/miningframework:master projects.csv 

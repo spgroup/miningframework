@@ -21,7 +21,7 @@ jobs:
       - name: Gradle check
         run: ./gradlew check --info
   docker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
       packages: write

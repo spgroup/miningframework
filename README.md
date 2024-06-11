@@ -121,3 +121,7 @@ One can run the framework tests by running the check task:
 `./gradlew check`
 
 * To create new tests, you have to create a git repository with a merge scenario simulating a specific situation you want to test, add it to the `test_repositories` directory, add a corresponding entry to `src/test/input.csv`, and then create the Test class.
+
+## Building
+
+`.\gradlew build -x test`

@@ -11,16 +11,18 @@ class Scenario {
     private String methodSignature;
     private String commitSHA;
     private boolean hasBuild;
+    private String entrypoints;
 
     private String scenarioDirectory;
 
-    Scenario(projectName, className, methodSignature, commitSHA, scenarioDirectory, hasBuild) {
+    Scenario(projectName, className, methodSignature, commitSHA, scenarioDirectory, hasBuild, String entrypoints) {
         this.projectName = projectName;
         this.className = className;
         this.methodSignature = methodSignature;
         this.commitSHA = commitSHA;
         this.scenarioDirectory = scenarioDirectory;
         this.hasBuild = hasBuild;
+        this.entrypoints = entrypoints;
     }
     
     boolean getHasBuild() {
@@ -52,6 +54,10 @@ class Scenario {
             throw new ClassNotFoundInJarException(this.className)
         }
         return buildJarPath
+    }
+
+    String getEntrypoints() {
+        return entrypoints
     }
 
     private String getJarThatHasClass(File[] buildJars) {

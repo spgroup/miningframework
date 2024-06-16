@@ -1,5 +1,7 @@
 package services.dataCollectors.GenericMerge.executors
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import services.dataCollectors.GenericMerge.GenericMergeDataCollector
 import services.util.MergeConflict
 import util.ProcessRunner
@@ -7,33 +9,32 @@ import util.ProcessRunner
 import java.nio.file.Path
 
 class JDimeMergeToolExecutor extends MergeToolExecutor {
-    private static final BASE_EXPERIMENT_PATH = "/usr/src/app"
+    private static Logger LOG = LogManager.getLogger(JDimeMergeToolExecutor.class);
+
+    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
     private static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
 
     @Override
-    protected GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario) {
+    protected GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario, Path outputFile) {
         def working_directory_path = scenario.toAbsolutePath().toString();
 
-        def processBuilder = ProcessRunner.buildProcess(
-                JDIME_BINARY_PATH,
+        def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
                 "./JDime",
                 "--mode=structured",
-                "--output=${working_directory_path}/merge.jdime.java",
+                "--output=${outputFile.toAbsolutePath().toString()}".toString(),
                 "${working_directory_path}/left.java",
                 "${working_directory_path}/base.java",
-                "${working_directory_path}/right.java"
-        )
+                "${working_directory_path}/right.java")
 
         def output = ProcessRunner.startProcess(processBuilder);
         output.waitFor()
 
         if (output.exitValue() >= 200) {
-            println("Error while merging ${scenario.toAbsolutePath()}: ${output.getInputStream().readLines()}")
-            return GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
+            LOG.warn("Error while merging ${scenario.toAbsolutePath()}. jDime exited with exitCode ${output.exitValue()}")
+            LOG.debug("jDime output: ${output.getInputStream().readLines()}")
         }
 
-        def mergeConflictsCount = MergeConflict.getConflictsNumber(scenario.resolve("merge.jdime.java"));
-        println("Found ${mergeConflictsCount} while merging")
+        def mergeConflictsCount = MergeConflict.getConflictsNumber(outputFile);
         if (mergeConflictsCount > 0) {
             return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS
         }

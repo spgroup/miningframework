@@ -7,11 +7,12 @@ import java.nio.file.Path;
 abstract class MergeToolExecutor {
     GenericMergeDataCollector.MergeScenarioExecutionSummary runToolForMergeScenario(Path scenario) {
         def startTime = System.nanoTime();
-        def result = executeTool(scenario)
-        return new GenericMergeDataCollector.MergeScenarioExecutionSummary(scenario, result, System.nanoTime() - startTime, this.getToolName())
+        def outputFilePath = scenario.resolve("merge.${getToolName().toLowerCase()}.java")
+        def result = executeTool(scenario, outputFilePath)
+        return new GenericMergeDataCollector.MergeScenarioExecutionSummary(scenario, outputFilePath, result, System.nanoTime() - startTime, this.getToolName())
     }
 
-    protected abstract GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario);
+    protected abstract GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario, Path outputFile);
 
     protected abstract String getToolName();
 }

@@ -7,16 +7,20 @@ import arguments.Arguments
 import arguments.InputParser
 
 import exception.InvalidArgsException
+import org.apache.logging.log4j.LogManager
 import project.Project
 
 import util.FileManager
 
 class Main {
+        private static LOG = LogManager.getLogger(Main.class)
+
         static main(args) {
         ArgsParser argsParser = new ArgsParser()
         try {
             Arguments appArguments = argsParser.parse(args)
-            
+            LOG.trace("Successfully parsed CLI args")
+
             if (appArguments.isHelp()) {
                 argsParser.printHelp()
             } else {

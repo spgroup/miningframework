@@ -31,7 +31,8 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
 
         if (output.exitValue() >= 200) {
             LOG.warn("Error while merging ${scenario.toAbsolutePath()}. jDime exited with exitCode ${output.exitValue()}")
-            LOG.warn("jDime output: ${output.getInputStream().readLines()}")
+            LOG.debug("jDime output: ${output.getInputStream().readLines()}")
+            return GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
         }
 
         def mergeConflictsCount = MergeConflict.getConflictsNumber(outputFile)

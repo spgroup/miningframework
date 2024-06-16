@@ -2,6 +2,8 @@ package services.dataCollectors.GenericMerge
 
 import interfaces.DataCollector
 import org.apache.commons.io.FileUtils
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
@@ -13,11 +15,8 @@ import util.ProcessRunner
 import java.nio.file.Files
 import java.nio.file.Path
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 class GenericMergeDataCollector implements DataCollector {
-    private static Logger LOG = LogManager.getLogger(GenericMergeDataCollector.class);
+    private static Logger LOG = LogManager.getLogger(GenericMergeDataCollector.class)
 
     private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
     private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
@@ -25,7 +24,7 @@ class GenericMergeDataCollector implements DataCollector {
     public static final GENERIC_MERGE_REPORT_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution.csv"
     public static final MERGE_TOOL_EXECUTORS_TO_USE = System.getProperty("miningframework.generic_merge.merge_tool_executors_to_use", "generic_merge,jdime").split(",")
 
-    private final List<MergeToolExecutor> mergeToolExecutors;
+    private final List<MergeToolExecutor> mergeToolExecutors
 
     GenericMergeDataCollector() {
         this.mergeToolExecutors = new ArrayList<MergeToolExecutor>()
@@ -44,23 +43,13 @@ class GenericMergeDataCollector implements DataCollector {
         def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit))
 
         LOG.debug("Starting execution of merge tools on scenario")
-        def mergeToolsExecutionResults = scenarios.flatMap { scenario ->
-            mergeToolExecutors.stream().map { executor ->
-                executor.runToolForMergeScenario(scenario)
-            }
-        }
+        def mergeToolsExecutionResults = scenarios.flatMap { scenario -> mergeToolExecutors.stream().map { executor -> executor.runToolForMergeScenario(scenario) } }
         LOG.debug("Finished execution of merge tools on scenario")
 
         mergeToolsExecutionResults.forEach {
             def reportFile = new File(GENERIC_MERGE_REPORT_FILE_NAME)
 
-            def resultFileName = it.tool === "GENERIC_MERGE" ? 'generic' : 'jdime'
-            def scenarioHasEquivalentResponse = areFilesSyntacticallyEquivalent(
-                    it.scenario.resolve("merge.java"),
-                    it.scenario.resolve("merge.${resultFileName}.java")
-            )
-
-            def list = new ArrayList<String>();
+            def list = new ArrayList<String>()
             list.add(project.getName())
             list.add(mergeCommit.getSHA())
             list.add(it.tool)
@@ -68,7 +57,7 @@ class GenericMergeDataCollector implements DataCollector {
             list.add(it.output.toAbsolutePath().toString())
             list.add(it.result.toString())
             list.add(it.time.toString())
-            list.add(scenarioHasEquivalentResponse.toString())
+            list.add(areFilesSyntacticallyEquivalent(it.scenario.resolve("merge.java"), it.output).toString())
 
             reportFile << "${list.join(",").replaceAll('\\\\', '/')}\n"
         }
@@ -89,7 +78,7 @@ class GenericMergeDataCollector implements DataCollector {
     private static boolean areFilesSyntacticallyEquivalent(Path fileA, Path fileB) {
         if (!Files.exists(fileA) || !Files.exists(fileB)) {
             LOG.trace("Early returning because one of the files ${} do not exist")
-            return false;
+            return false
         }
 
         def process = ProcessRunner.buildProcess("./")
@@ -108,7 +97,7 @@ class GenericMergeDataCollector implements DataCollector {
             LOG.warn("Error while running comparison between ${fileA.toString()} and ${fileB.toString()}: ${output.getInputStream().readLines()}")
         }
 
-        return output.exitValue() == 0;
+        return output.exitValue() == 0
     }
 
     private static boolean eitherParentDiffersFromBase(Path scenario) {
@@ -128,11 +117,11 @@ class GenericMergeDataCollector implements DataCollector {
     }
 
     static class MergeScenarioExecutionSummary {
-        public final String tool;
-        public final Path scenario;
-        public final Path output;
-        public final MergeScenarioResult result;
-        public final long time;
+        public final String tool
+        public final Path scenario
+        public final Path output
+        public final MergeScenarioResult result
+        public final long time
 
         MergeScenarioExecutionSummary(Path scenario, Path output, MergeScenarioResult result, long time, String tool) {
             this.scenario = scenario

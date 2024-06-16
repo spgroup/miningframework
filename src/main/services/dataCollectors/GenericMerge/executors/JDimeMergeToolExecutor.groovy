@@ -21,7 +21,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
                 "./JDime",
                 "--mode=structured",
-                "--output=${outputFile.toAbsolutePath().toString()}".toString(),
+                "--output=${outputFile.toString()}".toString(),
                 "${working_directory_path}/left.java",
                 "${working_directory_path}/base.java",
                 "${working_directory_path}/right.java")
@@ -31,7 +31,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
 
         if (output.exitValue() >= 200) {
             LOG.warn("Error while merging ${scenario.toAbsolutePath()}. jDime exited with exitCode ${output.exitValue()}")
-            LOG.debug("jDime output: ${output.getInputStream().readLines()}")
+            LOG.warn("jDime output: ${output.getInputStream().readLines()}")
         }
 
         def mergeConflictsCount = MergeConflict.getConflictsNumber(outputFile)

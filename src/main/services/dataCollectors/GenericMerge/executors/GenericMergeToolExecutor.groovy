@@ -39,6 +39,7 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
     private static List<String> getBuildParameters(Path outputFile) {
         def list = new ArrayList<String>()
         list.add(GENERIC_MERGE_BINARY_PATH)
+        list.add("merge")
         list.add("--base-path=base.java")
         list.add("--left-path=left.java")
         list.add("--right-path=right.java")

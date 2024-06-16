@@ -88,9 +88,10 @@ class GenericMergeDataCollector implements DataCollector {
 
         def list = new ArrayList<String>()
         list.add(GENERIC_MERGE_BINARY_PATH)
-        list.add("--diff-only")
+        list.add("diff")
         list.add("--left-path=${fileA.toAbsolutePath().toString()}".toString())
         list.add("--right-path=${fileB.toAbsolutePath().toString()}".toString())
+        list.add("--language=java")
         process.command().addAll(list)
 
         def output = ProcessRunner.startProcess(process)

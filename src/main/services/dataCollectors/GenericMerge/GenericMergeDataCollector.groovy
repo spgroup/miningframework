@@ -14,15 +14,16 @@ import util.ProcessRunner
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.stream.Collectors
 
 class GenericMergeDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(GenericMergeDataCollector.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
+    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path")
     private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
     public static final GENERIC_MERGE_REPORT_PATH = "${BASE_EXPERIMENT_PATH}/output/reports"
     public static final GENERIC_MERGE_REPORT_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution.csv"
-    public static final MERGE_TOOL_EXECUTORS_TO_USE = System.getProperty("miningframework.generic_merge.merge_tool_executors_to_use", "generic_merge,jdime").split(",")
+    public static final MERGE_TOOL_EXECUTORS_TO_USE = System.getProperty("miningframework.generic_merge.merge_tool_executors_to_use").split(",")
 
     private final List<MergeToolExecutor> mergeToolExecutors
 
@@ -42,37 +43,39 @@ class GenericMergeDataCollector implements DataCollector {
     void collectData(Project project, MergeCommit mergeCommit) {
         def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit))
 
-        LOG.debug("Starting execution of merge tools on scenario")
-        def mergeToolsExecutionResults = scenarios.flatMap { scenario -> mergeToolExecutors.stream().map { executor -> executor.runToolForMergeScenario(scenario) } }
-        LOG.debug("Finished execution of merge tools on scenario")
+        LOG.trace("Starting execution of merge tools on scenario")
+        def mergeToolsExecutionResults = scenarios
+                .flatMap(scenario -> {
+                    return mergeToolExecutors
+                            .parallelStream()
+                            .map(executor -> executor.runToolForMergeScenario(scenario))
+                })
+        LOG.trace("Finished execution of merge tools on scenario")
 
-        mergeToolsExecutionResults.forEach {
-            def reportFile = new File(GENERIC_MERGE_REPORT_FILE_NAME)
+        LOG.trace("Starting write of results to report file")
+        def lines = mergeToolsExecutionResults.map(result -> getReportLine(project, mergeCommit, result))
+        def reportFile = new File(GENERIC_MERGE_REPORT_FILE_NAME)
+        reportFile << lines.collect(Collectors.joining(System.lineSeparator())) << "\n"
+        LOG.trace("Finished write of results to report file")
+    }
 
-            def list = new ArrayList<String>()
-            list.add(project.getName())
-            list.add(mergeCommit.getSHA())
-            list.add(it.tool)
-            list.add(it.scenario.toAbsolutePath().toString())
-            list.add(it.output.toAbsolutePath().toString())
-            list.add(it.result.toString())
-            list.add(it.time.toString())
-            list.add(areFilesSyntacticallyEquivalent(it.scenario.resolve("merge.java"), it.output).toString())
-
-            reportFile << "${list.join(",").replaceAll('\\\\', '/')}\n"
-        }
+    private static getReportLine(Project project, MergeCommit mergeCommit, MergeScenarioExecutionSummary result) {
+        def list = new ArrayList<String>()
+        list.add(project.getName())
+        list.add(mergeCommit.getSHA())
+        list.add(result.tool)
+        list.add(result.scenario.toAbsolutePath().toString())
+        list.add(result.output.toAbsolutePath().toString())
+        list.add(result.result.toString())
+        list.add(result.time.toString())
+        list.add(areFilesSyntacticallyEquivalent(result.scenario.resolve("merge.java"), result.output).toString())
+        list.join(",").replaceAll('\\\\', '/')
     }
 
     private static filterScenariosForExecution(List<Path> scenarios) {
         return scenarios
-                .stream()
-                .filter {
-                    def parentDiffersFromBase = eitherParentDiffersFromBase(it)
-                    if (!parentDiffersFromBase) {
-                        LOG.trace("Skipping scenario ${it.toString()} because one of the parents equals base")
-                    }
-                    return parentDiffersFromBase
-                }
+                .parallelStream()
+                .filter(GenericMergeDataCollector::eitherParentDiffersFromBase)
     }
 
     private static boolean areFilesSyntacticallyEquivalent(Path fileA, Path fileB) {
@@ -106,6 +109,14 @@ class GenericMergeDataCollector implements DataCollector {
 
         def rightEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/base.java"),
                 new File("${scenario.toAbsolutePath()}/right.java"))
+
+        if (leftEqualsBase) {
+            LOG.trace("In scenario ${scenario.toString()} left equals base")
+        }
+
+        if (rightEqualsBase) {
+            LOG.trace("In scenario ${scenario.toString()} right equals base")
+        }
 
         return !leftEqualsBase && !rightEqualsBase
     }

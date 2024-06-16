@@ -9,14 +9,14 @@ import util.ProcessRunner
 import java.nio.file.Path
 
 class JDimeMergeToolExecutor extends MergeToolExecutor {
-    private static Logger LOG = LogManager.getLogger(JDimeMergeToolExecutor.class);
+    private static Logger LOG = LogManager.getLogger(JDimeMergeToolExecutor.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
+    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path")
     private static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
 
     @Override
     protected GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario, Path outputFile) {
-        def working_directory_path = scenario.toAbsolutePath().toString();
+        def working_directory_path = scenario.toAbsolutePath().toString()
 
         def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
                 "./JDime",
@@ -26,7 +26,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
                 "${working_directory_path}/base.java",
                 "${working_directory_path}/right.java")
 
-        def output = ProcessRunner.startProcess(processBuilder);
+        def output = ProcessRunner.startProcess(processBuilder)
         output.waitFor()
 
         if (output.exitValue() >= 200) {
@@ -34,7 +34,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
             LOG.debug("jDime output: ${output.getInputStream().readLines()}")
         }
 
-        def mergeConflictsCount = MergeConflict.getConflictsNumber(outputFile);
+        def mergeConflictsCount = MergeConflict.getConflictsNumber(outputFile)
         if (mergeConflictsCount > 0) {
             return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS
         }
@@ -43,7 +43,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
     }
 
     @Override
-    protected String getToolName() {
+    String getToolName() {
         return "JDIME"
     }
 }

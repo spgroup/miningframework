@@ -28,6 +28,11 @@ test {
 	}
 }
 
+run {
+	systemProperty "miningframework.generic_merge.base_experiment_path", System.getProperty("miningframework.generic_merge.base_experiment_path")
+	systemProperty "miningframework.generic_merge.merge_tool_executors_to_use", System.getProperty("miningframework.generic_merge.merge_tool_executors_to_use")
+}
+
 dependencies {
 	implementation 'com.google.inject:guice:4.2.2'
 	implementation 'commons-io:commons-io:2.6'

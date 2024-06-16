@@ -28,9 +28,9 @@ test {
 	}
 }
 
-application {
-    applicationDefaultJvmArgs = ["-Dminingframework.generic_merge.base_experiment_path=/usr/src/app", "-Dminingframework.generic_merge.merge_tool_executors_to_use=generic_merge,jdime"]
-}
+//application {
+//    applicationDefaultJvmArgs = ["-Dminingframework.generic_merge.base_experiment_path=/usr/src/app", "-Dminingframework.generic_merge.merge_tool_executors_to_use=generic_merge,jdime"]
+//}
 
 run {
 	systemProperty "miningframework.generic_merge.base_experiment_path", System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")

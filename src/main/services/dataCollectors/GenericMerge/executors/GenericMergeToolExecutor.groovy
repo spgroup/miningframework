@@ -10,7 +10,7 @@ import java.nio.file.Path
 class GenericMergeToolExecutor extends MergeToolExecutor {
     private static Logger LOG = LogManager.getLogger(GenericMergeToolExecutor.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path")
+    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
     private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
 
     @Override

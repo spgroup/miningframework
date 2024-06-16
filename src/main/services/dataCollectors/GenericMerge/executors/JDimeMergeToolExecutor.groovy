@@ -11,7 +11,7 @@ import java.nio.file.Path
 class JDimeMergeToolExecutor extends MergeToolExecutor {
     private static Logger LOG = LogManager.getLogger(JDimeMergeToolExecutor.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path")
+    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
     private static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
 
     @Override
@@ -21,7 +21,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
                 "./JDime",
                 "--mode=structured",
-                "--output=${outputFile.toString()}".toString(),
+                "--output=${outputFile.toAbsolutePath().toString()}".toString(),
                 "${working_directory_path}/left.java",
                 "${working_directory_path}/base.java",
                 "${working_directory_path}/right.java")

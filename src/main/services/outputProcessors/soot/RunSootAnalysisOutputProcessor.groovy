@@ -38,13 +38,13 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
         this.sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT", dependenciesPath)
         this.detectionAlgorithms = [
                 new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", this.sootWrapper, TIMEOUT),
-                new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", this.sootWrapper, TIMEOUT, true),
                 new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", this.sootWrapper, TIMEOUT),
-                new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", this.sootWrapper, TIMEOUT, true),
                 new ConflictDetectionAlgorithm("OA Intra", "overriding-intraprocedural", this.sootWrapper, TIMEOUT),
-                new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", this.sootWrapper, TIMEOUT),
+                new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", this.sootWrapper, TIMEOUT, true),
                 new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", this.sootWrapper, TIMEOUT),
-                new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", this.sootWrapper, TIMEOUT),
+                new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", this.sootWrapper, TIMEOUT, true),
                 new NonCommutativeConflictDetectionAlgorithm("CD", "cd", this.sootWrapper, TIMEOUT),
                 new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", this.sootWrapper, TIMEOUT),
                 new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", this.sootWrapper, TIMEOUT),

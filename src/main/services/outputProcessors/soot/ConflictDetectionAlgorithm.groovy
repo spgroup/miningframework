@@ -17,19 +17,18 @@ class ConflictDetectionAlgorithm {
     private String mode;
     private long timeout;
     private SootAnalysisWrapper sootWrapper;
-
-    ConflictDetectionAlgorithm(String name, String mode,  SootAnalysisWrapper sootWrapper) {
-        this.name = name
-        this.mode = mode;
-        this.timeout = null;
-        this.sootWrapper = sootWrapper;
-    }
+    private boolean interprocedural;
 
     ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
+        this(name, mode, sootWrapper, timeout, false);
+    }
+
+    ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout, boolean interprocedural) {
         this.name = name;
         this.mode = mode;
         this.timeout = timeout;
         this.sootWrapper = sootWrapper;
+        this.interprocedural = interprocedural;
     }
 
     String getName() {
@@ -38,6 +37,10 @@ class ConflictDetectionAlgorithm {
 
     void setTimeout(long timeout) {
         this.timeout = timeout
+    }
+
+    boolean getInterprocedural() {
+        return interprocedural
     }
 
     @Override

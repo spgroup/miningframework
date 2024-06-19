@@ -13,12 +13,12 @@ package services.outputProcessors.soot
  */
 class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorithm {
 
-    NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper) {
-        super(name, mode, sootWrapper)
-    }
-
     NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
         super(name, mode, sootWrapper, timeout)
+    }
+
+    NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout, boolean interprocedural) {
+        super(name, mode, sootWrapper, timeout, interprocedural)
     }
 
     @Override
@@ -35,9 +35,9 @@ class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorith
             String entrypoints = scenario.getEntrypoints()
 
             println "Running left right " + toString();
-            String leftRightResult = super.runAndReportResult(filePath, classPath, entrypoints)
+            String leftRightResult =  super.runAndReportResult(filePath, classPath, super.getInterprocedural() ? entrypoints : null)
             println "Running right left " + toString();
-            String rightLeftResult = super.runAndReportResult(filePathReverse, classPath, entrypoints)
+            String rightLeftResult = super.runAndReportResult(filePathReverse, classPath, super.getInterprocedural() ? entrypoints : null)
 
             return "${leftRightResult};${rightLeftResult}";
         } catch (ClassNotFoundInJarException e) {

@@ -103,6 +103,9 @@ the Mining Framework take an input csv file and a name for the output dir
                                             be used in the analysis. Required for (and 
                                             only considered when) running studies with 
                                             the CSDiff tool. Default: '{ } ( ) ; ,'
+ -log,--log-level <log level                Specify the minimum log level: (OFF, FATAL,
+                                            ERROR, WARN, INFO, DEBUG, TRACE, ALL).
+                                            Default: "INFO"
  -p,--push <link>                           Specify a git repository to upload the
                                             output in the end of the analysis (format
                                             https://github.com/<owner>/<name>

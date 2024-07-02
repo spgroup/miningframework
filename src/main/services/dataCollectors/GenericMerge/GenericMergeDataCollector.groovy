@@ -41,7 +41,7 @@ class GenericMergeDataCollector implements DataCollector {
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
-        def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)).collect(Collectors.toUnmodifiableList())
+        def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)).collect(Collectors.toList())
 
         LOG.trace("Starting execution of merge tools on scenario")
         def mergeToolsExecutionResults = scenarios
@@ -50,7 +50,7 @@ class GenericMergeDataCollector implements DataCollector {
                     return mergeToolExecutors
                             .parallelStream()
                             .map(executor -> executor.runToolForMergeScenario(scenario))
-                }).collect(Collectors.toUnmodifiableList())
+                }).collect(Collectors.toList())
         LOG.trace("Finished execution of merge tools on scenario")
 
         // Aggregate scenario results by tool
@@ -68,7 +68,7 @@ class GenericMergeDataCollector implements DataCollector {
                 .stream()
                 .filter { it -> it.value.result == MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS }
                 .map { x -> x.key }
-                .collect(Collectors.toUnmodifiableList())
+                .collect(Collectors.toList())
 
         // Are there any exclusive conflicts/tool errors?
         if (toolsInWhichIntegrationSucceeded.size() != mergeToolExecutors.size()) {

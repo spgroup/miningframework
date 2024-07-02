@@ -41,22 +41,54 @@ class GenericMergeDataCollector implements DataCollector {
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
-        def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit))
+        def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)).collect(Collectors.toUnmodifiableList())
 
         LOG.trace("Starting execution of merge tools on scenario")
         def mergeToolsExecutionResults = scenarios
+                .stream()
                 .flatMap(scenario -> {
                     return mergeToolExecutors
                             .parallelStream()
                             .map(executor -> executor.runToolForMergeScenario(scenario))
-                })
+                }).collect(Collectors.toUnmodifiableList())
         LOG.trace("Finished execution of merge tools on scenario")
 
-        LOG.trace("Starting write of results to report file")
-        def lines = mergeToolsExecutionResults.map(result -> getReportLine(project, mergeCommit, result))
+        // Aggregate scenario results by tool
+        def toolsCommitSummary = mergeToolsExecutionResults
+                .parallelStream()
+                .collect(Collectors.groupingBy(MergeScenarioExecutionSummary::getTool,
+                        Collectors.collectingAndThen(Collectors.toList(),
+                                MergeCommitExecutionSummary::fromFileResultsList)
+                ))
+
+
+        // Check which tools successfully integrated the scenario
+        def toolsInWhichIntegrationSucceeded = toolsCommitSummary
+                .entrySet()
+                .stream()
+                .filter { it -> it.value.result == MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS }
+                .map { x -> x.key }
+                .collect(Collectors.toUnmodifiableList())
+
+        // Are there any exclusive conflicts/tool errors?
+        if (toolsInWhichIntegrationSucceeded.size() != mergeToolExecutors.size()) {
+            LOG.info("At least one of the tools either reported a conflict or failed on the commit while the other did not")
+            toolsInWhichIntegrationSucceeded.forEach { tool -> {
+                def toolCommitSummary = toolsCommitSummary.get(tool)
+                if (toolCommitSummary.allScenariosMatch) {
+                    LOG.info("Output of the tool " + tool + " fully matched the commit merge. Skipping build analysis")
+                } else {
+                    LOG.info("Output of the tool " + tool + " did not fully matched the commit merge. Starting build analysis")
+                    BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, tool)
+                }
+            }}
+        }
+
+        LOG.trace("Starting write of files results to report file")
+        def lines = mergeToolsExecutionResults.parallelStream().map(result -> getReportLine(project, mergeCommit, result))
         def reportFile = new File(GENERIC_MERGE_REPORT_FILE_NAME)
         reportFile << lines.collect(Collectors.joining(System.lineSeparator())) << "\n"
-        LOG.trace("Finished write of results to report file")
+        LOG.trace("Finished write of files results to report file")
     }
 
     private static getReportLine(Project project, MergeCommit mergeCommit, MergeScenarioExecutionSummary result) {
@@ -68,7 +100,7 @@ class GenericMergeDataCollector implements DataCollector {
         list.add(result.output.toAbsolutePath().toString())
         list.add(result.result.toString())
         list.add(result.time.toString())
-        list.add(areFilesSyntacticallyEquivalent(result.scenario.resolve("merge.java"), result.output).toString())
+        list.add(result.isEquivalentToOracle().toString())
         list.join(",").replaceAll('\\\\', '/')
     }
 
@@ -76,32 +108,6 @@ class GenericMergeDataCollector implements DataCollector {
         return scenarios
                 .parallelStream()
                 .filter(GenericMergeDataCollector::eitherParentDiffersFromBase)
-    }
-
-    private static boolean areFilesSyntacticallyEquivalent(Path fileA, Path fileB) {
-        if (!Files.exists(fileA) || !Files.exists(fileB)) {
-            LOG.trace("Early returning because one of the files ${} do not exist")
-            return false
-        }
-
-        def process = ProcessRunner.buildProcess("./")
-
-        def list = new ArrayList<String>()
-        list.add(GENERIC_MERGE_BINARY_PATH)
-        list.add("diff")
-        list.add("--left-path=${fileA.toAbsolutePath().toString()}".toString())
-        list.add("--right-path=${fileB.toAbsolutePath().toString()}".toString())
-        list.add("--language=java")
-        process.command().addAll(list)
-
-        def output = ProcessRunner.startProcess(process)
-        output.waitFor()
-
-        if (output.exitValue() > 1) {
-            LOG.warn("Error while running comparison between ${fileA.toString()} and ${fileB.toString()}: ${output.getInputStream().readLines()}")
-        }
-
-        return output.exitValue() == 0
     }
 
     private static boolean eitherParentDiffersFromBase(Path scenario) {
@@ -134,6 +140,7 @@ class GenericMergeDataCollector implements DataCollector {
         public final Path output
         public final MergeScenarioResult result
         public final long time
+        public final boolean equivalentToOracle
 
         MergeScenarioExecutionSummary(Path scenario, Path output, MergeScenarioResult result, long time, String tool) {
             this.scenario = scenario
@@ -141,6 +148,56 @@ class GenericMergeDataCollector implements DataCollector {
             this.result = result
             this.time = time
             this.tool = tool
+            this.equivalentToOracle = areFilesSyntacticallyEquivalent(scenario.resolve("merge.java"), output)
+        }
+
+        String getTool() {
+            return tool
+        }
+
+        boolean isEquivalentToOracle() {
+            return equivalentToOracle
+        }
+
+        private static boolean areFilesSyntacticallyEquivalent(Path fileA, Path fileB) {
+            if (!Files.exists(fileA) || !Files.exists(fileB)) {
+                LOG.trace("Early returning because one of the files ${} do not exist")
+                return false
+            }
+
+            def process = ProcessRunner.buildProcess("./")
+
+            def list = new ArrayList<String>()
+            list.add(GENERIC_MERGE_BINARY_PATH)
+            list.add("diff")
+            list.add("--left-path=${fileA.toAbsolutePath().toString()}".toString())
+            list.add("--right-path=${fileB.toAbsolutePath().toString()}".toString())
+            list.add("--language=java")
+            process.command().addAll(list)
+
+            def output = ProcessRunner.startProcess(process)
+            output.waitFor()
+
+            if (output.exitValue() > 1) {
+                LOG.warn("Error while running comparison between ${fileA.toString()} and ${fileB.toString()}: ${output.getInputStream().readLines()}")
+            }
+
+            return output.exitValue() == 0
+        }
+    }
+
+    static class MergeCommitExecutionSummary {
+        public final MergeScenarioResult result
+        public final boolean allScenariosMatch
+
+        private MergeCommitExecutionSummary(MergeScenarioResult result, boolean allScenariosMatch) {
+            this.result = result
+            this.allScenariosMatch = allScenariosMatch
+        }
+
+        static MergeCommitExecutionSummary fromFileResultsList(List<MergeScenarioExecutionSummary> results) {
+            return new MergeCommitExecutionSummary(MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS,
+                    results.stream().every { it -> it.isEquivalentToOracle() })
         }
     }
 }

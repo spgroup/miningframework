@@ -1,9 +1,10 @@
 package services.dataCollectors.GenericMerge
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
 import services.util.Utils
-import util.ProcessRunner
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -11,8 +12,10 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
 class BuildRequester {
+    private static Logger LOG = LogManager.getLogger(BuildRequester.class)
+
     static requestBuildWithRevision(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String mergeTool) {
-        String toReplaceFile = "merge.${mergeTool}.java"
+        String toReplaceFile = "merge.${mergeTool.toLowerCase()}.java"
 
         String branchName = "${mergeCommit.getSHA().take(7)}-${mergeTool}"
 
@@ -31,7 +34,8 @@ class BuildRequester {
     private static void replaceFilesInProject(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String toReplaceFile) {
         mergeScenarios.stream()
                 .forEach(mergeScenario -> {
-                    Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario))
+                    LOG.debug("Trying to copy " + getSource(mergeScenario, toReplaceFile) + " into " + getTarget(project, mergeCommit, mergeScenario))
+                    Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING)
                 })
     }
 

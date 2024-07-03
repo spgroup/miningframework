@@ -23,6 +23,7 @@ class GenericMergeDataCollector implements DataCollector {
     private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
     public static final GENERIC_MERGE_REPORT_PATH = "${BASE_EXPERIMENT_PATH}/output/reports"
     public static final GENERIC_MERGE_REPORT_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution.csv"
+    public static final GENERIC_MERGE_REPORT_COMMITS_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution-commits.csv"
     public static final MERGE_TOOL_EXECUTORS_TO_USE = System.getProperty("miningframework.generic_merge.merge_tool_executors_to_use", "generic_merge,jdime").split(",")
 
     private final List<MergeToolExecutor> mergeToolExecutors
@@ -58,8 +59,7 @@ class GenericMergeDataCollector implements DataCollector {
                 .parallelStream()
                 .collect(Collectors.groupingBy(MergeScenarioExecutionSummary::getTool,
                         Collectors.collectingAndThen(Collectors.toList(),
-                                MergeCommitExecutionSummary::fromFileResultsList)
-                ))
+                                MergeCommitExecutionSummary::fromFileResultsList)))
 
 
         // Check which tools successfully integrated the scenario
@@ -73,15 +73,19 @@ class GenericMergeDataCollector implements DataCollector {
         // Are there any exclusive conflicts/tool errors?
         if (toolsInWhichIntegrationSucceeded.size() != mergeToolExecutors.size()) {
             LOG.info("At least one of the tools either reported a conflict or failed on the commit while the other did not")
-            toolsInWhichIntegrationSucceeded.forEach { tool -> {
-                def toolCommitSummary = toolsCommitSummary.get(tool)
-                if (toolCommitSummary.allScenariosMatch) {
-                    LOG.info("Output of the tool " + tool + " fully matched the commit merge. Skipping build analysis")
-                } else {
-                    LOG.info("Output of the tool " + tool + " did not fully matched the commit merge. Starting build analysis")
-                    BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, tool)
+            toolsInWhichIntegrationSucceeded.forEach { tool ->
+                {
+                    def toolCommitSummary = toolsCommitSummary.get(tool)
+                    if (toolCommitSummary.allScenariosMatch) {
+                        LOG.info("Output of the tool " + tool + " fully matched the commit merge. Skipping build analysis")
+                    } else {
+                        LOG.info("Output of the tool " + tool + " did not fully matched the commit merge. Starting build analysis")
+                        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, tool)
+                    }
                 }
-            }}
+            }
+        } else {
+            LOG.info("All the tools reported the same response")
         }
 
         LOG.trace("Starting write of files results to report file")
@@ -89,6 +93,20 @@ class GenericMergeDataCollector implements DataCollector {
         def reportFile = new File(GENERIC_MERGE_REPORT_FILE_NAME)
         reportFile << lines.collect(Collectors.joining(System.lineSeparator())) << "\n"
         LOG.trace("Finished write of files results to report file")
+
+        LOG.trace("Starting write of commit report")
+        def commitLines = toolsCommitSummary.entrySet().parallelStream().map { it ->
+            def list = new ArrayList<String>()
+            list.add(project.getName())
+            list.add(mergeCommit.getSHA())
+            list.add(it.key)
+            list.add(it.value.result.toString())
+            list.add(it.value.allScenariosMatch.toString())
+            return list.join(",").replaceAll('\\\\', '/')
+        }
+        def commitReportFile = new File(GENERIC_MERGE_REPORT_COMMITS_FILE_NAME)
+        commitReportFile << commitLines.collect(Collectors.joining(System.lineSeparator())) << "\n"
+        LOG.trace("Finished write of commit report")
     }
 
     private static getReportLine(Project project, MergeCommit mergeCommit, MergeScenarioExecutionSummary result) {
@@ -196,8 +214,15 @@ class GenericMergeDataCollector implements DataCollector {
         }
 
         static MergeCommitExecutionSummary fromFileResultsList(List<MergeScenarioExecutionSummary> results) {
-            return new MergeCommitExecutionSummary(MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS,
-                    results.stream().every { it -> it.isEquivalentToOracle() })
+            def result = results.stream()
+                    .map { it -> it.result }
+                    .reduce(MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS, MergeCommitExecutionSummary::validateResult)
+            def allMatchesOracle = results.stream().every { it -> it.isEquivalentToOracle() }
+            return new MergeCommitExecutionSummary(result, allMatchesOracle)
+        }
+
+        private static validateResult(MergeScenarioResult prev, MergeScenarioResult cur) {
+            return cur != MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS ? cur : prev
         }
     }
 }

@@ -20,11 +20,9 @@ final class Utils {
      */
     static void runGitCommand(Path repositoryPath, String... arguments) {
         Process gitCommand = ProcessRunner.startProcess(buildGitCommand(repositoryPath, arguments))
-        gitCommand.getInputStream().eachLine {
-        }
         def exitCode = gitCommand.waitFor()
         if (exitCode > 0) {
-            LOG.warn("Git command exited with error code ${exitCode}. Message: ${gitCommand.getErrorStream().readLines()}")
+            LOG.warn("Git command exited with error code ${exitCode}.\n Error stream: ${gitCommand.getErrorStream().readLines()}\n Input stream: ${gitCommand.getInputStream().readLines()}")
         }
     }
 

@@ -24,7 +24,7 @@ final class Utils {
         }
         def exitCode = gitCommand.waitFor()
         if (exitCode > 0) {
-            LOG.warn("An error occurred while running git command: ${gitCommand.getInputStream().readLines()}")
+            LOG.warn("Git command exited with error code ${exitCode}. Message: ${gitCommand.getErrorStream().readLines()}")
         }
     }
 

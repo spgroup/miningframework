@@ -69,9 +69,10 @@ class GenericMergeDataCollector implements DataCollector {
                 .filter { it -> it.value.result == MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS }
                 .map { x -> x.key }
                 .collect(Collectors.toList())
-
-        // Are there any exclusive conflicts/tool errors?
-        if (toolsInWhichIntegrationSucceeded.size() != mergeToolExecutors.size()) {
+        
+        if (toolsInWhichIntegrationSucceeded.size() == 0) {
+            LOG.info("Integration failed in all tools")
+        } else if (toolsInWhichIntegrationSucceeded.size() != mergeToolExecutors.size()) {
             LOG.info("At least one of the tools either reported a conflict or failed on the commit while the other did not")
             toolsInWhichIntegrationSucceeded.forEach { tool ->
                 {

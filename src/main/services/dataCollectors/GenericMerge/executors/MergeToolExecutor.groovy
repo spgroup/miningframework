@@ -9,7 +9,7 @@ import java.nio.file.Path
 abstract class MergeToolExecutor {
     private static Logger LOG = LogManager.getLogger(MergeToolExecutor.class)
 
-    public static final int NUMBER_OF_EXECUTIONS = 5
+    private static final int NUMBER_OF_EXECUTIONS = 5
 
     GenericMergeDataCollector.MergeScenarioExecutionSummary runToolForMergeScenario(Path scenario) {
         LOG.trace("Starting execution of merge scenario with tool ${getToolName()}")

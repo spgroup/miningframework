@@ -69,7 +69,7 @@ class GenericMergeDataCollector implements DataCollector {
                 .filter { it -> it.value.result == MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS }
                 .map { x -> x.key }
                 .collect(Collectors.toList())
-        
+
         if (toolsInWhichIntegrationSucceeded.size() == 0) {
             LOG.info("Integration failed in all tools")
         } else if (toolsInWhichIntegrationSucceeded.size() != mergeToolExecutors.size()) {

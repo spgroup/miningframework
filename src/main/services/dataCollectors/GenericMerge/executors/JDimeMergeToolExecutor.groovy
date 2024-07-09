@@ -20,6 +20,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
 
         def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
                 "./JDime",
+                "-f",
                 "--mode=structured",
                 "--output=${outputFile.toAbsolutePath().toString()}".toString(),
                 "${working_directory_path}/left.java",

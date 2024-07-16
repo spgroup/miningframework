@@ -21,7 +21,7 @@ class BuildRequester {
 
         createBranchFromCommit(project, mergeCommit, branchName)
         replaceFilesInProject(project, mergeCommit, mergeScenarios, toReplaceFile)
-        createOrReplaceGithubActionsFile(project, mergeCommit)
+        createOrReplaceGithubActionsFile(project)
         stageAndPushChanges(project, branchName, "Mining Framework Analysis")
     }
 
@@ -40,14 +40,13 @@ class BuildRequester {
                 })
     }
 
-    private static void createOrReplaceGithubActionsFile(Project project, MergeCommit mergeCommit) {
-        def projectPath = Utils.commitFilesPath(project, mergeCommit).toAbsolutePath().toString()
-        def githubActionsFilePath = Paths.get("${projectPath}/.github/workflows/mining_framework.yml")
+    private static void createOrReplaceGithubActionsFile(Project project) {
+        LOG.debug("Starting creation of github actions file")
+        def githubActionsFilePath = "${Paths.get(project.getPath()).toAbsolutePath().toString()}/.github/workflows"
+        LOG.debug("Location of github actions folder ${githubActionsFilePath}")
         def githubActionsContent = """
 name: Mining Framework Check
-
 on: [push]
-
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -66,8 +65,11 @@ jobs:
                 java-version: 1.8
             - run: ./gradlew test
 """
-
-        Files.write(githubActionsFilePath, githubActionsContent.getBytes())
+        Files.createDirectories(Paths.get(githubActionsFilePath))
+        def file = new File("${githubActionsFilePath}/mining_framework.yml")
+        file.createNewFile()
+        file.write(githubActionsContent)
+        LOG.debug("Finished creation of github actions file")
     }
 
     private static Path getSource(Path mergeScenario, String toReplaceFile) {

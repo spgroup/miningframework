@@ -21,6 +21,7 @@ class BuildRequester {
 
         createBranchFromCommit(project, mergeCommit, branchName)
         replaceFilesInProject(project, mergeCommit, mergeScenarios, toReplaceFile)
+        createOrReplaceGithubActionsFile(project, mergeCommit)
         stageAndPushChanges(project, branchName, "Mining Framework Analysis")
     }
 
@@ -37,6 +38,36 @@ class BuildRequester {
                     LOG.debug("Trying to copy " + getSource(mergeScenario, toReplaceFile) + " into " + getTarget(project, mergeCommit, mergeScenario))
                     Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING)
                 })
+    }
+
+    private static void createOrReplaceGithubActionsFile(Project project, MergeCommit mergeCommit) {
+        def projectPath = Utils.commitFilesPath(project, mergeCommit).toAbsolutePath().toString()
+        def githubActionsFilePath = Paths.get("${projectPath}/.github/workflows/mining_framework.yml")
+        def githubActionsContent = """
+name: Mining Framework Check
+
+on: [push]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-java@v1
+              with:
+                java-version: 1.8
+            - run: ./gradlew assemble
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-java@v1
+              with:
+                java-version: 1.8
+            - run: ./gradlew test
+"""
+
+        Files.write(githubActionsFilePath, githubActionsContent.getBytes())
     }
 
     private static Path getSource(Path mergeScenario, String toReplaceFile) {

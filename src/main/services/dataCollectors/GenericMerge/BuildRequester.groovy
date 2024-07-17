@@ -44,6 +44,10 @@ class BuildRequester {
         LOG.debug("Starting creation of github actions file")
         def githubActionsFilePath = "${Paths.get(project.getPath()).toAbsolutePath().toString()}/.github/workflows"
         LOG.debug("Location of github actions folder ${githubActionsFilePath}")
+
+        def buildSystem = getBuildSystemForProject(project)
+        LOG.debug("Using ${buildSystem.class.getSimpleName()} as build system for project ${project.getName()}")
+
         def githubActionsContent = """
 name: Mining Framework Check
 on: [push]
@@ -55,7 +59,7 @@ jobs:
             - uses: actions/setup-java@v1
               with:
                 java-version: 1.8
-            - run: ./gradlew assemble
+            - run: ${buildSystem.getBuildCommand()}
     test:
         runs-on: ubuntu-latest
         steps:
@@ -63,7 +67,7 @@ jobs:
             - uses: actions/setup-java@v1
               with:
                 java-version: 1.8
-            - run: ./gradlew test
+            - run: ${buildSystem.getTestCommand()}
 """
         Files.createDirectories(Paths.get(githubActionsFilePath))
         def file = new File("${githubActionsFilePath}/mining_framework.yml")
@@ -93,5 +97,59 @@ jobs:
 
         // Push changes
         Utils.runGitCommand(projectPath, 'push', '--set-upstream', 'origin', branchName, '--force-with-lease')
+    }
+
+    private static interface BuildSystem {
+        String getBuildCommand()
+        String getTestCommand()
+    }
+
+    private static class MavenBuildSystem implements BuildSystem {
+        @Override
+        String getBuildCommand() {
+            return "mvn package"
+        }
+
+        @Override
+        String getTestCommand() {
+            return "mvn test"
+        }
+    }
+
+    private static class GradleBuildSystem implements BuildSystem {
+        @Override
+        String getBuildCommand() {
+            return "./gradlew assemble"
+        }
+
+        @Override
+        String getTestCommand() {
+            return "./gradlew test"
+        }
+    }
+
+    private static class NoopBuildSystem implements BuildSystem {
+        @Override
+        String getBuildCommand() {
+            return "echo no build available"
+        }
+
+        @Override
+        String getTestCommand() {
+            return "echo no test available"
+        }
+    }
+
+    private static BuildSystem getBuildSystemForProject(Project project) {
+        File mavenFile = new File("${project.getPath()}/pom.xml")
+        File gradleFile = new File("${project.getPath()}/build.gradle")
+
+        if (mavenFile.exists()) {
+            return new MavenBuildSystem()
+        } else if (gradleFile.exists()) {
+            return new GradleBuildSystem()
+        } else {
+            return new NoopBuildSystem()
+        }
     }
 }

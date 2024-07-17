@@ -18,12 +18,16 @@ final class Utils {
      * @param repositoryPath
      * @param arguments
      */
-    static void runGitCommand(Path repositoryPath, String... arguments) {
+    static List<String> runGitCommand(Path repositoryPath, String... arguments) {
         Process gitCommand = ProcessRunner.startProcess(buildGitCommand(repositoryPath, arguments))
         def exitCode = gitCommand.waitFor()
+        def commandOutput = gitCommand.getInputStream().readLines();
+
         if (exitCode > 0) {
-            LOG.warn("Git command exited with error code ${exitCode}.\n Error stream: ${gitCommand.getErrorStream().readLines()}\n Input stream: ${gitCommand.getInputStream().readLines()}")
+            LOG.warn("Git command exited with error code ${exitCode}.\n Error stream: ${gitCommand.getErrorStream().readLines()}\n Input stream: ${commandOutput}")
         }
+
+        return commandOutput
     }
 
     private static ProcessBuilder buildGitCommand(Path repositoryPath, String... arguments) {

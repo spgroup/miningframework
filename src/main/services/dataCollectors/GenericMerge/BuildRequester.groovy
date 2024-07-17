@@ -12,6 +12,9 @@ import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 
 class BuildRequester {
+    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
+    private static final BUILD_REQUESTER_REPORT_PATH = "${BASE_EXPERIMENT_PATH}/output/reports/generic-merge-execution-build-requests.csv"
+
     private static Logger LOG = LogManager.getLogger(BuildRequester.class)
 
     static requestBuildWithRevision(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String mergeTool) {
@@ -22,7 +25,11 @@ class BuildRequester {
         createBranchFromCommit(project, mergeCommit, branchName)
         replaceFilesInProject(project, mergeCommit, mergeScenarios, toReplaceFile)
         createOrReplaceGithubActionsFile(project)
-        stageAndPushChanges(project, branchName, "Mining Framework Analysis")
+        def commitSha = stageAndPushChanges(project, branchName, "Mining Framework Analysis")
+
+        def reportFile = new File(BUILD_REQUESTER_REPORT_PATH)
+        reportFile.createNewFile()
+        reportFile.append("${project.getName()},${branchName},${mergeTool},${commitSha}\n")
     }
 
     private static void createBranchFromCommit(Project project, MergeCommit mergeCommit, String branchName) {
@@ -86,7 +93,7 @@ jobs:
         return projectPath.resolve(filePath)
     }
 
-    private static void stageAndPushChanges(Project project, String branchName, String commitMessage) {
+    private static String stageAndPushChanges(Project project, String branchName, String commitMessage) {
         Path projectPath = Paths.get(project.getPath())
 
         // Stage changes
@@ -94,9 +101,13 @@ jobs:
 
         // Commit changes
         Utils.runGitCommand(projectPath, 'commit', '-m', commitMessage)
+        def commitSha = Utils.runGitCommand(projectPath, 'rev-parse', 'HEAD');
+        LOG.debug("Created commit with hash ${commitSha}")
 
         // Push changes
         Utils.runGitCommand(projectPath, 'push', '--set-upstream', 'origin', branchName, '--force-with-lease')
+
+        return commitSha.get(0);
     }
 
     private static interface BuildSystem {

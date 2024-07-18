@@ -65,7 +65,7 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/setup-java@v1
               with:
-                java-version: 1.8
+                java-version: 11
             - run: ${buildSystem.getBuildCommand()}
     test:
         runs-on: ubuntu-latest
@@ -73,7 +73,7 @@ jobs:
             - uses: actions/checkout@v2
             - uses: actions/setup-java@v1
               with:
-                java-version: 1.8
+                java-version: 11
             - run: ${buildSystem.getTestCommand()}
 """
         Files.createDirectories(Paths.get(githubActionsFilePath))
@@ -118,7 +118,7 @@ jobs:
     private static class MavenBuildSystem implements BuildSystem {
         @Override
         String getBuildCommand() {
-            return "mvn package"
+            return "mvn package -Dskiptests"
         }
 
         @Override

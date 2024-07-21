@@ -24,7 +24,10 @@ abstract class MergeToolExecutor {
             result = executeTool(scenario, outputFilePath)
             long endTime = System.nanoTime()
             LOG.trace("Finished execution ${i + 1} of ${NUMBER_OF_EXECUTIONS} IN ${endTime - startTime} ns")
-            executionTimes.add(endTime - startTime)
+            // If we're running more than one execution, we use the first one as a warm up
+            if (NUMBER_OF_EXECUTIONS == 1 || i > 0) {
+                executionTimes.add(endTime - startTime)
+            }
         }
 
         long averageTime = (long) (executionTimes.stream().reduce(0, (prev, cur) -> prev + cur) / executionTimes.size())

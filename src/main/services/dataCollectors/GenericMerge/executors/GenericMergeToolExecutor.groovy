@@ -2,6 +2,7 @@ package services.dataCollectors.GenericMerge.executors
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import services.dataCollectors.GenericMerge.FileFormatNormalizer
 import services.dataCollectors.GenericMerge.GenericMergeDataCollector
 import util.ProcessRunner
 
@@ -26,6 +27,10 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
         if (output.exitValue() > 1) {
             LOG.warn("Error while merging ${scenario.toAbsolutePath()}. Generic Merge exited with exitCode ${output.exitValue()}")
             LOG.debug("Generic Merge output: ${output.getInputStream().readLines()}")
+        }
+
+        if (output.exitValue() == 0) {
+            FileFormatNormalizer.normalizeFileInPlace(outputFile)
         }
 
         return output.exitValue() == 0 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() == 1 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS : GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR

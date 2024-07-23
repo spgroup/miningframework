@@ -44,6 +44,12 @@ class GenericMergeDataCollector implements DataCollector {
     void collectData(Project project, MergeCommit mergeCommit) {
         def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)).collect(Collectors.toList())
 
+        LOG.trace("Starting normalization of merge files on scenario")
+        scenarios.parallelStream().forEach {
+            scenario -> FileFormatNormalizer.normalizeFileInPlace(scenario.resolve("merge.java"))
+        }
+        LOG.trace("Finished normalization of merge files on scenario")
+
         LOG.trace("Starting execution of merge tools on scenario")
         def mergeToolsExecutionResults = scenarios
                 .stream()

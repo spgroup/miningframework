@@ -9,11 +9,8 @@ import java.nio.file.Path
 class FileFormatNormalizer {
     private static Logger LOG = LogManager.getLogger(FileFormatNormalizer.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
-    private static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
-
     static void normalizeFileInPlace(Path file) {
-        def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
+        def processBuilder = ProcessRunner.buildProcess(GenericMergeConfig.JDIME_BINARY_PATH,
                 "./JDime",
                 "-f",
                 "--mode=structured",

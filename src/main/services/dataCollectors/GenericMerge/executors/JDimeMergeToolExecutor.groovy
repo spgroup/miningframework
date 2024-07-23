@@ -2,6 +2,7 @@ package services.dataCollectors.GenericMerge.executors
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import services.util.MergeConflict
 import util.ProcessRunner
@@ -11,14 +12,11 @@ import java.nio.file.Path
 class JDimeMergeToolExecutor extends MergeToolExecutor {
     private static Logger LOG = LogManager.getLogger(JDimeMergeToolExecutor.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
-    private static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
-
     @Override
     protected MergeScenarioResult executeTool(Path scenario, Path outputFile) {
         def working_directory_path = scenario.toAbsolutePath().toString()
 
-        def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
+        def processBuilder = ProcessRunner.buildProcess(GenericMergeConfig.JDIME_BINARY_PATH,
                 "./JDime",
                 "-f",
                 "--mode=structured",

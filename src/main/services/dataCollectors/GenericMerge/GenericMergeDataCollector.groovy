@@ -20,21 +20,15 @@ import java.util.stream.Collectors
 class GenericMergeDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(GenericMergeDataCollector.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
-    public static final GENERIC_MERGE_REPORT_PATH = "${BASE_EXPERIMENT_PATH}/output/reports"
-    public static final GENERIC_MERGE_REPORT_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution.csv"
-    public static final GENERIC_MERGE_REPORT_COMMITS_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution-commits.csv"
-    public static final MERGE_TOOL_EXECUTORS_TO_USE = System.getProperty("miningframework.generic_merge.merge_tool_executors_to_use", "generic_merge,jdime").split(",")
-
     private final List<MergeToolExecutor> mergeToolExecutors
 
     GenericMergeDataCollector() {
         this.mergeToolExecutors = new ArrayList<MergeToolExecutor>()
-        if (MERGE_TOOL_EXECUTORS_TO_USE.contains("generic_merge")) {
+        if (GenericMergeConfig.MERGE_TOOL_EXECUTORS_TO_USE.contains("generic_merge")) {
             LOG.debug("Registering Generic Merge as a merge tool executor")
             this.mergeToolExecutors.add(new GenericMergeToolExecutor())
         }
-        if (MERGE_TOOL_EXECUTORS_TO_USE.contains("jdime")) {
+        if (GenericMergeConfig.MERGE_TOOL_EXECUTORS_TO_USE.contains("jdime")) {
             LOG.debug("Registering jDime as a merge tool executor")
             this.mergeToolExecutors.add(new JDimeMergeToolExecutor())
         }
@@ -96,7 +90,7 @@ class GenericMergeDataCollector implements DataCollector {
 
         LOG.trace("Starting write of files results to report file")
         def lines = mergeToolsExecutionResults.parallelStream().map(result -> getReportLine(project, mergeCommit, result))
-        def reportFile = new File(GENERIC_MERGE_REPORT_FILE_NAME)
+        def reportFile = new File(GenericMergeConfig.GENERIC_MERGE_REPORT_FILE_NAME)
         reportFile << lines.collect(Collectors.joining(System.lineSeparator())) << "\n"
         LOG.trace("Finished write of files results to report file")
 
@@ -110,7 +104,7 @@ class GenericMergeDataCollector implements DataCollector {
             list.add(it.value.allScenariosMatch.toString())
             return list.join(",").replaceAll('\\\\', '/')
         }
-        def commitReportFile = new File(GENERIC_MERGE_REPORT_COMMITS_FILE_NAME)
+        def commitReportFile = new File(GenericMergeConfig.GENERIC_MERGE_REPORT_COMMITS_FILE_NAME)
         commitReportFile << commitLines.collect(Collectors.joining(System.lineSeparator())) << "\n"
         LOG.trace("Finished write of commit report")
     }

@@ -3,6 +3,7 @@ package services.dataCollectors.GenericMerge.executors
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import services.dataCollectors.GenericMerge.FileFormatNormalizer
+import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import util.ProcessRunner
 
@@ -10,9 +11,6 @@ import java.nio.file.Path
 
 class GenericMergeToolExecutor extends MergeToolExecutor {
     private static Logger LOG = LogManager.getLogger(GenericMergeToolExecutor.class)
-
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
-    private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
 
     @Override
     protected MergeScenarioResult executeTool(Path scenario, Path outputFile) {
@@ -43,7 +41,7 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
 
     private static List<String> getBuildParameters(Path outputFile) {
         def list = new ArrayList<String>()
-        list.add(GENERIC_MERGE_BINARY_PATH)
+        list.add(GenericMergeConfig.GENERIC_MERGE_BINARY_PATH)
         list.add("merge")
         list.add("--base-path=base.java")
         list.add("--left-path=left.java")

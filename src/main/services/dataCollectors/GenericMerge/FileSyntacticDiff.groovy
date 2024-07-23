@@ -10,9 +10,6 @@ import java.nio.file.Path
 class FileSyntacticDiff {
     private static Logger LOG = LogManager.getLogger(FileSyntacticDiff.class)
 
-    private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
-    private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
-
     static boolean areFilesSyntacticallyEquivalent(Path fileA, Path fileB) {
         if (!Files.exists(fileA) || !Files.exists(fileB)) {
             LOG.trace("Early returning because one of the files ${} do not exist")
@@ -22,7 +19,7 @@ class FileSyntacticDiff {
         def process = ProcessRunner.buildProcess("./")
 
         def list = new ArrayList<String>()
-        list.add(GENERIC_MERGE_BINARY_PATH)
+        list.add(GenericMergeConfig.GENERIC_MERGE_BINARY_PATH)
         list.add("diff")
         list.add("--left-path=${fileA.toAbsolutePath().toString()}".toString())
         list.add("--right-path=${fileB.toAbsolutePath().toString()}".toString())

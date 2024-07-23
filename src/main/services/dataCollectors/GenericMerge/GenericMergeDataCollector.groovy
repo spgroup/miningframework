@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
-import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
 import services.dataCollectors.GenericMerge.model.MergeCommitExecutionSummary
 import services.dataCollectors.GenericMerge.model.MergeScenarioExecutionSummary
@@ -20,14 +19,10 @@ import java.util.stream.Collectors
 class GenericMergeDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(GenericMergeDataCollector.class)
 
-    private final List<MergeToolExecutor> mergeToolExecutors
-
-    GenericMergeDataCollector() {
-        this.mergeToolExecutors = Arrays.asList([
-                new GenericMergeToolExecutor(),
-                new JDimeMergeToolExecutor()
-        ])
-    }
+    private final List<MergeToolExecutor> mergeToolExecutors = Arrays.asList(
+            new GenericMergeToolExecutor(),
+            new JDimeMergeToolExecutor()
+    )
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {

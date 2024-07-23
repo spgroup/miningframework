@@ -19,7 +19,6 @@ class Arguments {
     private String syntacticSeparators
     private String fileExtension
     private Level logLevel
-    private String[] mergeToolsToUse
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -34,7 +33,6 @@ class Arguments {
         syntacticSeparators = '{ } ( ) ; ,'
         fileExtension = 'java'
         logLevel = Level.INFO
-        mergeToolsToUse = ["generic_merge", "jdime"]
     }
 
     void setNumOfThreads(int numOfThreads) {
@@ -148,13 +146,5 @@ class Arguments {
     void setLogLevel(Level logLevel) {
         this.logLevel = logLevel
         Configurator.setRootLevel(logLevel)
-    }
-
-    String[] getMergeToolsToUse() {
-        return mergeToolsToUse
-    }
-
-    void setMergeToolsToUse(String[] mergeToolsToUse) {
-        this.mergeToolsToUse = mergeToolsToUse
     }
 }

@@ -23,15 +23,10 @@ class GenericMergeDataCollector implements DataCollector {
     private final List<MergeToolExecutor> mergeToolExecutors
 
     GenericMergeDataCollector() {
-        this.mergeToolExecutors = new ArrayList<MergeToolExecutor>()
-        if (GenericMergeConfig.MERGE_TOOL_EXECUTORS_TO_USE.contains("generic_merge")) {
-            LOG.debug("Registering Generic Merge as a merge tool executor")
-            this.mergeToolExecutors.add(new GenericMergeToolExecutor())
-        }
-        if (GenericMergeConfig.MERGE_TOOL_EXECUTORS_TO_USE.contains("jdime")) {
-            LOG.debug("Registering jDime as a merge tool executor")
-            this.mergeToolExecutors.add(new JDimeMergeToolExecutor())
-        }
+        this.mergeToolExecutors = Arrays.asList([
+                new GenericMergeToolExecutor(),
+                new JDimeMergeToolExecutor()
+        ])
     }
 
     @Override

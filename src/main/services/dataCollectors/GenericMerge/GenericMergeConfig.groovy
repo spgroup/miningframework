@@ -1,11 +1,7 @@
 package services.dataCollectors.GenericMerge
 
-import static app.MiningFramework.arguments
-
 class GenericMergeConfig {
     public static final BASE_EXPERIMENT_PATH = System.getProperty("user.dir")
-
-    public static final MERGE_TOOL_EXECUTORS_TO_USE = arguments.getMergeToolsToUse()
 
     public static final BUILD_REQUESTER_REPORT_PATH = "${BASE_EXPERIMENT_PATH}/output/reports/generic-merge-execution-build-requests.csv"
 

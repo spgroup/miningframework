@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.config.Configurator
 
 class Arguments {
-    
+
     private String inputPath
     private String outputPath
     private String sinceDate
@@ -19,6 +19,7 @@ class Arguments {
     private String syntacticSeparators
     private String fileExtension
     private Level logLevel
+    private String[] mergeToolsToUse
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -33,9 +34,10 @@ class Arguments {
         syntacticSeparators = '{ } ( ) ; ,'
         fileExtension = 'java'
         logLevel = Level.INFO
+        mergeToolsToUse = ["generic_merge", "jdime"]
     }
 
-    void setNumOfThreads (int numOfThreads) {
+    void setNumOfThreads(int numOfThreads) {
         this.numOfThreads = numOfThreads
     }
 
@@ -86,7 +88,7 @@ class Arguments {
     int getNumOfThreads() {
         return this.numOfThreads
     }
-    
+
     String getInputPath() {
         return inputPath
     }
@@ -111,7 +113,7 @@ class Arguments {
         return isHelp
     }
 
-    boolean getKeepProjects () {
+    boolean getKeepProjects() {
         return keepProjects
     }
 
@@ -134,7 +136,7 @@ class Arguments {
     boolean providedAccessKey() {
         return accessKey.length() > 0
     }
-    
+
     boolean isPushCommandActive() {
         return !resultsRemoteRepositoryURL.equals('')
     }
@@ -146,5 +148,13 @@ class Arguments {
     void setLogLevel(Level logLevel) {
         this.logLevel = logLevel
         Configurator.setRootLevel(logLevel)
+    }
+
+    String[] getMergeToolsToUse() {
+        return mergeToolsToUse
+    }
+
+    void setMergeToolsToUse(String[] mergeToolsToUse) {
+        this.mergeToolsToUse = mergeToolsToUse
     }
 }

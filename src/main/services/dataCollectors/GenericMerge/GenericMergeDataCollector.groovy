@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
+import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
 import services.dataCollectors.GenericMerge.model.MergeCommitExecutionSummary
 import services.dataCollectors.GenericMerge.model.MergeScenarioExecutionSummary

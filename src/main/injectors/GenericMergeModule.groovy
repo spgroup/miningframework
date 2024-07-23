@@ -9,7 +9,7 @@ import interfaces.ProjectProcessor
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
-import services.commitFilters.S3MCommitFilter
+import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.GenericMerge.GenericMergeDataCollector
 import services.outputProcessors.GenericMergeDataOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
@@ -41,8 +41,8 @@ class GenericMergeModule extends AbstractModule {
 
     private static void createExecutionReportsFile() {
         LOG.info("Creating Generic Merge report file")
-        Files.createDirectories(Paths.get(GenericMergeDataCollector.GENERIC_MERGE_REPORT_PATH))
-        def reportFile = new File(GenericMergeDataCollector.GENERIC_MERGE_REPORT_FILE_NAME)
+        Files.createDirectories(Paths.get(GenericMergeConfig.GENERIC_MERGE_REPORT_PATH))
+        def reportFile = new File(GenericMergeConfig.GENERIC_MERGE_REPORT_FILE_NAME)
         reportFile.createNewFile()
     }
 }

@@ -43,6 +43,11 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
     }
 
     @Override
+    protected boolean shouldSkipFileNormalization() {
+        return true
+    }
+
+    @Override
     String getToolName() {
         return "JDIME"
     }

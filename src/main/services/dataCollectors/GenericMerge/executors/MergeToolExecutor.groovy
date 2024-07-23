@@ -2,6 +2,7 @@ package services.dataCollectors.GenericMerge.executors
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import services.dataCollectors.GenericMerge.FileFormatNormalizer
 import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.GenericMerge.model.MergeScenarioExecutionSummary
 import services.dataCollectors.GenericMerge.model.MergeScenarioResult
@@ -32,6 +33,10 @@ abstract class MergeToolExecutor {
 
         long averageTime = (long) (executionTimes.stream().reduce(0, (prev, cur) -> prev + cur) / executionTimes.size())
 
+        if (result == MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS && !shouldSkipFileNormalization()) {
+            FileFormatNormalizer.normalizeFileInPlace(outputFilePath)
+        }
+
         def summary = new MergeScenarioExecutionSummary(scenario,
                 outputFilePath,
                 result,
@@ -43,6 +48,8 @@ abstract class MergeToolExecutor {
     }
 
     protected abstract MergeScenarioResult executeTool(Path scenario, Path outputFile);
+
+    protected abstract boolean shouldSkipFileNormalization();
 
     abstract String getToolName();
 }

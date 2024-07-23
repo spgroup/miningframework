@@ -2,7 +2,6 @@ package services.dataCollectors.GenericMerge.executors
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import services.dataCollectors.GenericMerge.FileFormatNormalizer
 import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import util.ProcessRunner
@@ -27,11 +26,12 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
             LOG.debug("Generic Merge output: ${output.getInputStream().readLines()}")
         }
 
-        if (output.exitValue() == 0) {
-            FileFormatNormalizer.normalizeFileInPlace(outputFile)
-        }
-
         return output.exitValue() == 0 ? MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() == 1 ? MergeScenarioResult.SUCCESS_WITH_CONFLICTS : MergeScenarioResult.TOOL_ERROR
+    }
+
+    @Override
+    protected boolean shouldSkipFileNormalization() {
+        return false
     }
 
     @Override

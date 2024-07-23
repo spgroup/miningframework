@@ -2,7 +2,7 @@ package services.dataCollectors.GenericMerge.executors
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import services.dataCollectors.GenericMerge.GenericMergeDataCollector
+import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import services.util.MergeConflict
 import util.ProcessRunner
 
@@ -15,7 +15,7 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
     private static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
 
     @Override
-    protected GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario, Path outputFile) {
+    protected MergeScenarioResult executeTool(Path scenario, Path outputFile) {
         def working_directory_path = scenario.toAbsolutePath().toString()
 
         def processBuilder = ProcessRunner.buildProcess(JDIME_BINARY_PATH,
@@ -33,15 +33,15 @@ class JDimeMergeToolExecutor extends MergeToolExecutor {
         if (output.exitValue() >= 200) {
             LOG.warn("Error while merging ${scenario.toAbsolutePath()}. jDime exited with exitCode ${output.exitValue()}")
             LOG.debug("jDime output: ${output.getInputStream().readLines()}")
-            return GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
+            return MergeScenarioResult.TOOL_ERROR
         }
 
         def mergeConflictsCount = MergeConflict.getConflictsNumber(outputFile)
         if (mergeConflictsCount > 0) {
-            return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS
+            return MergeScenarioResult.SUCCESS_WITH_CONFLICTS
         }
 
-        return GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS
+        return MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS
     }
 
     @Override

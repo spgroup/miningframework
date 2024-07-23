@@ -2,7 +2,8 @@ package services.dataCollectors.GenericMerge.executors
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import services.dataCollectors.GenericMerge.GenericMergeDataCollector
+import services.dataCollectors.GenericMerge.model.MergeScenarioExecutionSummary
+import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 
 import java.nio.file.Path
 
@@ -11,12 +12,12 @@ abstract class MergeToolExecutor {
 
     private static final int NUMBER_OF_EXECUTIONS = 5
 
-    GenericMergeDataCollector.MergeScenarioExecutionSummary runToolForMergeScenario(Path scenario) {
+    MergeScenarioExecutionSummary runToolForMergeScenario(Path scenario) {
         LOG.trace("Starting execution of merge scenario with tool ${getToolName()}")
 
         List<Long> executionTimes = new ArrayList<>()
         def outputFilePath = scenario.resolve("merge." + getToolName().toLowerCase() + ".java")
-        GenericMergeDataCollector.MergeScenarioResult result = null
+        MergeScenarioResult result = null
 
         for (int i = 0; i < NUMBER_OF_EXECUTIONS; i++) {
             LOG.trace("Starting execution ${i + 1} of ${NUMBER_OF_EXECUTIONS}")
@@ -32,7 +33,7 @@ abstract class MergeToolExecutor {
 
         long averageTime = (long) (executionTimes.stream().reduce(0, (prev, cur) -> prev + cur) / executionTimes.size())
 
-        def summary = new GenericMergeDataCollector.MergeScenarioExecutionSummary(scenario,
+        def summary = new MergeScenarioExecutionSummary(scenario,
                 outputFilePath,
                 result,
                 averageTime,
@@ -42,7 +43,7 @@ abstract class MergeToolExecutor {
         return summary
     }
 
-    protected abstract GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario, Path outputFile);
+    protected abstract MergeScenarioResult executeTool(Path scenario, Path outputFile);
 
     abstract String getToolName();
 }

@@ -3,7 +3,7 @@ package services.dataCollectors.GenericMerge.executors
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import services.dataCollectors.GenericMerge.FileFormatNormalizer
-import services.dataCollectors.GenericMerge.GenericMergeDataCollector
+import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import util.ProcessRunner
 
 import java.nio.file.Path
@@ -15,7 +15,7 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
     private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
 
     @Override
-    protected GenericMergeDataCollector.MergeScenarioResult executeTool(Path scenario, Path outputFile) {
+    protected MergeScenarioResult executeTool(Path scenario, Path outputFile) {
         def working_directory_path = scenario.toAbsolutePath().toString()
 
         def processBuilder = ProcessRunner.buildProcess(working_directory_path)
@@ -33,7 +33,7 @@ class GenericMergeToolExecutor extends MergeToolExecutor {
             FileFormatNormalizer.normalizeFileInPlace(outputFile)
         }
 
-        return output.exitValue() == 0 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() == 1 ? GenericMergeDataCollector.MergeScenarioResult.SUCCESS_WITH_CONFLICTS : GenericMergeDataCollector.MergeScenarioResult.TOOL_ERROR
+        return output.exitValue() == 0 ? MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS : output.exitValue() == 1 ? MergeScenarioResult.SUCCESS_WITH_CONFLICTS : MergeScenarioResult.TOOL_ERROR
     }
 
     @Override

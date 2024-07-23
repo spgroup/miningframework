@@ -9,10 +9,11 @@ import project.Project
 import services.dataCollectors.GenericMerge.executors.GenericMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
+import services.dataCollectors.GenericMerge.model.MergeCommitExecutionSummary
+import services.dataCollectors.GenericMerge.model.MergeScenarioExecutionSummary
+import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
-import util.ProcessRunner
 
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 
@@ -20,7 +21,6 @@ class GenericMergeDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(GenericMergeDataCollector.class)
 
     private static final BASE_EXPERIMENT_PATH = System.getProperty("miningframework.generic_merge.base_experiment_path", "/usr/src/app")
-    private static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
     public static final GENERIC_MERGE_REPORT_PATH = "${BASE_EXPERIMENT_PATH}/output/reports"
     public static final GENERIC_MERGE_REPORT_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution.csv"
     public static final GENERIC_MERGE_REPORT_COMMITS_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution-commits.csv"
@@ -45,8 +45,7 @@ class GenericMergeDataCollector implements DataCollector {
         def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)).collect(Collectors.toList())
 
         LOG.trace("Starting normalization of merge files on scenario")
-        scenarios.parallelStream().forEach {
-            scenario -> FileFormatNormalizer.normalizeFileInPlace(scenario.resolve("merge.java"))
+        scenarios.parallelStream().forEach { scenario -> FileFormatNormalizer.normalizeFileInPlace(scenario.resolve("merge.java"))
         }
         LOG.trace("Finished normalization of merge files on scenario")
 
@@ -151,85 +150,5 @@ class GenericMergeDataCollector implements DataCollector {
         }
 
         return !leftEqualsBase && !rightEqualsBase
-    }
-
-    static enum MergeScenarioResult {
-        SUCCESS_WITHOUT_CONFLICTS,
-        SUCCESS_WITH_CONFLICTS,
-        TOOL_ERROR
-    }
-
-    static class MergeScenarioExecutionSummary {
-        public final String tool
-        public final Path scenario
-        public final Path output
-        public final MergeScenarioResult result
-        public final long time
-        public final boolean equivalentToOracle
-
-        MergeScenarioExecutionSummary(Path scenario, Path output, MergeScenarioResult result, long time, String tool) {
-            this.scenario = scenario
-            this.output = output
-            this.result = result
-            this.time = time
-            this.tool = tool
-            this.equivalentToOracle = areFilesSyntacticallyEquivalent(scenario.resolve("merge.java"), output)
-        }
-
-        String getTool() {
-            return tool
-        }
-
-        boolean isEquivalentToOracle() {
-            return equivalentToOracle
-        }
-
-        private static boolean areFilesSyntacticallyEquivalent(Path fileA, Path fileB) {
-            if (!Files.exists(fileA) || !Files.exists(fileB)) {
-                LOG.trace("Early returning because one of the files ${} do not exist")
-                return false
-            }
-
-            def process = ProcessRunner.buildProcess("./")
-
-            def list = new ArrayList<String>()
-            list.add(GENERIC_MERGE_BINARY_PATH)
-            list.add("diff")
-            list.add("--left-path=${fileA.toAbsolutePath().toString()}".toString())
-            list.add("--right-path=${fileB.toAbsolutePath().toString()}".toString())
-            list.add("--language=java")
-            process.command().addAll(list)
-
-            def output = ProcessRunner.startProcess(process)
-            output.waitFor()
-
-            if (output.exitValue() > 1) {
-                LOG.warn("Error while running comparison between ${fileA.toString()} and ${fileB.toString()}: ${output.getInputStream().readLines()}")
-            }
-
-            return output.exitValue() == 0
-        }
-    }
-
-    static class MergeCommitExecutionSummary {
-        public final MergeScenarioResult result
-        public final boolean allScenariosMatch
-
-        private MergeCommitExecutionSummary(MergeScenarioResult result, boolean allScenariosMatch) {
-            this.result = result
-            this.allScenariosMatch = allScenariosMatch
-        }
-
-        static MergeCommitExecutionSummary fromFileResultsList(List<MergeScenarioExecutionSummary> results) {
-            def result = results.stream()
-                    .map { it -> it.result }
-                    .reduce(MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS, MergeCommitExecutionSummary::validateResult)
-            def allMatchesOracle = results.stream().every { it -> it.isEquivalentToOracle() }
-            return new MergeCommitExecutionSummary(result, allMatchesOracle)
-        }
-
-        private static validateResult(MergeScenarioResult prev, MergeScenarioResult cur) {
-            return cur != MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS ? cur : prev
-        }
     }
 }

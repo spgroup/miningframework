@@ -1,6 +1,8 @@
 package services.util
 
 import app.MiningFramework
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
 import util.ProcessRunner
@@ -9,17 +11,23 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 final class Utils {
+    private static Logger LOG = LogManager.getLogger(Utils.class)
 
     /**
      * Runs a git command, waiting for it to finish.
      * @param repositoryPath
      * @param arguments
      */
-    static void runGitCommand(Path repositoryPath, String... arguments) {
+    static List<String> runGitCommand(Path repositoryPath, String... arguments) {
         Process gitCommand = ProcessRunner.startProcess(buildGitCommand(repositoryPath, arguments))
-        gitCommand.getInputStream().eachLine {
+        def exitCode = gitCommand.waitFor()
+        def commandOutput = gitCommand.getInputStream().readLines();
+
+        if (exitCode > 0) {
+            LOG.warn("Git command exited with error code ${exitCode}.\n Error stream: ${gitCommand.getErrorStream().readLines()}\n Input stream: ${commandOutput}")
         }
-        gitCommand.waitFor()
+
+        return commandOutput
     }
 
     private static ProcessBuilder buildGitCommand(Path repositoryPath, String... arguments) {

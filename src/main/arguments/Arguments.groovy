@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.config.Configurator
 
 class Arguments {
-    
+
     private String inputPath
     private String outputPath
     private String sinceDate
@@ -35,7 +35,7 @@ class Arguments {
         logLevel = Level.INFO
     }
 
-    void setNumOfThreads (int numOfThreads) {
+    void setNumOfThreads(int numOfThreads) {
         this.numOfThreads = numOfThreads
     }
 
@@ -86,7 +86,7 @@ class Arguments {
     int getNumOfThreads() {
         return this.numOfThreads
     }
-    
+
     String getInputPath() {
         return inputPath
     }
@@ -111,7 +111,7 @@ class Arguments {
         return isHelp
     }
 
-    boolean getKeepProjects () {
+    boolean getKeepProjects() {
         return keepProjects
     }
 
@@ -134,7 +134,7 @@ class Arguments {
     boolean providedAccessKey() {
         return accessKey.length() > 0
     }
-    
+
     boolean isPushCommandActive() {
         return !resultsRemoteRepositoryURL.equals('')
     }

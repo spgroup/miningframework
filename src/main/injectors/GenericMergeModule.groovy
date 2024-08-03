@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
 import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.GenericMerge.GenericMergeDataCollector
+import services.dataCollectors.GenericMerge.MergeToolsComparator
 import services.outputProcessors.GenericMergeDataOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
 import services.util.ci.CIPlatform
@@ -29,6 +30,7 @@ class GenericMergeModule extends AbstractModule {
 
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
         dataCollectorBinder.addBinding().to(GenericMergeDataCollector.class)
+        dataCollectorBinder.addBinding().to(MergeToolsComparator.class)
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(GenericMergeDataOutputProcessor.class)

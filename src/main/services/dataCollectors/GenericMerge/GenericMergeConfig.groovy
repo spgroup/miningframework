@@ -7,6 +7,7 @@ class GenericMergeConfig {
 
     public static final GENERIC_MERGE_REPORT_PATH = "${BASE_EXPERIMENT_PATH}/output/reports"
     public static final GENERIC_MERGE_REPORT_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution.csv"
+    public static final GENERIC_MERGE_REPORT_FILES_EQUIVALENT = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-output-equivalent.csv"
     public static final GENERIC_MERGE_REPORT_COMMITS_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-execution-commits.csv"
 
     public static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"

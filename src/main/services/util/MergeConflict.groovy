@@ -16,9 +16,9 @@ class MergeConflict {
         Right
     }
 
-    public static MINE_CONFLICT_MARKER = "<<<<<<<MINE"
+    public static MINE_CONFLICT_MARKER = "<<<<<<<"
     public static BASE_CONFLICT_MARKER = "|||||||"
-    public static YOURS_CONFLICT_MARKER = ">>>>>>>YOURS"
+    public static YOURS_CONFLICT_MARKER = ">>>>>>>"
     public static CHANGE_CONFLICT_MARKER = "======="
     public static SIMPLE_CONFLICT_MARKER = "<<<<<<<"
 

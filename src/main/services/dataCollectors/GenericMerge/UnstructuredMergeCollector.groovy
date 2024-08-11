@@ -8,6 +8,7 @@ import services.mergeScenariosFilters.NonFastForwardMergeScenarioFilter
 import util.CsvUtils
 import util.ProcessRunner
 
+import java.nio.file.Files
 import java.nio.file.Path
 
 class UnstructuredMergeCollector implements DataCollector {
@@ -30,12 +31,15 @@ class UnstructuredMergeCollector implements DataCollector {
         def executionTimes = new ArrayList<Long>()
 
         for (int i = 0; i < GenericMergeConfig.NUMBER_OF_EXECUTIONS; i++) {
+            // We copy the left file, because git merge-file runs in place, replacing the contents of left file
+            Files.copy(scenario.resolve("left.java"), scenario.resolve("merge.unstructured.java"))
+
             long startTime = System.nanoTime()
 
             def processBuilder = ProcessRunner.buildProcess(GenericMergeConfig.BASE_EXPERIMENT_PATH,
                     "git",
                     "merge-file",
-                    scenario.resolve("left.java").toString(),
+                    scenario.resolve("merge.unstructured.java").toString(),
                     scenario.resolve("base.java").toString(),
                     scenario.resolve("right.java").toString())
             ProcessRunner.startProcess(processBuilder).waitFor()

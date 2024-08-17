@@ -1,5 +1,7 @@
 package services.outputProcessors.soot
 
+import com.xlson.groovycsv.PropertyMapper
+
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
 class ScenarioReader {
@@ -17,7 +19,7 @@ class ScenarioReader {
             String classPathName = line["className"]
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
-            String entrypoints = line["entrypoints"]
+            String entrypoints = getEntrypointColumn(line);
 
             String scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA)
 
@@ -33,6 +35,15 @@ class ScenarioReader {
             result.add(scenario)
         }
         return result
+    }
+
+    static private  String getEntrypointColumn(Object line) {
+        try{
+            return  line["entrypoints"]?.toString()
+        }catch (Exception ignored){
+            return null;
+        }
+
     }
 
     static private String getScenarioDirectory(String outputPath, String projectName, String commitSHA, String realisticCasePath) {

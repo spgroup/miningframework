@@ -10,6 +10,7 @@ import util.ProcessRunner
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 
 class UnstructuredMergeCollector implements DataCollector {
     @Override
@@ -31,11 +32,9 @@ class UnstructuredMergeCollector implements DataCollector {
         def executionTimes = new ArrayList<Long>()
 
         for (int i = 0; i < GenericMergeConfig.NUMBER_OF_EXECUTIONS; i++) {
-            // We copy the left file, because git merge-file runs in place, replacing the contents of left file
-            Files.copy(scenario.resolve("left.java"), scenario.resolve("merge.unstructured.java"))
-
             long startTime = System.nanoTime()
-
+            // We copy the left file, because git merge-file runs in place, replacing the contents of left file
+            Files.copy(scenario.resolve("left.java"), scenario.resolve("merge.unstructured.java"), StandardCopyOption.REPLACE_EXISTING)
             def processBuilder = ProcessRunner.buildProcess(GenericMergeConfig.BASE_EXPERIMENT_PATH,
                     "git",
                     "merge-file",

@@ -20,13 +20,7 @@ class ScenarioReader {
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
             String entrypoints = getEntrypointColumn(line);
-
-            String scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA)
-
-            if (line.hasProperty("realistic case path")) {
-                String realisticCasePath = line["realistic case path"]
-                scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA, realisticCasePath)
-            }
+            String scenarioDirectory = getCorrectScenarioDirectory(line, outputPath, projectName, commitSHA)
 
             boolean hasBuild = line["has_build"] == "true"
 
@@ -42,6 +36,16 @@ class ScenarioReader {
             return  line["entrypoints"]?.toString()
         }catch (Exception ignored){
             return null;
+        }
+
+    }
+
+    static private  String getCorrectScenarioDirectory(Object line, String outputPath, String projectName,  String commitSHA) {
+        try{
+            String realisticCasePath = line["realistic case path"]
+            return getScenarioDirectory(outputPath, projectName, commitSHA, realisticCasePath)
+        }catch (Exception ignored){
+            return getScenarioDirectory(outputPath, projectName, commitSHA)
         }
 
     }

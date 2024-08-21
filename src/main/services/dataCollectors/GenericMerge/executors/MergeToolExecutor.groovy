@@ -13,7 +13,7 @@ abstract class MergeToolExecutor {
     private static Logger LOG = LogManager.getLogger(MergeToolExecutor.class)
 
     MergeScenarioExecutionSummary runToolForMergeScenario(Path scenario) {
-        LOG.trace("Starting execution of merge scenario with tool ${getToolName()}")
+        LOG.trace("Starting execution of tool ${getToolName()} in ${scenario}")
 
         List<Long> executionTimes = new ArrayList<>()
         def outputFilePath = scenario.resolve("merge." + getToolName().toLowerCase() + ".java")
@@ -43,7 +43,7 @@ abstract class MergeToolExecutor {
                 averageTime,
                 this.getToolName())
 
-        LOG.trace("Finished execution of merge scenario with tool ${summary.tool} in ${summary.time}ns with ${summary.result.toString()}")
+        LOG.trace("Finished execution of tool ${summary.tool} in ${scenario}. Execution took ${summary.time}ns and finished with ${summary.result.toString()} status")
         return summary
     }
 

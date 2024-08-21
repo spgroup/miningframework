@@ -1,7 +1,6 @@
 package services.dataCollectors.GenericMerge
 
 import interfaces.DataCollector
-import org.apache.commons.io.FileUtils
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import project.MergeCommit
@@ -13,21 +12,24 @@ import services.dataCollectors.GenericMerge.model.MergeCommitExecutionSummary
 import services.dataCollectors.GenericMerge.model.MergeScenarioExecutionSummary
 import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
+import services.mergeScenariosFilters.NonFastForwardMergeScenarioFilter
 
-import java.nio.file.Path
 import java.util.stream.Collectors
 
 class GenericMergeDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(GenericMergeDataCollector.class)
 
-    private final List<MergeToolExecutor> mergeToolExecutors = Arrays.asList(
-            new GenericMergeToolExecutor(),
-            new JDimeMergeToolExecutor()
-    )
+    private final List<MergeToolExecutor> mergeToolExecutors = Arrays.asList(new GenericMergeToolExecutor(),
+            new JDimeMergeToolExecutor())
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
-        def scenarios = filterScenariosForExecution(MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)).collect(Collectors.toList())
+        LOG.trace("Starting filtering of files to exclude fast forwards")
+        def scenarios = MergeScenarioCollector.collectMergeScenarios(project, mergeCommit)
+                .parallelStream()
+                .filter(NonFastForwardMergeScenarioFilter::isNonFastForwardMergeScenario)
+                .collect(Collectors.toList())
+        LOG.trace("Finished filtering of files to exclude fast forwards")
 
         LOG.trace("Starting normalization of merge files on scenario")
         scenarios.parallelStream().forEach { scenario -> FileFormatNormalizer.normalizeFileInPlace(scenario.resolve("merge.java"))
@@ -111,29 +113,5 @@ class GenericMergeDataCollector implements DataCollector {
         list.add(result.time.toString())
         list.add(result.isEquivalentToOracle().toString())
         list.join(",").replaceAll('\\\\', '/')
-    }
-
-    private static filterScenariosForExecution(List<Path> scenarios) {
-        return scenarios
-                .parallelStream()
-                .filter(GenericMergeDataCollector::eitherParentDiffersFromBase)
-    }
-
-    private static boolean eitherParentDiffersFromBase(Path scenario) {
-        def leftEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/base.java"),
-                new File("${scenario.toAbsolutePath()}/left.java"))
-
-        def rightEqualsBase = FileUtils.contentEquals(new File("${scenario.toAbsolutePath()}/base.java"),
-                new File("${scenario.toAbsolutePath()}/right.java"))
-
-        if (leftEqualsBase) {
-            LOG.trace("In scenario ${scenario.toString()} left equals base")
-        }
-
-        if (rightEqualsBase) {
-            LOG.trace("In scenario ${scenario.toString()} right equals base")
-        }
-
-        return !leftEqualsBase && !rightEqualsBase
     }
 }

@@ -20,14 +20,14 @@ class BuildRequester {
 
         String branchName = "${commitSha.take(7)}-mining-framework-build"
         def branchExistsCheck = Utils.runGitCommand(projectPath, "show-ref", "refs/head/${branchName}")
-        if (branchExistsCheck == 1) {
+        if (branchExistsCheck == 0) {
             LOG.info("Skipping build request for commit ${commitSha} on project ${project.getName()} because the branch already exists")
-            return;
+            return
         }
 
         createBranchFromCommit(project, commitSha, branchName)
         createOrReplaceGithubActionsFile(project)
-        Utils.runGitCommand(projectPath, 'push', '--set-upstream', 'origin', branchName, '--force-with-lease')
+        stageAndCommitChanges(projectPath)
 
         def reportFile = new File(GenericMergeConfig.BUILD_REQUESTER_REPORT_PATH)
         reportFile.createNewFile()
@@ -44,7 +44,7 @@ class BuildRequester {
         createBranchFromCommit(project, mergeCommit.getSHA(), branchName)
         replaceFilesInProject(project, mergeCommit, mergeScenarios, toReplaceFile)
         createOrReplaceGithubActionsFile(project)
-        stageAndPushChanges(project, branchName, "Mining Framework Analysis")
+        stageAndCommitChanges(Paths.get(project.getPath()))
 
         def reportFile = new File(GenericMergeConfig.BUILD_REQUESTER_REPORT_PATH)
         reportFile.createNewFile()
@@ -60,6 +60,7 @@ class BuildRequester {
 
     private static void replaceFilesInProject(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String toReplaceFile) {
         mergeScenarios.stream()
+                .filter(mergeScenario -> Files.exists(getSource(mergeScenario, toReplaceFile)))
                 .forEach(mergeScenario -> {
                     LOG.debug("Trying to copy " + getSource(mergeScenario, toReplaceFile) + " into " + getTarget(project, mergeCommit, mergeScenario))
                     Files.copy(getSource(mergeScenario, toReplaceFile), getTarget(project, mergeCommit, mergeScenario), StandardCopyOption.REPLACE_EXISTING)
@@ -112,17 +113,9 @@ jobs:
         return projectPath.resolve(filePath)
     }
 
-    private static String stageAndPushChanges(Project project, String branchName, String commitMessage) {
-        Path projectPath = Paths.get(project.getPath())
-
-        // Stage changes
+    private static String stageAndCommitChanges(Path projectPath) {
         Utils.runGitCommand(projectPath, 'add', '.')
-
-        // Commit changes
-        Utils.runGitCommand(projectPath, 'commit', '-m', commitMessage)
-
-        // Push changes
-        Utils.runGitCommand(projectPath, 'push', '--set-upstream', 'origin', branchName, '--force-with-lease')
+        Utils.runGitCommand(projectPath, 'commit', '-m', "Mining Framework Analysis")
     }
 
     private static interface BuildSystem {

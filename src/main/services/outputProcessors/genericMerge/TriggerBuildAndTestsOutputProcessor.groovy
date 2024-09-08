@@ -1,18 +1,23 @@
 package services.outputProcessors.genericMerge
 
 import interfaces.OutputProcessor
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 import services.mergeScenariosFilters.NonFastForwardMergeScenarioFilter
+import services.util.Utils
 
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.stream.Collectors
 
 class TriggerBuildAndTestsOutputProcessor implements OutputProcessor {
+    private static Logger LOG = LogManager.getLogger(TriggerBuildAndTestsOutputProcessor.class)
+
     @Override
     void processOutput() {
         Files.readAllLines(Paths.get(GenericMergeConfig.GENERIC_MERGE_REPORT_COMMITS_FILE_NAME))
@@ -23,6 +28,8 @@ class TriggerBuildAndTestsOutputProcessor implements OutputProcessor {
     }
 
     private static void triggerBuildForScenario(MergeScenarioLine scenario) {
+        LOG.debug("Starting preparation for triggering build on scenario in ${scenario.project.name} on commit ${scenario.mergeCommit.getSHA()}")
+
         // Trigger a build for left
         BuildRequester.requestBuildForCommitSha(scenario.project, scenario.mergeCommit.getLeftSHA())
         // Trigger a build for right
@@ -34,6 +41,16 @@ class TriggerBuildAndTestsOutputProcessor implements OutputProcessor {
                 .filter(NonFastForwardMergeScenarioFilter::isNonFastForwardMergeScenario)
                 .collect(Collectors.toList())
         BuildRequester.requestBuildWithRevision(scenario.project, scenario.mergeCommit, mergeFiles, scenario.tool)
+
+        LOG.debug("Finished preparation for triggering build on scenario in ${scenario.project.name} on commit ${scenario.mergeCommit.getSHA()}")
+
+        LOG.debug("Pushing analysis for ${scenario.project.name} and commit ${scenario.mergeCommit.getSHA()} to GitHub")
+        def exitCode = Utils.runGitCommand(Paths.get(scenario.project.getPath()), 'push', '--set-upstream', 'origin', '--all')
+        if (exitCode == 0) {
+            LOG.debug("Successuflly pushed analysis for ${scenario.project.name} and commit ${scenario.mergeCommit.getSHA()} to GitHub")
+        } else {
+            LOG.warn("An error happened while pushing analysis for ${scenario.project.name} and commit ${scenario.mergeCommit.getSHA()} to GitHub")
+        }
     }
 
     private static class MergeScenarioLine {

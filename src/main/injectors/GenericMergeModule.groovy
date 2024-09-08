@@ -15,7 +15,7 @@ import services.dataCollectors.GenericMerge.MergeConflictsComparator
 import services.dataCollectors.GenericMerge.MergeToolsComparator
 import services.dataCollectors.GenericMerge.ScenarioLOCsCounter
 import services.dataCollectors.GenericMerge.UnstructuredMergeCollector
-import services.outputProcessors.GenericMergeDataOutputProcessor
+import services.outputProcessors.genericMerge.TriggerBuildAndTestsOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
 import services.util.ci.CIPlatform
 import services.util.ci.TravisPlatform
@@ -39,7 +39,7 @@ class GenericMergeModule extends AbstractModule {
         dataCollectorBinder.addBinding().to(UnstructuredMergeCollector.class)
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
-        outputProcessorBinder.addBinding().to(GenericMergeDataOutputProcessor.class)
+        outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)
 
         bind(CommitFilter.class).to(MutuallyModifiedFilesCommitFilter.class)
         bind(CIPlatform.class).to(TravisPlatform.class)

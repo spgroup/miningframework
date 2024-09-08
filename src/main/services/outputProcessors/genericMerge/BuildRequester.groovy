@@ -1,9 +1,10 @@
-package services.dataCollectors.GenericMerge
+package services.outputProcessors.genericMerge
 
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
+import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.util.Utils
 
 import java.nio.file.Files
@@ -14,26 +15,47 @@ import java.nio.file.StandardCopyOption
 class BuildRequester {
     private static Logger LOG = LogManager.getLogger(BuildRequester.class)
 
-    static requestBuildWithRevision(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String mergeTool) {
-        String toReplaceFile = "merge.${mergeTool.toLowerCase()}.java"
+    static requestBuildForCommitSha(Project project, String commitSha) {
+        def projectPath = Paths.get(project.getPath())
 
-        String branchName = "${mergeCommit.getSHA().take(7)}-${mergeTool}"
+        String branchName = "${commitSha.take(7)}-mining-framework-build"
+        def branchExistsCheck = Utils.runGitCommand(projectPath, "show-ref", "refs/head/${branchName}")
+        if (branchExistsCheck == 1) {
+            LOG.info("Skipping build request for commit ${commitSha} on project ${project.getName()} because the branch already exists")
+            return;
+        }
 
-        createBranchFromCommit(project, mergeCommit, branchName)
-        replaceFilesInProject(project, mergeCommit, mergeScenarios, toReplaceFile)
+        createBranchFromCommit(project, commitSha, branchName)
         createOrReplaceGithubActionsFile(project)
-        def commitSha = stageAndPushChanges(project, branchName, "Mining Framework Analysis")
+        Utils.runGitCommand(projectPath, 'push', '--set-upstream', 'origin', branchName, '--force-with-lease')
 
         def reportFile = new File(GenericMergeConfig.BUILD_REQUESTER_REPORT_PATH)
         reportFile.createNewFile()
-        reportFile.append("${project.getName()},${branchName},${mergeTool},${commitSha}\n")
+        reportFile.append("${project.getName()},${branchName}\n")
+
+        LOG.info("Successfully requested build for commit ${commitSha} on project ${project.getName()}")
     }
 
-    private static void createBranchFromCommit(Project project, MergeCommit mergeCommit, String branchName) {
+    static requestBuildWithRevision(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String mergeTool) {
+        String toReplaceFile = "merge.${mergeTool.toLowerCase()}.java"
+
+        String branchName = "${mergeCommit.getSHA().take(7)}-${mergeTool}-mining-framework-build"
+
+        createBranchFromCommit(project, mergeCommit.getSHA(), branchName)
+        replaceFilesInProject(project, mergeCommit, mergeScenarios, toReplaceFile)
+        createOrReplaceGithubActionsFile(project)
+        stageAndPushChanges(project, branchName, "Mining Framework Analysis")
+
+        def reportFile = new File(GenericMergeConfig.BUILD_REQUESTER_REPORT_PATH)
+        reportFile.createNewFile()
+        reportFile.append("${project.getName()},${branchName}\n")
+    }
+
+    private static void createBranchFromCommit(Project project, String commitSha, String branchName) {
         Path projectPath = Paths.get(project.getPath())
 
         // Checkout to new branch
-        Utils.runGitCommand(projectPath, 'checkout', '-b', branchName, mergeCommit.getSHA())
+        Utils.runGitCommand(projectPath, 'checkout', '-b', branchName, commitSha)
     }
 
     private static void replaceFilesInProject(Project project, MergeCommit mergeCommit, List<Path> mergeScenarios, String toReplaceFile) {
@@ -98,13 +120,9 @@ jobs:
 
         // Commit changes
         Utils.runGitCommand(projectPath, 'commit', '-m', commitMessage)
-        def commitSha = Utils.runGitCommand(projectPath, 'rev-parse', 'HEAD')
-        LOG.debug("Created commit with hash ${commitSha}")
 
         // Push changes
         Utils.runGitCommand(projectPath, 'push', '--set-upstream', 'origin', branchName, '--force-with-lease')
-
-        return commitSha.get(0)
     }
 
     private static interface BuildSystem {

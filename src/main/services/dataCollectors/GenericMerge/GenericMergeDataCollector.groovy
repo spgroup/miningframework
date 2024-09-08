@@ -10,7 +10,6 @@ import services.dataCollectors.GenericMerge.executors.JDimeMergeToolExecutor
 import services.dataCollectors.GenericMerge.executors.MergeToolExecutor
 import services.dataCollectors.GenericMerge.model.MergeCommitExecutionSummary
 import services.dataCollectors.GenericMerge.model.MergeScenarioExecutionSummary
-import services.dataCollectors.GenericMerge.model.MergeScenarioResult
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 import services.mergeScenariosFilters.NonFastForwardMergeScenarioFilter
 
@@ -53,34 +52,6 @@ class GenericMergeDataCollector implements DataCollector {
                         Collectors.collectingAndThen(Collectors.toList(),
                                 MergeCommitExecutionSummary::fromFileResultsList)))
 
-
-        // Check which tools successfully integrated the scenario
-        def toolsInWhichIntegrationSucceeded = toolsCommitSummary
-                .entrySet()
-                .stream()
-                .filter { it -> it.value.result == MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS }
-                .map { x -> x.key }
-                .collect(Collectors.toList())
-
-        if (toolsInWhichIntegrationSucceeded.size() == 0) {
-            LOG.info("Integration failed in all tools")
-        } else if (toolsInWhichIntegrationSucceeded.size() != mergeToolExecutors.size()) {
-            LOG.info("At least one of the tools either reported a conflict or failed on the commit while the other did not")
-            toolsInWhichIntegrationSucceeded.forEach { tool ->
-                {
-                    def toolCommitSummary = toolsCommitSummary.get(tool)
-                    if (toolCommitSummary.allScenariosMatch) {
-                        LOG.info("Output of the tool " + tool + " fully matched the commit merge. Skipping build analysis")
-                    } else {
-                        LOG.info("Output of the tool " + tool + " did not fully matched the commit merge. Starting build analysis")
-                        BuildRequester.requestBuildWithRevision(project, mergeCommit, scenarios, tool)
-                    }
-                }
-            }
-        } else {
-            LOG.info("All the tools reported the same response")
-        }
-
         LOG.trace("Starting write of files results to report file")
         def lines = mergeToolsExecutionResults.parallelStream().map(result -> getReportLine(project, mergeCommit, result))
         def reportFile = new File(GenericMergeConfig.GENERIC_MERGE_REPORT_FILE_NAME)
@@ -91,6 +62,10 @@ class GenericMergeDataCollector implements DataCollector {
         def commitLines = toolsCommitSummary.entrySet().parallelStream().map { it ->
             def list = new ArrayList<String>()
             list.add(project.getName())
+            list.add(project.getPath())
+            list.add(mergeCommit.getAncestorSHA())
+            list.add(mergeCommit.getLeftSHA())
+            list.add(mergeCommit.getRightSHA())
             list.add(mergeCommit.getSHA())
             list.add(it.key)
             list.add(it.value.result.toString())

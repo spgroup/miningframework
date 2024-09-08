@@ -14,21 +14,14 @@ class IsInCommitListFilter implements CommitFilter {
 
     List<String> commitList
 
+    IsInCommitListFilter() {
+        File commitsFile = new File("./commits.csv")
+        this.commitList = parseCommitList(commitsFile)
+    }
+
     @Override
     boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        boolean result = true
-        File commitsFile = new File("./commits.csv")
-
-        if (commitList != null || commitsFile.exists()) {
-            // using this check to cache the commitList between multiple executions
-            // avoiding unnecessary IO operations
-            if (commitList == null) {
-                commitList = parseCommitList(commitsFile)
-            }
-
-            result = isInCommitList(mergeCommit)
-        }
-        return result
+        return isInCommitList(mergeCommit)
     }
 
     private List<String> parseCommitList (File commitsFile) {

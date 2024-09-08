@@ -54,7 +54,7 @@ class TriggerBuildAndTestsOutputProcessor implements OutputProcessor {
         static fromLine(String[] line) {
             def project = new Project(line[0], line[1])
             def mergeCommit = new MergeCommit(line[2], new String[]{line[3], line[4]}, line[5])
-            def result = new MergeScenarioResult(line[7])
+            def result = MergeScenarioResult.from(line[7])
             def tool = line[6]
             def allFilesMatch = line[8] == "true"
             return new MergeScenarioLine(project, mergeCommit, result, tool, allFilesMatch)

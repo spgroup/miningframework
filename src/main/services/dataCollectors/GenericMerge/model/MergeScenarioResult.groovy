@@ -5,9 +5,13 @@ enum MergeScenarioResult {
     SUCCESS_WITH_CONFLICTS("SUCCESS_WITH_CONFLICTS"),
     TOOL_ERROR("TOOL_ERROR");
 
-    String value;
+    String value
 
-    MergeScenarioResult(String value) {
-        this.value = value;
+    private MergeScenarioResult(String value) {
+        this.value = value
+    }
+
+    static from(String value) {
+        return new MergeScenarioResult(value)
     }
 }

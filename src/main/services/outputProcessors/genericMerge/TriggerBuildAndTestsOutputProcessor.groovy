@@ -18,7 +18,7 @@ class TriggerBuildAndTestsOutputProcessor implements OutputProcessor {
         Files.readAllLines(Paths.get(GenericMergeConfig.GENERIC_MERGE_REPORT_COMMITS_FILE_NAME))
                 .stream()
                 .map(line -> MergeScenarioLine.fromLine(line.split(",")))
-                .filter(scenario -> !scenario.allFilesMatch && scenario.result != MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS)
+                .filter(scenario -> scenario.result == MergeScenarioResult.SUCCESS_WITHOUT_CONFLICTS && !scenario.allFilesMatch)
                 .forEach(scenario -> triggerBuildForScenario(scenario))
     }
 

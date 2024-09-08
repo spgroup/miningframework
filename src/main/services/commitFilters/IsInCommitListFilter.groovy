@@ -18,16 +18,15 @@ class IsInCommitListFilter implements CommitFilter {
     List<String> commitList
 
     IsInCommitListFilter() {
-        File commitsFile = new File("./commits.csv")
-        this.commitList = commitsFile.exists() ? parseCommitList(commitsFile) : new ArrayList<>()
+        this.commitList = initializeCommitList(new File("./commits.csv"))
     }
 
-    @Override
-    boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        return commitList.isEmpty() || commitList.contains(mergeCommit.getSHA())
-    }
+    private static List<String> initializeCommitList(File commitsFile) {
+        if (!commitsFile.exists()) {
+            LOG.trace("Skipping initialization because the commits.csv file do not exist")
+            return new ArrayList<>()
+        }
 
-    private List<String> parseCommitList(File commitsFile) {
         ArrayList<String> commitList = new ArrayList<String>()
         def iterator = parseCsv(commitsFile.getText())
 
@@ -37,5 +36,10 @@ class IsInCommitListFilter implements CommitFilter {
         }
 
         return commitList
+    }
+
+    @Override
+    boolean applyFilter(Project project, MergeCommit mergeCommit) {
+        return commitList.isEmpty() || commitList.contains(mergeCommit.getSHA())
     }
 }

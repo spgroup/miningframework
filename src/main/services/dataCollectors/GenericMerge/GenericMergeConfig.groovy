@@ -16,5 +16,5 @@ class GenericMergeConfig {
     public static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
     public static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
 
-    public static final int NUMBER_OF_EXECUTIONS = 5
+    public static final int NUMBER_OF_EXECUTIONS = 10
 }

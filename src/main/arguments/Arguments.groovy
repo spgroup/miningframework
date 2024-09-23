@@ -1,9 +1,11 @@
 package arguments
 
 import injectors.StaticAnalysisConflictsDetectionModule
+import org.apache.logging.log4j.Level
+import org.apache.logging.log4j.core.config.Configurator
 
 class Arguments {
-    
+
     private String inputPath
     private String outputPath
     private String sinceDate
@@ -16,6 +18,7 @@ class Arguments {
     private boolean keepProjects
     private String syntacticSeparators
     private String fileExtension
+    private Level logLevel
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -29,9 +32,10 @@ class Arguments {
         keepProjects = false
         syntacticSeparators = '{ } ( ) ; ,'
         fileExtension = 'java'
+        logLevel = Level.INFO
     }
 
-    void setNumOfThreads (int numOfThreads) {
+    void setNumOfThreads(int numOfThreads) {
         this.numOfThreads = numOfThreads
     }
 
@@ -82,7 +86,7 @@ class Arguments {
     int getNumOfThreads() {
         return this.numOfThreads
     }
-    
+
     String getInputPath() {
         return inputPath
     }
@@ -107,7 +111,7 @@ class Arguments {
         return isHelp
     }
 
-    boolean getKeepProjects () {
+    boolean getKeepProjects() {
         return keepProjects
     }
 
@@ -130,9 +134,17 @@ class Arguments {
     boolean providedAccessKey() {
         return accessKey.length() > 0
     }
-    
+
     boolean isPushCommandActive() {
         return !resultsRemoteRepositoryURL.equals('')
     }
 
+    Level getLogLevel() {
+        return logLevel
+    }
+
+    void setLogLevel(Level logLevel) {
+        this.logLevel = logLevel
+        Configurator.setRootLevel(logLevel)
+    }
 }

@@ -17,19 +17,18 @@ class ConflictDetectionAlgorithm {
     private String mode;
     private long timeout;
     private SootAnalysisWrapper sootWrapper;
-
-    ConflictDetectionAlgorithm(String name, String mode,  SootAnalysisWrapper sootWrapper) {
-        this.name = name
-        this.mode = mode;
-        this.timeout = null;
-        this.sootWrapper = sootWrapper;
-    }
+    private boolean interprocedural;
 
     ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
+        this(name, mode, sootWrapper, timeout, false);
+    }
+
+    ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout, boolean interprocedural) {
         this.name = name;
         this.mode = mode;
         this.timeout = timeout;
         this.sootWrapper = sootWrapper;
+        this.interprocedural = interprocedural;
     }
 
     String getName() {
@@ -38,6 +37,10 @@ class ConflictDetectionAlgorithm {
 
     void setTimeout(long timeout) {
         this.timeout = timeout
+    }
+
+    boolean getInterprocedural() {
+        return interprocedural
     }
 
     @Override
@@ -56,14 +59,15 @@ class ConflictDetectionAlgorithm {
             println "Running ${toString()}"
             String filePath = scenario.getLinesFilePath()
             String classPath = scenario.getClassPath()
+            String entrypoints = scenario.getEntrypoints()
 
-            return runAndReportResult(filePath, classPath);
+            return runAndReportResult(filePath, classPath, entrypoints);
         } catch (ClassNotFoundInJarException e) {
             return "not-found"
         }
     }
 
-    private String runAndReportResult (String filePath, String classPath) {
+    private String runAndReportResult (String filePath, String classPath, String entrypoints) {
         String result;
         println "Using jar at " + classPath
 
@@ -74,7 +78,7 @@ class ConflictDetectionAlgorithm {
             return "false";
         }
 
-        Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.mode);
+        Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.mode, entrypoints);
 
         // this is needed because if th waitFor command is called without reading the output
         // in some executions the output buffer might get full and block the process

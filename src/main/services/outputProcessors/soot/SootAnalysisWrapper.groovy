@@ -24,13 +24,22 @@ class SootAnalysisWrapper {
         this.dependenciesPath = dependenciesPath;
     }
 
-    Process executeSoot(String inputFilePath, String classPath, String mode) {
-        return ProcessRunner.runProcess(".",
-                "java", "-jar" , getJarPath(),
+    Process executeSoot(String inputFilePath, String classPath, String mode, String entrypoints) {
+        List<String> command = [
+                "java", "-jar", getJarPath(),
                 "-csv", inputFilePath,
                 "-cp", classPath,
-                "-mode", mode);
+                "-mode", mode
+        ]
+
+        if (entrypoints != null) {
+            command.add("-entrypoints")
+            command.add(entrypoints)
+        }
+
+        return ProcessRunner.runProcess(".", command.toArray(new String[0]))
     }
+
 
     String getSootAnalysisVersionDisclaimer() {
         return "# This results were produced by soot-analysis v" + this.version + "\n";

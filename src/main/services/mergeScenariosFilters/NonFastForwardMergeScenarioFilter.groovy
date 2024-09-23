@@ -9,7 +9,7 @@ class NonFastForwardMergeScenarioFilter {
         return mergeScenarios.stream().filter(this::isNonFastForwardMergeScenario).collect(Collectors.toList())
     }
 
-    private static boolean isNonFastForwardMergeScenario(Path mergeScenario) {
+    public static boolean isNonFastForwardMergeScenario(Path mergeScenario) {
         Path leftFile = getInvolvedFile(mergeScenario, 'left')
         Path baseFile = getInvolvedFile(mergeScenario, 'base')
         Path rightFile = getInvolvedFile(mergeScenario, 'right')

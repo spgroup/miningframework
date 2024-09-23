@@ -297,7 +297,7 @@ def convert_list_to_tuple(out):
     result = []
     for index in range(len(out[0])):
         val = [x[index] for x in out]
-        result.append(tuple(val))
+        result.append(tuple(float(v) for v in val))
     return concat_tuple(result)
 
 info_LOI = ['project', 'class', 'method', 'merge commit']
@@ -358,7 +358,7 @@ with open(best_combination_name, "w") as best_combination_file:
 
 data = {
     'Metric': ['Precision', 'Recall', 'F1-score', 'Accuracy'],
-    'Value': [round(best.higher_precision_value, 2), round(best.higher_recall_value, 2), round(best.higher_F1_value, 2), round(best.higher_accuracy_value, 2)],
+    'Value': [round(float(best.higher_precision_value), 2), round(float(best.higher_recall_value), 2), round(float(best.higher_F1_value), 2), round(float(best.higher_accuracy_value), 2)],
    'Analyses': [str(to_string_as_set(get_reverse_name(remove_nested_best(best.higher_precision_analyses_names))))[:255],
                 str(to_string_as_set(get_reverse_name(remove_nested_best(best.higher_recall_analyses_names))))[:255],
                 str(to_string_as_set(get_reverse_name(remove_nested_best(best.higher_F1_analyses_names))))[:255],
@@ -490,7 +490,12 @@ for actual_best in best_lists:
             actual_dict = best.confusion_matrix(count_fp_fn(m_smaller), smaller)
             l_aux = []
             for m in merged_dict['Metrics']:
-                l_aux.append(format(actual_dict[m], '.2f'))
+                #l_aux.append(format(actual_dict[m], '.2f'))
+                try:
+                    l_aux.append(format(float(actual_dict[m]), '.2f'))
+                except ValueError:
+                    print(f"ValueError: Cannot convert {actual_dict[m]} to float.")
+                    l_aux.append(actual_dict[m])
 
             original_name = sum(get_reverse_name([smaller]), [])
             key = ' or '.join(original_name)

@@ -8,12 +8,10 @@ import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import services.commitFilters.MutuallyModifiedFilesCommitFilter
+import services.commitFilters.IsInProjectCommitListFilter
 import services.dataCollectors.GenericMerge.*
 import services.outputProcessors.genericMerge.TriggerBuildAndTestsOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
-import services.util.ci.CIPlatform
-import services.util.ci.TravisPlatform
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -36,8 +34,7 @@ class GenericMergeModule extends AbstractModule {
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)
 
-        bind(CommitFilter.class).to(MutuallyModifiedFilesCommitFilter.class)
-        bind(CIPlatform.class).to(TravisPlatform.class)
+        bind(CommitFilter.class).toInstance(new IsInProjectCommitListFilter())
 
         createExecutionReportsFile()
     }

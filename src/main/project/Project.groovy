@@ -40,11 +40,11 @@ class Project {
         return matcher.find()
     }
 
-    List getMergeCommits(String sinceDate, String untilDate) {
+    List getMergeCommits(String sinceDate, String untilDate, boolean includePullRequestBranches) {
         ArrayList<String> skipped = new ArrayList<String>()
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
         
-        Process gitLog = constructAndRunGitLog(sinceDate, untilDate)
+        Process gitLog = constructAndRunGitLog(sinceDate, untilDate, includePullRequestBranches)
         def expectedOutput = ~/.*-(.* .*)+/
         gitLog.getInputStream().eachLine {
 
@@ -102,12 +102,14 @@ class Project {
         return ProcessRunner.startProcess(gitMergeBaseBuilder)
     }
 
-    private Process constructAndRunGitLog(String sinceDate, String untilDate) {
+    private Process constructAndRunGitLog(String sinceDate, String untilDate, boolean includePullRequestBranches) {
         ProcessBuilder gitLogBuilder = ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=%H-%p', '--date=format:\'%d/%m/%Y\'')
         if(!sinceDate.equals(''))
             ProcessRunner.addCommand(gitLogBuilder, "--since=\"${sinceDate}\"")
         if(!untilDate.equals(''))
             ProcessRunner.addCommand(gitLogBuilder, "--until=\"${untilDate}\"")
+        if(includePullRequestBranches)
+            gitLogBuilder.command().add("--glob=refs/remotes/origin/pull/*")
         return ProcessRunner.startProcess(gitLogBuilder)
     }
 

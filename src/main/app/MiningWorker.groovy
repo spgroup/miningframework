@@ -39,7 +39,7 @@ class MiningWorker implements Runnable {
                     checkForUnstagedChanges(project);
                 }
 
-                def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+                def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate(), arguments.getIncludePullRequestBranches())
                 for (mergeCommit in mergeCommits) {
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {
@@ -106,6 +106,11 @@ class MiningWorker implements Runnable {
 
         Process process = ProcessRunner.startProcess(builder)
         process.waitFor()
+
+        if (arguments.getIncludePullRequestBranches()) {
+            ProcessBuilder fetchBuilder = ProcessRunner.buildProcess(target, 'git', 'fetch', 'origin', 'refs/pull/*/head:refs/remotes/origin/pull/*')
+            ProcessRunner.startProcess(fetchBuilder).waitFor()
+        }
 
         project.setPath(target)
     }

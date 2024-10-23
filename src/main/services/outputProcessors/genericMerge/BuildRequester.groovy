@@ -82,22 +82,24 @@ class BuildRequester {
 name: Mining Framework Check
 on: [push]
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-java@v1
-              with:
-                java-version: 11
-            - run: ${buildSystem.getBuildCommand()}
     test:
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                java-version: [8, 11, 17]
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-java@v1
+            - uses: actions/checkout@v4
+            - name: Set up Java \${{ matrix.java-version }}
+              uses: actions/setup-java@v1
               with:
-                java-version: 11
-            - run: ${buildSystem.getTestCommand()}
+                java-version: \${{ matrix.java-version }}
+                distribution: 'corretto'
+            - name: Run tests
+              uses: nick-fields/retry@v3
+              with:
+                timeout_minutes: 30
+                max_attempts: 5
+                command: ${buildSystem.getTestCommand()}
 """
         Files.createDirectories(Paths.get(githubActionsFilePath))
         def file = new File("${githubActionsFilePath}/mining_framework.yml")
@@ -122,41 +124,24 @@ jobs:
     }
 
     private static interface BuildSystem {
-        String getBuildCommand()
-
         String getTestCommand()
     }
 
     private static class MavenBuildSystem implements BuildSystem {
         @Override
-        String getBuildCommand() {
-            return "mvn package -Dskiptests"
-        }
-
-        @Override
         String getTestCommand() {
-            return "mvn test"
+            return "mvn clean test"
         }
     }
 
     private static class GradleBuildSystem implements BuildSystem {
         @Override
-        String getBuildCommand() {
-            return "./gradlew assemble"
-        }
-
-        @Override
         String getTestCommand() {
-            return "./gradlew test"
+            return "./gradlew clean test"
         }
     }
 
     private static class NoopBuildSystem implements BuildSystem {
-        @Override
-        String getBuildCommand() {
-            return "echo no build available"
-        }
-
         @Override
         String getTestCommand() {
             return "echo no test available"

@@ -89,7 +89,7 @@ class MiningWorker implements Runnable {
     }
 
     private void cloneRepository(Project project, String target) {
-        println "Cloning repository ${project.getName()} into ${target}"
+        LOG.info("Cloning repository ${project.getName()} into ${target}")
 
         File projectDirectory = new File(target)
         if (projectDirectory.exists()) {
@@ -106,10 +106,11 @@ class MiningWorker implements Runnable {
         }
 
         ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
-        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-
         Process process = ProcessRunner.startProcess(builder)
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
         process.waitFor()
+        LOG.info("Finished cloning repository ${project.getName()} into ${target}")
 
         if (arguments.getIncludePullRequestBranches()) {
             Process fetchProcess = ProcessRunner.runProcess(target, 'git', 'fetch', 'origin', 'refs/pull/*/head:refs/remotes/origin/pull/*')

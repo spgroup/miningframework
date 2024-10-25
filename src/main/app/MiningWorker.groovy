@@ -113,9 +113,11 @@ class MiningWorker implements Runnable {
         LOG.info("Finished cloning repository ${project.getName()} into ${target}")
 
         if (arguments.getIncludePullRequestBranches()) {
+            LOG.info("Starting fetch of pull request branches for repository ${project.getName()}")
             Process fetchProcess = ProcessRunner.runProcess(target, 'git', 'fetch', 'origin', 'refs/pull/*/head:refs/remotes/origin/pull/*')
-            fetchProcess.waitFor()
             fetchProcess.getInputStream().eachLine(LOG::trace)
+            fetchProcess.waitFor()
+            LOG.info("Finished fetch of pull request branches for repository ${project.getName()}")
         }
 
         project.setPath(target)

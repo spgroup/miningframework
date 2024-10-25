@@ -1,5 +1,8 @@
 package app
 
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+
 import java.text.SimpleDateFormat
 
 import static app.MiningFramework.arguments
@@ -13,6 +16,7 @@ import util.*
 import services.util.Utils;
 
 class MiningWorker implements Runnable {
+    private static Logger LOG = LogManager.getLogger(MiningWorker.class)
 
     private Set<DataCollector> dataCollectors
     private CommitFilter commitFilter
@@ -108,8 +112,9 @@ class MiningWorker implements Runnable {
         process.waitFor()
 
         if (arguments.getIncludePullRequestBranches()) {
-            ProcessBuilder fetchBuilder = ProcessRunner.buildProcess(target, 'git', 'fetch', 'origin', 'refs/pull/*/head:refs/remotes/origin/pull/*')
-            ProcessRunner.startProcess(fetchBuilder).waitFor()
+            Process fetchProcess = ProcessRunner.runProcess(target, 'git', 'fetch', 'origin', 'refs/pull/*/head:refs/remotes/origin/pull/*')
+            fetchProcess.waitFor()
+            fetchProcess.getInputStream().eachLine(LOG::trace)
         }
 
         project.setPath(target)

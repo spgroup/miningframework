@@ -108,8 +108,10 @@ class Project {
             ProcessRunner.addCommand(gitLogBuilder, "--since=\"${sinceDate}\"")
         if(!untilDate.equals(''))
             ProcessRunner.addCommand(gitLogBuilder, "--until=\"${untilDate}\"")
-        if(includePullRequestBranches)
+        if (includePullRequestBranches) {
             gitLogBuilder.command().add("--glob=refs/remotes/origin/pull/*")
+            gitLogBuilder.command().add("--glob=refs/pull/*/head")
+        }
         return ProcessRunner.startProcess(gitLogBuilder)
     }
 

@@ -20,6 +20,7 @@ class TriggerBuildAndTestsOutputProcessor implements OutputProcessor {
 
     @Override
     void processOutput() {
+        return
         Files.readAllLines(Paths.get(GenericMergeConfig.GENERIC_MERGE_REPORT_COMMITS_FILE_NAME))
                 .stream()
                 .filter(line -> !(line.trim().isEmpty()))

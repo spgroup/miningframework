@@ -82,7 +82,7 @@ class MergeConflictsComparator implements DataCollector {
                             scenario.toString(),
                             "generic_merge_conflict_${i}",
                             "jdime_conflict_${j}",
-                            genericMergeConflict.equals(jDimeConflict).toString()]
+                            genericMergeConflict.equalsOrSubstring(jDimeConflict).toString()]
                 })
             })
         }

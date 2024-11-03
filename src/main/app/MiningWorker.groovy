@@ -84,8 +84,8 @@ class MiningWorker implements Runnable {
         String gitDiffOutput = ProcessRunner.runProcess(project.getPath(), "git", "diff").getText()
 
         if (gitDiffOutput.length() != 0) {
-            ProcessRunner.runProcess(project.getPath(), "git", "clean", "-df")
-            ProcessRunner.runProcess(project.getPath(), "git", "checkout", "--", ".")
+            ProcessRunner.runProcess(project.getPath(), "git", "clean", "-df").waitFor()
+            ProcessRunner.runProcess(project.getPath(), "git", "checkout", "--", ".").waitFor()
             return
             throw new UnstagedChangesException(project.getName())
         }

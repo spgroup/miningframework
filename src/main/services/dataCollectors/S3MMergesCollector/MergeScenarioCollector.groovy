@@ -2,6 +2,7 @@ package services.dataCollectors.S3MMergesCollector
 
 import project.MergeCommit
 import project.Project
+import services.mergeScenariosFilters.NonFastForwardMergeScenarioFilter
 import util.ProcessRunner
 import services.util.Utils
 
@@ -26,6 +27,13 @@ class MergeScenarioCollector {
         return getModifiedJavaFiles(project, mergeCommit).stream()
                 .map(modifiedFile -> storeAndRetrieveMergeQuadruple(project, mergeCommit, modifiedFile))
                 .map(quadruple -> quadruple.getV4().getParent())
+                .collect(Collectors.toList())
+    }
+
+    static List<Path> collectNonFastForwardMergeScenarios(Project project, MergeCommit mergeCommit) {
+        return collectMergeScenarios(project, mergeCommit)
+                .parallelStream()
+                .filter(NonFastForwardMergeScenarioFilter::isNonFastForwardMergeScenario)
                 .collect(Collectors.toList())
     }
 

@@ -7,6 +7,7 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
+import services.dataCollectors.common.CompareScenarioMergeConflictsDataCollector
 import services.dataCollectors.common.RunDataCollectorsInParallel
 import services.dataCollectors.common.RunNormalizationOnScenarioFilesDataCollector
 import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
@@ -44,7 +45,11 @@ class GenericMergeModule extends AbstractModule {
                 // Run comparisons between tools and the original merge file
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java", "merge.java"),
-                new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.java", "merge.java")]))
+                new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.java", "merge.java"),
+                // Run comparisons between conflicts themselves
+                new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.spork.java"),
+                new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.jdime.java"),
+                new CompareScenarioMergeConflictsDataCollector("merge.jdime.java", "merge.spork.java")]))
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)

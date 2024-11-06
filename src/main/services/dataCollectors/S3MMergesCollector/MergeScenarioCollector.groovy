@@ -50,6 +50,8 @@ class MergeScenarioCollector {
         createDirectories(mergeScenarioDirectory)
 
         Path filePath = mergeScenarioDirectory.resolve(Utils.getfileNameWithExtension(fileName))
+        if (Files.exists(filePath)) return filePath
+
         Files.deleteIfExists(filePath)
         filePath.toFile() << getFileContent(project, modifiedFile, commitSHA)
         return filePath

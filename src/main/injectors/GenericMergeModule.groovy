@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import services.commitFilters.NonFastForwardMergeCommitFilter
 import services.dataCollectors.GenericMerge.GenericMergeConfig
+import services.dataCollectors.common.RunNormalizationOnScenarioFilesDataCollector
 import services.dataCollectors.mergeToolExecutors.GitMergeFileMergeToolDataCollector
 import services.dataCollectors.mergeToolExecutors.JDimeMergeToolExecutorDataCollector
 import services.dataCollectors.mergeToolExecutors.LastMergeMergeToolExecutorDataCollector
@@ -29,22 +30,17 @@ class GenericMergeModule extends AbstractModule {
         projectProcessorBinder.addBinding().to(DummyProjectProcessor.class)
 
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
+        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["base.java", "left.java", "right.java", "merge.java"]))
+        dataCollectorBinder.addBinding().to(JDimeMergeToolExecutorDataCollector.class)
         dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
         dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
-        dataCollectorBinder.addBinding().to(JDimeMergeToolExecutorDataCollector.class)
         dataCollectorBinder.addBinding().to(GitMergeFileMergeToolDataCollector.class)
-
-//        dataCollectorBinder.addBinding().to(ScenarioLOCsCounter.class)
-//        dataCollectorBinder.addBinding().to(GenericMergeDataCollector.class)
-//        dataCollectorBinder.addBinding().to(MergeToolsComparator.class)
-//        dataCollectorBinder.addBinding().to(MergeConflictsComparator.class)
-//        dataCollectorBinder.addBinding().to(UnstructuredMergeCollector.class)
+        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["merge.spork.java", "merge.last_merge.java"]))
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)
 
         bind(CommitFilter.class).to(NonFastForwardMergeCommitFilter.class)
-//        bind(CommitFilter.class).toInstance(new IsInProjectCommitListFilter())
 
         createExecutionReportsFile()
     }

@@ -13,8 +13,8 @@ class GenericMergeConfig {
     public static final GENERIC_MERGE_REPORT_SCENARIO_LOCS_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-scenario-locs.csv"
     public static final GENERIC_MERGE_REPORT_UNSTRUCTURED_TIMES_FILE_NAME = "${GENERIC_MERGE_REPORT_PATH}/generic-merge-unstructured-times.csv"
 
-    public static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/generic-merge"
-    public static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/tools/jdime/install/JDime/bin"
+    public static final String GENERIC_MERGE_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/dependencies/generic-merge"
+    public static final String JDIME_BINARY_PATH = "${BASE_EXPERIMENT_PATH}/dependencies/jdime/install/JDime/bin"
 
     public static final int NUMBER_OF_EXECUTIONS = 1
 }

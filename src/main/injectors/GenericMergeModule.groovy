@@ -6,10 +6,7 @@ import interfaces.CommitFilter
 import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
-import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.common.RunNormalizationOnScenarioFilesDataCollector
 import services.dataCollectors.mergeToolExecutors.GitMergeFileMergeToolDataCollector
 import services.dataCollectors.mergeToolExecutors.JDimeMergeToolExecutorDataCollector
@@ -18,12 +15,7 @@ import services.dataCollectors.mergeToolExecutors.SporkMergeToolExecutorDataColl
 import services.outputProcessors.genericMerge.TriggerBuildAndTestsOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
 
-import java.nio.file.Files
-import java.nio.file.Paths
-
 class GenericMergeModule extends AbstractModule {
-    private static Logger LOG = LogManager.getLogger(GenericMergeModule.class)
-
     @Override
     protected void configure() {
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
@@ -41,14 +33,5 @@ class GenericMergeModule extends AbstractModule {
         outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)
 
         bind(CommitFilter.class).to(MutuallyModifiedFilesCommitFilter.class)
-
-        createExecutionReportsFile()
-    }
-
-    private static void createExecutionReportsFile() {
-        LOG.info("Creating Generic Merge report file")
-        Files.createDirectories(Paths.get(GenericMergeConfig.GENERIC_MERGE_REPORT_PATH))
-        def reportFile = new File(GenericMergeConfig.GENERIC_MERGE_REPORT_FILE_NAME)
-        reportFile.createNewFile()
     }
 }

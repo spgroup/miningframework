@@ -25,8 +25,6 @@ class GenericMergeModule extends AbstractModule {
         projectProcessorBinder.addBinding().to(DummyProjectProcessor.class)
 
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
-        // Normalize scenario files formatting due to jDime pretty-printing
-        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["base.java", "left.java", "right.java", "merge.java"]))
 
         // Run the merge tools on the scenarios
         dataCollectorBinder.addBinding().to(JDimeMergeToolExecutorDataCollector.class)
@@ -35,7 +33,7 @@ class GenericMergeModule extends AbstractModule {
         dataCollectorBinder.addBinding().to(GitMergeFileMergeToolDataCollector.class)
 
         // Normalize the output files formatting due to jDime pretty-printing
-        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["merge.spork.java", "merge.last_merge.java"]))
+        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["merge.java", "merge.spork.java", "merge.last_merge.java"]))
 
         dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel([
                 // Run comparisons between tools themselves

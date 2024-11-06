@@ -8,7 +8,7 @@ import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import services.commitFilters.NonFastForwardMergeCommitFilter
+import services.commitFilters.MutuallyModifiedFilesCommitFilter
 import services.dataCollectors.GenericMerge.GenericMergeConfig
 import services.dataCollectors.common.RunNormalizationOnScenarioFilesDataCollector
 import services.dataCollectors.mergeToolExecutors.GitMergeFileMergeToolDataCollector
@@ -40,7 +40,7 @@ class GenericMergeModule extends AbstractModule {
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)
 
-        bind(CommitFilter.class).to(NonFastForwardMergeCommitFilter.class)
+        bind(CommitFilter.class).to(MutuallyModifiedFilesCommitFilter.class)
 
         createExecutionReportsFile()
     }

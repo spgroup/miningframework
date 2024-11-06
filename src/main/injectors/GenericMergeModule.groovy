@@ -8,6 +8,7 @@ import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
 import services.dataCollectors.common.RunNormalizationOnScenarioFilesDataCollector
+import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
 import services.dataCollectors.mergeToolExecutors.GitMergeFileMergeToolDataCollector
 import services.dataCollectors.mergeToolExecutors.JDimeMergeToolExecutorDataCollector
 import services.dataCollectors.mergeToolExecutors.LastMergeMergeToolExecutorDataCollector
@@ -22,12 +23,27 @@ class GenericMergeModule extends AbstractModule {
         projectProcessorBinder.addBinding().to(DummyProjectProcessor.class)
 
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
+        // Normalize scenario files formatting due to jDime pretty-printing
         dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["base.java", "left.java", "right.java", "merge.java"]))
+
+        // Run the merge tools on the scenarios
         dataCollectorBinder.addBinding().to(JDimeMergeToolExecutorDataCollector.class)
         dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
         dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
         dataCollectorBinder.addBinding().to(GitMergeFileMergeToolDataCollector.class)
+
+        // Normalize the output files formatting due to jDime pretty-printing
         dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["merge.spork.java", "merge.last_merge.java"]))
+
+        // Run comparisons between tools themselves
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java", "merge.spork.java"))
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java", "merge.jdime.java"))
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.spork.java"))
+
+        // Run comparisons between tools and the original merge file
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.java"))
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java", "merge.java"))
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.java", "merge.java"))
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)

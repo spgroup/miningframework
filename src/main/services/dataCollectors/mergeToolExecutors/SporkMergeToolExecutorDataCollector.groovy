@@ -21,6 +21,11 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
         def output = ProcessRunner.startProcess(processBuilder)
         output.waitFor()
 
+        if (output.exitValue() > 0) {
+            LOG.warn("SPORK exited with code ${output.exitValue()}")
+            LOG.debug("SPORK output: ${output.getInputStream().readLines()}")
+        }
+
         return output.exitValue() == 0 ? MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS : MergeExecutionResult.SUCCESS_WITH_CONFLICTS
     }
 
@@ -37,8 +42,7 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
         list.add(file.resolve("left.java").toString())
         list.add(file.resolve("base.java").toString())
         list.add(file.resolve("right.java").toString())
-        list.add("--exit-on-error")
-        list.add("--output=${outputFile.toAbsolutePath().toString()}".toString())
+        list.add("--output=${outputFile.toString()}".toString())
         return list
     }
 }

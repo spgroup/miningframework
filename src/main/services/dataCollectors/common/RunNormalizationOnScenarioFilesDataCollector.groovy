@@ -21,10 +21,13 @@ class RunNormalizationOnScenarioFilesDataCollector implements DataCollector {
     void collectData(Project project, MergeCommit mergeCommit) {
         def scenarioFiles = MergeScenarioCollector.collectNonFastForwardMergeScenarios(project, mergeCommit)
 
-        scenarioFiles.parallelStream().forEach(scenarioFile -> {
-            this.filesToRunNormalization.parallelStream().forEach(fileToRunNormalization -> {
-                FileFormatNormalizer.normalizeFileInPlace(scenarioFile.resolve(fileToRunNormalization))
-            })
-        })
+        LOG.trace("Starting normalization of scenario files")
+        scenarioFiles.parallelStream().forEach(scenarioFile -> this.filesToRunNormalization.parallelStream().forEach(fileToRunNormalization -> {
+            def file = scenarioFile.resolve(fileToRunNormalization)
+            LOG.trace("Starting normalization of ${file}")
+            FileFormatNormalizer.normalizeFileInPlace(file)
+            LOG.trace("Finished normalization of ${file}")
+        }))
+        LOG.trace("Finished normalization of scenario files")
     }
 }

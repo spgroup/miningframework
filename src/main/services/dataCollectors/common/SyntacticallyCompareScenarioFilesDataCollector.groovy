@@ -34,7 +34,7 @@ class SyntacticallyCompareScenarioFilesDataCollector implements DataCollector {
                     def fileB = file.resolve(this.fileB)
                     LOG.trace("Starting syntactic comparison between ${fileA} and ${fileB}")
                     def areFilesSyntacticallyEquivalent = FileSyntacticDiff.areFilesSyntacticallyEquivalent(fileA, fileB)
-                    return [project, mergeCommit, file, fileA, fileB, areFilesSyntacticallyEquivalent]
+                    return [project.getName(), mergeCommit.getSHA(), file, fileA, fileB, areFilesSyntacticallyEquivalent]
                 })
                 .map(CsvUtils::toCsvRepresentation)
 

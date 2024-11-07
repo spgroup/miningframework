@@ -1,35 +1,29 @@
 package arguments
 
 import exception.InvalidArgsException
-import org.apache.logging.log4j.LogManager
 import project.*
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import static groovy.io.FileType.DIRECTORIES
 
 class InputParser {
-    private static LOG = LogManager.getLogger(InputParser.class)
 
     static ArrayList<Project> getProjectList(String inputPath) {
         ArrayList<Project> projectList = new ArrayList<Project>()
 
-        LOG.trace("Reading input projects from ${inputPath}")
         String projectsFile = new File(inputPath).getText()
         def iterator = parseCsv(projectsFile)
 
         for (line in iterator) {
             Map lineMap = line.toMap()
-            LOG.trace("Processing line ${lineMap}")
 
             String path = line["path"]
 
             if (lineMap.containsKey("name")) {
                 String name = line["name"]
 
-                LOG.trace("Adding project ${name} with path ${path}")
                 projectList.add(new Project(name, path))
             } else {
-                LOG.trace("Adding project with path ${path}")
                 projectList.add(new Project(path))
             }
         }

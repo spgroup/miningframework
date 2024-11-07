@@ -19,7 +19,7 @@ class Arguments {
     private String syntacticSeparators
     private String fileExtension
     private Level logLevel
-    private boolean includePullRequestBranches
+    private String projectCommitHashesFile
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -34,7 +34,7 @@ class Arguments {
         syntacticSeparators = '{ } ( ) ; ,'
         fileExtension = 'java'
         logLevel = Level.INFO
-        includePullRequestBranches = false
+        projectCommitHashesFile = ''
     }
 
     void setNumOfThreads(int numOfThreads) {
@@ -150,11 +150,11 @@ class Arguments {
         Configurator.setRootLevel(logLevel)
     }
 
-    boolean getIncludePullRequestBranches() {
-        return includePullRequestBranches
+    String getProjectCommitHashesFile() {
+        return projectCommitHashesFile
     }
 
-    void setIncludePullRequestBranches() {
-        this.includePullRequestBranches = true
+    void setProjectCommitHashesFile(String projectCommitHashesFile) {
+        this.projectCommitHashesFile = projectCommitHashesFile
     }
 }

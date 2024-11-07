@@ -1,19 +1,22 @@
 package app
 
+import exception.UnstagedChangesException
+import interfaces.CommitFilter
+import interfaces.DataCollector
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import project.MergeCommit
+import project.Project
+import project.commitHashesExtraction.CommitHashesExtractor
+import services.util.Utils
+import util.FileManager
+import util.MergeHelper
+import util.ProcessRunner
 
 import java.text.SimpleDateFormat
-
-import static app.MiningFramework.arguments
 import java.util.concurrent.BlockingQueue
 
-import project.*
-import interfaces.*
-import exception.UnstagedChangesException
-import util.*
-
-import services.util.Utils;
+import static app.MiningFramework.arguments
 
 class MiningWorker implements Runnable {
     private static Logger LOG = LogManager.getLogger(MiningWorker.class)
@@ -22,8 +25,10 @@ class MiningWorker implements Runnable {
     private CommitFilter commitFilter
     private BlockingQueue<Project> projectList
     private String baseDir
+    private CommitHashesExtractor commitHashesExtractor
 
     MiningWorker(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
+        this.commitHashesExtractor = CommitHashesExtractor.Factory.build()
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectList = projectList
@@ -43,7 +48,7 @@ class MiningWorker implements Runnable {
                     checkForUnstagedChanges(project);
                 }
 
-                def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate(), arguments.getIncludePullRequestBranches())
+                def (mergeCommits, skipped) = project.getMergeCommits(commitHashesExtractor)
                 for (mergeCommit in mergeCommits) {
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {
@@ -115,7 +120,7 @@ class MiningWorker implements Runnable {
         process.waitFor()
         LOG.info("Finished cloning repository ${project.getName()} into ${target}")
 
-        if (arguments.getIncludePullRequestBranches()) {
+        if (arguments.getProjectCommitHashesFile()) {
             LOG.info("Starting fetch of pull request branches for repository ${project.getName()}")
             Process fetchProcess = ProcessRunner.runProcess(target, 'git', 'fetch', 'origin', 'refs/pull/*/head:refs/remotes/origin/pull/*')
             fetchProcess.getInputStream().eachLine(LOG::trace)

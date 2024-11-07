@@ -89,9 +89,6 @@ class MiningWorker implements Runnable {
         String gitDiffOutput = ProcessRunner.runProcess(project.getPath(), "git", "diff").getText()
 
         if (gitDiffOutput.length() != 0) {
-            ProcessRunner.runProcess(project.getPath(), "git", "clean", "-df").waitFor()
-            ProcessRunner.runProcess(project.getPath(), "git", "checkout", "--", ".").waitFor()
-            return
             throw new UnstagedChangesException(project.getName())
         }
     }
@@ -119,14 +116,6 @@ class MiningWorker implements Runnable {
         process.getErrorStream().eachLine(LOG::warn)
         process.waitFor()
         LOG.info("Finished cloning repository ${project.getName()} into ${target}")
-
-        if (arguments.getProjectCommitHashesFile()) {
-            LOG.info("Starting fetch of pull request branches for repository ${project.getName()}")
-            Process fetchProcess = ProcessRunner.runProcess(target, 'git', 'fetch', 'origin', 'refs/pull/*/head:refs/remotes/origin/pull/*')
-            fetchProcess.getInputStream().eachLine(LOG::trace)
-            fetchProcess.waitFor()
-            LOG.info("Finished fetch of pull request branches for repository ${project.getName()}")
-        }
 
         project.setPath(target)
     }

@@ -1,7 +1,6 @@
 package app
 
 import com.google.inject.Inject
-import org.apache.logging.log4j.LogManager
 
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
@@ -38,9 +37,7 @@ class MiningFramework {
             println "#### MINING STARTED ####"
 
             for (ProjectProcessor projectProcessor : projectProcessors) {
-                LOG.trace("Starting processing of project with processor ${projectProcessor.class.getSimpleName()}. There are ${projectList.size()} projects remaining")
                 projectList = projectProcessor.processProjects(projectList)
-                LOG.trace("Finished processing of project with processor ${projectProcessor.class.getSimpleName()}. There are ${projectList.size()} projects remaining")
             }
 
             BlockingQueue<Project> projectQueue = populateProjectsQueue(projectList)

@@ -29,7 +29,7 @@ class RunNormalizationOnScenarioFilesDataCollector implements DataCollector {
         scenarioFiles.parallelStream().forEach(scenarioFile -> this.filesToRunNormalization.parallelStream().forEach(fileToRunNormalization -> {
             def file = scenarioFile.resolve(fileToRunNormalization)
             LOG.trace("Starting normalization of ${file}")
-            FileFormatNormalizer.normalizeFileInPlace(file)
+            normalizeFileInPlace(file)
             LOG.trace("Finished normalization of ${file}")
         }))
         LOG.trace("Finished normalization of scenario files")

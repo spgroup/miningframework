@@ -14,7 +14,7 @@ import services.dataCollectors.mergeToolExecutors.GitMergeFileMergeToolDataColle
 import services.dataCollectors.mergeToolExecutors.JDimeMergeToolExecutorDataCollector
 import services.dataCollectors.mergeToolExecutors.LastMergeMergeToolExecutorDataCollector
 import services.dataCollectors.mergeToolExecutors.SporkMergeToolExecutorDataCollector
-import services.outputProcessors.genericMerge.TriggerBuildAndTestsOutputProcessor
+import services.outputProcessors.EmptyOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
 
 class GenericMergeModule extends AbstractModule {
@@ -50,7 +50,7 @@ class GenericMergeModule extends AbstractModule {
         dataCollectorBinder.addBinding().toInstance(new CompareScenarioMergeConflictsDataCollector("merge.jdime.java", "merge.spork.java"))
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
-        outputProcessorBinder.addBinding().to(TriggerBuildAndTestsOutputProcessor.class)
+        outputProcessorBinder.addBinding().to(EmptyOutputProcessor.class)
 
         bind(CommitFilter.class).to(MutuallyModifiedFilesCommitFilter.class)
     }

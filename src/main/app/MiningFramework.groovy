@@ -11,7 +11,6 @@ import interfaces.*
 import exception.UnstagedChangesException
 
 class MiningFramework {
-    private static LOG = LogManager.getLogger(MiningFramework.class)
 
     private ArrayList<Project> projectList
    

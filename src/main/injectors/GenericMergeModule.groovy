@@ -7,8 +7,11 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
-import services.dataCollectors.common.RunNormalizationOnScenarioFilesWithSporkDataCollector
+import services.dataCollectors.common.CompareScenarioMergeConflictsDataCollector
 import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
+import services.dataCollectors.fileSyntacticNormalization.FormatFileSyntacticNormalizationDataCollector
+import services.dataCollectors.mergeToolExecutors.LastMergeMergeToolExecutorDataCollector
+import services.dataCollectors.mergeToolExecutors.SporkMergeToolExecutorDataCollector
 import services.outputProcessors.EmptyOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
 
@@ -21,38 +24,23 @@ class GenericMergeModule extends AbstractModule {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
         // Run the merge tools on the scenarios
-//        dataCollectorBinder.addBinding().to(JDimeMergeToolExecutorDataCollector.class)
-//        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
-//        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
-//        dataCollectorBinder.addBinding().to(GitMergeFileMergeToolDataCollector.class)
+        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
+        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
 
-        // Normalize the output files formatting due to jDime pretty-printing
-//        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesDataCollector(["merge.java", "merge.spork.java", "merge.last_merge.java"]))
+        // Normalize the files formatting by running Spork on the resulting files.
+        dataCollectorBinder.addBinding().toInstance(new FormatFileSyntacticNormalizationDataCollector("merge.java", "merge.format_normalized.java"))
+        dataCollectorBinder.addBinding().toInstance(new FormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.format_normalized.java"))
+        dataCollectorBinder.addBinding().toInstance(new FormatFileSyntacticNormalizationDataCollector("merge.spork.java", "merge.spork.format_normalized.java"))
 
+        // Syntactically compare both Spork and Last Merge files
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.format_normalized.java", "merge.last_merge.format_normalized.java"))
 
-        // Normalize the output files formatting due to Spork pretty-printing
-        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesWithSporkDataCollector("merge.java", "merge.spork_normalized.java"))
-        dataCollectorBinder.addBinding().toInstance(new RunNormalizationOnScenarioFilesWithSporkDataCollector("merge.last_merge.java", "merge.last_merge.spork_normalized.java"))
-
-        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.spork_normalized.java", "merge.spork.java"))
-
-        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.java", "merge.spork_normalized.java"))
-
-
-        // Run comparisons between tools themselves
-//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java", "merge.spork.java"))
-//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java", "merge.jdime.java"))
-//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.spork.java"))
-//
-//        // Run comparisons between tools and the original merge file
-//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.java"))
-//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java", "merge.java"))
-//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.java", "merge.java"))
+        // Syntactically compare the tools with merge commit
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.format_normalized.java", "merge.format_normalized.java"))
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.format_normalized.java", "merge.format_normalized.java"))
 
         // Run comparisons between conflicts themselves
-//        dataCollectorBinder.addBinding().toInstance(new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.spork.java"))
-//        dataCollectorBinder.addBinding().toInstance(new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.jdime.java"))
-//        dataCollectorBinder.addBinding().toInstance(new CompareScenarioMergeConflictsDataCollector("merge.jdime.java", "merge.spork.java"))
+        dataCollectorBinder.addBinding().toInstance(new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.spork.java"))
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(EmptyOutputProcessor.class)

@@ -20,12 +20,12 @@ class SyntacticallyCompareScenarioFilesDataCollector implements DataCollector {
 
     private static final REPORT_DIRECTORY = "${System.getProperty("user.dir")}/output/reports/syntactic-comparison"
 
-    private String fileA
-    private String fileB
+    private String _fileA
+    private String _fileB
 
     SyntacticallyCompareScenarioFilesDataCollector(String fileA, String fileB) {
-        this.fileA = fileA
-        this.fileB = fileB
+        this._fileA = fileA
+        this._fileB = fileB
     }
 
     @Override
@@ -33,8 +33,8 @@ class SyntacticallyCompareScenarioFilesDataCollector implements DataCollector {
         def results = MergeScenarioCollector.collectNonFastForwardMergeScenarios(project, mergeCommit)
                 .parallelStream()
                 .map(file -> {
-                    def fileA = file.resolve(this.fileA)
-                    def fileB = file.resolve(this.fileB)
+                    def fileA = file.resolve(_fileA)
+                    def fileB = file.resolve(_fileB)
                     LOG.trace("Starting syntactic comparison between ${fileA} and ${fileB}")
                     def areFilesSyntacticallyEquivalent = areFilesSyntacticallyEquivalent(fileA, fileB)
                     return [project.getName(), mergeCommit.getSHA(), file, fileA, fileB, areFilesSyntacticallyEquivalent]
@@ -48,7 +48,7 @@ class SyntacticallyCompareScenarioFilesDataCollector implements DataCollector {
     }
 
     private String getReportFileName() {
-        return "${REPORT_DIRECTORY}/${fileA.replace('.', "_")}-${fileB.replace('.', "_")}.csv"
+        return "${REPORT_DIRECTORY}/${_fileA.replace('.', "_")}-${_fileB.replace('.', "_")}.csv"
     }
 
     private static boolean areFilesSyntacticallyEquivalent(Path fileA, Path fileB) {
@@ -70,6 +70,8 @@ class SyntacticallyCompareScenarioFilesDataCollector implements DataCollector {
         list.add("--right-path=${fileB.toAbsolutePath().toString()}".toString())
         list.add("--language=java")
         process.command().addAll(list)
+
+        LOG.trace("Calling generic merge with command \"${process.command().join(' ')}\"")
 
         def output = ProcessRunner.startProcess(process)
         output.waitFor()

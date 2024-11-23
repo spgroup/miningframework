@@ -23,6 +23,13 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
 
         if (output.exitValue() > 0) {
             LOG.warn("SPORK exited with code ${output.exitValue()}")
+
+            def errorOutput = output.getErrorStream().readLines()
+            if (!errorOutput.isEmpty()) {
+                LOG.warn("SPORK execution failed. Output: ${errorOutput}")
+                return MergeExecutionResult.TOOL_ERROR
+            }
+
             LOG.debug("SPORK output: ${output.getInputStream().readLines()}")
         }
 
@@ -39,6 +46,7 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
         list.add("java")
         list.add("-jar")
         list.add(SPORK_JAR_PATH)
+        list.add("-e")
         list.add(file.resolve("left.java").toString())
         list.add(file.resolve("base.java").toString())
         list.add(file.resolve("right.java").toString())

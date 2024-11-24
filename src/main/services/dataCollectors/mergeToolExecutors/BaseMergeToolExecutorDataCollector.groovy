@@ -13,6 +13,7 @@ import util.CsvUtils
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.stream.Collectors
 
 import static app.MiningFramework.arguments
 
@@ -32,11 +33,17 @@ abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
         def summaries = scenarioFiles.stream()
                 .map(this::runMergeForFile)
                 .map(summary -> [project.getName(), mergeCommit.getSHA(), summary.file, summary.output, summary.result, summary.time])
+                .map(CsvUtils::toCsvRepresentation)
+                .collect(Collectors.toList())
 
-        def reportFile = new File(arguments.getOutputPath() + "/reports/merge-tools/${getToolName()}.csv")
+        writeReportToFile(arguments.getOutputPath() + "/reports/merge-tools/${getToolName()}.csv", summaries)
+    }
+
+    protected static synchronized writeReportToFile(String reportFilePath, List<String> lines) {
+        def reportFile = new File(reportFilePath)
         Files.createDirectories(Paths.get(arguments.getOutputPath() + "/reports/merge-tools/"))
         reportFile.createNewFile()
-        reportFile << summaries.map(CsvUtils::toCsvRepresentation).collect(CsvUtils::asLines()) << System.lineSeparator()
+        reportFile << lines.stream().collect(CsvUtils::asLines()) << System.lineSeparator()
     }
 
     MergeExecutionSummary runMergeForFile(Path file) {

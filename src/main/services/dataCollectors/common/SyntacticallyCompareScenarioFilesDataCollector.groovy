@@ -12,6 +12,7 @@ import util.ProcessRunner
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.stream.Collectors
 
 class SyntacticallyCompareScenarioFilesDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(SyntacticallyCompareScenarioFilesDataCollector.class)
@@ -40,11 +41,16 @@ class SyntacticallyCompareScenarioFilesDataCollector implements DataCollector {
                     return [project.getName(), mergeCommit.getSHA(), file, fileA, fileB, areFilesSyntacticallyEquivalent]
                 })
                 .map(CsvUtils::toCsvRepresentation)
+                .collect(Collectors.toList())
 
-        def reportFile = new File(getReportFileName())
+        writeToReportFile(getReportFileName(), results)
+    }
+
+    protected synchronized static writeToReportFile(String reportFileName, List<String> lines) {
+        def reportFile = new File(reportFileName)
         Files.createDirectories(Paths.get(REPORT_DIRECTORY))
         reportFile.createNewFile()
-        reportFile << results.collect(CsvUtils.asLines()) << System.lineSeparator()
+        reportFile << lines.stream().collect(CsvUtils.asLines()) << System.lineSeparator()
     }
 
     private String getReportFileName() {

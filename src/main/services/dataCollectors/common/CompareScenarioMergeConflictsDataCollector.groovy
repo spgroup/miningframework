@@ -12,6 +12,7 @@ import util.CsvUtils
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.stream.Collectors
 import java.util.stream.Stream
 
 class CompareScenarioMergeConflictsDataCollector implements DataCollector {
@@ -38,22 +39,26 @@ class CompareScenarioMergeConflictsDataCollector implements DataCollector {
                 .map(this::extractConflictsFromFiles)
                 .flatMap(CompareScenarioMergeConflictsDataCollector::compareMergeConflicts(project, mergeCommit))
                 .map(CsvUtils::toCsvRepresentation)
+                .collect(Collectors.toList())
 
-        def reportFile = new File(getReportFileName())
-        Files.createDirectories(Paths.get(REPORT_DIRECTORY))
-        reportFile.createNewFile()
-        def fileContent = conflictsComparisons.collect(CsvUtils.asLines())
-        if (fileContent.isBlank() || fileContent.isEmpty()) {
+        if (conflictsComparisons.isEmpty()) {
             LOG.trace("Finished execution of Merge Conflicts Comparator on project ${project.getName()} and merge commit ${mergeCommit.getSHA()} without conflicts")
             return
         }
-        reportFile << fileContent << "\n"
 
         LOG.trace("Finished execution of Merge Conflicts Comparator on project ${project.getName()} and merge commit ${mergeCommit.getSHA()}")
+        writeReportToFile(getReportFileName(), conflictsComparisons.collect())
     }
 
-    private String getReportFileName() {
-        return "${REPORT_DIRECTORY}/${fileA.replace('.', "_")}-${fileB.replace('.', "_")}.csv"
+    protected static synchronized writeReportToFile(Path filePath, List<String> lines) {
+        def reportFile = filePath.toFile()
+        Files.createDirectories(filePath.getParent())
+        reportFile.createNewFile()
+        reportFile << lines.stream().collect(CsvUtils.asLines()) << System.lineSeparator()
+    }
+
+    private Path getReportFileName() {
+        return Paths.get("${REPORT_DIRECTORY}/${fileA.replace('.', "_")}-${fileB.replace('.', "_")}.csv")
     }
 
     private boolean hasResponseFromBothTools(Path scenario) {

@@ -26,8 +26,8 @@ class GenericMergeModule extends AbstractModule {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
         // Run the merge tools on the scenarios
-        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
-        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
+//        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
+//        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
 
         // Normalize the files formatting by running Format on the resulting files.
         dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([new FormatFileSyntacticNormalizationDataCollector("merge.java", "merge.format_normalized.java"),
@@ -45,7 +45,8 @@ class GenericMergeModule extends AbstractModule {
         new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.format_normalized.java", "merge.format_normalized.spork_normalized.java"),
         new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.format_normalized.java", "merge.format_normalized.java"),
         // Run comparisons between conflicts themselves
-        new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.spork.java")])))
+//        new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.spork.java")
+        ])))
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(EmptyOutputProcessor.class)

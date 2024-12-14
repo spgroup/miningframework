@@ -7,7 +7,9 @@ import project.MergeCommit
 import project.Project
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 
 abstract class BaseFileSyntacticNormalizationDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(BaseFileSyntacticNormalizationDataCollector.class)
@@ -27,7 +29,8 @@ abstract class BaseFileSyntacticNormalizationDataCollector implements DataCollec
             LOG.debug("Starting to run file normalization in file ${inputFile}")
             def isSuccess = runNormalizationOnFile(file.resolve(inputFile), file.resolve(outputFile))
             if (!isSuccess) {
-                LOG.debug("Failed to run file normalization in file ${inputFile}")
+                LOG.debug("Failed to run file normalization in file ${inputFile}, falling back to copy the file")
+                Files.copy(file.resolve(inputFile), file.resolve(outputFile), StandardCopyOption.REPLACE_EXISTING)
             }
             LOG.debug("Finished to run file normalization in file ${inputFile}")
         })

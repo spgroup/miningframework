@@ -10,7 +10,7 @@ import services.commitFilters.MutuallyModifiedFilesCommitFilter
 import services.dataCollectors.common.CompareScenarioMergeConflictsDataCollector
 import services.dataCollectors.common.RunDataCollectorsInParallel
 import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
-import services.dataCollectors.fileSyntacticNormalization.JavaParserFormatFileSyntacticNormalizationDataCollector
+import services.dataCollectors.fileSyntacticNormalization.SpoonFormatFileSyntacticNormalizationDataCollector
 import services.dataCollectors.mergeToolExecutors.LastMergeMergeToolExecutorDataCollector
 import services.dataCollectors.mergeToolExecutors.SporkMergeToolExecutorDataCollector
 import services.outputProcessors.EmptyOutputProcessor
@@ -25,20 +25,25 @@ class GenericMergeModule extends AbstractModule {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
         // Run the merge tools on the scenarios
-//        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
-//        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
+        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
+        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
 
         // Normalize the files formatting by running Format on the resulting files.
-        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([new JavaParserFormatFileSyntacticNormalizationDataCollector("merge.java", "merge.java_parser_normalized.java"),
-                                                                                                                  new JavaParserFormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.java_parser_normalized.java"),
-                                                                                                                  new JavaParserFormatFileSyntacticNormalizationDataCollector("merge.spork.java", "merge.spork.java_parser_normalized.java")])))
+//        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([new JavaParserFormatFileSyntacticNormalizationDataCollector("merge.java", "merge.java_parser_normalized.java"),
+//                                                                                                                  new JavaParserFormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.java_parser_normalized.java"),
+//                                                                                                                  new JavaParserFormatFileSyntacticNormalizationDataCollector("merge.spork.java", "merge.spork.java_parser_normalized.java")])))
+
+
+        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([new SpoonFormatFileSyntacticNormalizationDataCollector("merge.java", "merge.spoon_normalized.java"),
+                                                                                                                  new SpoonFormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.spoon_normalized.java"),
+                                                                                                                  new SpoonFormatFileSyntacticNormalizationDataCollector("merge.spork.java", "merge.spork.spoon_normalized.java")])))
 
         dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([
                 // Syntactically compare both Spork and Last Merge files
-                new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.java_parser_normalized.java", "merge.last_merge.java_parser_normalized.java"),
+                new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.spoon_normalized.java", "merge.last_merge.spoon_normalized.java"),
                 // Syntactically compare the tools with merge commit
-                new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.java_parser_normalized.java", "merge.java_parser_normalized.java"),
-                new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.java_parser_normalized.java", "merge.java_parser_normalized.java"),
+                new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.spoon_normalized.java", "merge.spoon_normalized.java"),
+                new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.spoon_normalized.java", "merge.spoon_normalized.java"),
                 // Run comparisons between conflicts themselves
                 new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.spork.java")])))
 

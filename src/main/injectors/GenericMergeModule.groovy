@@ -25,8 +25,8 @@ class GenericMergeModule extends AbstractModule {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
         // Run the merge tools on the scenarios
-        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
-        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
+//        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
+//        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
 
         // Normalize the files formatting by running Format on the resulting files.
 //        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([new JavaParserFormatFileSyntacticNormalizationDataCollector("merge.java", "merge.java_parser_normalized.java"),

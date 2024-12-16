@@ -3,6 +3,8 @@ package services.dataCollectors.fileSyntacticNormalization
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import spoon.Launcher
+import spoon.compiler.Environment
+import spoon.reflect.visitor.DefaultJavaPrettyPrinter
 import spoon.support.compiler.FileSystemFile
 
 import java.nio.charset.Charset
@@ -24,9 +26,12 @@ class SpoonFormatFileSyntacticNormalizationDataCollector extends BaseFileSyntact
             def launcher = new Launcher()
 
             launcher.addInputResource(new FileSystemFile(inputFile.toFile()))
+            launcher.getEnvironment().setPrettyPrintingMode(Environment.PRETTY_PRINTING_MODE.FULLYQUALIFIED)
+            launcher.getEnvironment().noClasspath = true;
 
             def model = launcher.buildModel()
-            def result = model.getUnnamedModule().factory.CompilationUnit().map.values().first().prettyprint()
+            def cu = model.getUnnamedModule().factory.CompilationUnit()
+            def result = cu.getMap().values().first().prettyprint()
 
             LOG.info("Finished compilation")
             Files.write(outputFile, result.getBytes(Charset.defaultCharset()),

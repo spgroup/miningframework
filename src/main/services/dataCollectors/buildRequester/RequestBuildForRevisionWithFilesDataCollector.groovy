@@ -43,15 +43,24 @@ class RequestBuildForRevisionWithFilesDataCollector implements DataCollector {
     static private void attachOrigin(Project project) {
         def token = arguments.getAccessKey()
         def origin = "https://${token}@github.com/jpedroh/mining-framework-analysis"
-        ProcessRunner.runProcess(project.getPath(), 'git', 'remote', 'add', 'analysis', origin).waitFor()
+        def process = ProcessRunner.runProcess(project.getPath(), 'git', 'remote', 'add', 'analysis', origin)
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
+        process.waitFor()
     }
 
     static private void deleteBranch(Project project, String branchName) {
-        ProcessRunner.runProcess(project.getPath(), 'git', 'branch', '-D', branchName).waitFor()
+        def process = ProcessRunner.runProcess(project.getPath(), 'git', 'branch', '-D', branchName)
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
+        process.waitFor()
     }
 
     static private void checkoutCommitAndCreateBranch(Project project, String branchName, String commitSha) {
-        ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha).waitFor()
+        def process = ProcessRunner.runProcess(project.getPath(), 'git', 'checkout', '-b', branchName, commitSha)
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
+        process.waitFor()
     }
 
     private copyFilesIntoRevision(Project project, MergeCommit mergeCommit) {
@@ -66,17 +75,26 @@ class RequestBuildForRevisionWithFilesDataCollector implements DataCollector {
                 })
                 .forEach(file -> {
                     def destination = Paths.get(project.getPath()).resolve(file.toString().substring(file.toString().indexOf(mergeCommit.getSHA()) + 1 + mergeCommit.getSHA().length()))
-                    LOG.debug("Copying file ${file} to ${destination}")
+                    LOG.debug("Copying file ${file.resolve(this.fileName)} to ${destination}")
                     Files.copy(file.resolve(this.fileName), destination, StandardCopyOption.REPLACE_EXISTING)
                 })
     }
 
     static private void pushBranch(Project project, String branchName) {
-        ProcessRunner.runProcess(project.getPath(), 'git', 'push', 'analysis', branchName, "-f").waitFor()
+        def process = ProcessRunner.runProcess(project.getPath(), 'git', 'push', 'analysis', branchName, "-f")
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
+        process.waitFor()
     }
 
     static protected void commitChanges(Project project, String message) {
-        ProcessRunner.runProcess(project.getPath(), "git", "add", ".").waitFor()
-        ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}").waitFor()
+        def process = ProcessRunner.runProcess(project.getPath(), "git", "add", ".")
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
+        process.waitFor()
+        def commit = ProcessRunner.runProcess(project.getPath(), "git", "commit", "-a", "-m", "${message}")
+        commit.getInputStream().eachLine(LOG::trace)
+        commit.getErrorStream().eachLine(LOG::warn)
+        commit.waitFor()
     }
 }

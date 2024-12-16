@@ -27,6 +27,8 @@ class RequestBuildForRevisionWithFilesDataCollector implements DataCollector {
         def branchName = "mining-framework-analysis-${project.getName()}-${mergeCommit.getSHA()}-${fileName}"
         LOG.debug("Attaching origin to project")
         attachOrigin(project)
+        LOG.debug("Setting up credentials")
+        setupCredentials(project)
         LOG.debug("Deleting and creating branch")
         deleteBranch(project, branchName)
         LOG.debug("Checking out branch")
@@ -47,6 +49,17 @@ class RequestBuildForRevisionWithFilesDataCollector implements DataCollector {
         process.getInputStream().eachLine(LOG::trace)
         process.getErrorStream().eachLine(LOG::warn)
         process.waitFor()
+    }
+
+    static private void setupCredentials(Project project) {
+        def configEmail = ProcessRunner.runProcess(project.getPath(), 'git', 'config', 'user.email', '"joao.pedro.hsd@gmail.com"')
+        configEmail.getInputStream().eachLine(LOG::trace)
+        configEmail.getErrorStream().eachLine(LOG::warn)
+        configEmail.waitFor()
+        def configName = ProcessRunner.runProcess(project.getPath(), 'git', 'config', 'user.name', '"Joao Pedro"')
+        configName.getInputStream().eachLine(LOG::trace)
+        configName.getErrorStream().eachLine(LOG::warn)
+        configName.waitFor()
     }
 
     static private void deleteBranch(Project project, String branchName) {

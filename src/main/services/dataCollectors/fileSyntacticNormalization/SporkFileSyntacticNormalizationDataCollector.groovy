@@ -22,8 +22,10 @@ class SporkFileSyntacticNormalizationDataCollector extends BaseFileSyntacticNorm
         processBuilder.command().addAll(getBuildParameters(inputFile, outputFile))
 
         LOG.trace("Calling spork with command \"${processBuilder.command().join(' ')}\"")
-        def exitCode = ProcessRunner.startProcess(processBuilder).waitFor()
-        return exitCode != 0
+        def process = ProcessRunner.startProcess(processBuilder)
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
+        return true
     }
 
     private static List<String> getBuildParameters(Path inputFile, Path outputFile) {

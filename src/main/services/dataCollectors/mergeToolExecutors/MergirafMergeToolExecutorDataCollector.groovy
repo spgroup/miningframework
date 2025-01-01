@@ -10,7 +10,7 @@ import java.nio.file.Path
 class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCollector {
     private static Logger LOG = LogManager.getLogger(MergirafMergeToolExecutorDataCollector.class)
 
-    private static MERGIRAF_PATH = "${System.getProperty("user.dir")}/dependencies/mergiraf"
+    private static String MERGIRAF_PATH = "./dependencies/mergiraf"
 
     @Override
     protected MergeExecutionResult executeTool(Path scenario, Path outputFile) {
@@ -31,7 +31,8 @@ class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCo
         def exitCode = process.waitFor()
         if (exitCode == 0) {
             return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
-        } else (exitCode == 1) {
+        }
+        if (exitCode == 1) {
             return MergeExecutionResult.SUCCESS_WITH_CONFLICTS
         }
         return MergeExecutionResult.TOOL_ERROR

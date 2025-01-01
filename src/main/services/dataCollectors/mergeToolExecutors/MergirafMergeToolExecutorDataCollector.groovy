@@ -25,7 +25,10 @@ class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCo
 
         LOG.trace("Calling mergiraf with command \"${processBuilder.command().join(' ')}\"")
 
-        def exitCode = ProcessRunner.startProcess(processBuilder).waitFor()
+        def process = ProcessRunner.startProcess(processBuilder)
+        process.getErrorStream().eachLine(LOG::warn)
+
+        def exitCode = process.waitFor()
         if (exitCode == 0) {
             return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
         } else (exitCode == 1) {

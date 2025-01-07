@@ -7,9 +7,8 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
+import services.dataCollectors.common.CompareScenarioMergeConflictsDataCollector
 import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
-import services.dataCollectors.fileSyntacticNormalization.SporkFileSyntacticNormalizationDataCollector
-import services.dataCollectors.mergeToolExecutors.MergirafMergeToolExecutorDataCollector
 import services.outputProcessors.EmptyOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
 
@@ -24,10 +23,10 @@ class GenericMergeModule extends AbstractModule {
         // Run the merge tools on the scenarios
 //        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
 //        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
-        dataCollectorBinder.addBinding().to(MergirafMergeToolExecutorDataCollector.class)
-
-        dataCollectorBinder.addBinding().toInstance(new SporkFileSyntacticNormalizationDataCollector("merge.mergiraf.java", "merge.mergiraf.spork_normalized.java"))
-        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.spork_normalized.java", "merge.mergiraf.spork_normalized.java"))
+//        dataCollectorBinder.addBinding().to(MergirafMergeToolExecutorDataCollector.class)
+//
+//        dataCollectorBinder.addBinding().toInstance(new SporkFileSyntacticNormalizationDataCollector("merge.mergiraf.java", "merge.mergiraf.spork_normalized.java"))
+//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.spork_normalized.java", "merge.mergiraf.spork_normalized.java"))
 
 //        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([new SpoonFormatFileSyntacticNormalizationDataCollector("merge.java", "merge.spoon_normalized.java"),
 //                                                                                                                  new SpoonFormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.spoon_normalized.java"),
@@ -46,6 +45,9 @@ class GenericMergeModule extends AbstractModule {
 //                new SyntacticallyCompareScenarioFilesDataCollector("merge.last_merge.spork_normalized.java", "merge.spork_normalized.java"),
 //                 Run comparisons between conflicts themselves
 //                new CompareScenarioMergeConflictsDataCollector("merge.last_merge.java", "merge.spork.java")])))
+
+        dataCollectorBinder.addBinding().toInstance(new CompareScenarioMergeConflictsDataCollector("merge.mergiraf.java", "merge.spork.java"))
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.java", "merge.mergiraf.java"))
 
 //        dataCollectorBinder.addBinding().toInstance(new RequestBuildForRevisionWithFilesDataCollector("merge.last_merge.java"))
 //        dataCollectorBinder.addBinding().toInstance(new RequestBuildForRevisionWithFilesDataCollector("merge.spork.java"))

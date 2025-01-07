@@ -7,6 +7,8 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
+import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
+import services.dataCollectors.fileSyntacticNormalization.SporkFileSyntacticNormalizationDataCollector
 import services.dataCollectors.mergeToolExecutors.MergirafMergeToolExecutorDataCollector
 import services.outputProcessors.EmptyOutputProcessor
 import services.projectProcessors.DummyProjectProcessor
@@ -23,6 +25,9 @@ class GenericMergeModule extends AbstractModule {
 //        dataCollectorBinder.addBinding().to(LastMergeMergeToolExecutorDataCollector.class)
 //        dataCollectorBinder.addBinding().to(SporkMergeToolExecutorDataCollector.class)
         dataCollectorBinder.addBinding().to(MergirafMergeToolExecutorDataCollector.class)
+
+        dataCollectorBinder.addBinding().toInstance(new SporkFileSyntacticNormalizationDataCollector("merge.mergiraf.java", "merge.mergiraf.spork_normalized.java"))
+        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.spork.spork_normalized.java", "merge.mergiraf.spork_normalized.java"))
 
 //        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel(new ArrayList<DataCollector>([new SpoonFormatFileSyntacticNormalizationDataCollector("merge.java", "merge.spoon_normalized.java"),
 //                                                                                                                  new SpoonFormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.spoon_normalized.java"),

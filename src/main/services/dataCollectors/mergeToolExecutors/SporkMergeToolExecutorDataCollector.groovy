@@ -5,10 +5,11 @@ import org.apache.logging.log4j.Logger
 import services.dataCollectors.mergeToolExecutors.model.MergeExecutionResult
 import util.ProcessRunner
 
+import java.nio.file.Files
 import java.nio.file.Path
 
 class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCollector {
-    private static Logger LOG = LogManager.getLogger(LastMergeMergeToolExecutorDataCollector.class)
+    private static Logger LOG = LogManager.getLogger(SporkMergeToolExecutorDataCollector.class)
 
     private static final String SPORK_JAR_PATH = "${System.getProperty("user.dir")}/dependencies/spork.jar"
 
@@ -21,16 +22,9 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
         def output = ProcessRunner.startProcess(processBuilder)
         output.waitFor()
 
-        if (output.exitValue() > 0) {
-            LOG.warn("SPORK exited with code ${output.exitValue()}")
-
-            def errorOutput = output.getErrorStream().readLines()
-            if (!errorOutput.isEmpty()) {
-                LOG.warn("SPORK execution failed. Output: ${errorOutput}")
-                return MergeExecutionResult.TOOL_ERROR
-            }
-
-            LOG.debug("SPORK output: ${output.getInputStream().readLines()}")
+        if (!Files.exists(outputFile)) {
+            LOG.warn("SPORK execution failed: ${output.getInputStream().readLines()}")
+            return MergeExecutionResult.TOOL_ERROR
         }
 
         return output.exitValue() == 0 ? MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS : MergeExecutionResult.SUCCESS_WITH_CONFLICTS

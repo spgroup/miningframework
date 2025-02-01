@@ -7,6 +7,7 @@ import util.ProcessRunner
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.TimeUnit
 
 class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCollector {
     private static Logger LOG = LogManager.getLogger(SporkMergeToolExecutorDataCollector.class)
@@ -20,7 +21,11 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
 
         LOG.trace("Calling spork with command \"${processBuilder.command().join(' ')}\"")
         def output = ProcessRunner.startProcess(processBuilder)
-        output.waitFor()
+        def hasCompleted = output.waitFor(1, TimeUnit.HOURS)
+        if (!hasCompleted) {
+            LOG.warn("Spork has timed out during execution")
+            return MergeExecutionResult.TIMEOUT
+        }
 
         if (!Files.exists(outputFile)) {
             LOG.warn("SPORK execution failed: ${output.getInputStream().readLines()}")

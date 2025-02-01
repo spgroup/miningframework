@@ -7,6 +7,7 @@ import services.util.MergeConflict
 import util.ProcessRunner
 
 import java.nio.file.Path
+import java.util.concurrent.TimeUnit
 
 class JDimeMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCollector {
     private static Logger LOG = LogManager.getLogger(JDimeMergeToolExecutorDataCollector.class)
@@ -27,7 +28,11 @@ class JDimeMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
                 "${working_directory_path}/right.java")
 
         def output = ProcessRunner.startProcess(processBuilder)
-        output.waitFor()
+        def hasCompleted = output.waitFor(1, TimeUnit.HOURS)
+        if (!hasCompleted) {
+            LOG.warn("jDime has timed out during execution")
+            return MergeExecutionResult.TIMEOUT
+        }
 
         if (output.exitValue() >= 200) {
             LOG.warn("Error while merging ${scenario.toAbsolutePath()}. jDime exited with exitCode ${output.exitValue()}")

@@ -12,7 +12,7 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
 abstract class BaseFileSyntacticNormalizationDataCollector implements DataCollector {
-    private static Logger LOG = LogManager.getLogger(BaseFileSyntacticNormalizationDataCollector.class)
+    protected static Logger LOG = LogManager.getLogger(BaseFileSyntacticNormalizationDataCollector.class)
 
     protected String inputFile
     protected String outputFile

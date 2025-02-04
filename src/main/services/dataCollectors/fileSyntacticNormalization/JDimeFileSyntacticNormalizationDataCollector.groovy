@@ -4,6 +4,7 @@ package services.dataCollectors.fileSyntacticNormalization
 import util.ProcessRunner
 
 import java.nio.file.Path
+import java.util.concurrent.TimeUnit
 
 class JDimeFileSyntacticNormalizationDataCollector extends BaseFileSyntacticNormalizationDataCollector {
     private static final String JDIME_BINARY_PATH = "${System.getProperty("user.dir")}/dependencies/jdime/install/JDime/bin"
@@ -23,7 +24,8 @@ class JDimeFileSyntacticNormalizationDataCollector extends BaseFileSyntacticNorm
                 inputFile.toAbsolutePath().toString(),
                 inputFile.toAbsolutePath().toString())
 
-        def exitCode = ProcessRunner.startProcess(processBuilder).waitFor()
-        return exitCode != 0
+        def output = ProcessRunner.startProcess(processBuilder)
+        def hasCompleted = output.waitFor(1, TimeUnit.HOURS)
+        return hasCompleted && output.exitValue() != 0
     }
 }

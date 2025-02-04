@@ -1,11 +1,12 @@
 package services.dataCollectors.fileSyntacticNormalization
 
-
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import util.ProcessRunner
 
+import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.TimeUnit
 
 class SporkFileSyntacticNormalizationDataCollector extends BaseFileSyntacticNormalizationDataCollector {
     private static Logger LOG = LogManager.getLogger(SporkFileSyntacticNormalizationDataCollector.class)
@@ -25,7 +26,8 @@ class SporkFileSyntacticNormalizationDataCollector extends BaseFileSyntacticNorm
         def process = ProcessRunner.startProcess(processBuilder)
         process.getInputStream().eachLine(LOG::trace)
         process.getErrorStream().eachLine(LOG::warn)
-        return true
+        def hasCompleted = process.waitFor(1, TimeUnit.HOURS)
+        return hasCompleted && Files.exists(outputFile)
     }
 
     private static List<String> getBuildParameters(Path inputFile, Path outputFile) {

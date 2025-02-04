@@ -26,6 +26,6 @@ class JDimeFileSyntacticNormalizationDataCollector extends BaseFileSyntacticNorm
 
         def output = ProcessRunner.startProcess(processBuilder)
         def hasCompleted = output.waitFor(1, TimeUnit.HOURS)
-        return hasCompleted && output.exitValue() != 0
+        return hasCompleted && output.exitValue() == 0
     }
 }

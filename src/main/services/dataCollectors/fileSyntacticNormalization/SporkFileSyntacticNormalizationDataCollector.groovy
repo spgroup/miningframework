@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import util.ProcessRunner
 
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 
@@ -27,7 +26,7 @@ class SporkFileSyntacticNormalizationDataCollector extends BaseFileSyntacticNorm
         process.getInputStream().eachLine(LOG::trace)
         process.getErrorStream().eachLine(LOG::warn)
         def hasCompleted = process.waitFor(1, TimeUnit.HOURS)
-        return hasCompleted && Files.exists(outputFile)
+        return hasCompleted && process.exitValue() == 0
     }
 
     private static List<String> getBuildParameters(Path inputFile, Path outputFile) {

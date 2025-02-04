@@ -27,6 +27,12 @@ abstract class BaseFileSyntacticNormalizationDataCollector implements DataCollec
         def files = MergeScenarioCollector.collectNonFastForwardMergeScenarios(project, mergeCommit)
         files.parallelStream().forEach(file -> {
             LOG.debug("Starting to run file normalization in file ${inputFile}")
+
+            if (!Files.exists(file.resolve(inputFile))) {
+                LOG.debug("Skipping normalization because file ${file.resolve(inputFile)} do not exist")
+                return
+            }
+
             def isSuccess = runNormalizationOnFile(file.resolve(inputFile), file.resolve(outputFile))
             if (!isSuccess) {
                 LOG.debug("Failed to run file normalization in file ${inputFile}, falling back to copy the file")

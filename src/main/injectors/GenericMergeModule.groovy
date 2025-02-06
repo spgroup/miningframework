@@ -7,6 +7,7 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
+import services.dataCollectors.common.CompareScenarioMergeConflictsDataCollector
 import services.dataCollectors.common.RunDataCollectorsInParallel
 import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
 import services.outputProcessors.EmptyOutputProcessor
@@ -35,18 +36,23 @@ class GenericMergeModule extends AbstractModule {
 //                new SporkFileSyntacticNormalizationDataCollector("merge.mergiraf.java", "merge.mergiraf.spork_normalized.java"),
 //        ]))
 
-        // Run, in parallel, syntactical comparisons between files
+        // Run, in parallel, syntactical comparisons between files and textual comparison between commits
         dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel([
-                // With merge commits
+                // Syntactic comparison with merge commits
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.java", "merge.last_merge.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime_normalized.java", "merge.jdime.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.spork_normalized.java", "merge.spork.spork_normalized.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.java", "merge.mergiraf.java"),
 
-                // Between tools themselves
+                // Syntactic comparison between tools themselves
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.last_merge.jdime_normalized.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.spork_normalized.java", "merge.spork.spork_normalized.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.java", "merge.last_merge.java"),
+
+                // Conflicts comparison between tools themselves
+                new CompareScenarioMergeConflictsDataCollector("merge.jdime.java", "merge.last_merge.java"),
+                new CompareScenarioMergeConflictsDataCollector("merge.mergiraf.java", "merge.spork.java"),
+                new CompareScenarioMergeConflictsDataCollector("merge.mergiraf.java", "merge.last_merge.java"),
         ]))
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)

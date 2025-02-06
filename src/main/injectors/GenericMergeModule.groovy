@@ -41,7 +41,7 @@ class GenericMergeModule extends AbstractModule {
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.java", "merge.last_merge.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime_normalized.java", "merge.jdime.java"),
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.spork_normalized.java", "merge.spork.spork_normalized.java"),
-                new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.java", "merge.last_merge.java"),
+                new SyntacticallyCompareScenarioFilesDataCollector("merge.java", "merge.mergiraf.java"),
 
                 // Between tools themselves
                 new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.last_merge.jdime_normalized.java"),

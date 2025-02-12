@@ -7,6 +7,7 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
+import services.dataCollectors.buildRequester.RequestBuildForRevisionWithFilesDataCollector
 import services.dataCollectors.common.CompareScenarioMergeConflictsDataCollector
 import services.dataCollectors.common.RunDataCollectorsInParallel
 import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
@@ -60,6 +61,9 @@ class GenericMergeModule extends AbstractModule {
 //                                                                                     new FormatFileSyntacticNormalizationDataCollector("merge.mergiraf.java", "merge.mergiraf.format_normalized.java")]))
 
 //        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.format_normalized.java", "merge.last_merge.format_normalized.java"))
+
+
+        dataCollectorBinder.addBinding().toInstance(new RequestBuildForRevisionWithFilesDataCollector("merge.jdime.java"))
 
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)

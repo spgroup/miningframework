@@ -24,7 +24,7 @@ class RequestBuildForRevisionWithFilesDataCollector implements DataCollector {
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
-        def branchName = "mining-framework-analysis:${project.getName()}:${mergeCommit.getSHA()}:${fileName}"
+        def branchName = "mining-framework-analysis_${project.getName()}_${mergeCommit.getSHA()}_${fileName}"
         LOG.debug("Attaching origin to project")
         attachOrigin(project)
         LOG.debug("Setting up credentials")

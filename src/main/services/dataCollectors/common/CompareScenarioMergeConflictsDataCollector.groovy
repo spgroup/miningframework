@@ -67,8 +67,11 @@ class CompareScenarioMergeConflictsDataCollector implements DataCollector {
     }
 
     private boolean hasConflictsInBothTools(Path scenario) {
-        LOG.trace("Checking if both files have conflicts")
-        return MergeConflict.getConflictsNumber(scenario.resolve(fileA)) > 0 && MergeConflict.getConflictsNumber(scenario.resolve(fileB)) > 0
+        LOG.trace("Checking if both files have conflicts for scenario ${scenario}")
+        def conflictsCountFileA = MergeConflict.getConflictsNumber(scenario.resolve(fileA))
+        def conflictsCountFileB = MergeConflict.getConflictsNumber(scenario.resolve(fileB))
+        LOG.trace("Found ${conflictsCountFileA} conflicts on file A and ${conflictsCountFileB} on file B for scenario ${scenario}")
+        return conflictsCountFileA > 0 && conflictsCountFileB > 0
     }
 
     private Tuple3<Path, Set<MergeConflict>, Set<MergeConflict>> extractConflictsFromFiles(Path scenario) {

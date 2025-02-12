@@ -7,6 +7,7 @@ import interfaces.DataCollector
 import interfaces.OutputProcessor
 import interfaces.ProjectProcessor
 import services.commitFilters.MutuallyModifiedFilesCommitFilter
+import services.dataCollectors.common.CompareScenarioMergeConflictsDataCollector
 import services.dataCollectors.common.RunDataCollectorsInParallel
 import services.dataCollectors.common.SyntacticallyCompareScenarioFilesDataCollector
 import services.dataCollectors.fileSyntacticNormalization.FormatFileSyntacticNormalizationDataCollector
@@ -48,17 +49,17 @@ class GenericMergeModule extends AbstractModule {
 //                new SyntacticallyCompareScenarioFilesDataCollector("merge.jdime.java", "merge.last_merge.jdime_normalized.java"),
 //                new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.spork_normalized.java", "merge.spork.spork_normalized.java"),
 //                new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.java", "merge.last_merge.java"),
-//
-//                // Conflicts comparison between tools themselves
+
+                // Conflicts comparison between tools themselves
 //                new CompareScenarioMergeConflictsDataCollector("merge.jdime.java", "merge.last_merge.java"),
 //                new CompareScenarioMergeConflictsDataCollector("merge.mergiraf.java", "merge.spork.java"),
 //                new CompareScenarioMergeConflictsDataCollector("merge.mergiraf.java", "merge.last_merge.java"),
 //        ]))
 
-        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel([new FormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.format_normalized.java"),
-                                                                                     new FormatFileSyntacticNormalizationDataCollector("merge.mergiraf.java", "merge.mergiraf.format_normalized.java")]))
+//        dataCollectorBinder.addBinding().toInstance(new RunDataCollectorsInParallel([new FormatFileSyntacticNormalizationDataCollector("merge.last_merge.java", "merge.last_merge.format_normalized.java"),
+//                                                                                     new FormatFileSyntacticNormalizationDataCollector("merge.mergiraf.java", "merge.mergiraf.format_normalized.java")]))
 
-        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.format_normalized.java", "merge.last_merge.format_normalized.java"))
+//        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.format_normalized.java", "merge.last_merge.format_normalized.java"))
 
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)

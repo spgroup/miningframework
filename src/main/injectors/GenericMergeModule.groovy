@@ -63,7 +63,7 @@ class GenericMergeModule extends AbstractModule {
 //        dataCollectorBinder.addBinding().toInstance(new SyntacticallyCompareScenarioFilesDataCollector("merge.mergiraf.format_normalized.java", "merge.last_merge.format_normalized.java"))
 
 
-        dataCollectorBinder.addBinding().toInstance(new RequestBuildForRevisionWithFilesDataCollector("merge.mergiraf.java"))
+        dataCollectorBinder.addBinding().toInstance(new RequestBuildForRevisionWithFilesDataCollector("merge.spork.java"))
 
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)

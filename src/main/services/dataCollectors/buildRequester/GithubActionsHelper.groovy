@@ -31,7 +31,7 @@ jobs:
               with:
                 timeout_minutes: 30
                 max_attempts: 5
-                command: mvn clean test -Dcheckstyle.skip=true
+                command: mvn clean test -Dcheckstyle.skip=true -Dlicense.skipDownloadLicenses -Dlicense.skip=true
         """
 
         def githubActionsDirectory = Paths.get(project.getPath()).resolve(".github/workflows")

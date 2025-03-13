@@ -3,8 +3,10 @@ package services.dataCollectors.mergeToolExecutors
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import services.dataCollectors.mergeToolExecutors.model.MergeExecutionResult
+import services.util.MergeConflict
 import util.ProcessRunner
 
+import java.nio.file.Files
 import java.nio.file.Path
 
 class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCollector {
@@ -25,17 +27,25 @@ class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCo
 
         LOG.trace("Calling mergiraf with command \"${processBuilder.command().join(' ')}\"")
 
-        def process = ProcessRunner.startProcess(processBuilder)
-        process.getErrorStream().eachLine(LOG::warn)
-
-        def exitCode = process.waitFor()
-        if (exitCode == 0) {
-            return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
-        }
-        if (exitCode == 1) {
+        if (!Files.exists(outputFile)) {
+            return MergeExecutionResult.TOOL_ERROR
+        } else if (MergeConflict.getConflictsNumber(outputFile) > 0) {
             return MergeExecutionResult.SUCCESS_WITH_CONFLICTS
         }
-        return MergeExecutionResult.TOOL_ERROR
+        return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
+
+
+//        def process = ProcessRunner.startProcess(processBuilder)
+//        process.getErrorStream().eachLine(LOG::warn)
+//
+//        def exitCode = process.waitFor()
+//        if (exitCode == 0) {
+//            return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
+//        }
+//        if (exitCode == 1) {
+//            return MergeExecutionResult.SUCCESS_WITH_CONFLICTS
+//        }
+//        return MergeExecutionResult.TOOL_ERROR
     }
 
     @Override

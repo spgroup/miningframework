@@ -76,8 +76,12 @@ abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
         return summary
     }
 
+    protected String getExecutionDirectory() {
+        return System.getProperty("user.dir")
+    }
+
     private void executeTool(Path file, Path outputFile) {
-        def processBuilder = ProcessRunner.buildProcess(System.getProperty("user.dir"))
+        def processBuilder = ProcessRunner.buildProcess(getExecutionDirectory())
         processBuilder.command().addAll(getArgumentsForTool(file, outputFile))
 
         LOG.trace("Calling tool ${getToolName()} with command \"${processBuilder.command().join(' ')}\"")

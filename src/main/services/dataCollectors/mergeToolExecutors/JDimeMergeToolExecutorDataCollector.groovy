@@ -4,11 +4,14 @@ package services.dataCollectors.mergeToolExecutors
 import java.nio.file.Path
 
 class JDimeMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCollector {
-    private static final String JDIME_BINARY_PATH = "${System.getProperty("user.dir")}/dependencies/jdime/install/JDime/bin"
+    @Override
+    protected String getExecutionDirectory() {
+        return "${System.getProperty("user.dir")}/dependencies/jdime/install/JDime/bin"
+    }
 
     @Override
     protected List<String> getArgumentsForTool(Path file, Path outputFile) {
-        return Arrays.asList(JDIME_BINARY_PATH,
+        return Arrays.asList("./JDime",
                 "-f",
                 "--mode=structured",
                 "--output=${file.resolve(outputFile).toAbsolutePath().toString()}}".toString(),

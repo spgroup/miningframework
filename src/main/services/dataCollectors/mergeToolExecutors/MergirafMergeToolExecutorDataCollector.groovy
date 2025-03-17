@@ -23,9 +23,13 @@ class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCo
         processBuilder.command().add(scenario.resolve("base.java").toAbsolutePath().toString())
         processBuilder.command().add(scenario.resolve("left.java").toAbsolutePath().toString())
         processBuilder.command().add(scenario.resolve("right.java").toAbsolutePath().toString())
-        processBuilder.redirectOutput(outputFile.toFile())
+        processBuilder.command().add("--output=${scenario.resolve(outputFile).toAbsolutePath().toString()}}")
 
         LOG.trace("Calling mergiraf with command \"${processBuilder.command().join(' ')}\"")
+
+        def process = ProcessRunner.startProcess(processBuilder)
+        process.getErrorStream().eachLine(LOG::warn)
+        def exitCode = process.waitFor()
 
         if (!Files.exists(outputFile)) {
             return MergeExecutionResult.TOOL_ERROR
@@ -33,19 +37,6 @@ class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCo
             return MergeExecutionResult.SUCCESS_WITH_CONFLICTS
         }
         return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
-
-
-//        def process = ProcessRunner.startProcess(processBuilder)
-//        process.getErrorStream().eachLine(LOG::warn)
-//
-//        def exitCode = process.waitFor()
-//        if (exitCode == 0) {
-//            return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
-//        }
-//        if (exitCode == 1) {
-//            return MergeExecutionResult.SUCCESS_WITH_CONFLICTS
-//        }
-//        return MergeExecutionResult.TOOL_ERROR
     }
 
     @Override

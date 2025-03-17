@@ -8,11 +8,14 @@ import project.Project
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 import services.dataCollectors.mergeToolExecutors.model.MergeExecutionResult
 import services.dataCollectors.mergeToolExecutors.model.MergeExecutionSummary
+import services.util.MergeConflict
 import util.CsvUtils
+import util.ProcessRunner
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
 import static app.MiningFramework.arguments
@@ -21,6 +24,7 @@ abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(BaseMergeToolExecutorDataCollector.class)
 
     protected static PERF_SAMPLING_TOTAL_NUMBER_OF_EXECUTIONS = 10
+    protected static TIMEOUT_IN_HOURS = 1
 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
@@ -50,12 +54,11 @@ abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
         LOG.trace("Starting execution of tool ${getToolName()} in ${file}")
         List<Long> executionTimes = new ArrayList<>()
         def outputFilePath = file.resolve("merge." + getToolName().toLowerCase() + ".java")
-        MergeExecutionResult result = null
 
         for (int i = 0; i < PERF_SAMPLING_TOTAL_NUMBER_OF_EXECUTIONS; i++) {
             LOG.trace("Starting execution ${i + 1} of ${PERF_SAMPLING_TOTAL_NUMBER_OF_EXECUTIONS}")
             long startTime = System.nanoTime()
-            result = executeTool(file, outputFilePath)
+            executeTool(file, outputFilePath)
             long endTime = System.nanoTime()
             LOG.trace("Finished execution ${i + 1} of ${PERF_SAMPLING_TOTAL_NUMBER_OF_EXECUTIONS} IN ${endTime - startTime} ns")
             // If we're running more than one execution, we use the first one as a warm up
@@ -64,6 +67,7 @@ abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
             }
         }
 
+        def result = decideResult(outputFilePath)
         long averageTime = (long) (executionTimes.stream().reduce(0, (prev, cur) -> prev + cur) / executionTimes.size())
 
         def summary = new MergeExecutionSummary(file, outputFilePath, result, averageTime)
@@ -72,7 +76,25 @@ abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
         return summary
     }
 
-    protected abstract MergeExecutionResult executeTool(Path file, Path outputFile);
+    private void executeTool(Path file, Path outputFile) {
+        def processBuilder = ProcessRunner.buildProcess(System.getProperty("user.dir"))
+        processBuilder.command().addAll(getArgumentsForTool(file, outputFile))
+
+        LOG.trace("Calling tool ${getToolName()} with command \"${processBuilder.command().join(' ')}\"")
+        def output = ProcessRunner.startProcess(processBuilder)
+        output.waitFor(TIMEOUT_IN_HOURS, TimeUnit.HOURS)
+    }
+
+    private static MergeExecutionResult decideResult(Path outputFile) {
+        if (!Files.exists(outputFile)) {
+            return MergeExecutionResult.TOOL_ERROR
+        } else if (MergeConflict.getConflictsNumber(outputFile) > 0) {
+            return MergeExecutionResult.SUCCESS_WITH_CONFLICTS
+        }
+        return MergeExecutionResult.SUCCESS_WITHOUT_CONFLICTS
+    }
+
+    protected abstract List<String> getArgumentsForTool(Path file, Path outputFile);
 
     abstract String getToolName();
 }

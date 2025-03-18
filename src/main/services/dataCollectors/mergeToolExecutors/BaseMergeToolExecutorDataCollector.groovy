@@ -85,8 +85,10 @@ abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
         processBuilder.command().addAll(getArgumentsForTool(file, outputFile))
 
         LOG.trace("Calling tool ${getToolName()} with command \"${processBuilder.command().join(' ')}\"")
-        def output = ProcessRunner.startProcess(processBuilder)
-        output.waitFor(TIMEOUT_IN_HOURS, TimeUnit.HOURS)
+        def process = ProcessRunner.startProcess(processBuilder)
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
+        process.waitFor(TIMEOUT_IN_HOURS, TimeUnit.HOURS)
     }
 
     private static MergeExecutionResult decideResult(Path outputFile) {

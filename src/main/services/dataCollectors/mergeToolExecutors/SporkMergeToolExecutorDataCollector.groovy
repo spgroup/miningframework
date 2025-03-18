@@ -10,13 +10,13 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
     protected List<String> getArgumentsForTool(Path file, Path outputFile) {
         def list = new ArrayList<String>()
         list.add("ls")
-//        list.add("-jar")
-//        list.add(SPORK_JAR_PATH)
-//        list.add("-e")
-//        list.add(file.resolve("left.java").toString())
-//        list.add(file.resolve("base.java").toString())
-//        list.add(file.resolve("right.java").toString())
-//        list.add("--output=${outputFile.toAbsolutePath().toString()}".toString())
+        list.add("-jar")
+        list.add(SPORK_JAR_PATH)
+        list.add("-e")
+        list.add(file.resolve("left.java").toString())
+        list.add(file.resolve("base.java").toString())
+        list.add(file.resolve("right.java").toString())
+        list.add("--output=${outputFile.toAbsolutePath().toString()}".toString())
         return list
     }
 

@@ -23,7 +23,7 @@ import static app.MiningFramework.arguments
 abstract class BaseMergeToolExecutorDataCollector implements DataCollector {
     private static Logger LOG = LogManager.getLogger(BaseMergeToolExecutorDataCollector.class)
 
-    protected static PERF_SAMPLING_TOTAL_NUMBER_OF_EXECUTIONS = 10
+    protected static PERF_SAMPLING_TOTAL_NUMBER_OF_EXECUTIONS = 1
     protected static TIMEOUT_IN_HOURS = 1
 
     @Override

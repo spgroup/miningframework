@@ -13,7 +13,6 @@ class MergirafMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataCo
                 file.resolve("left.java").toAbsolutePath().toString(),
                 file.resolve("right.java").toAbsolutePath().toString(),
                 "--output=${outputFile.toAbsolutePath().toString()}".toString())
-
     }
 
     @Override

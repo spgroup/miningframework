@@ -14,7 +14,7 @@ class LastMergeMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataC
                 "--base-path=${file.resolve("base.java").toAbsolutePath().toString()}".toString(),
                 "--left-path=${file.resolve("left.java").toAbsolutePath().toString()}".toString(),
                 "--right-path=${file.resolve("right.java").toAbsolutePath().toString()}".toString(),
-                "--merge-path=${file.resolve("merge.java").toAbsolutePath().toString()}".toString(),
+                "--merge-path=${outputFile.toAbsolutePath().toString()}".toString(),
                 "--language=java")
     }
 

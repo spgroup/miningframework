@@ -16,7 +16,7 @@ class SporkMergeToolExecutorDataCollector extends BaseMergeToolExecutorDataColle
         list.add(file.resolve("left.java").toString())
         list.add(file.resolve("base.java").toString())
         list.add(file.resolve("right.java").toString())
-        list.add("--output=${outputFile.toString()}".toString())
+        list.add("--output=${outputFile.toAbsolutePath().toString()}".toString())
         return list
     }
 

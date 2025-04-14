@@ -19,6 +19,7 @@ class Arguments {
     private String syntacticSeparators
     private String fileExtension
     private Level logLevel
+    private String projectCommitHashesFile
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -33,6 +34,7 @@ class Arguments {
         syntacticSeparators = '{ } ( ) ; ,'
         fileExtension = 'java'
         logLevel = Level.INFO
+        projectCommitHashesFile = ''
     }
 
     void setNumOfThreads(int numOfThreads) {
@@ -146,5 +148,13 @@ class Arguments {
     void setLogLevel(Level logLevel) {
         this.logLevel = logLevel
         Configurator.setRootLevel(logLevel)
+    }
+
+    String getProjectCommitHashesFile() {
+        return projectCommitHashesFile
+    }
+
+    void setProjectCommitHashesFile(String projectCommitHashesFile) {
+        this.projectCommitHashesFile = projectCommitHashesFile
     }
 }

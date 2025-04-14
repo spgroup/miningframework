@@ -35,6 +35,7 @@ class ArgsParser {
         this.cli.e(longOpt: 'extension', args: 1, argName: 'file extenson', 'Specify the file extension that should be used in the analysis (e.g. .rb, .ts, .java, .cpp. Default: .java)')
         this.cli.l(longOpt: 'language-separators', args: 1, argName: 'language syntactic separators', 'Specify the language separators that should be used in the analysis. Required for (and only considered when) running studies with the CSDiff tool. Default: \"{ } ( ) ; ,\"')
         this.cli.log(longOpt: 'log-level', args: 1, argName: 'log level', 'Specify the minimum log level: (OFF, FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL). Default: \"INFO\"')
+        this.cli.pchf(longOpt: 'project-commit-hashes-file', args: 1, argName: 'project commit hashes file', 'Path to a file with projects and commits to be analyzed')
     }
 
     Arguments parse(args) {
@@ -129,6 +130,10 @@ class ArgsParser {
 
         if(this.options.log) {
             args.setLogLevel(Level.toLevel(this.options.log))
+        }
+
+        if (this.options.pchf) {
+            args.setProjectCommitHashesFile(this.options.pchf)
         }
     }
 

@@ -2,6 +2,7 @@ package services.dataCollectors.S3MMergesCollector
 
 import project.MergeCommit
 import project.Project
+import services.mergeScenariosFilters.NonFastForwardMergeScenarioFilter
 import util.ProcessRunner
 import services.util.Utils
 
@@ -29,6 +30,13 @@ class MergeScenarioCollector {
                 .collect(Collectors.toList())
     }
 
+    static List<Path> collectNonFastForwardMergeScenarios(Project project, MergeCommit mergeCommit) {
+        return collectMergeScenarios(project, mergeCommit)
+                .parallelStream()
+                .filter(NonFastForwardMergeScenarioFilter::isNonFastForwardMergeScenario)
+                .collect(Collectors.toList())
+    }
+
     private static Tuple4<Path, Path, Path, Path> storeAndRetrieveMergeQuadruple(Project project, MergeCommit mergeCommit, String modifiedFile) {
         Path leftFile = storeFile(project, mergeCommit, modifiedFile, mergeCommit.getLeftSHA(), 'left')
         Path baseFile = storeFile(project, mergeCommit, modifiedFile, mergeCommit.getAncestorSHA(), 'base')
@@ -42,6 +50,8 @@ class MergeScenarioCollector {
         createDirectories(mergeScenarioDirectory)
 
         Path filePath = mergeScenarioDirectory.resolve(Utils.getfileNameWithExtension(fileName))
+        if (Files.exists(filePath)) return filePath
+
         Files.deleteIfExists(filePath)
         filePath.toFile() << getFileContent(project, modifiedFile, commitSHA)
         return filePath

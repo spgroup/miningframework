@@ -36,6 +36,17 @@ class MergeConflict {
                 && StringUtils.deleteWhitespace(right) == StringUtils.deleteWhitespace(((MergeConflict) o).right)
     }
 
+    boolean equalsOrSubstring(MergeConflict other) {
+        return equalsOrSubstringIgnoreWhitespaces(left, other.left) && equalsOrSubstringIgnoreWhitespaces(right, other.right)
+    }
+
+    private static boolean equalsOrSubstringIgnoreWhitespaces(String a, String b) {
+        def trimmedA = StringUtils.deleteWhitespace(a)
+        def trimmedB = StringUtils.deleteWhitespace(b)
+
+        return trimmedA == trimmedB || trimmedA.contains(trimmedB) || trimmedB.contains(trimmedA)
+    }
+
     /**
      * @param file
      * @return the set of merge conflicts present in the given file

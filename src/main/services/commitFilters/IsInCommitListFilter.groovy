@@ -1,6 +1,8 @@
 package services.commitFilters
 
 import interfaces.CommitFilter
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import project.MergeCommit
 import project.Project
 
@@ -11,43 +13,33 @@ import static com.xlson.groovycsv.CsvParser.parseCsv
  * @provides: returns true if the passed mergeCommit SHA is in the commits.csv file
  */
 class IsInCommitListFilter implements CommitFilter {
+    private static Logger LOG = LogManager.getLogger(IsInCommitListFilter.class)
 
     List<String> commitList
 
-    @Override
-    boolean applyFilter(Project project, MergeCommit mergeCommit) {
-        boolean result = true
-        File commitsFile = new File("./commits.csv")
-
-        if (commitList != null || commitsFile.exists()) {
-            // using this check to cache the commitList between multiple executions
-            // avoiding unnecessary IO operations
-            if (commitList == null) {
-                commitList = parseCommitList(commitsFile)
-            }
-
-            result = isInCommitList(mergeCommit)
-        }
-        return result
+    IsInCommitListFilter() {
+        this.commitList = initializeCommitList(new File("./commits.csv"))
     }
 
-    private List<String> parseCommitList (File commitsFile) {
+    private static List<String> initializeCommitList(File commitsFile) {
+        if (!commitsFile.exists()) {
+            LOG.trace("Skipping initialization because the commits.csv file do not exist")
+            return new ArrayList<>()
+        }
+
         ArrayList<String> commitList = new ArrayList<String>()
         def iterator = parseCsv(commitsFile.getText())
 
         for (line in iterator) {
+            LOG.trace("Registering ${line["commitSHA"]} as a valid commit SHA in list")
             commitList.add(line["commitSHA"])
         }
 
         return commitList
     }
 
-    private boolean isInCommitList (MergeCommit mergeCommit) {
-        for (commit in commitList) {
-            if (mergeCommit.getSHA() == commit) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    boolean applyFilter(Project project, MergeCommit mergeCommit) {
+        return commitList.isEmpty() || commitList.contains(mergeCommit.getSHA())
     }
 }

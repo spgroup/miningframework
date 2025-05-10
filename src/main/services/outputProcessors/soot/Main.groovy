@@ -94,6 +94,12 @@ class Main {
         if (appArguments.getOaInter()) {
             detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Inter", "overriding-interprocedural", sootWrapper, appArguments.getTimeout()))
         }
+        if (appArguments.getOaIntraWithoutPA()) {
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Intra Without Pointer Analysis", "oa-without-pa", sootWrapper, appArguments.getTimeout()))
+        }
+        if (appArguments.getOaInterWithoutPA()) {
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Inter Without Pointer Analysis", "ioa-without-pa", sootWrapper, appArguments.getTimeout()))
+        }
 
         if (appArguments.getDfpIntra()) {
             detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, appArguments.getTimeout()))

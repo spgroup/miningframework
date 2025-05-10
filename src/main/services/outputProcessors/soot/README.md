@@ -50,6 +50,8 @@ Options:
  -idfp,--dfp-inter                       Run dfp-inter
  -ioa,--overriding-interprocedural       Run overriding-interprocedural
  -oa,--overriding-intraprocedural        Run overriding-intraprocedural
+ -ioaWithoutPA,--ioa-without-pa          Run ioa-without-pa
+ -oaWithoutPA,--oa-without-pa            Run oa-without-pa
  -pd,--pessimistic-dataflow              Run pessimistic-dataflow
  -pdg,--pdg                              Run pdg
  -pdge,--pdge                            Run pdg-e

@@ -7,6 +7,9 @@ import java.nio.file.Path
 
 abstract class MergeToolRunner {
     static String DEFAULT_MERGE_FILE_NAME = 'merge'
+    static String DEFAULT_BASE_MARKER_NAME = 'BASE'
+    static String DEFAULT_LEFT_MARKER_NAME = 'MINE'
+    static String DEFAULT_RIGHT_MARKER_NAME = 'YOURS'
 
     protected String mergeToolName
 

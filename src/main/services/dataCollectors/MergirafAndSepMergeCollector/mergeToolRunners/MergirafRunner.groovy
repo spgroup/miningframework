@@ -20,7 +20,13 @@ class MergirafRunner extends MergeToolRunner {
 
     protected List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile) {
         String binaryFileCommand = "./${MERGIRAF_PATH.getFileName().toString()}"
-        List<String> parameters = [binaryFileCommand, 'merge']
+        List<String> parameters = [
+            binaryFileCommand, 'merge',
+            '-s', DEFAULT_BASE_MARKER_NAME,
+            '-x', DEFAULT_LEFT_MARKER_NAME,
+            '-y', DEFAULT_RIGHT_MARKER_NAME
+        ]
+
         parameters.addAll(baseFile.toString(), leftFile.toString(), rightFile.toString())
 
         Path filesQuadruplePath = baseFile.getParent()

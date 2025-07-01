@@ -6,11 +6,13 @@ import interfaces.DataCollector
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.MergirafAndSepMergeCollector.mergeToolRunners.*
+import services.dataCollectors.S3MWithCSDiffCollector.mergeToolRunners.Diff3Runner
 import services.dataCollectors.S3MMergesCollector.MergeScenarioCollector
 import services.util.MergeToolRunner
 
 class MergesCollector implements DataCollector {
     private static final List<MergeToolRunner> RUNNERS = [
+        new Diff3Runner(),
         new MergirafRunner(),
         new SepMergeRunner(false),
         new SepMergeRunner(true)

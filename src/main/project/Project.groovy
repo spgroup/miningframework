@@ -3,6 +3,8 @@ package project
 import util.ProcessRunner
 import exception.UnexpectedOutputException
 
+import java.util.Collections
+import java.util.Random
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -40,7 +42,7 @@ class Project {
         return matcher.find()
     }
 
-    List getMergeCommits(String sinceDate, String untilDate) {
+    List getMergeCommits(String sinceDate, String untilDate, int maxCommitsPerProject, int randomSeed) {
         ArrayList<String> skipped = new ArrayList<String>()
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
         
@@ -71,6 +73,11 @@ class Project {
         
         if(mergeCommits.isEmpty())
             println "No merge commits."
+
+        Random random = new Random(randomSeed)
+        Collections.shuffle(mergeCommits, random)
+        mergeCommits = mergeCommits.take(maxCommitsPerProject)
+
         return [mergeCommits, skipped]
     }
 

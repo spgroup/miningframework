@@ -39,7 +39,13 @@ class MiningWorker implements Runnable {
                     checkForUnstagedChanges(project);
                 }
 
-                def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+                def (mergeCommits, skipped) = project.getMergeCommits(
+                    arguments.getSinceDate(),
+                    arguments.getUntilDate(),
+                    arguments.getMaxCommitsPerProject(),
+                    arguments.getRandomSeed()
+                )
+
                 for (mergeCommit in mergeCommits) {
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {

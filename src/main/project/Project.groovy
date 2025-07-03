@@ -42,7 +42,7 @@ class Project {
         return matcher.find()
     }
 
-    List getMergeCommits(String sinceDate, String untilDate, int maxCommitsPerProject, int randomSeed) {
+    List getMergeCommits(String sinceDate, String untilDate) {
         ArrayList<String> skipped = new ArrayList<String>()
         ArrayList<MergeCommit> mergeCommits = new ArrayList<MergeCommit>()
         
@@ -73,10 +73,6 @@ class Project {
         
         if(mergeCommits.isEmpty())
             println "No merge commits."
-
-        Random random = new Random(randomSeed)
-        Collections.shuffle(mergeCommits, random)
-        mergeCommits = mergeCommits.take(maxCommitsPerProject)
 
         return [mergeCommits, skipped]
     }

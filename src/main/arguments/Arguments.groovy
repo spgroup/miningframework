@@ -1,6 +1,6 @@
 package arguments
 
-import injectors.StaticAnalysisConflictsDetectionModule
+import injectors.RefactoringStaticAnalysisConflictsDetectionModule
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.config.Configurator
 
@@ -25,7 +25,7 @@ class Arguments {
         sinceDate = ''
         untilDate = ''
         outputPath = 'output'
-        injector = StaticAnalysisConflictsDetectionModule
+	injector = RefactoringStaticAnalysisConflictsDetectionModule
         resultsRemoteRepositoryURL = ''
         accessKey = ''
         numOfThreads = 1

@@ -35,19 +35,32 @@ class ForkAndEnableCIProcessor implements ProjectProcessor {
             ArrayList<Project> projectsForks = new ArrayList<Project>()
             for (project in projects) {
                 if (project.isRemote()) {
-                    def forkedProject = githubHelper.fork(project)
-                    String forkPath = "${githubHelper.URL}/${forkedProject.full_name}"
-                    Project projectFork = new Project(project.getName(), forkPath)
+                    int maxAttempts = 3
+                    int attempt = 0
+                    boolean success = false
 
-                    try {
-                        ciPlatform.enableProject(projectFork)
+                    while (attempt < maxAttempts && !success) {
+                        try {
+                            def forkedProject = githubHelper.fork(project)
+                            String forkPath = "${githubHelper.URL}/${forkedProject.full_name}"
+                            Project projectFork = new Project(project.getName(), forkPath)
 
-                        projectsForks.add(projectFork)
-                    } catch (Exception e) {
-                        println "Couldn't enable ci for project: ${projectFork.getName()}, skipping it"
+                            ciPlatform.enableProject(projectFork)
+
+                            projectsForks.add(projectFork)
+                            success = true
+                        } catch (Exception e) {
+                            attempt++
+                            if (attempt < maxAttempts) {
+                                println "Attempt ${attempt} failed for project: ${project.getName()}, retrying in 10 seconds..."
+                                sleep(10_000)
+                            } else {
+                                println "Couldn't enable ci for project: ${project.getName()} after ${maxAttempts} attempts, skipping it"
+                            }
+                        }
                     }
                 } else {
-                    println "${project.getName()} is not remote and cant be forked"
+                    println "${project.getName()} is not remote and can't be forked"
                 }
             }
 

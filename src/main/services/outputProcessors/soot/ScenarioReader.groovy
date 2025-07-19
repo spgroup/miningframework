@@ -32,12 +32,10 @@ class ScenarioReader {
     }
 
     static private  String getEntrypointColumn(Object line) {
-        try{
-            return  line["entrypoints"]?.toString()
-        }catch (Exception ignored){
-            return null;
+        if (line instanceof Map && line.containsKey("entrypoints")) {
+            return line["entrypoints"]?.toString()
         }
-
+        return null;
     }
 
     static private  String getCorrectScenarioDirectory(Object line, String outputPath, String projectName,  String commitSHA) {

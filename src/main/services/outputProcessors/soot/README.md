@@ -48,8 +48,10 @@ Options:
                                          dfp-confluence-interprocedural
  -idf,--svfa-interprocedural             Run svfa-interprocedural
  -idfp,--dfp-inter                       Run dfp-inter
- -ioa,--overriding-interprocedural       Run overriding-interprocedural
- -oa,--overriding-intraprocedural        Run overriding-intraprocedural
+ -ioa, --overriding-interprocedural      Run interprocedural overriding analysis
+ -oa, --overriding-intraprocedural       Run intraprocedural overriding analysis
+ -ioaWithoutPA, --ioa-without-pa         Run interprocedural overriding analysis without Pointer Analysis 
+ -oaWithoutPA, --oa-without-pa           Run intraprocedural overriding analysis without Pointer Analysis 
  -pd,--pessimistic-dataflow              Run pessimistic-dataflow
  -pdg,--pdg                              Run pdg
  -pdge,--pdge                            Run pdg-e

@@ -9,6 +9,8 @@ class Arguments {
     private boolean cfInter
     private boolean oaIntra;
     private boolean oaInter;
+    private boolean oaIntraWithoutPA;
+    private boolean oaInterWithoutPA;
     private boolean dfpIntra
     private boolean dfpInter
     private boolean cd
@@ -31,6 +33,8 @@ class Arguments {
         cfInter = false
         oaIntra = false
         oaInter = false
+        oaIntraWithoutPA = false
+        oaInterWithoutPA = false
         dfpIntra = false
         dfpInter = false
         cd = false
@@ -43,6 +47,22 @@ class Arguments {
         timeout = 240
         printDepthSVFA = false
         depthLimit = 5
+    }
+
+    boolean getOaIntraWithoutPA() {
+        return oaIntraWithoutPA
+    }
+
+    void setOaIntraWithoutPA(boolean oaIntraWithoutPA) {
+        this.oaIntraWithoutPA = oaIntraWithoutPA
+    }
+
+    boolean getOaInterWithoutPA() {
+        return oaInterWithoutPA
+    }
+
+    void setOaInterWithoutPA(boolean oaInterWithoutPA) {
+        this.oaInterWithoutPA = oaInterWithoutPA
     }
 
     void setDepthLimit(long depthLimit) {

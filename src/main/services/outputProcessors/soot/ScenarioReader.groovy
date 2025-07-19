@@ -1,5 +1,7 @@
 package services.outputProcessors.soot
 
+import com.xlson.groovycsv.PropertyMapper
+
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
 class ScenarioReader {
@@ -17,14 +19,8 @@ class ScenarioReader {
             String classPathName = line["className"]
             String methodSignature = line["method"]
             String commitSHA = line["merge commit"]
-            String entrypoints = line["entrypoints"]
-
-            String scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA)
-
-            if (line.hasProperty("realistic case path")) {
-                String realisticCasePath = line["realistic case path"]
-                scenarioDirectory = getScenarioDirectory(outputPath, projectName, commitSHA, realisticCasePath)
-            }
+            String entrypoints = getEntrypointColumn(line);
+            String scenarioDirectory = getCorrectScenarioDirectory(line, outputPath, projectName, commitSHA)
 
             boolean hasBuild = line["has_build"] == "true"
 
@@ -33,6 +29,22 @@ class ScenarioReader {
             result.add(scenario)
         }
         return result
+    }
+
+    static private  String getEntrypointColumn(Object line) {
+        if (line instanceof Map && line.containsKey("entrypoints")) {
+            return line["entrypoints"]?.toString()
+        }
+        return null;
+    }
+
+    static private  String getCorrectScenarioDirectory(Object line, String outputPath, String projectName,  String commitSHA) {
+        if (line.containsKey("realistic case path")) {
+            String realisticCasePath = line["realistic case path"]
+            return getScenarioDirectory(outputPath, projectName, commitSHA, realisticCasePath)
+        } else {
+            return getScenarioDirectory(outputPath, projectName, commitSHA)
+        }
     }
 
     static private String getScenarioDirectory(String outputPath, String projectName, String commitSHA, String realisticCasePath) {

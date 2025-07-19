@@ -5,7 +5,7 @@ import shutil
 from datetime import datetime
 import platform
 
-# CONFIGURAÇÕES
+# CONFIGURATION
 SOURCE_BASE = "."
 FILES_TO_MOVE = [
     "output/data/soot-results.csv",
@@ -38,28 +38,29 @@ def move_files_to_result_folder(mode, run_number):
 
         if os.path.exists(src_path):
             shutil.move(src_path, dest_path)
-            print(f"[OK] movido: {filename} → {os.path.relpath(dest_path)}")
+            print(f"[OK] moved: {filename} → {os.path.relpath(dest_path)}")
         else:
-            print(f"[AVISO] Arquivo não encontrado: {src_path}")
+            print(f"[WARNING] File not found: {src_path}")
 
 def get_gradle_command():
     if platform.system() == "Windows":
         return "gradlew.bat"
     else:
         return "./gradlew"
+
 def run_soot(mode, run_number):
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] [{mode.upper()}] Execução {run_number} iniciada.")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] [{mode.upper()}] Run {run_number} started.")
     try:
         subprocess.run(
             [get_gradle_command(), "run", "-DmainClass=services.outputProcessors.soot.Main", f"--args=-{mode}"],
             check=True
         )
     except subprocess.CalledProcessError as e:
-        print(f"[ERRO] Execução {run_number} ({mode}) falhou: {e}")
+        print(f"[ERROR] Run {run_number} ({mode}) failed: {e}")
         return
 
     move_files_to_result_folder(mode, run_number)
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Resultados copiados para results/{mode}/data{run_number}/")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Results moved to results/{mode}/data{run_number}/")
 
 def main():
     ensure_dirs()

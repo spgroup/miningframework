@@ -31,7 +31,7 @@ class Arguments {
         numOfThreads = 1
         keepProjects = false
         syntacticSeparators = '{ } ( ) ; ,'
-        fileExtension = 'java'
+        fileExtension = '.java'
         logLevel = Level.INFO
     }
 

@@ -60,7 +60,7 @@ class Main {
 
     }
 
-    public static void reportResults(outputPath){
+    public static void reportResults(outputPath) {
         println "Running generate_analysis_results"
         ProcessBuilder builder = ProcessRunner.buildProcess(".", SCRIPT_RUNNER, RESULT_ANALYSIS_PATH, outputPath)
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
@@ -76,54 +76,57 @@ class Main {
     private static ArrayList<ConflictDetectionAlgorithm> configureDetectionAlgorithms(Arguments appArguments, SootAnalysisWrapper sootWrapper) {
         List<ConflictDetectionAlgorithm> detectionAlgorithms = new ArrayList<ConflictDetectionAlgorithm>();
 
+
+        long timeout = appArguments.getTimeout()
+        long depthLimit = appArguments.getDepthLimit();
         if (appArguments.getDfIntra()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DF Intra", "svfa-intraprocedural", sootWrapper, timeout, false,depthLimit ))
         }
         if (appArguments.getDfInter()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DF Inter", "svfa-interprocedural", sootWrapper, timeout, true,depthLimit))
         }
         if (appArguments.getCfIntra()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Confluence Intra", "dfp-confluence-intraprocedural", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getCfInter()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Confluence Inter", "dfp-confluence-interprocedural", sootWrapper, timeout, true,depthLimit))
         }
         if (appArguments.getOaIntra()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Intra", "oa", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Intra", "oa", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getOaInter()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Inter", "ioa", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Inter", "ioa", sootWrapper, timeout, true,depthLimit))
         }
         if (appArguments.getOaIntraWithoutPA()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Intra Without Pointer Analysis", "oa-without-pa", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Intra Without Pointer Analysis", "oa-without-pa", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getOaInterWithoutPA()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Inter Without Pointer Analysis", "ioa-without-pa", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("OA Inter Without Pointer Analysis", "ioa-without-pa", sootWrapper, timeout, true,depthLimit))
         }
 
         if (appArguments.getDfpIntra()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DFP-Intra", "dfp-intra", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getDfpInter()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("DFP-Inter", "dfp-inter", sootWrapper, timeout, true,depthLimit))
         }
         if (appArguments.getCd()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("CD", "cd", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getCde()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("CDe", "cd-e", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getPdg()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG", "pdg", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getPdge()) {
-            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new NonCommutativeConflictDetectionAlgorithm("PDG-e", "pdg-e", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getPessimisticDataflow()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Pessimistic Dataflow", "pessimistic-dataflow", sootWrapper, timeout, false,depthLimit))
         }
         if (appArguments.getReachability()) {
-            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, appArguments.getTimeout()))
+            detectionAlgorithms.add(new ConflictDetectionAlgorithm("Reachability", "reachability", sootWrapper, timeout, false,depthLimit))
         }
 
         return detectionAlgorithms;

@@ -18,17 +18,24 @@ class ConflictDetectionAlgorithm {
     private long timeout;
     private SootAnalysisWrapper sootWrapper;
     private boolean interprocedural;
+    private long depthLimit;
+
 
     ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout) {
-        this(name, mode, sootWrapper, timeout, false);
+        this(name, mode, sootWrapper, timeout, false, 5);
     }
 
     ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout, boolean interprocedural) {
+        this(name, mode, sootWrapper, timeout, interprocedural, 5);
+    }
+
+    ConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout, boolean interprocedural, long depthLimit) {
         this.name = name;
         this.mode = mode;
         this.timeout = timeout;
         this.sootWrapper = sootWrapper;
         this.interprocedural = interprocedural;
+        this.depthLimit = depthLimit;
     }
 
     String getName() {
@@ -54,31 +61,43 @@ class ConflictDetectionAlgorithm {
         return this.name;
     }
 
-    String run (Scenario scenario) {
+    long getDepthLimit() {
+        return depthLimit
+    }
+
+    String run(Scenario scenario) {
         try {
             println "Running ${toString()}"
             String filePath = scenario.getLinesFilePath()
             String classPath = scenario.getClassPath()
-            String entrypoints = scenario.getEntrypoints()
 
-            return runAndReportResult(filePath, classPath, entrypoints);
+            SootConfig sootConfig = new SootConfig(
+                    filePath,
+                    classPath,
+                    this.mode
+            );
+
+            sootConfig.addOption("-entrypoints", scenario.getEntrypoints());
+            sootConfig.addOption("-depthLimit", this.getDepthLimit());
+
+            return runAndReportResult(sootConfig);
         } catch (ClassNotFoundInJarException e) {
-            return "not-found"
+            return "not-found";
         }
     }
 
-    private String runAndReportResult (String filePath, String classPath, String entrypoints) {
+
+    protected String runAndReportResult(SootConfig sootConfig) throws InterruptedException, IOException {
         String result;
-        println "Using jar at " + classPath
+        println "Using jar at " + sootConfig.getClassPath()
 
-        File inputFile = new File(filePath);
-
+        File inputFile = new File(sootConfig.getInputFilePath());
         if (!inputFile.exists()) {
             println "This scenario has no changes";
             return "false";
         }
 
-        Process sootProcess = sootWrapper.executeSoot(filePath, classPath, this.mode, entrypoints);
+        Process sootProcess = sootWrapper.executeSoot(sootConfig);
 
         // this is needed because if th waitFor command is called without reading the output
         // in some executions the output buffer might get full and block the process

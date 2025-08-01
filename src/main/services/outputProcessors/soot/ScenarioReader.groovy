@@ -39,12 +39,13 @@ class ScenarioReader {
     }
 
     static private  String getCorrectScenarioDirectory(Object line, String outputPath, String projectName,  String commitSHA) {
-        if (line.containsKey("realistic case path")) {
+        try{
             String realisticCasePath = line["realistic case path"]
             return getScenarioDirectory(outputPath, projectName, commitSHA, realisticCasePath)
-        } else {
+        }catch (Exception ignored){
             return getScenarioDirectory(outputPath, projectName, commitSHA)
         }
+
     }
 
     static private String getScenarioDirectory(String outputPath, String projectName, String commitSHA, String realisticCasePath) {

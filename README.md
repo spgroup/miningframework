@@ -85,36 +85,107 @@ usage: miningframework [options] [input] [output]
 the Mining Framework take an input csv file and a name for the output dir
 (default: output)
  Options:
- -a,--access-key <access key>               Specify the access key of the git account
-                                            for when the analysis needs user access to
-                                            GitHub
- -e, --extension <extension>                Specify the file extension that should be 
-                                            used in the analysis (e.g. .rb, .ts, .java,
-                                            .cpp. Default: .java)
- -h,--help                                  Show help for executing commands
- -i,--injector <class>                      Specify the class of the dependency
-                                            injector (Must provide full name, default
-                                            injectors.StaticAnalysisConflictsDetection
-                                            Module)
- -k,--keep-projects                         Specify that cloned projects must be kept
-                                            after the analysis (those are kept in
-                                            clonedRepositories/ )
- -l,--language-separators <'separators'>    Specify the language separators that should
-                                            be used in the analysis. Required for (and 
-                                            only considered when) running studies with 
-                                            the CSDiff tool. Default: '{ } ( ) ; ,'
- -log,--log-level <log level                Specify the minimum log level: (OFF, FATAL,
-                                            ERROR, WARN, INFO, DEBUG, TRACE, ALL).
-                                            Default: "INFO"
- -p,--push <link>                           Specify a git repository to upload the
-                                            output in the end of the analysis (format
-                                            https://github.com/<owner>/<name>
- -s,--since <date>                          Use commits more recent than a specific
-                                            date (format DD/MM/YYY)
- -t,--threads <threads>                     Number of cores used in analysis (default:
-                                            1)
- -u,--until <date>                          Use commits older than a specific
-                                            date(format DD/MM/YYYY)
+ -a,--access-key <access key>                               Specify the
+                                                            access key of
+                                                            the git
+                                                            account for
+                                                            when the
+                                                            analysis needs
+                                                            user access to
+                                                            GitHub
+ -e,--extension <file extenson>                             Specify the
+                                                            file extension
+                                                            that should be
+                                                            used in the
+                                                            analysis (e.g.
+                                                            .rb, .ts,
+                                                            .java, .cpp.
+                                                            Default:
+                                                            .java)
+ -h,--help                                                  Show help for
+                                                            executing
+                                                            commands
+ -i,--injector <class>                                      Specify the
+                                                            class of the
+                                                            dependency
+                                                            injector (Must
+                                                            provide full
+                                                            name, default
+                                                            injectors.Stat
+                                                            icAnalysisConf
+                                                            lictsDetection
+                                                            Module)
+ -k,--keep-projects                                         Specify that
+                                                            cloned
+                                                            projects must
+                                                            be kept after
+                                                            the analysis
+                                                            (those are
+                                                            kept in
+                                                            clonedReposito
+                                                            ries/ )
+ -l,--language-separators <language syntactic separators>   Specify the
+                                                            language
+                                                            separators
+                                                            that should be
+                                                            used in the
+                                                            analysis.
+                                                            Required for
+                                                            (and only
+                                                            considered
+                                                            when) running
+                                                            studies with
+                                                            the CSDiff
+                                                            tool. Default:
+                                                            "{ } ( ) ; ,"
+ -log,--log-level <log level>                               Specify the
+                                                            minimum log
+                                                            level: (OFF,
+                                                            FATAL, ERROR,
+                                                            WARN, INFO,
+                                                            DEBUG, TRACE,
+                                                            ALL). Default:
+                                                            "INFO"
+ -m,--max-commits-per-project <commits>                     Maximum number
+                                                            of commits to
+                                                            use for each
+                                                            project.
+                                                            Commits will
+                                                            be selected
+                                                            randomly,
+                                                            according to
+                                                            provided
+                                                            random seed
+ -p,--push <link>                                           Specify a git
+                                                            repository to
+                                                            upload the
+                                                            output in the
+                                                            end of the
+                                                            analysis
+                                                            (format
+                                                            https://github
+                                                            .com/<owner>/<
+                                                            name>
+ -r,--random-seed <seed>                                    Random seed
+                                                            used for
+                                                            shuffling
+                                                            merge commits
+                                                            array
+ -s,--since <date>                                          Use commits
+                                                            more recent
+                                                            than a
+                                                            specific date
+                                                            (format
+                                                            YYYY-MM-DD)
+ -t,--threads <threads>                                     Number of
+                                                            cores used in
+                                                            analysis
+                                                            (default: 1)
+ -u,--until <date>                                          Use commits
+                                                            older than a
+                                                            specific
+                                                            date(format
+                                                            YYYY-MM-DD)
 ```
 
 

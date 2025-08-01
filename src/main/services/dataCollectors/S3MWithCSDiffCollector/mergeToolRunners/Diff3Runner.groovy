@@ -7,16 +7,13 @@ import services.util.MergeToolRunner
 import java.nio.file.Path
 
 class Diff3Runner extends MergeToolRunner {
-
-    private static final String MERGE_FILE_NAME = "merge"
-
     Diff3Runner() {
         this.mergeToolName = 'Diff3'
     }
 
     protected ProcessBuilder buildProcess(Path leftFile, Path baseFile, Path rightFile) {
         Path filesQuadruplePath = baseFile.getParent()
-        Path outputPath = getOutputPath(filesQuadruplePath, MERGE_FILE_NAME)
+        Path outputPath = getOutputPath(filesQuadruplePath, DEFAULT_MERGE_FILE_NAME)
         
         ProcessBuilder processBuilder = new ProcessBuilder()
         processBuilder.redirectOutput(outputPath.toFile())
@@ -25,7 +22,14 @@ class Diff3Runner extends MergeToolRunner {
     }
 
     protected List<String> buildParameters(Path leftFile, Path baseFile, Path rightFile) {
-        List<String> parameters = ['diff3', '-E', '-L', 'MINE', '-L', 'BASE', '-L', 'YOURS', '-m']
+        List<String> parameters = [
+            'diff3', '-E',
+            '-L', DEFAULT_LEFT_MARKER_NAME,
+            '-L', DEFAULT_BASE_MARKER_NAME,
+            '-L', DEFAULT_RIGHT_MARKER_NAME,
+            '-m'
+        ]
+
         parameters.addAll(leftFile.toString(), baseFile.toString(), rightFile.toString())
         return parameters
     }

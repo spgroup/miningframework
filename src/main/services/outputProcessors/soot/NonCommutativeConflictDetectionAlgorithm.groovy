@@ -21,29 +21,38 @@ class NonCommutativeConflictDetectionAlgorithm extends ConflictDetectionAlgorith
         super(name, mode, sootWrapper, timeout, interprocedural)
     }
 
+    NonCommutativeConflictDetectionAlgorithm(String name, String mode, SootAnalysisWrapper sootWrapper, long timeout, boolean interprocedural, long depthLimit) {
+        super(name, mode, sootWrapper, timeout, interprocedural, depthLimit);
+    }
+
     @Override
     String generateHeaderName() {
         return "left right ${this.name};right left ${this.name}"
     }
 
     @Override
-    String run (Scenario scenario) {
+    String run(Scenario scenario) {
         try {
-            String filePath = scenario.getLinesFilePath()
-            String classPath = scenario.getClassPath()
-            String filePathReverse = scenario.getLinesReverseFilePath()
-            String entrypoints = scenario.getEntrypoints()
+            SootConfig configLeftRight = buildSootConfig(scenario.getLinesFilePath(), scenario);
+            SootConfig configRightLeft = buildSootConfig(scenario.getLinesReverseFilePath(), scenario);
 
             println "Running left right " + toString();
-            String leftRightResult =  super.runAndReportResult(filePath, classPath, super.getInterprocedural() ? entrypoints : null)
+            String leftRightResult = super.runAndReportResult(configLeftRight);
+
             println "Running right left " + toString();
-            String rightLeftResult = super.runAndReportResult(filePathReverse, classPath, super.getInterprocedural() ? entrypoints : null)
+            String rightLeftResult = super.runAndReportResult(configRightLeft);
 
             return "${leftRightResult};${rightLeftResult}";
         } catch (ClassNotFoundInJarException e) {
-            return "not-found;not-found"
+            return "not-found;not-found";
         }
+    }
 
+    private SootConfig buildSootConfig(String filePath, Scenario scenario) {
+        SootConfig config = new SootConfig(filePath, scenario.getClassPath(), this.mode);
+        config.addOption("-entrypoints", scenario.getEntrypoints());
+        config.addOption("-depthLimit", this.getDepthLimit());
+        return config;
     }
 
     @Override

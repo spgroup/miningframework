@@ -19,6 +19,7 @@ class ArgsParser {
         this.cli.h(longOpt: 'help', 'Show help for executing commands')
         this.cli.a(longOpt: 'allanalysis', 'Excute all analysis')
         this.cli.t(longOpt: 'timeout', args: 1, argName: 'timeout', "timeout (default: 240)")
+        this.cli.l(longOpt: 'depthLimit', args: 1, argName: 'depthLimit', "Maximum depth limit for analysis (default: 5)")
         this.cli.df(longOpt: 'svfa-intraprocedural',  "Run svfa-intraprocedural")
         this.cli.idf(longOpt: 'svfa-interprocedural',  "Run svfa-interprocedural")
         this.cli.cf(longOpt: 'dfp-confluence-intraprocedural',  "Run dfp-confluence-intraprocedural")
@@ -112,6 +113,9 @@ class ArgsParser {
         }
         if (this.options.r) {
             args.setReachability(true)
+        }
+        if (this.options.l) {
+            args.setDepthLimit(this.options.l.toLong())
         }
     }
 }

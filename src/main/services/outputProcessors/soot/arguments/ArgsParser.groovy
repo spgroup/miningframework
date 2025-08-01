@@ -63,6 +63,9 @@ class ArgsParser {
         if (this.options.t) {
             args.setTimeout(this.options.t.toLong());
         }
+        if (this.options.l) {
+            args.setDepthLimit(this.options.l.toLong())
+        }
         if (this.options.df) {
             args.setDfIntra(true)
         }
@@ -81,10 +84,10 @@ class ArgsParser {
         if (this.options.ioa) {
             args.setOaInter(true)
         }
-        if (this.options.oaWithoutPA) {
+        if (this.options.oawopa) {
             args.setOaIntraWithoutPA(true)
         }
-        if (this.options.ioaWithoutPA) {
+        if (this.options.ioawopa) {
             args.setOaInterWithoutPA(true)
         }
         if (this.options.dfp) {
@@ -113,9 +116,6 @@ class ArgsParser {
         }
         if (this.options.r) {
             args.setReachability(true)
-        }
-        if (this.options.l) {
-            args.setDepthLimit(this.options.l.toLong())
         }
     }
 }

@@ -3,6 +3,8 @@ package project
 import util.ProcessRunner
 import exception.UnexpectedOutputException
 
+import java.util.Collections
+import java.util.Random
 import java.util.regex.Pattern
 import java.util.regex.Matcher
 
@@ -71,6 +73,7 @@ class Project {
         
         if(mergeCommits.isEmpty())
             println "No merge commits."
+
         return [mergeCommits, skipped]
     }
 
@@ -103,7 +106,7 @@ class Project {
     }
 
     private Process constructAndRunGitLog(String sinceDate, String untilDate) {
-        ProcessBuilder gitLogBuilder = ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=%H-%p', '--date=format:\'%d/%m/%Y\'')
+        ProcessBuilder gitLogBuilder = ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=%H-%p')
         if(!sinceDate.equals(''))
             ProcessRunner.addCommand(gitLogBuilder, "--since=\"${sinceDate}\"")
         if(!untilDate.equals(''))

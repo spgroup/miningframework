@@ -1,5 +1,7 @@
 package app
 
+import java.util.Collections
+import java.util.Random
 import java.text.SimpleDateFormat
 
 import static app.MiningFramework.arguments
@@ -40,12 +42,22 @@ class MiningWorker implements Runnable {
                 }
 
                 def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+
+                Random random = new Random(arguments.getRandomSeed())
+                Collections.shuffle(mergeCommits, random)
+
+                int collectedMergeCommits = 0
                 for (mergeCommit in mergeCommits) {
+                    if (collectedMergeCommits >= arguments.getMaxCommitsPerProject()) {
+                        break
+                    }
+
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {
                             println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
                             runDataCollectors(project, mergeCommit)
+                            collectedMergeCommits++
                         }
                     } catch (Exception e) {
                         println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"

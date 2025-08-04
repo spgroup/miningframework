@@ -6,10 +6,12 @@ import org.apache.logging.log4j.core.config.Configurator
 
 class Arguments {
 
+    private int randomSeed
     private String inputPath
     private String outputPath
     private String sinceDate
     private String untilDate
+    private int maxCommitsPerProject
     private Class injector
     private boolean isHelp
     private String resultsRemoteRepositoryURL
@@ -21,9 +23,11 @@ class Arguments {
     private Level logLevel
 
     Arguments() { // set the default values for all parameters
+        randomSeed = 1
         isHelp = false
         sinceDate = ''
         untilDate = ''
+        maxCommitsPerProject = 100000
         outputPath = 'output'
         injector = StaticAnalysisConflictsDetectionModule
         resultsRemoteRepositoryURL = ''
@@ -33,6 +37,10 @@ class Arguments {
         syntacticSeparators = '{ } ( ) ; ,'
         fileExtension = '.java'
         logLevel = Level.INFO
+    }
+
+    void setRandomSeed(int randomSeed) {
+        this.randomSeed = randomSeed
     }
 
     void setNumOfThreads(int numOfThreads) {
@@ -53,6 +61,10 @@ class Arguments {
 
     void setUntilDate(String untilDate) {
         this.untilDate = untilDate
+    }
+
+    void setMaxCommitsPerProject(int maxCommitsPerProject) {
+        this.maxCommitsPerProject = maxCommitsPerProject
     }
 
     Class setInjector(Class injector) {
@@ -83,6 +95,10 @@ class Arguments {
         this.syntacticSeparators = separators
     }
 
+    int getRandomSeed() {
+        return this.randomSeed
+    }
+
     int getNumOfThreads() {
         return this.numOfThreads
     }
@@ -101,6 +117,10 @@ class Arguments {
 
     String getUntilDate() {
         return untilDate
+    }
+
+    int getMaxCommitsPerProject() {
+        return this.maxCommitsPerProject
     }
 
     Class getInjector() {

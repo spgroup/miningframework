@@ -22,10 +22,14 @@ class ArgsParser {
 
     private defParameters() {
         this.cli.h(longOpt: 'help', 'Show help for executing commands')
+        this.cli.r(longOpt: 'random-seed', args: 1,
+                argName: 'seed', 'Random seed used for shuffling merge commits array')
         this.cli.s(longOpt: 'since', args: 1,
-                argName: 'date', 'Use commits more recent than a specific date (format DD/MM/YYY)')
+                argName: 'date', 'Use commits more recent than a specific date (format YYYY-MM-DD)')
         this.cli.u(longOpt: 'until', args: 1,
-                argName: 'date', 'Use commits older than a specific date(format DD/MM/YYYY)')
+                argName: 'date', 'Use commits older than a specific date(format YYYY-MM-DD)')
+        this.cli.m(longOpt: 'max-commits-per-project', args: 1,
+                argName: 'commits', 'Maximum number of commits to use for each project. Commits will be selected randomly, according to provided random seed')
         this.cli.i(longOpt: 'injector', args: 1,
                 argName: 'class', 'Specify the class of the dependency injector (Must provide full name, default injectors.StaticAnalysisConflictsDetectionModule)')
         this.cli.p(longOpt: 'push', args: 1, argName: 'link', 'Specify a git repository to upload the output in the end of the analysis (format https://github.com/<owner>/<name>')
@@ -78,18 +82,26 @@ class ArgsParser {
     }
 
     private void parseOptions(Arguments args) {
+        if (this.options.r) {
+            args.setRandomSeed(this.options.r.toInteger())
+        }
+
         if (this.options.since) {
             if (!validDate(this.options.since))
-                throw new InvalidArgsException('Invalid since date. You must specify it with the format DD/MM/YYYY')
+                throw new InvalidArgsException('Invalid since date. You must specify it with the format YYYY-MM-DD')
 
             args.setSinceDate(this.options.since)
         }
 
         if (this.options.until) {
             if (!validDate(this.options.until))
-                throw new InvalidArgsException('Invalid since date. You must specify it with the format DD/MM/YYYY')
+                throw new InvalidArgsException('Invalid until date. You must specify it with the format YYYY-MM-DD')
 
             args.setUntilDate(this.options.until)
+        }
+
+        if (this.options.m) {
+            args.setMaxCommitsPerProject(this.options.m.toInteger())
         }
 
         if (this.options.injector) {
@@ -144,7 +156,7 @@ class ArgsParser {
     }
 
     private boolean validDate(String value) {
-        SimpleDateFormat format = new SimpleDateFormat("dd/mm/yyyy")
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd")
         try {
             format.setLenient(false)
             format.parse(value)

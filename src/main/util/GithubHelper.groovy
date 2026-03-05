@@ -59,7 +59,7 @@ class GithubHelper {
                 throw new GithubHelperException("Http request returned an error " + httpConnection.getResponseMessage())
             }
         }
-        return result.workflow_runs
+        return result ? result.workflow_runs : null
     }
 
     Object fork (Project project) {

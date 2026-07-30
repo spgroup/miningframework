@@ -39,7 +39,8 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
         // for each modified line in merge
         for (def mergeLine : mergeMethod.getModifiedLines()) {
             // if it is at left's modified lines add it to left list
-            if (leftMethod.getModifiedLines().contains(mergeLine)) {
+            // (leftMethod may be null when the method was modified by the right parent only)
+            if (leftMethod != null && leftMethod.getModifiedLines().contains(mergeLine)) {
                 if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
                     leftDeletedLines.add(mergeLine.getNumber());
                 } else {
@@ -47,7 +48,8 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
                 }
             }
             // if it is at rights's modified lines add it to right list
-            if (rightMethod.getModifiedLines().contains(mergeLine)) {
+            // (rightMethod may be null when the method was modified by the left parent only)
+            if (rightMethod != null && rightMethod.getModifiedLines().contains(mergeLine)) {
                 if (mergeLine.getType() == ModifiedLine.ModificationType.Removed) {
                     rightDeletedLines.add(mergeLine.getNumber());
                 } else {

@@ -5,6 +5,7 @@ jsoup;fee4762322f85a1109edd75ccb67f38cf5008c80;org.jsoup.helper.HttpConnection;c
 jsoup;e38b916ba1ebd3f5c00a6b6b8e77a4cdfea2800f;org.jsoup.select.QueryParser;byTag();[226, 218, 219, 220, 221, 222];[];[225];[]
 jsoup;a8b6982de98ff76ef254031d7152fff57f6bf941;org.jsoup.helper.HttpConnection;execute(Connection.Request, Response);[584, 585, 586];[590];[544, 547];[]
 jsoup;a44e18aa3c1fcd25a68a5965f9490d8f7d026509;org.jsoup.nodes.TextNode;outerHtmlHead(StringBuilder, int, Document.OutputSettings);[94];[];[98];[]
+jsoup;ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3;org.jsoup.nodes.DocumentTest;parseAndHtmlOnDifferentThreads();[449, 450, 451, 452, 453, 454, 455, 456, 457, 459, 460, 461, 440, 441, 442, 443, 444, 445, 446, 447];[];[449, 450, 451, 454, 455, 456, 440, 457, 444, 445];[]
 jsoup;ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3;org.jsoup.nodes.Document;encoder;[376, 377, 378, 379, 380, 381];[];[376, 377, 378, 379, 380, 381];[]
 jsoup;ea3225714c9e6e02ab17c4a79a88b71d1ea6eae3;org.jsoup.nodes.Document;charset(Charset);[433];[];[433];[]
 jsoup;821b021a1e5fc75719c71ae5ea84157d770c1a9d;org.jsoup.helper.DataUtil;getCharsetFromContentType(String);[181];[];[181];[]

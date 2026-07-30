@@ -7,6 +7,7 @@ import util.ProcessRunner
 class GitLogCommitHashesExtractor implements CommitHashesExtractor {
     private String sinceDate
     private String untilDate
+    private String path
 
     private static final EXPECTED_OUTPUT = ~/.*-(.* .*)+/
 
@@ -33,6 +34,11 @@ class GitLogCommitHashesExtractor implements CommitHashesExtractor {
         }
 
         return result
+    }
+
+   private Process constructAndRunGitLog(Project project) {
+        this.path = project.getPath()
+        return constructAndRunGitLog(this.sinceDate, this.untilDate)
     }
 
     private Process constructAndRunGitLog(String sinceDate, String untilDate) {

@@ -38,3 +38,7 @@ outputVictor
 outputVictorToy
 outputMatheus
 outputMatheusToy
+AnalysisRecords.csv
+conflicts_log.txt
+PANotResolve.csv
+visited_methods.txt

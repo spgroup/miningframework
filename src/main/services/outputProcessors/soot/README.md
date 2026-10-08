@@ -61,6 +61,9 @@ Options:
   -depthLimit                             Sets the depth limit on accessing methods when performing Overriding Assignment Interprocedural, Direct Flow Interprocedural and Confluence Interprocedural analyses. Default = 5
  -printDepthSVFA                         Print depth in SVFA analysis
  -cg,--callgraph <algorithm>             Select call graph algorithm [CHA, RTA, VTA, SPARK]
+ -o,--output <output>                    Output folder with the dataset (default: output)
+ -s,--strategies <strategies>            Run once per entrypoint strategy, from the JSON: comma separated MOP, MM, MMM, LCA, or all (default: no entrypoints, from the CSV)
+ -i,--input <json>                       Modified lines JSON read with --strategies (default: [output]/data/results-with-build-information.json)
 ```
 
 For example: 
@@ -70,3 +73,35 @@ For example:
 5. The result will be written in `output/data/soot-results.csv`
    
 6. The result for report analysis will be written in `output/data/results.pdf`
+
+## Analyze with entrypoint strategies
+
+By default the analyses get no entrypoints (each analysis then chooses its own). With `--strategies`, they run once per
+entrypoint strategy, which chooses the entrypoints of each scenario from the methods modified by left and by right:
+
+| Acronym | Strategy (`entrypointStrategies`) | Entrypoints |
+|---|---|---|
+| MOP | MainOrPublicMethodsEntrypointStrategy | main methods, or else the public ones |
+| MM | ModifiedMethodsEntrypointStrategy | the methods modified by left or by right |
+| MMM | MutuallyModifiedMethodsEntrypointStrategy | the methods modified by both left and right |
+| LCA | LowestCommonAncestorEntrypointStrategy | the lowest common ancestors, in the call graph, of each pair of methods modified by left and by right |
+
+1. Build the dataset in the output folder, with the modified lines JSON, the builds and the soot input files. For the
+   synthetic merges dataset, run at the miningframework root:
+   `./gradlew run -DmainClass="services.dataCollectors.modifiedLinesCollector.sourceScenarios.Main" --args="-i ../Syntetic-Mergesdataset/data_base.json -o output"`
+2. Run the analyses with the strategies, e.g. all of them or a pair:
+```
+./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s all -icf -ioa -idfp -pdg"
+./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s MM,LCA -o output -ioa"
+```
+3. The results will be written in `output/data/soot-results-[strategy].csv`, in the format of `soot-results.csv`, and
+   the entrypoints of each scenario in `output/data/entrypoints-[strategy].csv`, with the same key columns. A scenario
+   without entrypoints is not analysed: its analyses are `no-entrypoints`.
+
+The scenarios are read from the JSON, with their entrypoints, by `ScenarioReader.readJson`, as `ScenarioReader.read`
+reads them from the CSV.
+
+The methods of the JSON are named as diffj names them (e.g. `process(Node, Node)`), so they are translated to the Soot
+signatures the analyses take by [SootSignatures](./SootSignatures.groovy), from the build. Methods it does not find
+(e.g. whose signature changed from base, or with the same name and parameters in more than one nested class) are left
+out of the entrypoints.

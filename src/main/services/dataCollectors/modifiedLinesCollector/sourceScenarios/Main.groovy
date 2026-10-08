@@ -8,8 +8,8 @@ import services.dataCollectors.modifiedLinesCollector.SourceModifiedLinesCollect
 import services.dataCollectors.modifiedLinesCollector.exporters.CsvModifiedLinesExporter
 import services.dataCollectors.modifiedLinesCollector.exporters.JsonModifiedLinesExporter
 import services.dataCollectors.modifiedLinesCollector.exporters.ModifiedLinesExporter
+import services.outputProcessors.GenerateSootInputFilesFromJsonOutputProcessor
 import services.outputProcessors.GenerateSootInputFilesOutputProcessor
-import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
 
 /**
  * Runs the SourceModifiedLinesCollector on merge scenarios with the source of the modified files and jars, in folders
@@ -18,11 +18,12 @@ import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
  * machine: the longest suffix of the path that exists under the file's folder is used. Scenarios whose folder is listed
  * more than once are ignored, since they are ambiguous. A single scenario has its folder name as merge commit.
  *
- * @provides: [output]/data/results-with-build-information.json and .csv (or the chosen exporters), and the merge jars
- * as builds; with --analyses, also runs GenerateSootInputFilesOutputProcessor and RunSootAnalysisOutputProcessor
+ * @provides: the dataset read by the analyses (services.outputProcessors.soot): [output]/data/results-with-build-information.json
+ * and .csv (or the chosen exporters), the merge jars as builds and the soot input files, generated from the json
+ * (GenerateSootInputFilesFromJsonOutputProcessor) or else from the csv (GenerateSootInputFilesOutputProcessor)
  *
  * usage: ./gradlew run -DmainClass="services.dataCollectors.modifiedLinesCollector.sourceScenarios.Main"
- *          --args="(-i <data_base.json> | -p <scenario folder> [-n project]) [-o output] [-e json,csv] [-a]"
+ *          --args="(-i <data_base.json> | -p <scenario folder> [-n project]) [-o output] [-e json,csv]"
  */
 class Main {
 
@@ -37,9 +38,7 @@ class Main {
         cli.p(longOpt: 'path', args: 1, 'Folder of a single scenario, with jars/ and source/ (e.g. [Syntetic-Mergesdataset/Cli/Cli_1](https://github.com/ToniMaciel/Syntetic-Mergesdataset/tree/dataset-update/Cli/Cli_1))')
         cli.n(longOpt: 'name', args: 1, 'Project name of the scenario given by --path (default: the name of its parent folder)')
         cli.o(longOpt: 'output', args: 1, 'Output folder (default: output, the one read by services.outputProcessors.soot.Main)')
-        cli.e(longOpt: 'exporters', args: 1, "Comma separated exporters of the results: ${EXPORTERS.keySet().join(',')} (default: all; " +
-                "--analyses reads the csv)")
-        cli.a(longOpt: 'analyses', 'Also generate the soot input files and run the static analyses')
+        cli.e(longOpt: 'exporters', args: 1, "Comma separated exporters of the results: ${EXPORTERS.keySet().join(',')} (default: all)")
         cli.h(longOpt: 'help', 'Show this help')
         def options = cli.parse(args)
         if (!options) {
@@ -63,9 +62,10 @@ class Main {
             collectInputScenarios(collector, new File(options.i as String))
         }
 
-        if (options.a) {
+        if (exporters.contains('json')) {
+            new GenerateSootInputFilesFromJsonOutputProcessor().generateSootInputFiles(outputPath)
+        } else {
             new GenerateSootInputFilesOutputProcessor().convertToSootScript(outputPath)
-            new RunSootAnalysisOutputProcessor().executeAnalyses(outputPath)
         }
     }
 

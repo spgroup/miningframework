@@ -4,6 +4,7 @@ import exception.ExternalScriptException
 import exception.InvalidArgsException
 import services.outputProcessors.soot.arguments.ArgsParser
 import services.outputProcessors.soot.arguments.Arguments
+import services.outputProcessors.soot.entrypointStrategies.*
 import util.ProcessRunner
 
 class Main {
@@ -11,9 +12,15 @@ class Main {
     private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/experiment_static_analysis/generate_analysis_results.py"
     private static final String SCRIPT_RUNNER = "python3"
 
+    // entrypoint strategies of --strategies, by their acronyms
+    private static final Map<String, EntrypointStrategy> STRATEGIES = [
+            MOP: new MainOrPublicMethodsEntrypointStrategy(),
+            MM : new ModifiedMethodsEntrypointStrategy(),
+            MMM: new MutuallyModifiedMethodsEntrypointStrategy(),
+            LCA: new LowestCommonAncestorEntrypointStrategy()]
+
     static main(args) {
         SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
-        String outputPath = "output"
 
         ArgsParser argsParser = new ArgsParser()
         Arguments appArguments;
@@ -28,6 +35,8 @@ class Main {
             System.setOut(tee);
 
             appArguments = argsParser.parse(args)
+            String outputPath = appArguments.getOutputPath()
+            List<String> strategies = appArguments.getStrategies() == ['all'] ? STRATEGIES.keySet() as List : appArguments.getStrategies()
 
             if (appArguments.isHelp()) {
                 argsParser.printHelp()
@@ -40,7 +49,14 @@ class Main {
                     sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
                 }
 
-                sootRunner.executeAnalyses(outputPath)
+                if (strategies) {
+                    String input = appArguments.getInput() ?: "${outputPath}/data/results-with-build-information.json"
+                    for (String strategy : strategies) {
+                        runStrategy(strategy, input, sootRunner, outputPath)
+                    }
+                } else {
+                    sootRunner.executeAnalyses(outputPath)
+                }
 
                 if (appArguments.isReport()) {
                     reportResults(outputPath)
@@ -70,6 +86,27 @@ class Main {
 
         if (exitStatus != 0) {
             throw new ExternalScriptException(RESULT_ANALYSIS_PATH, exitStatus);
+        }
+    }
+
+    /**
+     * Runs the analyses of the scenarios of a modified lines JSON with the entrypoints of a strategy (ScenarioReader.readJson).
+     * A scenario without entrypoints is not analysed: its analyses are "no-entrypoints".
+     * @provides: [outputPath]/data/soot-results-[strategy].csv, as soot-results.csv, and [outputPath]/data/entrypoints-[strategy].csv
+     */
+    private static void runStrategy(String strategy, String input, RunSootAnalysisOutputProcessor sootRunner, String outputPath) {
+        File resultsFile = sootRunner.createOutputFile(outputPath, "soot-results-${strategy}.csv")
+        File entrypointsFile = new File(outputPath, "data/entrypoints-${strategy}.csv")
+        entrypointsFile.text = "project;class;method;merge commit;entrypoints\n"
+        String notExecuted = (["no-entrypoints"] * sootRunner.getDetectionAlgorithms().size()).join(";")
+
+        for (Scenario scenario : ScenarioReader.readJson(outputPath, input, STRATEGIES[strategy])) {
+            entrypointsFile << "${scenario};${scenario.getEntrypoints()}\n"
+            if (scenario.getEntrypoints() == "[]") {
+                resultsFile << "${scenario};${notExecuted};0\n"
+            } else {
+                sootRunner.executeAnalyses([scenario], resultsFile)
+            }
         }
     }
 

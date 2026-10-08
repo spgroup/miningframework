@@ -38,6 +38,9 @@ class ArgsParser {
         this.cli.report(longOpt: 'report',  "Run report results for experiment using -icf -ioa -idfp -pdg")
         this.cli.r(longOpt: 'reachability',  "Run reachability")
         this.cli.cg(longOpt: 'callgraph', args: 1, argName: 'algorithm', "Call graph algorithm [CHA, RTA, VTA, SPARK]")
+        this.cli.o(longOpt: 'output', args: 1, argName: 'output', "Output folder with the dataset (default: output)")
+        this.cli.s(longOpt: 'strategies', args: 1, argName: 'strategies', "Run once per entrypoint strategy, from the JSON: comma separated MOP, MM, MMM, LCA, or all (default: no entrypoints, from the CSV)")
+        this.cli.i(longOpt: 'input', args: 1, argName: 'json', "Modified lines JSON read with --strategies (default: [output]/data/results-with-build-information.json)")
     }
 
     Arguments parse(args) {
@@ -124,6 +127,15 @@ class ArgsParser {
                 throw new IllegalArgumentException("Invalid callgraph algorithm: ${options.cg}")
             }
             args.setCallgraph(algorithm)
+        }
+        if (this.options.i) {
+            args.setInput(this.options.i)
+        }
+        if (this.options.s) {
+            args.setStrategies(this.options.s.split(',')*.trim())
+        }
+        if (this.options.o) {
+            args.setOutputPath(this.options.o)
         }
     }
 }

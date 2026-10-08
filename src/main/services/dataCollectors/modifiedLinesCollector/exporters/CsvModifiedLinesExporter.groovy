@@ -30,7 +30,7 @@ class CsvModifiedLinesExporter implements ModifiedLinesExporter {
     }
 
     // class and method also name the folders of the soot input files
-    private static String clean(String name) {
+    static String clean(String name) {
         return name.replaceAll(/[\s+^?<>|]/, '')
     }
 

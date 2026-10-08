@@ -24,8 +24,12 @@ class Arguments {
     private long depthLimit
     private boolean printDepthSVFA
     private String callgraph
+    private String input
+    private String outputPath
+    private List<String> strategies
 
     Arguments() { // set the default values for all parameters
+        outputPath = "output"
         isHelp = false
         allanalysis = true
         dfIntra = false
@@ -233,5 +237,26 @@ class Arguments {
     }
     void setCallgraph(String callgraph) {
         this.callgraph = callgraph
+    }
+
+    String getInput() {
+        return input
+    }
+    void setInput(String input) {
+        this.input = input
+    }
+
+    String getOutputPath() {
+        return outputPath
+    }
+    void setOutputPath(String outputPath) {
+        this.outputPath = outputPath
+    }
+
+    List<String> getStrategies() {
+        return strategies
+    }
+    void setStrategies(List<String> strategies) {
+        this.strategies = strategies
     }
 }

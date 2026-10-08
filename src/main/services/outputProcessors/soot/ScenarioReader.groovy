@@ -1,8 +1,11 @@
 package services.outputProcessors.soot
 
 import com.xlson.groovycsv.PropertyMapper
+import groovy.json.JsonSlurper
+import services.outputProcessors.soot.entrypointStrategies.EntrypointStrategy
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
+import static services.dataCollectors.modifiedLinesCollector.exporters.CsvModifiedLinesExporter.clean
 
 class ScenarioReader {
 
@@ -27,6 +30,30 @@ class ScenarioReader {
             def scenario = new Scenario(projectName, classPathName, methodSignature, commitSHA, scenarioDirectory, hasBuild, entrypoints);
 
             result.add(scenario)
+        }
+        return result
+    }
+
+    /**
+     * Scenarios of a modified lines JSON, one per modified method, with the entrypoints the strategy chooses for its
+     * merge scenario from the methods modified by left and by right, by their Soot signatures (SootSignatures)
+     */
+    static List<Scenario> readJson(String outputPath, String jsonPath, EntrypointStrategy strategy) {
+        List<Scenario> result = new ArrayList<Scenario>()
+
+        for (Map merge : new JsonSlurper().parse(new File(jsonPath))) {
+            String commitSHA = merge.commits.merge
+            String scenarioDirectory = getScenarioDirectory(outputPath, merge.project, commitSHA)
+            String buildJar = "${scenarioDirectory}/original-without-dependencies/merge/build.jar"
+            List<Map> methods = merge.modifiedMethods
+
+            Set<String> leftMethods = SootSignatures.of(buildJar, methods.findAll { it.leftModifications || it.leftDeletions })
+            Set<String> rightMethods = SootSignatures.of(buildJar, methods.findAll { it.rightModifications || it.rightDeletions })
+            String entrypoints = strategy.getEntrypoints(buildJar, leftMethods, rightMethods).toString()
+
+            for (Map method : methods) {
+                result.add(new Scenario(merge.project, clean(method.className), clean(method.method), commitSHA, scenarioDirectory, merge.hasBuild, entrypoints))
+            }
         }
         return result
     }

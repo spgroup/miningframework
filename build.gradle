@@ -54,10 +54,8 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-api:2.23.1'
 	implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
 	implementation 'org.json:json:20210307'
-	// synthetic merges dataset: modified lines from bytecode and call graph for entrypoint strategies
+	// call graph for entrypoint strategies
 	implementation 'org.soot-oss:soot:4.5.0'
-	implementation 'org.ow2.asm:asm-tree:7.1'
-	implementation 'org.ow2.asm:asm-util:7.1'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'

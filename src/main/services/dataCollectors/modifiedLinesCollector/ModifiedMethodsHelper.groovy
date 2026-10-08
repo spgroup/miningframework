@@ -52,11 +52,16 @@ class ModifiedMethodsHelper {
         File ancestorFile = FileManager.getFileInCommit(project, filePath, ancestorSHA)
         File targetFile = FileManager.getFileInCommit(project, filePath, targetSHA)
 
-        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "--brief");
-        List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
+        Set<ModifiedMethod> modifiedMethods = getModifiedMethods(ancestorFile, targetFile)
 
         targetFile.delete()
         ancestorFile.delete()
+        return modifiedMethods
+    }
+
+    Set<ModifiedMethod> getModifiedMethods(File ancestorFile, File targetFile) {
+        List<String> diffJOutput = runDiffJ(ancestorFile, targetFile, "--brief");
+        List<String> textualDiffOutput = runTextualDiff(ancestorFile, targetFile);
 
         Map<String, int[]> parsedDiffJResult = modifiedMethodsParser.parse(diffJOutput);
         List<ModifiedLine> parsedTextualDiffResult = textualDiffParser.parse(textualDiffOutput);

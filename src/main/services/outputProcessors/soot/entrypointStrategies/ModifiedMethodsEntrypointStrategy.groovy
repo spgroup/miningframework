@@ -6,6 +6,6 @@ package services.outputProcessors.soot.entrypointStrategies
 class ModifiedMethodsEntrypointStrategy implements EntrypointStrategy {
 
     List<String> getEntrypoints(String buildJarPath, Set<String> leftModifiedMethods, Set<String> rightModifiedMethods) {
-        return (leftModifiedMethods + rightModifiedMethods).sort()
+        return ((leftModifiedMethods + rightModifiedMethods) as List).sort()
     }
 }

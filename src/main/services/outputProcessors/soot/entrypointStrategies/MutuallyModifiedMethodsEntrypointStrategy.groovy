@@ -6,6 +6,6 @@ package services.outputProcessors.soot.entrypointStrategies
 class MutuallyModifiedMethodsEntrypointStrategy implements EntrypointStrategy {
 
     List<String> getEntrypoints(String buildJarPath, Set<String> leftModifiedMethods, Set<String> rightModifiedMethods) {
-        return leftModifiedMethods.intersect(rightModifiedMethods).sort()
+        return (leftModifiedMethods.intersect(rightModifiedMethods) as List).sort()
     }
 }

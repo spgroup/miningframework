@@ -36,7 +36,8 @@ class ScenarioReader {
 
     /**
      * Scenarios of a modified lines JSON, one per modified method, with the entrypoints the strategy chooses for its
-     * merge scenario from the methods modified by left and by right, by their Soot signatures (SootSignatures)
+     * merge scenario from the methods modified by left and by right: the ones with a line modified by each
+     * (LinesToSootMethodResolver)
      */
     static List<Scenario> readJson(String outputPath, String jsonPath, EntrypointStrategy strategy) {
         List<Scenario> result = new ArrayList<Scenario>()
@@ -47,8 +48,8 @@ class ScenarioReader {
             String buildJar = "${scenarioDirectory}/original-without-dependencies/merge/build.jar"
             List<Map> methods = merge.modifiedMethods
 
-            Set<String> leftMethods = SootSignatures.of(buildJar, methods.findAll { it.leftModifications || it.leftDeletions })
-            Set<String> rightMethods = SootSignatures.of(buildJar, methods.findAll { it.rightModifications || it.rightDeletions })
+            Set<String> leftMethods = LinesToSootMethodResolver.resolve(buildJar, getModifiedLinesByClass(methods, "leftModifications"))
+            Set<String> rightMethods = LinesToSootMethodResolver.resolve(buildJar, getModifiedLinesByClass(methods, "rightModifications"))
             String entrypoints = strategy.getEntrypoints(buildJar, leftMethods, rightMethods).toString()
 
             for (Map method : methods) {
@@ -56,6 +57,15 @@ class ScenarioReader {
             }
         }
         return result
+    }
+
+    // e.g. {"a.C": [10, 12]}, as conflict-static-analysis reads the lines files
+    static private Map<String, List<Integer>> getModifiedLinesByClass(List<Map> methods, String modifications) {
+        Map<String, List<Integer>> lines = [:]
+        for (Map method : methods) {
+            lines.computeIfAbsent(method.className) { new ArrayList<Integer>() }.addAll(method[modifications])
+        }
+        return lines
     }
 
     static private  String getEntrypointColumn(Object line) {

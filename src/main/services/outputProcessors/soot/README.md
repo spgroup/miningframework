@@ -101,7 +101,7 @@ entrypoint strategy, which chooses the entrypoints of each scenario from the met
 The scenarios are read from the JSON, with their entrypoints, by `ScenarioReader.readJson`, as `ScenarioReader.read`
 reads them from the CSV.
 
-The methods of the JSON are named as diffj names them (e.g. `process(Node, Node)`), so they are translated to the Soot
-signatures the analyses take by [SootSignatures](./SootSignatures.groovy), from the build. Methods it does not find
-(e.g. whose signature changed from base, or with the same name and parameters in more than one nested class) are left
-out of the entrypoints.
+The methods modified by left and by right are the methods of the build with a statement in a line modified by each, as
+conflict-static-analysis finds the methods of its source and sink lines, by
+[LinesToSootMethodResolver](./LinesToSootMethodResolver.groovy). Deleted lines, which are not in the merge, and lines
+without statements (e.g. a condition javac removes, as `if (true)`) give no method.

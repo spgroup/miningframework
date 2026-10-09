@@ -12,6 +12,7 @@ import org.junit.runners.Suite.SuiteClasses
         ModifiedMethodsHelperTest.class,
         ModifiedLinesCollectorTest.class,
         JarHelperTest.class,
-        EntrypointStrategiesTest.class
+        EntrypointStrategiesTest.class,
+        LowestCommonAncestorEntrypointStrategyTest.class
 ])
 public class TestSuite {}

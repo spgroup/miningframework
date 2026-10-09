@@ -23,7 +23,7 @@ class MainOrPublicMethodsEntrypointStrategy implements EntrypointStrategy {
         return mainMethods.collect { getSootMethodSignature(it) }.sort()
     }
 
-         static String getSootMethodSignature(SootMethod method) {
+    static String getSootMethodSignature(SootMethod method) {
         return "<${method.getDeclaringClass().getName()}: ${method.getSubSignature()}>"
     }
 
@@ -57,10 +57,7 @@ class MainOrPublicMethodsEntrypointStrategy implements EntrypointStrategy {
                 method.getParameterCount() == 1 &&
                 method.getParameterType(0).toString().equals("java.lang.String[]")
     }
-
-    /*
-     * Unlike conflict-static-analysis, which takes every method, only the public ones with a body (an entrypoint is analysed).
-     */
+    
     private static List<SootMethod> findPublicMethods() {
         List<SootMethod> publicMethods = new ArrayList<>()
 

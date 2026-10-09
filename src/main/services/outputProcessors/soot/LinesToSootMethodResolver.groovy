@@ -36,13 +36,16 @@ class LinesToSootMethodResolver {
                 Body body = retrieveActiveBodySafely(m)
                 if (body == null) continue
                 if (hasStatementInLines(body, definitions.get(className))) {
-                    signatures.add(m.getSignature())
+                    signatures.add(getSootMethodSignature(m))
                 }
             }
         }
         return signatures
     }
 
+    static String getSootMethodSignature(SootMethod method) {
+        return "<${method.getDeclaringClass().getName()}: ${method.getSubSignature()}>"
+    }
     /*
      * As conflict-static-analysis (SootWrapper), with the line numbers of the statements.
      */

@@ -11,6 +11,7 @@ import org.junit.runners.Suite.SuiteClasses
         MethodModifiedLinesMatcherTest.class,
         ModifiedMethodsHelperTest.class,
         ModifiedLinesCollectorTest.class,
-        JarHelperTest.class
+        JarHelperTest.class,
+        EntrypointStrategiesTest.class
 ])
 public class TestSuite {}

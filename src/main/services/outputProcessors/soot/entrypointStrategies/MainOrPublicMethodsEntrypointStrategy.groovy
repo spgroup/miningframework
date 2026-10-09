@@ -1,14 +1,77 @@
 package services.outputProcessors.soot.entrypointStrategies
 
+import soot.G
+import soot.Scene
+import soot.SootClass
+import soot.SootMethod
+import soot.options.Options
+import util.JavaApiClassPath
+
 /**
- * The analyses start from the main methods of the build or, when there is none, from its public methods.
- * conflict-static-analysis expands the marker with the same rule it uses for the call graph roots.
+ * The analyses start from the main methods of the build or, when there is none, from its public methods, as
+ * conflict-static-analysis chooses the roots of its call graph (StatementsUtil.getCallgraphEntryPoints).
  */
 class MainOrPublicMethodsEntrypointStrategy implements EntrypointStrategy {
 
-    static final String MAIN_OR_PUBLIC = "MAIN_OR_PUBLIC"
-
     List<String> getEntrypoints(String buildJarPath, Set<String> leftModifiedMethods, Set<String> rightModifiedMethods) {
-        return [MAIN_OR_PUBLIC]
+        configureSoot(buildJarPath)
+
+        List<SootMethod> mainMethods = findMainMethods()
+        if (mainMethods.isEmpty()) {
+            mainMethods = findPublicMethods()
+        }
+        return mainMethods.collect { getSootMethodSignature(it) }.sort()
+    }
+
+         static String getSootMethodSignature(SootMethod method) {
+        return "<${method.getDeclaringClass().getName()}: ${method.getSubSignature()}>"
+    }
+
+    private static void configureSoot(String buildJarPath) {
+        G.reset()
+        Options.v().set_allow_phantom_refs(true)
+        Options.v().set_process_dir([buildJarPath])
+        Options.v().set_soot_classpath([buildJarPath, JavaApiClassPath.get()].join(File.pathSeparator))
+        Scene.v().loadNecessaryClasses()
+    }
+
+    private static List<SootMethod> findMainMethods() {
+        List<SootMethod> mainMethods = new ArrayList<>()
+
+        for (SootClass sootClass : Scene.v().getApplicationClasses()) {
+            for (SootMethod method : sootClass.getMethods()) {
+                if (isMainMethod(method)) {
+                    mainMethods.add(method)
+                }
+            }
+        }
+
+        return mainMethods
+    }
+
+    private static boolean isMainMethod(SootMethod method) {
+
+        return method.getName().equals("main") &&
+                method.isStatic() &&
+                method.getReturnType().toString().equals("void") &&
+                method.getParameterCount() == 1 &&
+                method.getParameterType(0).toString().equals("java.lang.String[]")
+    }
+
+    /*
+     * Unlike conflict-static-analysis, which takes every method, only the public ones with a body (an entrypoint is analysed).
+     */
+    private static List<SootMethod> findPublicMethods() {
+        List<SootMethod> publicMethods = new ArrayList<>()
+
+        for (SootClass sootClass : Scene.v().getApplicationClasses()) {
+            for (SootMethod method : sootClass.getMethods()) {
+                if (method.isPublic() && method.isConcrete()) {
+                    publicMethods.add(method)
+                }
+            }
+        }
+
+        return publicMethods
     }
 }

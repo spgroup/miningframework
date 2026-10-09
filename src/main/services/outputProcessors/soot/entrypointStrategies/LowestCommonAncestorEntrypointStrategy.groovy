@@ -10,8 +10,9 @@ import util.JavaApiClassPath
 
 /**
  * The analyses start from the lowest common ancestors, in the call graph of the build, of the methods modified
- * by left and by right: for each pair (left method, right method), the common callers (a method is its own
- * caller) with the smallest sum of call distances to both methods. The result is the union over the pairs.
+ * by left and by right: for each pair (left method, right method), the common callers (direct or not; a method is not
+ * its own ancestor, even when both modified it) with the smallest sum of call distances to both methods. The result is
+ * the union over the pairs.
  *
  * The call graph is built with CHA from every method of the build: starting only from main methods would hide
  * the modified methods whenever the build has an unrelated main (e.g. one of a bundled dependency).
@@ -49,7 +50,10 @@ class LowestCommonAncestorEntrypointStrategy implements EntrypointStrategy {
         return ancestors as List
     }
 
-    /** Breadth-first search over the callers (so recursion is not a problem): distance of each ancestor. */
+    /**
+     * Breadth-first search over the callers (so recursion is not a problem): distance of each ancestor. The method
+     * itself is not one of them, even if it calls itself.
+     */
     private static Map<String, Integer> ancestorDistances(Map<String, Set<String>> callers, String method) {
         Map<String, Integer> distances = [(method): 0]
         Deque<String> queue = new ArrayDeque<>([method])
@@ -62,6 +66,7 @@ class LowestCommonAncestorEntrypointStrategy implements EntrypointStrategy {
                 }
             }
         }
+        distances.remove(method)
         return distances
     }
 
@@ -85,9 +90,13 @@ class LowestCommonAncestorEntrypointStrategy implements EntrypointStrategy {
         Map<String, Set<String>> callers = [:]
         for (Edge edge : Scene.v().callGraph) {
             if (edge.src() != null && edge.tgt() != null) {
-                callers.computeIfAbsent(edge.tgt().signature) { new HashSet<String>() }.add(edge.src().signature)
+                callers.computeIfAbsent(getSootMethodSignature(edge.tgt())) { new HashSet<String>() }.add(getSootMethodSignature(edge.src()))
             }
         }
         return callers
+    }
+
+        static String getSootMethodSignature(SootMethod method) {
+        return "<${method.getDeclaringClass().getName()}: ${method.getSubSignature()}>"
     }
 }

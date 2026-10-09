@@ -85,7 +85,7 @@ class ConflictDetectionAlgorithm {
                     this.mode
             );
 
-            sootConfig.addOption("-entrypoints", scenario.getEntrypoints());
+            sootConfig.addOption("-entrypoints", scenario.getEntrypointsArgument());
             sootConfig.addOption("-depthLimit", this.getDepthLimit());
             sootConfig.addOption("-cg", this.getCallgraph());
 

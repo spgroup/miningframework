@@ -84,7 +84,7 @@ entrypoint strategy, which chooses the entrypoints of each scenario from the met
 | MOP | MainOrPublicMethodsEntrypointStrategy | main methods, or else the public ones |
 | MM | ModifiedMethodsEntrypointStrategy | the methods modified by left or by right |
 | MMM | MutuallyModifiedMethodsEntrypointStrategy | the methods modified by both left and right |
-| LCA | LowestCommonAncestorEntrypointStrategy | the lowest common ancestors, in the call graph, of each pair of methods modified by left and by right |
+| LCA | LowestCommonAncestorEntrypointStrategy | the lowest common ancestors (callers, never the modified method itself), in the call graph, of each pair of methods modified by left and by right |
 
 1. Build the dataset in the output folder, with the modified lines JSON, the builds and the soot input files. For the
    synthetic merges dataset, run at the miningframework root:
@@ -100,6 +100,10 @@ entrypoint strategy, which chooses the entrypoints of each scenario from the met
 
 The scenarios are read from the JSON, with their entrypoints, by `ScenarioReader.readJson`, as `ScenarioReader.read`
 reads them from the CSV.
+
+The entrypoints go to conflict-static-analysis in a file, `output/files/[project]/[merge commit]/entrypoints.txt` (one
+per line, `-entrypoints @[file]`), as the public methods of a build without a main method are too many for the command
+line. The soot-analysis jar must support it (`convertStringEntrypointsToList` in conflict-static-analysis `Main`).
 
 The methods modified by left and by right are the methods of the build with a statement in a line modified by each, as
 conflict-static-analysis finds the methods of its source and sink lines, by

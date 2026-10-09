@@ -60,6 +60,23 @@ class Scenario {
         return entrypoints
     }
 
+    String getEntrypointsFilePath() {
+        return "${this.scenarioDirectory}/entrypoints.txt"
+    }
+
+    /**
+     * The -entrypoints argument of conflict-static-analysis: "@" and a file with the entrypoints, one per line, as a
+     * list of every public method of a build is too long for the command line. Null without entrypoints.
+     */
+    String getEntrypointsArgument() {
+        if (!entrypoints) {
+            return null
+        }
+        File file = new File(getEntrypointsFilePath())
+        file.text = entrypoints.substring(1, entrypoints.length() - 1).split(", ").join("\n") + "\n"
+        return "@" + file.getAbsolutePath()
+    }
+
     private String getJarThatHasClass(File[] buildJars) {
         File resultJar = null;
 

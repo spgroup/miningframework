@@ -86,20 +86,33 @@ entrypoint strategy, which chooses the entrypoints of each scenario from the met
 | MMM | MutuallyModifiedMethodsEntrypointStrategy | the methods modified by both left and right |
 | LCA | LowestCommonAncestorEntrypointStrategy | the lowest common ancestors (callers, never the modified method itself), in the call graph, of each pair of methods modified by left and by right |
 
-1. Build the dataset in the output folder, with the modified lines JSON, the builds and the soot input files. For the
-   synthetic merges dataset, run at the miningframework root:
+1. Build the dataset in the output folder, with the modified lines JSON, the builds, the soot input files and a copy of
+   the `source/` and `jars/` folders of each scenario. For the synthetic merges dataset, run at the miningframework root:
    `./gradlew run -DmainClass="services.dataCollectors.modifiedLinesCollector.sourceScenarios.Main" --args="-i ../Syntetic-Mergesdataset/data_base.json -o output"`
+
+   To try the strategies on small scenarios, `test_repositories/TesteCase` has two in the format of the synthetic
+   dataset, listed by its `data_base.json`: `--args="-i test_repositories/TesteCase/data_base.json -o output"`.
+   - `TesteCase_1`, the example of the slides (the Text class: left modifies countDupWhiteSpace, right countDupWords and
+     countDupWhiteSpace). Entrypoints: main (MOP), countDupWhiteSpace and countDupWords (MM), countDupWhiteSpace (MMM)
+     and generateReport (LCA).
+   - `TesteCase_2`, the multifile example of conflict-static-analysis (samples/ioa/multifile: left modifies
+     Player.levelUp and BonusService.award, right Player.levelUp and PenaltyService.punish). Entrypoints: Main.main
+     (MOP), award, punish and levelUp (MM), levelUp (MMM) and Main.main (LCA).
 2. Run the analyses with the strategies, e.g. all of them or a pair:
 ```
 ./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s all -icf -ioa -idfp -pdg"
 ./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s MM,LCA -o output -ioa"
 ```
-3. The results will be written in `output/data/soot-results-[strategy].csv`, in the format of `soot-results.csv`, and
-   the entrypoints of each scenario in `output/data/entrypoints-[strategy].csv`, with the same key columns. A scenario
-   without entrypoints is not analysed: its analyses are `no-entrypoints`.
+3. Each merge scenario is analysed once per strategy, as a whole: the lines files of the scenario,
+   `output/files/[project]/[merge commit]/left-right-lines.csv` and `right-left-lines.csv`, have the lines modified in
+   all its methods, so the analyses also find conflicts between a method modified by left and another one modified by
+   right. The results will be written in `output/data/soot-results-[strategy].csv`, one line per merge scenario
+   (`project;merge commit;[analyses];Time`), and the methods modified by each side and the entrypoints in
+   `output/data/entrypoints-[strategy].csv` (`project;merge commit;left modified methods;right modified methods;entrypoints`).
+   A scenario without entrypoints is not analysed: its analyses are `no-entrypoints`.
 
-The scenarios are read from the JSON, with their entrypoints, by `ScenarioReader.readJson`, as `ScenarioReader.read`
-reads them from the CSV.
+The merge scenarios (`MergeScenario`) are read from the JSON, with their entrypoints, by `ScenarioReader.readJson`, as
+`ScenarioReader.read` reads the scenarios of each method from the CSV.
 
 The entrypoints go to conflict-static-analysis in a file, `output/files/[project]/[merge commit]/entrypoints.txt` (one
 per line, `-entrypoints @[file]`), as the public methods of a build without a main method are too many for the command

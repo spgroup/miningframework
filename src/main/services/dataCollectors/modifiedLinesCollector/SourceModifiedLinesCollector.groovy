@@ -2,6 +2,7 @@ package services.dataCollectors.modifiedLinesCollector
 
 import groovy.io.FileType
 import interfaces.DataCollector
+import org.apache.commons.io.FileUtils
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.modifiedLinesCollector.exporters.ModifiedLinesExporter
@@ -14,7 +15,8 @@ import services.dataCollectors.modifiedLinesCollector.exporters.ModifiedLinesExp
  * @requires: that the project path is a folder with source/{base,left,right,merge}/ holding the modified .java files
  * at the same relative paths and jars/merge.jar (the build); diffj in the dependencies folder and diff installed
  * @provides: the modified lines to the exporters, and the merge jar as the build of the scenario at
- * [outputPath]/files/[project]/[merge commit]/original-without-dependencies/merge/build.jar
+ * [outputPath]/files/[project]/[merge commit]/original-without-dependencies/merge/build.jar, with a copy of the
+ * source/ and jars/ folders of the scenario beside it
  */
 class SourceModifiedLinesCollector implements DataCollector {
 
@@ -52,9 +54,14 @@ class SourceModifiedLinesCollector implements DataCollector {
             }
         }
 
-        File build = new File(outputPath, "files/${project.getName()}/${mergeCommit.getSHA()}/original-without-dependencies/merge/build.jar")
+        File scenarioFolder = new File(outputPath, "files/${project.getName()}/${mergeCommit.getSHA()}")
+        File build = new File(scenarioFolder, 'original-without-dependencies/merge/build.jar')
         build.parentFile.mkdirs()
         build.bytes = new File(project.getPath(), 'jars/merge.jar').bytes
+
+        // the scenario as the dataset has it, to use it again later
+        FileUtils.copyDirectory(new File(project.getPath(), 'source'), new File(scenarioFolder, 'source'))
+        FileUtils.copyDirectory(new File(project.getPath(), 'jars'), new File(scenarioFolder, 'jars'))
 
         exporters.each { it.export(project, mergeCommit, methods) }
         println "${project.getName()} - SourceModifiedLinesCollector collection finished"

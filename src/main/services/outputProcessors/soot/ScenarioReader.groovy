@@ -5,7 +5,6 @@ import groovy.json.JsonSlurper
 import services.outputProcessors.soot.entrypointStrategies.EntrypointStrategy
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
-import static services.dataCollectors.modifiedLinesCollector.exporters.CsvModifiedLinesExporter.clean
 
 class ScenarioReader {
 
@@ -35,26 +34,30 @@ class ScenarioReader {
     }
 
     /**
-     * Scenarios of a modified lines JSON, one per modified method, with the entrypoints the strategy chooses for its
-     * merge scenario from the methods modified by left and by right: the ones with a line modified by each
-     * (LinesToSootMethodResolver)
+     * The merge scenarios of a modified lines JSON, each analysed as a whole, with the entrypoints the strategy chooses
+     * from the methods modified by left and by right: the ones with a line modified by each (LinesToSootMethodResolver)
      */
-    static List<Scenario> readJson(String outputPath, String jsonPath, EntrypointStrategy strategy) {
-        List<Scenario> result = new ArrayList<Scenario>()
+    static List<MergeScenario> readJson(String outputPath, String jsonPath, EntrypointStrategy strategy) {
+        List<MergeScenario> result = new ArrayList<MergeScenario>()
+        List<Map> merges = new JsonSlurper().parse(new File(jsonPath))
 
-        for (Map merge : new JsonSlurper().parse(new File(jsonPath))) {
+        for (int i = 0; i < merges.size(); i++) {
+            Map merge = merges[i]
             String commitSHA = merge.commits.merge
             String scenarioDirectory = getScenarioDirectory(outputPath, merge.project, commitSHA)
             String buildJar = "${scenarioDirectory}/original-without-dependencies/merge/build.jar"
             List<Map> methods = merge.modifiedMethods
+            if (methods.isEmpty()) {
+                continue
+            }
 
             Set<String> leftMethods = LinesToSootMethodResolver.resolve(buildJar, getModifiedLinesByClass(methods, "leftModifications"))
             Set<String> rightMethods = LinesToSootMethodResolver.resolve(buildJar, getModifiedLinesByClass(methods, "rightModifications"))
-            String entrypoints = strategy.getEntrypoints(buildJar, leftMethods, rightMethods).toString()
+            List<String> entrypointsList = strategy.getEntrypoints(buildJar, leftMethods, rightMethods)
+            String entrypoints = entrypointsList.toString()
+            println "[${i + 1}/${merges.size()}] ${merge.project} ${commitSHA}: methods modified by left ${leftMethods.size()}, by right ${rightMethods.size()} -> ${entrypointsList.size()} entrypoints"
 
-            for (Map method : methods) {
-                result.add(new Scenario(merge.project, clean(method.className), clean(method.method), commitSHA, scenarioDirectory, merge.hasBuild, entrypoints))
-            }
+            result.add(new MergeScenario(merge.project, methods[0].className, commitSHA, scenarioDirectory, merge.hasBuild, entrypoints, leftMethods, rightMethods))
         }
         return result
     }

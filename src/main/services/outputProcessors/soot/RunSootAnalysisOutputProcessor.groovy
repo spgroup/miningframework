@@ -106,7 +106,7 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
         return detectionAlgorithms as List
     }
 
-    File createOutputFile(String outputPath, String fileName = "soot-results.csv") {
+    File createOutputFile(String outputPath, String fileName = "soot-results.csv", String keyColumns = "project;class;method;merge commit") {
         File sootResultsFile = new File(outputPath + "/data/" + fileName)
 
         if (sootResultsFile.exists()) {
@@ -114,13 +114,13 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
         }
 
 //        sootResultsFile << sootWrapper.getSootAnalysisVersionDisclaimer();
-        sootResultsFile << buildCsvHeader();
+        sootResultsFile << buildCsvHeader(keyColumns);
 
         return sootResultsFile
     }
 
-    private String buildCsvHeader () {
-        StringBuilder resultStringBuilder = new StringBuilder("project;class;method;merge commit");
+    private String buildCsvHeader (String keyColumns) {
+        StringBuilder resultStringBuilder = new StringBuilder(keyColumns);
 
         for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
             resultStringBuilder.append(";${algorithm.generateHeaderName()}");

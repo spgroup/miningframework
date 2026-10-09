@@ -33,6 +33,14 @@ class Scenario {
         return this.commitSHA;
     }
 
+    String getProjectName() {
+        return this.projectName;
+    }
+
+    String getScenarioDirectory() {
+        return this.scenarioDirectory;
+    }
+
     String toString() {
         return "${projectName};${className};${methodSignature};${commitSHA}"
     }

@@ -106,7 +106,7 @@ class Project {
     }
 
     private Process constructAndRunGitLog(String sinceDate, String untilDate) {
-        ProcessBuilder gitLogBuilder = ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=%H-%p')
+        ProcessBuilder gitLogBuilder = ProcessRunner.buildProcess(path, 'git', '--no-pager', 'log', '--merges', '--pretty=%H-%P')
         if(!sinceDate.equals(''))
             ProcessRunner.addCommand(gitLogBuilder, "--since=\"${sinceDate}\"")
         if(!untilDate.equals(''))

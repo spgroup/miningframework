@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.modifiedLinesCollector.exporters.ModifiedLinesExporter
+import util.MergeBuildHelper
 
 /**
  * Same collection as the git based one (ModifiedLinesCollector, and SSM's ModifiedLinesManager), for merge scenarios
@@ -55,7 +56,7 @@ class SourceModifiedLinesCollector implements DataCollector {
         }
 
         File scenarioFolder = new File(outputPath, "files/${project.getName()}/${mergeCommit.getSHA()}")
-        File build = new File(scenarioFolder, 'original-without-dependencies/merge/build.jar')
+        File build = MergeBuildHelper.getMergeBuild(outputPath, project.getName(), mergeCommit.getSHA())
         build.parentFile.mkdirs()
         build.bytes = new File(project.getPath(), 'jars/merge.jar').bytes
 

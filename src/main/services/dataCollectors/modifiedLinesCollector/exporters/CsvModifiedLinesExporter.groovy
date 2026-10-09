@@ -3,6 +3,7 @@ package services.dataCollectors.modifiedLinesCollector.exporters
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.modifiedLinesCollector.MergeMethodModifications
+import util.MergeBuildHelper
 
 /**
  * @provides: a [outputPath]/data/results-with-build-information.csv file, read by GenerateSootInputFilesOutputProcessor
@@ -11,10 +12,12 @@ import services.dataCollectors.modifiedLinesCollector.MergeMethodModifications
  */
 class CsvModifiedLinesExporter implements ModifiedLinesExporter {
 
+    private final String outputPath
     private final File file
 
     CsvModifiedLinesExporter(String outputPath) {
-        file = new File(outputPath, 'data/results-with-build-information.csv')
+        this.outputPath = outputPath
+        file =new File(outputPath, 'data/results-with-build-information.csv')
         file.parentFile.mkdirs()
         if (!file.exists()) {
             file << 'project;merge commit;className;method;left modifications;has_build;left deletions;right modifications;right deletions\n'
@@ -24,9 +27,13 @@ class CsvModifiedLinesExporter implements ModifiedLinesExporter {
     synchronized void export(Project project, MergeCommit mergeCommit, List<MergeMethodModifications> methods) {
         for (MergeMethodModifications method : methods) {
             file << [project.getName(), mergeCommit.getSHA(), clean(method.className), clean(method.method),
-                     lines(method.leftAddedLines), 'true', lines(method.leftDeletedLines), lines(method.rightAddedLines),
+                     lines(method.leftAddedLines), hasBuild(project, mergeCommit),lines(method.leftDeletedLines), lines(method.rightAddedLines),
                      lines(method.rightDeletedLines)].join(';') + '\n'
         }
+    }
+
+    private boolean hasBuild(Project project, MergeCommit mergeCommit) {
+        return MergeBuildHelper.getMergeBuild(outputPath, project.getName(), mergeCommit.getSHA()).exists()
     }
 
     // class and method also name the folders of the soot input files

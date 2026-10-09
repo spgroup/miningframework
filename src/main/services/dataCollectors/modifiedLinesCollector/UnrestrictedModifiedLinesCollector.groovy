@@ -2,7 +2,14 @@ package services.dataCollectors.modifiedLinesCollector
 
 import project.MergeCommit
 import project.Project
+import services.dataCollectors.modifiedLinesCollector.exporters.CsvModifiedLinesExporter
+import services.dataCollectors.modifiedLinesCollector.exporters.JsonModifiedLinesExporter
+import services.dataCollectors.modifiedLinesCollector.exporters.ModifiedLinesExporter
+import util.ProcessRunner
 import util.TypeNameHelper
+
+import java.util.concurrent.ConcurrentHashMap
+
 import static app.MiningFramework.arguments
 
 /**
@@ -11,8 +18,12 @@ import static app.MiningFramework.arguments
  * instead of only the methods modified by both (intersection). Line numbers are taken from the
  * merge revision (matched by content), exactly like the method-based collector, so the output is
  * consistent with it for scenarios where both developers touched the same method.
+ *
  */
 class UnrestrictedModifiedLinesCollector extends ModifiedLinesCollectorAbstract {
+
+    private List<ModifiedLinesExporter> exporters
+    private final Map<String, List<MergeMethodModifications>> methodsOfEachMergeCommit = new ConcurrentHashMap<>()
 
     public UnrestrictedModifiedLinesCollector() {
         this("dependencies");
@@ -25,6 +36,7 @@ class UnrestrictedModifiedLinesCollector extends ModifiedLinesCollectorAbstract 
     @Override
     void collectData(Project project, MergeCommit mergeCommit) {
         createOutputFiles(arguments.getOutputPath())
+        methodsOfEachMergeCommit.put(mergeCommit.getSHA(), [])
         // union of the files modified by either parent (no "modified by both" restriction)
         Set<String> modifiedFiles = getAllModifiedFiles(project, mergeCommit);
 
@@ -41,7 +53,7 @@ class UnrestrictedModifiedLinesCollector extends ModifiedLinesCollectorAbstract 
             Map<String, ModifiedMethod> rightMethods = mapBySignature(getModifiedMethodsSafe(project, filePath, mergeCommit.getAncestorSHA(), mergeCommit.getRightSHA()))
 
             String className = TypeNameHelper.getFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA())
-            boolean revisionsCollected = false
+            boolean fileCopied = false
 
             for (ModifiedMethod mergeMethod : mergeModifiedMethods) {
                 ModifiedMethod leftMethod = leftMethods.get(mergeMethod.getSignature())
@@ -49,15 +61,50 @@ class UnrestrictedModifiedLinesCollector extends ModifiedLinesCollectorAbstract 
 
                 // union: keep the method if it was modified by the left OR the right parent
                 if (leftMethod != null || rightMethod != null) {
-                    if (!revisionsCollected) {
-                        revisionsCollector.collectDataFromFile(project, mergeCommit, filePath)
-                        revisionsCollected = true
+                    if (!fileCopied) {
+                        copyFileOfEachRevision(project, mergeCommit, filePath)
+                        fileCopied = true
                     }
                     collectMethodData(new Tuple2<ModifiedMethod, ModifiedMethod>(leftMethod, rightMethod), mergeMethod, project, mergeCommit, className)
                 }
             }
         }
+        exportMethods(project, mergeCommit)
         println "${project.getName()} - UnrestrictedModifiedLinesCollector collection finished"
+    }
+
+    // as the synthetic merges dataset: [outputPath]/files/[project]/[merge commit]/source/{base,left,right,merge}/[file
+    // path]; a revision without the file (e.g. a parent that deleted it) has no copy
+    private void copyFileOfEachRevision(Project project, MergeCommit mergeCommit, String filePath) {
+        Map<String, String> revisions = [base : mergeCommit.getAncestorSHA(), left: mergeCommit.getLeftSHA(),
+                                         right: mergeCommit.getRightSHA(), merge: mergeCommit.getSHA()]
+        File sourceFolder = new File(arguments.getOutputPath(), "files/${project.getName()}/${mergeCommit.getSHA()}/source")
+
+        revisions.each { String revision, String sha ->
+            Process gitShow = ProcessRunner.runProcess(project.getPath(), 'git', 'show', "${sha}:${filePath}")
+            byte[] content = gitShow.inputStream.bytes
+            if (gitShow.waitFor() == 0) {
+                File target = new File(sourceFolder, "${revision}/${filePath}")
+                target.parentFile.mkdirs()
+                target.bytes = content
+            }
+        }
+    }
+
+    private void exportMethods(Project project, MergeCommit mergeCommit) {
+        List<MergeMethodModifications> methods = methodsOfEachMergeCommit.remove(mergeCommit.getSHA())
+        for (ModifiedLinesExporter exporter : getExporters()) {
+            exporter.export(project, mergeCommit, methods)
+        }
+    }
+
+    // created once, since the json exporter keeps all the scenarios to rewrite its file
+    private synchronized List<ModifiedLinesExporter> getExporters() {
+        if (exporters == null) {
+            String outputPath = arguments.getOutputPath()
+            exporters = [new JsonModifiedLinesExporter(outputPath), new CsvModifiedLinesExporter(outputPath)]
+        }
+        return exporters
     }
 
     private Set<ModifiedMethod> getModifiedMethodsSafe(Project project, String filePath, String ancestorSHA, String targetSHA) {
@@ -97,6 +144,10 @@ class UnrestrictedModifiedLinesCollector extends ModifiedLinesCollectorAbstract 
                                            HashSet<Integer> rightAddedLines, HashSet<Integer> rightDeletedLines) {
 
         experimentalDataFile << "${project.getName()};${mergeCommit.getSHA()};${className};${modifiedDeclarationSignature};${leftAddedLines};${leftDeletedLines};${rightAddedLines};${rightDeletedLines}\n"
+
+        methodsOfEachMergeCommit.get(mergeCommit.getSHA()) << new MergeMethodModifications(className: className, method: modifiedDeclarationSignature,
+                leftAddedLines: new TreeSet<>(leftAddedLines), leftDeletedLines: new TreeSet<>(leftDeletedLines),
+                rightAddedLines: new TreeSet<>(rightAddedLines), rightDeletedLines: new TreeSet<>(rightDeletedLines))
 
         if (arguments.isPushCommandActive()) {
             String remoteURL = arguments.getResultsRemoteRepositoryURL()

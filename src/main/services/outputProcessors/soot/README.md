@@ -89,15 +89,6 @@ entrypoint strategy, which chooses the entrypoints of each scenario from the met
 1. Build the dataset in the output folder, with the modified lines JSON, the builds, the soot input files and a copy of
    the `source/` and `jars/` folders of each scenario. For the synthetic merges dataset, run at the miningframework root:
    `./gradlew run -DmainClass="services.dataCollectors.modifiedLinesCollector.sourceScenarios.Main" --args="-i ../Syntetic-Mergesdataset/data_base.json -o output"`
-
-   To try the strategies on small scenarios, `test_repositories/TesteCase` has two in the format of the synthetic
-   dataset, listed by its `data_base.json`: `--args="-i test_repositories/TesteCase/data_base.json -o output"`.
-   - `TesteCase_1`, the example of the slides (the Text class: left modifies countDupWhiteSpace, right countDupWords and
-     countDupWhiteSpace). Entrypoints: main (MOP), countDupWhiteSpace and countDupWords (MM), countDupWhiteSpace (MMM)
-     and generateReport (LCA).
-   - `TesteCase_2`, the multifile example of conflict-static-analysis (samples/ioa/multifile: left modifies
-     Player.levelUp and BonusService.award, right Player.levelUp and PenaltyService.punish). Entrypoints: Main.main
-     (MOP), award, punish and levelUp (MM), levelUp (MMM) and Main.main (LCA).
 2. Run the analyses with the strategies, e.g. all of them or a pair:
 ```
 ./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s all -icf -ioa -idfp -pdg"

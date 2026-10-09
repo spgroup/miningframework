@@ -9,15 +9,13 @@ import interfaces.ProjectProcessor
 import services.commitFilters.IsInCommitListFilter
 import services.dataCollectors.MergeConflictCollector
 import services.dataCollectors.StatisticsCollector
+import services.dataCollectors.buildRequester.LocalMergeBuildCollector
 import services.dataCollectors.buildRequester.BuildRequester
 import services.dataCollectors.modifiedLinesCollector.UnrestrictedModifiedLinesCollector
-import services.outputProcessors.FetchBuildsOutputProcessor
-import services.outputProcessors.GenerateSootInputFilesOutputProcessor
+import services.outputProcessors.FetchBuildsFromJsonOutputProcessor
+import services.outputProcessors.GenerateSootInputFilesFromJsonOutputProcessor
 import services.outputProcessors.WaitForBuildsOutputProcessor
-import services.outputProcessors.soot.RunSootAnalysisOutputProcessor
-import services.projectProcessors.FilterNonExistentProjectsProcessor
 import services.projectProcessors.ForkAndEnableCIProcessor
-import services.util.FetchBuildsScript
 import services.util.ci.CIPlatform
 import services.util.ci.GithubActionsPlatform
 
@@ -27,6 +25,7 @@ class UnrestrictedStaticAnalysisConflictsDetectionModule extends AbstractModule 
     protected void configure() {
         Multibinder<DataCollector> dataCollectorBinder = Multibinder.newSetBinder(binder(), DataCollector.class)
 
+        dataCollectorBinder.addBinding().to(LocalMergeBuildCollector.class)
         dataCollectorBinder.addBinding().to(UnrestrictedModifiedLinesCollector.class)
         dataCollectorBinder.addBinding().to(StatisticsCollector.class)
         dataCollectorBinder.addBinding().to(BuildRequester.class)
@@ -36,14 +35,12 @@ class UnrestrictedStaticAnalysisConflictsDetectionModule extends AbstractModule 
         bind(CommitFilter.class).to(IsInCommitListFilter.class)
 
         Multibinder<ProjectProcessor> projectProcessorBinder = Multibinder.newSetBinder(binder(), ProjectProcessor.class)
-        // projectProcessorBinder.addBinding().to(FilterNonExistentProjectsProcessor.class)
         projectProcessorBinder.addBinding().to(ForkAndEnableCIProcessor.class)
 
         Multibinder<OutputProcessor> outputProcessorBinder = Multibinder.newSetBinder(binder(), OutputProcessor.class)
         outputProcessorBinder.addBinding().to(WaitForBuildsOutputProcessor.class)
-
-        FetchBuildsOutputProcessor fetchBuildsOutputProcessor = new FetchBuildsOutputProcessor(FetchBuildsScript.SingleBuildPerScenario)
-        outputProcessorBinder.addBinding().toInstance(fetchBuildsOutputProcessor)
+        outputProcessorBinder.addBinding().to(FetchBuildsFromJsonOutputProcessor.class)
+        outputProcessorBinder.addBinding().to(GenerateSootInputFilesFromJsonOutputProcessor.class)
 
         bind(CIPlatform.class).to(GithubActionsPlatform.class)
     }

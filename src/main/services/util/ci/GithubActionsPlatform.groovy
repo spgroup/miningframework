@@ -85,8 +85,8 @@ jobs:
               env:
                 GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
               with:
-                tag_name: build-\${{ github.sha }}
-                release_name: fetchjar-\${{ github.sha }}
+                tag_name: build-${identifier}
+                release_name: fetchjar-${identifier}
                 draft: false
             - name: Upload jar
               id: upload-release-jar

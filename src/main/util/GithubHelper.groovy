@@ -92,6 +92,10 @@ class GithubHelper {
         return HttpHelper.responseToJSON(connection.getInputStream())
     }
 
+    Project getFork(Project project) {
+        return new Project(project.getName(), "${URL}/${getUser().login}/${project.getOwnerAndName()[1]}")
+    }
+
     private getRepoApiUrl(Project project) {
         String[] projectNameAndOwner = project.getOwnerAndName()
         String projectOwner = projectNameAndOwner[0]

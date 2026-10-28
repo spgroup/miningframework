@@ -11,6 +11,7 @@ import util.TypeNameHelper
 import java.util.concurrent.ConcurrentHashMap
 
 import static app.MiningFramework.arguments
+import services.dataCollectors.modifiedLinesCollector.diffTools.MethodDiffTools
 
 /**
  * Same collection logic as {@link ModifiedLinesCollector}, but WITHOUT the "mutually modified
@@ -30,7 +31,7 @@ class UnrestrictedModifiedLinesCollector extends ModifiedLinesCollectorAbstract 
     }
 
     public UnrestrictedModifiedLinesCollector(String dependenciesPath) {
-        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar", dependenciesPath);
+        modifiedMethodsHelper = new ModifiedMethodsHelper(MethodDiffTools.create(dependenciesPath));
     }
 
     @Override

@@ -8,17 +8,18 @@ import services.dataCollectors.RevisionsFilesCollector
 import util.TypeNameHelper
 
 import static app.MiningFramework.arguments
+import services.dataCollectors.modifiedLinesCollector.diffTools.MethodDiffTools
 
 
 /**
- * @requires: that a diffj cli is in the dependencies folder and that diff (textual diff tool) is installed
+ * @requires: the dependencies of the method diff tool (MethodDiffTools) and that diff (textual diff tool) is installed
  * @provides: a [outputPath]/data/results.csv file with the following format:
  * project;merge commit;file path;left additions;left deletions;left changes;right additions;right deletions;right changes;repo url
  */
 class ModifiedFilesLinesPerFileCollector extends ModifiedLinesCollectorAbstract {
 
     public ModifiedFilesLinesPerFileCollector() {
-        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar");
+        modifiedMethodsHelper = new ModifiedMethodsHelper();
     }
 
     void collectData(Project project, MergeCommit mergeCommit) {

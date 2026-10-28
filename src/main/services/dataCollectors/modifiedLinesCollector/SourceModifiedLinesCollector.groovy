@@ -7,14 +7,15 @@ import project.MergeCommit
 import project.Project
 import services.dataCollectors.modifiedLinesCollector.exporters.ModifiedLinesExporter
 import util.MergeBuildHelper
+import services.dataCollectors.modifiedLinesCollector.diffTools.MethodDiffTools
 
 /**
  * Same collection as the git based one (ModifiedLinesCollector, and SSM's ModifiedLinesManager), for merge scenarios
  * that only have the source of the modified files: every method modified by left or by right, with the lines of merge
- * that each one modified (diffj and textual diff from base). The entrypoints of the analyses are not chosen here.
+ * that each one modified (method diff tool and textual diff from base). The entrypoints of the analyses are not chosen here.
  *
  * @requires: that the project path is a folder with source/{base,left,right,merge}/ holding the modified .java files
- * at the same relative paths and jars/merge.jar (the build); diffj in the dependencies folder and diff installed
+ * at the same relative paths and jars/merge.jar (the build); the dependencies of the method diff tool (MethodDiffTools) and diff installed
  * @provides: the modified lines to the exporters, and the merge jar as the build of the scenario at
  * [outputPath]/files/[project]/[merge commit]/original-without-dependencies/merge/build.jar, with a copy of the
  * source/ and jars/ folders of the scenario beside it
@@ -28,7 +29,7 @@ class SourceModifiedLinesCollector implements DataCollector {
     SourceModifiedLinesCollector(List<ModifiedLinesExporter> exporters, String outputPath, String dependenciesPath = 'dependencies') {
         this.exporters = exporters
         this.outputPath = outputPath
-        this.modifiedMethodsHelper = new ModifiedMethodsHelper('diffj.jar', dependenciesPath)
+        this.modifiedMethodsHelper = new ModifiedMethodsHelper(MethodDiffTools.create(dependenciesPath))
     }
 
     void collectData(Project project, MergeCommit mergeCommit) {

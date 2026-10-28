@@ -124,6 +124,26 @@ public class C {
     }
 
     @Test
+    void changedSignatureKeepsTheAncestorName() {
+        // a method keeps the name it has in the base, so that left, right and merge name it alike (Lang 4589bbf2)
+        String base = '''\
+public class C {
+    void m(int x) {
+        System.out.println(0);
+    }
+}
+'''
+        String target = '''\
+public class C {
+    void m(int x, int y) {
+        System.out.println(1);
+    }
+}
+'''
+        assertEquals(['m(int)'] as Set, modifiedMethods(base, target).keySet())
+    }
+
+    @Test
     void onlyCommentChanged() {
         String base = '''\
 public class C {

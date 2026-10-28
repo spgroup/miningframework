@@ -32,7 +32,7 @@ class GumTreeDiffTool implements MethodDiffTool {
     Map<String, int[]> getModifiedMethodsLines(File ancestorFile, File targetFile) {
         Map<String, Set<Integer>> lines = [:]
         for (DeclarationLine change : modifiedLines(ancestorFile, targetFile)) {
-            lines.computeIfAbsent(change.source.signature(change.declaration, change.declarationLine)) { new TreeSet<>() }.add(change.line)
+            lines.computeIfAbsent(change.signature) { new TreeSet<>() }.add(change.line)
         }
         return lines.collectEntries { signature, numbers -> [(signature): numbers as int[]] }
     }
@@ -52,7 +52,7 @@ class GumTreeDiffTool implements MethodDiffTool {
         int line
         Source source
         Tree declaration
-        int declarationLine
+        String signature
         boolean inTarget
     }
 
@@ -84,6 +84,23 @@ class GumTreeDiffTool implements MethodDiffTool {
         }
 
         List<DeclarationLine> result = []
+        // adds the line to the declaration that contains sourceLine in the source, if there is one
+        Closure<Boolean> addLine = { int line, Source source, int sourceLine ->
+            Tree declaration = source.declarationAt(sourceLine)
+            if (declaration == null) {
+                return false
+            }
+            String signature = source.signature(declaration, sourceLine)
+            // as diffj, a method of the target keeps the name it has in the ancestor (e.g. after a parameter is added),
+            // so that the same method has the same name in the diffs of left, right and merge against the base
+            Tree ancestorMethod = source.is(target) && source.isMethodOrConstructor(declaration) ? mappings.getSrcForDst(declaration) : null
+            if (ancestorMethod != null) {
+                signature = ancestor.signature(ancestorMethod, -1)
+            }
+            result.add(new DeclarationLine(line: line, source: source, declaration: declaration, signature: signature, inTarget: source.is(target)))
+            return true
+        }
+
         for (Hunk hunk : textualDiff(ancestorFile, targetFile)) {
             boolean changesCode = hunk.ancestorLines.any { ancestorLines.contains(it) } || hunk.targetLines.any { targetLines.contains(it) }
             if (!changesCode) {
@@ -91,24 +108,15 @@ class GumTreeDiffTool implements MethodDiffTool {
             }
             if (hunk.targetLines.isEmpty()) {
                 // removed lines: diff numbers them by the target line after which they were removed
-                addLine(result, hunk.targetPosition, ancestor, hunk.ancestorLines.first(), false)
+                addLine(hunk.targetPosition, ancestor, hunk.ancestorLines.first())
             }
             for (int line : hunk.targetLines) {
-                if (!addLine(result, line, target, line, true) && !hunk.ancestorLines.isEmpty()) {
-                    addLine(result, line, ancestor, hunk.ancestorLines.first(), false)
+                if (!addLine(line, target, line) && !hunk.ancestorLines.isEmpty()) {
+                    addLine(line, ancestor, hunk.ancestorLines.first())
                 }
             }
         }
         return result
-    }
-
-    private static boolean addLine(List<DeclarationLine> result, int line, Source source, int sourceLine, boolean inTarget) {
-        Tree declaration = source.declarationAt(sourceLine)
-        if (declaration == null) {
-            return false
-        }
-        result.add(new DeclarationLine(line: line, source: source, declaration: declaration, declarationLine: sourceLine, inTarget: inTarget))
-        return true
     }
 
     private static boolean inJavadoc(Tree node) {
@@ -192,7 +200,11 @@ class GumTreeDiffTool implements MethodDiffTool {
         }
 
         boolean isMethod(Tree declaration) {
-            return declaration.getType().name == 'MethodDeclaration' && returnType(declaration) != null
+            return isMethodOrConstructor(declaration) && returnType(declaration) != null
+        }
+
+        static boolean isMethodOrConstructor(Tree declaration) {
+            return declaration.getType().name == 'MethodDeclaration'
         }
 
         // as diffj: "m(String, int)", the field name, or "static block"

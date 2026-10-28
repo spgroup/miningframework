@@ -7,14 +7,16 @@ package services.dataCollectors.modifiedLinesCollector.diffTools
 class MethodDiffTools {
 
     static final String PROPERTY = 'miningframework.diffTool'
-    static final String DEFAULT = 'diffj'
+    static final String DEFAULT = 'gumtree'
 
     static MethodDiffTool create(String dependenciesPath = 'dependencies', String name = System.getProperty(PROPERTY, DEFAULT)) {
         switch (name) {
+            case 'gumtree':
+                return new GumTreeDiffTool()
             case 'diffj':
                 return new DiffJDiffTool('diffj.jar', dependenciesPath)
             default:
-                throw new IllegalArgumentException("Unknown method diff tool: ${name} (${PROPERTY} can be: diffj)")
+                throw new IllegalArgumentException("Unknown method diff tool: ${name} (${PROPERTY} can be: gumtree, diffj)")
         }
     }
 }

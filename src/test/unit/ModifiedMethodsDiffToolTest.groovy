@@ -144,6 +144,27 @@ public class C {
     }
 
     @Test
+    void reorderedStatements() {
+        // the fix moves a statement after another one: diff removes and adds it back (Closure aa15a401)
+        String base = '''\
+public class C {
+    void m() {
+        a();
+        b();
+    }
+
+    void a() {
+    }
+
+    void b() {
+    }
+}
+'''
+        String target = base.replace('        a();\n        b();\n', '        b();\n        a();\n')
+        assertEquals(['m()'] as Set, modifiedMethods(base, target).keySet())
+    }
+
+    @Test
     void onlyCommentChanged() {
         String base = '''\
 public class C {

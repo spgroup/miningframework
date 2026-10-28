@@ -31,8 +31,12 @@ class GumTreeDiffTool implements MethodDiffTool {
 
     Map<String, int[]> getModifiedMethodsLines(File ancestorFile, File targetFile) {
         Map<String, Set<Integer>> lines = [:]
-        for (DeclarationLine change : modifiedLines(ancestorFile, targetFile)) {
-            lines.computeIfAbsent(change.signature) { new TreeSet<>() }.add(change.line)
+        // lines of the target first: the matcher keeps one line per content (ModifiedLine.equals), so a statement
+        // moved within the method stays as the line where it is in the target, not as the one it was removed from
+        List<DeclarationLine> changes = modifiedLines(ancestorFile, targetFile)
+                .sort { a, b -> a.inTarget != b.inTarget ? (a.inTarget ? -1 : 1) : a.line <=> b.line }
+        for (DeclarationLine change : changes) {
+            lines.computeIfAbsent(change.signature) { new LinkedHashSet<>() }.add(change.line)
         }
         return lines.collectEntries { signature, numbers -> [(signature): numbers as int[]] }
     }
@@ -79,6 +83,14 @@ class GumTreeDiffTool implements MethodDiffTool {
                     if (targetNode != null) {
                         targetLines.addAll(target.lines(targetNode))
                     }
+                    if (action instanceof Move && targetNode != null && mappings.getDstForSrc(node.getParent()).is(targetNode.getParent())) {
+                        // a reordering: diff may show it as a sibling that left and came back (e.g. swapped statements),
+                        // so the siblings between the old and the new position also changed
+                        int from = Math.min(node.positionInParent(), targetNode.positionInParent())
+                        int to = Math.max(node.positionInParent(), targetNode.positionInParent())
+                        siblingsBetween(node.getParent(), from, to).each { ancestorLines.addAll(ancestor.lines(it)) }
+                        siblingsBetween(targetNode.getParent(), from, to).each { targetLines.addAll(target.lines(it)) }
+                    }
                 }
             }
         }
@@ -117,6 +129,11 @@ class GumTreeDiffTool implements MethodDiffTool {
             }
         }
         return result
+    }
+
+    private static List<Tree> siblingsBetween(Tree parent, int from, int to) {
+        List<Tree> children = parent.getChildren()
+        return children.subList(Math.min(from, children.size()), Math.min(to + 1, children.size()))
     }
 
     private static boolean inJavadoc(Tree node) {

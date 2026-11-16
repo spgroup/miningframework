@@ -15,7 +15,8 @@ class DiffJParser {
     private final String REMOVED_FLAG = "d";
 
     private final String FLAGS_REGEX = "(${ADDED_FLAG}|${CHANGED_FLAG}|${REMOVED_FLAG})"
-    private final Pattern METHOD_CHANGE_HEADER_REGEX = Pattern.compile("^.* code (added|changed|removed) in .*")
+    private final Pattern STATEMENT_CHANGE_HEADER_REGEX = Pattern.compile("^.* code (added|changed|removed) in .*")
+    private final Pattern METHOD_DECLARATION_CHANGE_HEADER_REGEX = Pattern.compile("^.* method (added|changed|removed): .*")
 
     public Map<String, int[]> parse (List<String> lines) {
         def result = new HashMap<String, int[]>();
@@ -75,16 +76,18 @@ class DiffJParser {
         if (iterator.hasNext()) {
             iterator.next();
         }
-    } 
+    }
 
     private boolean isMethodChangeLine(String line) {
-        Matcher matcher = METHOD_CHANGE_HEADER_REGEX.matcher(line);
+        Matcher codeMatcher = STATEMENT_CHANGE_HEADER_REGEX.matcher(line);
 
-        return matcher.find();
+        Matcher methodMatcher = METHOD_DECLARATION_CHANGE_HEADER_REGEX.matcher(line);
+
+        return codeMatcher.find() || methodMatcher.find();
     }
 
     private String getMethodName(String headerLine) {
-        return headerLine.replaceFirst(/^.* code (added|changed|removed) in /, "");
+        return headerLine.replaceFirst(/^.* code (added|changed|removed) in /, "").replaceFirst(/^.* method (added|changed|removed): /, "");
     }
 
     private int[] getModifiedLinesRange(String headerLine) {

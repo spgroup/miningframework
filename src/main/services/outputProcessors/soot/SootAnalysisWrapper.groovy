@@ -24,20 +24,20 @@ class SootAnalysisWrapper {
         this.dependenciesPath = dependenciesPath;
     }
 
-    Process executeSoot(String inputFilePath, String classPath, String mode, String entrypoints) {
-        List<String> command = [
+    Process executeSoot(SootConfig config) {
+        List<String> command = new ArrayList<>(Arrays.asList(
                 "java", "-jar", getJarPath(),
-                "-csv", inputFilePath,
-                "-cp", classPath,
-                "-mode", mode
-        ]
+                "-csv", config.getInputFilePath(),
+                "-cp", config.getClassPath(),
+                "-mode", config.getMode()
+        ));
 
-        if (entrypoints != null) {
-            command.add("-entrypoints")
-            command.add(entrypoints)
-        }
+        config.getOptionalParams().forEach((flag, value) -> {
+            command.add(flag);
+            command.add(value);
+        });
 
-        return ProcessRunner.runProcess(".", command.toArray(new String[0]))
+        return ProcessRunner.runProcess(".", command.toArray(new String[0]));
     }
 
 

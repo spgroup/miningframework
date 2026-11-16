@@ -9,6 +9,8 @@ class Arguments {
     private boolean cfInter
     private boolean oaIntra;
     private boolean oaInter;
+    private boolean oaIntraWithoutPA;
+    private boolean oaInterWithoutPA;
     private boolean dfpIntra
     private boolean dfpInter
     private boolean cd
@@ -21,6 +23,8 @@ class Arguments {
     private long timeout
     private long depthLimit
     private boolean printDepthSVFA
+    private String callgraph
+    private boolean partialResultsOnTimeout
 
     Arguments() { // set the default values for all parameters
         isHelp = false
@@ -31,6 +35,8 @@ class Arguments {
         cfInter = false
         oaIntra = false
         oaInter = false
+        oaIntraWithoutPA = false
+        oaInterWithoutPA = false
         dfpIntra = false
         dfpInter = false
         cd = false
@@ -43,6 +49,24 @@ class Arguments {
         timeout = 240
         printDepthSVFA = false
         depthLimit = 5
+        callgraph = "SPARK"
+        partialResultsOnTimeout = false
+    }
+
+    boolean getOaIntraWithoutPA() {
+        return oaIntraWithoutPA
+    }
+
+    void setOaIntraWithoutPA(boolean oaIntraWithoutPA) {
+        this.oaIntraWithoutPA = oaIntraWithoutPA
+    }
+
+    boolean getOaInterWithoutPA() {
+        return oaInterWithoutPA
+    }
+
+    void setOaInterWithoutPA(boolean oaInterWithoutPA) {
+        this.oaInterWithoutPA = oaInterWithoutPA
     }
 
     void setDepthLimit(long depthLimit) {
@@ -204,5 +228,20 @@ class Arguments {
 
     void setTimeout(long timeout) {
         this.timeout = timeout
+    }
+
+    String getCallgraph() {
+        return callgraph
+    }
+    void setCallgraph(String callgraph) {
+        this.callgraph = callgraph
+    }
+
+    boolean isPartialResultsOnTimeout() {
+        return partialResultsOnTimeout
+    }
+
+    void setPartialResultsOnTimeout(boolean partialResultsOnTimeout) {
+        this.partialResultsOnTimeout = partialResultsOnTimeout
     }
 }

@@ -1,6 +1,7 @@
 package services.util
 
 import app.MiningFramework
+import org.apache.commons.lang3.tuple.Pair
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import project.MergeCommit
@@ -18,7 +19,7 @@ final class Utils {
      * @param repositoryPath
      * @param arguments
      */
-    static List<String> runGitCommand(Path repositoryPath, String... arguments) {
+    static int runGitCommand(Path repositoryPath, String... arguments) {
         Process gitCommand = ProcessRunner.startProcess(buildGitCommand(repositoryPath, arguments))
         def exitCode = gitCommand.waitFor()
         def commandOutput = gitCommand.getInputStream().readLines();
@@ -27,7 +28,7 @@ final class Utils {
             LOG.warn("Git command exited with error code ${exitCode}.\n Error stream: ${gitCommand.getErrorStream().readLines()}\n Input stream: ${commandOutput}")
         }
 
-        return commandOutput
+        return exitCode
     }
 
     private static ProcessBuilder buildGitCommand(Path repositoryPath, String... arguments) {

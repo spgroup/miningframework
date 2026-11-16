@@ -48,8 +48,10 @@ Options:
                                          dfp-confluence-interprocedural
  -idf,--svfa-interprocedural             Run svfa-interprocedural
  -idfp,--dfp-inter                       Run dfp-inter
- -ioa,--overriding-interprocedural       Run overriding-interprocedural
- -oa,--overriding-intraprocedural        Run overriding-intraprocedural
+ -ioa, --overriding-interprocedural      Run interprocedural overriding analysis
+ -oa, --overriding-intraprocedural       Run intraprocedural overriding analysis
+ -ioaWithoutPA, --ioa-without-pa         Run interprocedural overriding analysis without Pointer Analysis 
+ -oaWithoutPA, --oa-without-pa           Run intraprocedural overriding analysis without Pointer Analysis 
  -pd,--pessimistic-dataflow              Run pessimistic-dataflow
  -pdg,--pdg                              Run pdg
  -pdge,--pdge                            Run pdg-e
@@ -58,6 +60,8 @@ Options:
  -t,--timeout <timeout>                  Run -t time: time limit for each analysis (default: 240)
   -depthLimit                             Sets the depth limit on accessing methods when performing Overriding Assignment Interprocedural, Direct Flow Interprocedural and Confluence Interprocedural analyses. Default = 5
  -printDepthSVFA                         Print depth in SVFA analysis
+ -cg,--callgraph <algorithm>             Select call graph algorithm [CHA, RTA, VTA, SPARK]
+ -prt,--partial-results-on-timeout       When a soot analysis times out, capture and record the partial results
 ```
 
 For example: 

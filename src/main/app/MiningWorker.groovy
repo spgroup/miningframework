@@ -1,25 +1,37 @@
 package app
 
+import exception.UnstagedChangesException
+import interfaces.CommitFilter
+import interfaces.DataCollector
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import project.MergeCommit
+import project.Project
+import project.commitHashesExtraction.CommitHashesExtractor
+import services.util.Utils
+import util.FileManager
+import util.MergeHelper
+import util.ProcessRunner
+import java.util.Collections
+import java.util.Random
 import java.text.SimpleDateFormat
 
-import static app.MiningFramework.arguments
+import java.text.SimpleDateFormat
 import java.util.concurrent.BlockingQueue
 
-import project.*
-import interfaces.*
-import exception.UnstagedChangesException
-import util.*
-
-import services.util.Utils;
+import static app.MiningFramework.arguments
 
 class MiningWorker implements Runnable {
+    private static Logger LOG = LogManager.getLogger(MiningWorker.class)
 
     private Set<DataCollector> dataCollectors
     private CommitFilter commitFilter
     private BlockingQueue<Project> projectList
     private String baseDir
+    private CommitHashesExtractor commitHashesExtractor
 
     MiningWorker(Set<DataCollector> dataCollectors, CommitFilter commitFilter, BlockingQueue<Project> projectList, String baseDir) {
+        this.commitHashesExtractor = CommitHashesExtractor.Factory.build()
         this.dataCollectors = dataCollectors
         this.commitFilter = commitFilter
         this.projectList = projectList
@@ -39,13 +51,23 @@ class MiningWorker implements Runnable {
                     checkForUnstagedChanges(project);
                 }
 
-                def (mergeCommits, skipped) = project.getMergeCommits(arguments.getSinceDate(), arguments.getUntilDate())
+                def (mergeCommits, skipped) = project.getMergeCommits(commitHashesExtractor)
+
+                Random random = new Random(arguments.getRandomSeed())
+                Collections.shuffle(mergeCommits, random)
+
+                int collectedMergeCommits = 0
                 for (mergeCommit in mergeCommits) {
+                    if (collectedMergeCommits >= arguments.getMaxCommitsPerProject()) {
+                        break
+                    }
+
                     try {
                         if (commitFilter.applyFilter(project, mergeCommit)) {
                             println "${project.getName()} - Merge commit: ${mergeCommit.getSHA()}"
 
                             runDataCollectors(project, mergeCommit)
+                            collectedMergeCommits++
                         }
                     } catch (Exception e) {
                         println "${project.getName()} - ${mergeCommit.getSHA()} - ERROR"
@@ -85,7 +107,7 @@ class MiningWorker implements Runnable {
     }
 
     private void cloneRepository(Project project, String target) {
-        println "Cloning repository ${project.getName()} into ${target}"
+        LOG.info("Cloning repository ${project.getName()} into ${target}")
 
         File projectDirectory = new File(target)
         if (projectDirectory.exists()) {
@@ -102,10 +124,11 @@ class MiningWorker implements Runnable {
         }
 
         ProcessBuilder builder = ProcessRunner.buildProcess('./', 'git', 'clone', url, target)
-        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT)
-
         Process process = ProcessRunner.startProcess(builder)
+        process.getInputStream().eachLine(LOG::trace)
+        process.getErrorStream().eachLine(LOG::warn)
         process.waitFor()
+        LOG.info("Finished cloning repository ${project.getName()} into ${target}")
 
         project.setPath(target)
     }

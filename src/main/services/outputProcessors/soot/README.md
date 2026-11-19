@@ -65,6 +65,7 @@ Options:
  -s,--strategies <strategies>            Run once per entrypoint strategy, from the JSON: comma separated MOP, MM, MMM, LCA, or all (default: no entrypoints, from the CSV)
  -i,--input <json>                       Modified lines JSON read with --strategies (default: [output]/data/results-with-build-information.json)
  -mr,--method-resolver <resolver>        Finds the methods of the modified lines, with --strategies: bytecode, source (default: bytecode)
+ -prt,--partial-results-on-timeout       When a soot analysis times out, capture and record the partial results
 ```
 
 For example: 

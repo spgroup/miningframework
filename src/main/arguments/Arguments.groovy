@@ -22,6 +22,7 @@ class Arguments {
     private String fileExtension
     private Level logLevel
     private String diffTool
+    private String projectCommitHashesFile
 
     Arguments() { // set the default values for all parameters
         randomSeed = 1
@@ -38,6 +39,7 @@ class Arguments {
         syntacticSeparators = '{ } ( ) ; ,'
         fileExtension = '.java'
         logLevel = Level.INFO
+        projectCommitHashesFile = ''
     }
 
     void setRandomSeed(int randomSeed) {
@@ -175,5 +177,13 @@ class Arguments {
 
     void setDiffTool(String diffTool) {
         this.diffTool = diffTool
+    }
+    
+    String getProjectCommitHashesFile() {
+        return projectCommitHashesFile
+    }
+
+    void setProjectCommitHashesFile(String projectCommitHashesFile) {
+        this.projectCommitHashesFile = projectCommitHashesFile
     }
 }

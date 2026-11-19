@@ -3,6 +3,7 @@ package services.outputProcessors.soot
 import util.ProcessRunner
 
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Runs a soot algorithm with:
@@ -20,6 +21,10 @@ class ConflictDetectionAlgorithm {
     private boolean interprocedural;
     private long depthLimit;
     private String callgraph;
+    private boolean partialResultsOnTimeout;
+
+    // Grace period to let the output thread finish reading buffered output after process is destroyed
+    private static final long GRACE_PERIOD_MILLIS = 5000L;
 
 
     ConflictDetectionAlgorithm(String name,
@@ -28,7 +33,8 @@ class ConflictDetectionAlgorithm {
                                long timeout,
                                boolean interprocedural = false,
                                long depthLimit = 5,
-                               String callgraph = "SPARK") {
+                               String callgraph = "SPARK",
+                               boolean partialResultsOnTimeout = false) {
         this.name = name
         this.mode = mode
         this.sootWrapper = sootWrapper
@@ -36,6 +42,7 @@ class ConflictDetectionAlgorithm {
         this.interprocedural = interprocedural
         this.depthLimit = depthLimit
         this.callgraph = callgraph
+        this.partialResultsOnTimeout = partialResultsOnTimeout
     }
 
     String getMode() {
@@ -52,6 +59,10 @@ class ConflictDetectionAlgorithm {
 
     boolean getInterprocedural() {
         return interprocedural
+    }
+
+    void setPartialResultsOnTimeout(boolean partialResultsOnTimeout) {
+        this.partialResultsOnTimeout = partialResultsOnTimeout
     }
 
     @Override
@@ -97,7 +108,10 @@ class ConflictDetectionAlgorithm {
 
 
     protected String runAndReportResult(SootConfig sootConfig) throws InterruptedException, IOException {
-        String result;
+        // AtomicReference allows the output thread to safely publish its result to the main thread
+        // Default is "false": if timeout fires before any [CONFLICT_FOUND] is seen, we record false
+        AtomicReference<String> atomicResult = new AtomicReference<>("false")
+
         println "Using jar at " + sootConfig.getClassPath()
 
         File inputFile = new File(sootConfig.getInputFilePath());
@@ -108,51 +122,57 @@ class ConflictDetectionAlgorithm {
 
         Process sootProcess = sootWrapper.executeSoot(sootConfig);
 
-        // this is needed because if th waitFor command is called without reading the output
-        // in some executions the output buffer might get full and block the process
-        // so we execute both the output reading and the process waiting in parallel
+        // Reading output and waiting for process must run in parallel to avoid blocking
+        // when the output buffer fills up before the process finishes
         Thread processOutputThread = new Thread(new Runnable() {
             @Override
             void run() {
-                result = hasSootFlow(sootProcess);
+                atomicResult.set(hasSootFlow(sootProcess));
             }
         })
-        processOutputThread.start(); // start processing the output
+        processOutputThread.start();
 
         boolean executionCompleted = true;
         if (timeout > 0) {
-            // wait for the execution to end setting a timeout
             executionCompleted = sootProcess.waitFor(timeout, TimeUnit.SECONDS)
         }
 
-        // if the timeout has been reached
         if (!executionCompleted) {
-            processOutputThread.interrupt(); // cancel the output reading thread
-            print ("Execution exceeded the timeout of " + timeout + " seconds")
-            result = "timeout";
-        } else {
-            processOutputThread.join();
+            println "Execution exceeded the timeout of ${timeout} seconds"
+            // Destroy the process first so its output stream closes, allowing the reader thread to exit
+            sootProcess.destroy();
+
+            if (partialResultsOnTimeout) {
+                // Wait for the reader thread to finish consuming any buffered output that was
+                // already in the pipe before the process was destroyed
+                processOutputThread.join(GRACE_PERIOD_MILLIS)
+                String partial = atomicResult.get()
+                println "Result at timeout: ${partial}"
+                return partial + "-timeout"
+            } else {
+                processOutputThread.interrupt();
+            }
+            return "timeout";
         }
 
-
-        // force destroy process
-        // if we don't use this command some processes will keep running and consuming a lot of memory
-        // even after the analysis execution ends
+        processOutputThread.join();
+        // Force destroy to prevent zombie processes that keep consuming memory
         sootProcess.destroy();
 
-        return result;
+        return atomicResult.get();
     }
 
     private String hasSootFlow(Process sootProcess) {
-        String result = "error"
-
-        sootProcess.getInputStream().eachLine {
-            println it;
-            if (it.stripIndent().startsWith("Number of conflicts:")) {
-                result = "true"
-            } else if (it.stripIndent() == "No conflicts detected") {
-                result = "false"
+        String result = "false"
+        try {
+            sootProcess.getInputStream().eachLine {
+                println it;
+                if (it.stripIndent() == "[CONFLICT_FOUND]") {
+                    result = "true"
+                }
             }
+        } catch (IOException ignored) {
+            // Stream closed because the process was destroyed (timeout case) — return whatever was found so far
         }
         return result
     }

@@ -30,6 +30,7 @@ class Arguments {
     private String outputPath
     private List<String> strategies
     private String methodResolver
+    private boolean partialResultsOnTimeout
 
     Arguments() { // set the default values for all parameters
         outputPath = "output"
@@ -57,6 +58,7 @@ class Arguments {
         depthLimit = 5
         callgraph = "SPARK"
         methodResolver = MethodResolvers.DEFAULT
+        partialResultsOnTimeout = false
     }
 
     boolean getOaIntraWithoutPA() {
@@ -269,5 +271,12 @@ class Arguments {
     }
     void setMethodResolver(String methodResolver) {
         this.methodResolver = methodResolver
+    }
+    boolean isPartialResultsOnTimeout() {
+        return partialResultsOnTimeout
+    }
+
+    void setPartialResultsOnTimeout(boolean partialResultsOnTimeout) {
+        this.partialResultsOnTimeout = partialResultsOnTimeout
     }
 }

@@ -50,6 +50,11 @@ class Main {
                     sootRunner.setDetectionAlgorithms(configureDetectionAlgorithms(appArguments, sootWrapper))
                 }
 
+                if (appArguments.isPartialResultsOnTimeout()) {
+                    println "Setting partial results on timeout"
+                    sootRunner.configurePartialResultsOnTimeout(true)
+                }
+
                 if (strategies) {
                     String input = appArguments.getInput() ?: "${outputPath}/data/results-with-build-information.json"
                     println "Entrypoint strategies: ${strategies.join(', ')}"
@@ -61,6 +66,8 @@ class Main {
                 } else {
                     sootRunner.executeAnalyses(outputPath)
                 }
+             
+                sootRunner.executeAnalyses(outputPath)
 
                 if (appArguments.isReport()) {
                     reportResults(outputPath)

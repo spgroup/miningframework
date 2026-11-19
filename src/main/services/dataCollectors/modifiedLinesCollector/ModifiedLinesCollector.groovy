@@ -8,10 +8,11 @@ import services.dataCollectors.RevisionsFilesCollector
 import util.TypeNameHelper
 
 import static app.MiningFramework.arguments
+import services.dataCollectors.modifiedLinesCollector.diffTools.MethodDiffTools
 
 
 /**
- * @requires: that a diffj cli is in the dependencies folder (or that the path to the diffj cli is provided)
+ * @requires: the dependencies of the method diff tool (MethodDiffTools), e.g. the diffj cli in the dependencies folder
               and that diff (textual diff tool) is installed
  * @provides: a [outputPath]/data/results.csv file with the following format:
  * project;merge commit;className;method;left modifications;left deletions;right modifications;right deletions
@@ -20,18 +21,18 @@ class ModifiedLinesCollector extends ModifiedLinesCollectorAbstract {
 
     /**
      * Default constructor.
-     * Assumes the path to diffj as the 'dependencies' directory in the root of the project.
+     * Assumes the dependencies of the method diff tool in the 'dependencies' directory in the root of the project.
      */
     public ModifiedLinesCollector() {
         this("dependencies");
     }
 
     /**
-     * Receives the path to diffj as a parameter, in cases where the class is used as a library.
-     * @param dependenciesPath The path to the folder containing the DiffJ executable.
+     * Receives the path to the dependencies of the method diff tool, in cases where the class is used as a library.
+     * @param dependenciesPath The path to the folder with the dependencies of the method diff tool.
      */
     public ModifiedLinesCollector(String dependenciesPath) {
-        modifiedMethodsHelper = new ModifiedMethodsHelper("diffj.jar", dependenciesPath);
+        modifiedMethodsHelper = new ModifiedMethodsHelper(MethodDiffTools.create(dependenciesPath));
     }
 
     void collectData(Project project, MergeCommit mergeCommit) {

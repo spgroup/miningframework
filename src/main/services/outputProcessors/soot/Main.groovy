@@ -4,6 +4,8 @@ import exception.ExternalScriptException
 import exception.InvalidArgsException
 import services.outputProcessors.soot.arguments.ArgsParser
 import services.outputProcessors.soot.arguments.Arguments
+import services.outputProcessors.soot.entrypointStrategies.*
+import services.outputProcessors.soot.methodResolvers.MethodResolvers
 import util.ProcessRunner
 
 class Main {
@@ -11,9 +13,15 @@ class Main {
     private static final String RESULT_ANALYSIS_PATH = "../miningframework/scripts/experiment_static_analysis/generate_analysis_results.py"
     private static final String SCRIPT_RUNNER = "python3"
 
+    // entrypoint strategies of --strategies, by their acronyms
+    private static final Map<String, EntrypointStrategy> STRATEGIES = [
+            MOP: new MainOrPublicMethodsEntrypointStrategy(),
+            MM : new ModifiedMethodsEntrypointStrategy(),
+            MMM: new MutuallyModifiedMethodsEntrypointStrategy(),
+            LCA: new LowestCommonAncestorEntrypointStrategy()]
+
     static main(args) {
         SootAnalysisWrapper sootWrapper = new SootAnalysisWrapper("0.2.1-SNAPSHOT")
-        String outputPath = "output"
 
         ArgsParser argsParser = new ArgsParser()
         Arguments appArguments;
@@ -28,6 +36,8 @@ class Main {
             System.setOut(tee);
 
             appArguments = argsParser.parse(args)
+            String outputPath = appArguments.getOutputPath()
+            List<String> strategies = appArguments.getStrategies() == ['all'] ? STRATEGIES.keySet() as List : appArguments.getStrategies()
 
             if (appArguments.isHelp()) {
                 argsParser.printHelp()
@@ -45,6 +55,18 @@ class Main {
                     sootRunner.configurePartialResultsOnTimeout(true)
                 }
 
+                if (strategies) {
+                    String input = appArguments.getInput() ?: "${outputPath}/data/results-with-build-information.json"
+                    println "Entrypoint strategies: ${strategies.join(', ')}"
+                    println "Modified lines JSON: ${new File(input).absolutePath}"
+                    println "Method resolver: ${appArguments.getMethodResolver()}"
+                    for (String strategy : strategies) {
+                        runStrategy(strategy, input, sootRunner, outputPath, appArguments.getMethodResolver())
+                    }
+                } else {
+                    sootRunner.executeAnalyses(outputPath)
+                }
+             
                 sootRunner.executeAnalyses(outputPath)
 
                 if (appArguments.isReport()) {
@@ -76,6 +98,46 @@ class Main {
         if (exitStatus != 0) {
             throw new ExternalScriptException(RESULT_ANALYSIS_PATH, exitStatus);
         }
+    }
+
+    /**
+     * Runs the analyses of the scenarios of a modified lines JSON with the entrypoints of a strategy (ScenarioReader.readJson).
+     * A scenario without entrypoints is not analysed: its analyses are "no-entrypoints".
+     * @provides: [outputPath]/data/soot-results-[strategy].csv, as soot-results.csv, and [outputPath]/data/entrypoints-[strategy].csv
+     */
+    private static void runStrategy(String strategy, String input, RunSootAnalysisOutputProcessor sootRunner, String outputPath, String methodResolver) {
+        File resultsFile = sootRunner.createOutputFile(outputPath, "soot-results-${strategy}.csv", "project;merge commit")
+        File entrypointsFile = new File(outputPath, "data/entrypoints-${strategy}.csv")
+        entrypointsFile.text = "project;merge commit;left modified methods;right modified methods;entrypoints\n"
+        String notExecuted = getNotExecutedColumns(sootRunner)
+
+        println "=== Strategy ${strategy}: choosing the entrypoints of each merge scenario ==="
+        List<MergeScenario> scenarios = ScenarioReader.readJson(outputPath, input, STRATEGIES[strategy], MethodResolvers.create(methodResolver))
+        int withoutEntrypoints = scenarios.count { it.getEntrypoints() == "[]" }
+        println "=== Strategy ${strategy}: analysing ${scenarios.size() - withoutEntrypoints} of ${scenarios.size()} merge scenarios (${withoutEntrypoints} without entrypoints) ==="
+
+        for (MergeScenario scenario : scenarios) {
+            entrypointsFile << "${scenario};${scenario.getLeftModifiedMethods()};${scenario.getRightModifiedMethods()};${scenario.getEntrypoints()}\n"
+            if (scenario.getEntrypoints() == "[]") {
+                println "Skipping soot scenario ${scenario}: no entrypoints"
+                resultsFile << "${scenario};${notExecuted};0\n"
+            } else {
+                sootRunner.executeAnalyses([scenario], resultsFile)
+            }
+        }
+
+        println "=== Strategy ${strategy} done: results in ${resultsFile.absolutePath}, entrypoints in ${entrypointsFile.absolutePath} ==="
+    }
+
+    // "no-entrypoints" in each result column: one per analysis, two for the ones run in both directions (left right; right left)
+    private static String getNotExecutedColumns(RunSootAnalysisOutputProcessor sootRunner) {
+        List<String> columns = new ArrayList<>()
+        for (ConflictDetectionAlgorithm algorithm : sootRunner.getDetectionAlgorithms()) {
+            for (String column : algorithm.generateHeaderName().split(";")) {
+                columns.add("no-entrypoints")
+            }
+        }
+        return columns.join(";")
     }
 
     private static ArrayList<ConflictDetectionAlgorithm> configureDetectionAlgorithms(Arguments appArguments, SootAnalysisWrapper sootWrapper) {

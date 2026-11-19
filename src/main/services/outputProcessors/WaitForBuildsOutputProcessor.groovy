@@ -5,6 +5,7 @@ import com.google.inject.Inject
 import interfaces.OutputProcessor
 import project.Project
 import services.util.ci.CIPlatform
+import util.GithubHelper
 
 import static app.MiningFramework.arguments
 
@@ -19,11 +20,18 @@ class WaitForBuildsOutputProcessor implements OutputProcessor {
 
     @Override
     void processOutput() {
+        if (!arguments.providedAccessKey()) {
+            return // no builds were requested
+        }
+        GithubHelper githubHelper = new GithubHelper(arguments.getAccessKey())
         List<Project> projects = InputParser.getProjectList(arguments.getInputPath())
 
         for (project in projects) {
-            println "Waiting for builds in project: ${project.getName()}"
-            this.ciPlatform.waitForBuilds(project)
+            if (project.isRemote()) {
+                println "Waiting for builds in project: ${project.getName()}"
+                // the builds run on the fork, made by ForkAndEnableCIProcessor
+                this.ciPlatform.waitForBuilds(githubHelper.getFork(project))
+            }
         }
     }
 }

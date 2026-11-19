@@ -61,6 +61,10 @@ Options:
   -depthLimit                             Sets the depth limit on accessing methods when performing Overriding Assignment Interprocedural, Direct Flow Interprocedural and Confluence Interprocedural analyses. Default = 5
  -printDepthSVFA                         Print depth in SVFA analysis
  -cg,--callgraph <algorithm>             Select call graph algorithm [CHA, RTA, VTA, SPARK]
+ -o,--output <output>                    Output folder with the dataset (default: output)
+ -s,--strategies <strategies>            Run once per entrypoint strategy, from the JSON: comma separated MOP, MM, MMM, LCA, or all (default: no entrypoints, from the CSV)
+ -i,--input <json>                       Modified lines JSON read with --strategies (default: [output]/data/results-with-build-information.json)
+ -mr,--method-resolver <resolver>        Finds the methods of the modified lines, with --strategies: bytecode, source (default: bytecode)
  -prt,--partial-results-on-timeout       When a soot analysis times out, capture and record the partial results
 ```
 
@@ -71,3 +75,33 @@ For example:
 5. The result will be written in `output/data/soot-results.csv`
    
 6. The result for report analysis will be written in `output/data/results.pdf`
+
+## Analyze with entrypoint strategies
+
+With `--strategies`, each merge scenario is analysed once per strategy, with the entrypoints it chooses from the
+methods modified by left and by right:
+
+| Acronym | Entrypoints |
+|---|---|
+| MOP | main methods, or else the public ones |
+| MM | methods modified by left or by right |
+| MMM | methods modified by both |
+| LCA | lowest common callers, in the call graph, of each pair of methods modified by left and by right |
+
+Run the strategies (`all` or a list):
+```
+./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s MM,LCA -ioa -o output"
+```
+
+Outputs, in `output/data/`:
+- `soot-results-[strategy].csv`: `project;merge commit;[analyses];Time`. A scenario without entrypoints is not analysed
+  (`no-entrypoints`).
+- `entrypoints-[strategy].csv`: `project;merge commit;left modified methods;right modified methods;entrypoints`.
+
+The modified methods come from a method resolver (`-mr`, `--method-resolver`):
+- `bytecode` (default): methods of the build with a statement in a modified line. Deleted lines and lines without
+  bytecode (e.g. `if (true)`) give no method.
+- `source`: methods of `source/merge` that contain a modified line (Eclipse JDT).
+
+The entrypoints go to conflict-static-analysis as `-entrypoints @[scenario]/entrypoints.txt`, so its jar must support
+it (`convertStringEntrypointsToList`).

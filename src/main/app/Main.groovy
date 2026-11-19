@@ -24,11 +24,10 @@ class Main {
             if (appArguments.isHelp()) {
                 argsParser.printHelp()
             } else {
+                MiningFramework.arguments = appArguments
                 Class injectorClass = appArguments.getInjector()
                 Injector injector = Guice.createInjector(injectorClass.newInstance())
                 MiningFramework framework = injector.getInstance(MiningFramework.class)
-
-                framework.setArguments(appArguments)
 
                 FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive())
             

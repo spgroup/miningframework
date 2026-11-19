@@ -1,6 +1,6 @@
 package arguments
 
-import injectors.StaticAnalysisConflictsDetectionModule
+import injectors.RefactoringStaticAnalysisConflictsDetectionModule
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.core.config.Configurator
 
@@ -21,6 +21,7 @@ class Arguments {
     private String syntacticSeparators
     private String fileExtension
     private Level logLevel
+    private String diffTool
     private String projectCommitHashesFile
 
     Arguments() { // set the default values for all parameters
@@ -30,7 +31,7 @@ class Arguments {
         untilDate = ''
         maxCommitsPerProject = 100000
         outputPath = 'output'
-        injector = StaticAnalysisConflictsDetectionModule
+	injector = RefactoringStaticAnalysisConflictsDetectionModule
         resultsRemoteRepositoryURL = ''
         accessKey = ''
         numOfThreads = 1
@@ -170,6 +171,14 @@ class Arguments {
         Configurator.setRootLevel(logLevel)
     }
 
+    String getDiffTool() {
+        return diffTool
+    }
+
+    void setDiffTool(String diffTool) {
+        this.diffTool = diffTool
+    }
+    
     String getProjectCommitHashesFile() {
         return projectCommitHashesFile
     }

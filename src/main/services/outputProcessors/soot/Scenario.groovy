@@ -33,6 +33,14 @@ class Scenario {
         return this.commitSHA;
     }
 
+    String getProjectName() {
+        return this.projectName;
+    }
+
+    String getScenarioDirectory() {
+        return this.scenarioDirectory;
+    }
+
     String toString() {
         return "${projectName};${className};${methodSignature};${commitSHA}"
     }
@@ -47,7 +55,7 @@ class Scenario {
     
     String getClassPath() {
         File file = new File("${this.scenarioDirectory}/original-without-dependencies/merge");
-        File[] buildJars = file.listFiles()
+        File[] buildJars = file.listFiles()?.sort { it.name } // the same jar in every OS, if two have the class
 
         String buildJarPath = getJarThatHasClass(buildJars)
         if (buildJarPath == null) {
@@ -58,6 +66,23 @@ class Scenario {
 
     String getEntrypoints() {
         return entrypoints
+    }
+
+    String getEntrypointsFilePath() {
+        return "${this.scenarioDirectory}/entrypoints.txt"
+    }
+
+    /**
+     * The -entrypoints argument of conflict-static-analysis: "@" and a file with the entrypoints, one per line, as a
+     * list of every public method of a build is too long for the command line. Null without entrypoints.
+     */
+    String getEntrypointsArgument() {
+        if (!entrypoints) {
+            return null
+        }
+        File file = new File(getEntrypointsFilePath())
+        file.text = entrypoints.substring(1, entrypoints.length() - 1).split(", ").join("\n") + "\n"
+        return "@" + file.getAbsolutePath()
     }
 
     private String getJarThatHasClass(File[] buildJars) {

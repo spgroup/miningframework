@@ -59,7 +59,7 @@ class GithubHelper {
                 throw new GithubHelperException("Http request returned an error " + httpConnection.getResponseMessage())
             }
         }
-        return result.workflow_runs
+        return result ? result.workflow_runs : null
     }
 
     Object fork (Project project) {
@@ -90,6 +90,10 @@ class GithubHelper {
         }
 
         return HttpHelper.responseToJSON(connection.getInputStream())
+    }
+
+    Project getFork(Project project) {
+        return new Project(project.getName(), "${URL}/${getUser().login}/${project.getOwnerAndName()[1]}")
     }
 
     private getRepoApiUrl(Project project) {

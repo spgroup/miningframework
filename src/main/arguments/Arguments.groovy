@@ -31,7 +31,7 @@ class Arguments {
         untilDate = ''
         maxCommitsPerProject = 100000
         outputPath = 'output'
-	injector = RefactoringStaticAnalysisConflictsDetectionModule
+	    injector = StaticAnalysisConflictsDetectionModule
         resultsRemoteRepositoryURL = ''
         accessKey = ''
         numOfThreads = 1

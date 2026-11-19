@@ -1,5 +1,7 @@
 package services.outputProcessors.soot.arguments
 
+import services.outputProcessors.soot.methodResolvers.MethodResolvers
+
 class Arguments {
     private boolean isHelp
     private boolean allanalysis
@@ -27,6 +29,7 @@ class Arguments {
     private String input
     private String outputPath
     private List<String> strategies
+    private String methodResolver
 
     Arguments() { // set the default values for all parameters
         outputPath = "output"
@@ -53,6 +56,7 @@ class Arguments {
         printDepthSVFA = false
         depthLimit = 5
         callgraph = "SPARK"
+        methodResolver = MethodResolvers.DEFAULT
     }
 
     boolean getOaIntraWithoutPA() {
@@ -258,5 +262,12 @@ class Arguments {
     }
     void setStrategies(List<String> strategies) {
         this.strategies = strategies
+    }
+
+    String getMethodResolver() {
+        return methodResolver
+    }
+    void setMethodResolver(String methodResolver) {
+        this.methodResolver = methodResolver
     }
 }

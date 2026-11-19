@@ -13,7 +13,8 @@ import static app.MiningFramework.arguments
  * its Gradle wrapper or Maven.
  *
  * @requires: that the merge commit has a gradlew or a pom.xml on its root (and mvn installed, for Maven)
- * @provides: [outputPath]/files/[project]/[merge commit]/original-without-dependencies/merge/build.jar
+ * @provides: [outputPath]/files/[project]/[merge commit]/original-without-dependencies/merge/*.jar, every jar of the
+ * merge commit after the build, as the CI build (BuildRequester) gives
  */
 class LocalMergeBuildCollector implements DataCollector {
 
@@ -60,14 +61,15 @@ class LocalMergeBuildCollector implements DataCollector {
     }
 
     private static boolean saveMergeBuild(Project project, MergeCommit mergeCommit, File projectFolder) {
-        File mergeBuild = MergeBuildHelper.getMergeBuild(arguments.getOutputPath(), project.getName(), mergeCommit.getSHA())
-        return MergeBuildHelper.saveMergeBuild(getGeneratedJars(projectFolder), mergeBuild)
+        File mergeBuildFolder = MergeBuildHelper.getMergeBuildFolder(arguments.getOutputPath(), project.getName(), mergeCommit.getSHA())
+        return MergeBuildHelper.saveMergeBuild(getJars(projectFolder), mergeBuildFolder)
     }
 
-    private static List<File> getGeneratedJars(File projectFolder) {
-        File[] gradleJars = new File(projectFolder, 'build/libs').listFiles() ?: new File[0]
-        File[] mavenJars = new File(projectFolder, 'target').listFiles() ?: new File[0]
-        return (gradleJars + mavenJars) as List<File>
+    // every jar of the project folder, as the CI workflow (find . -name '*.jar')
+    private static List<File> getJars(File projectFolder) {
+        List<File> jars = []
+        projectFolder.eachFileRecurse(groovy.io.FileType.FILES) { if (it.name.endsWith('.jar')) jars << it }
+        return jars
     }
 
     // runs the command, printing its output, and returns its exit code

@@ -3,6 +3,8 @@ package services.outputProcessors.soot
 import com.xlson.groovycsv.PropertyMapper
 import groovy.json.JsonSlurper
 import services.outputProcessors.soot.entrypointStrategies.EntrypointStrategy
+import services.outputProcessors.soot.methodResolvers.MethodResolver
+import services.outputProcessors.soot.methodResolvers.MethodResolvers
 
 import static com.xlson.groovycsv.CsvParser.parseCsv
 
@@ -35,9 +37,10 @@ class ScenarioReader {
 
     /**
      * The merge scenarios of a modified lines JSON, each analysed as a whole, with the entrypoints the strategy chooses
-     * from the methods modified by left and by right: the ones with a line modified by each (LinesToSootMethodResolver)
+     * from the methods modified by left and by right: the ones with a line modified by each (MethodResolvers, by default
+     * in the bytecode, BytecodeMethodResolver)
      */
-    static List<MergeScenario> readJson(String outputPath, String jsonPath, EntrypointStrategy strategy) {
+    static List<MergeScenario> readJson(String outputPath, String jsonPath, EntrypointStrategy strategy, MethodResolver resolver = MethodResolvers.create()) {
         List<MergeScenario> result = new ArrayList<MergeScenario>()
         List<Map> merges = new JsonSlurper().parse(new File(jsonPath))
 
@@ -45,14 +48,16 @@ class ScenarioReader {
             Map merge = merges[i]
             String commitSHA = merge.commits.merge
             String scenarioDirectory = getScenarioDirectory(outputPath, merge.project, commitSHA)
-            String buildJar = "${scenarioDirectory}/original-without-dependencies/merge/build.jar"
+            String mergeSource = "${scenarioDirectory}/source/merge"
             List<Map> methods = merge.modifiedMethods
             if (methods.isEmpty()) {
                 continue
             }
+            // the same jar as read and the analysis: the one of merge/ that has the class (Scenario.getClassPath)
+            String buildJar = new Scenario(merge.project, methods[0].className, null, commitSHA, scenarioDirectory, merge.hasBuild, null).getClassPath()
 
-            Set<String> leftMethods = LinesToSootMethodResolver.resolve(buildJar, getModifiedLinesByClass(methods, "leftModifications"))
-            Set<String> rightMethods = LinesToSootMethodResolver.resolve(buildJar, getModifiedLinesByClass(methods, "rightModifications"))
+            Set<String> leftMethods = resolver.resolve(buildJar, mergeSource, getModifiedLinesByClass(methods, "leftModifications"))
+            Set<String> rightMethods = resolver.resolve(buildJar, mergeSource, getModifiedLinesByClass(methods, "rightModifications"))
             List<String> entrypointsList = strategy.getEntrypoints(buildJar, leftMethods, rightMethods)
             String entrypoints = entrypointsList.toString()
             println "[${i + 1}/${merges.size()}] ${merge.project} ${commitSHA}: methods modified by left ${leftMethods.size()}, by right ${rightMethods.size()} -> ${entrypointsList.size()} entrypoints"

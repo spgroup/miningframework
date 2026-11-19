@@ -55,7 +55,7 @@ class Scenario {
     
     String getClassPath() {
         File file = new File("${this.scenarioDirectory}/original-without-dependencies/merge");
-        File[] buildJars = file.listFiles()
+        File[] buildJars = file.listFiles()?.sort { it.name } // the same jar in every OS, if two have the class
 
         String buildJarPath = getJarThatHasClass(buildJars)
         if (buildJarPath == null) {

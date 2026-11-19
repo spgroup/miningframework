@@ -3,11 +3,11 @@ package unit
 import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.Test
-import services.outputProcessors.soot.LinesToSootMethodResolver
 import services.outputProcessors.soot.entrypointStrategies.LowestCommonAncestorEntrypointStrategy
 import services.outputProcessors.soot.entrypointStrategies.MainOrPublicMethodsEntrypointStrategy
 import services.outputProcessors.soot.entrypointStrategies.ModifiedMethodsEntrypointStrategy
 import services.outputProcessors.soot.entrypointStrategies.MutuallyModifiedMethodsEntrypointStrategy
+import services.outputProcessors.soot.methodResolvers.BytecodeMethodResolver
 
 /**
  * Entrypoint strategies on the example of the slides "Suitable entry point algorithms for static analysis in semantic
@@ -31,8 +31,8 @@ class EntrypointStrategiesTest {
 
     @BeforeClass
     static void setup() {
-        leftModifiedMethods = LinesToSootMethodResolver.resolve(BUILD_JAR, LEFT_LINES)
-        rightModifiedMethods = LinesToSootMethodResolver.resolve(BUILD_JAR, RIGHT_LINES)
+        leftModifiedMethods = new BytecodeMethodResolver().resolve(BUILD_JAR, null, LEFT_LINES)
+        rightModifiedMethods = new BytecodeMethodResolver().resolve(BUILD_JAR, null, RIGHT_LINES)
     }
 
     @Test

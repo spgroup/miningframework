@@ -33,7 +33,7 @@ class CsvModifiedLinesExporter implements ModifiedLinesExporter {
     }
 
     private boolean hasBuild(Project project, MergeCommit mergeCommit) {
-        return MergeBuildHelper.getMergeBuild(outputPath, project.getName(), mergeCommit.getSHA()).exists()
+        return MergeBuildHelper.hasMergeBuild(MergeBuildHelper.getMergeBuildFolder(outputPath, project.getName(), mergeCommit.getSHA()))
     }
 
     // class and method also name the folders of the soot input files

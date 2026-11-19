@@ -5,6 +5,7 @@ import groovy.json.JsonSlurper
 import project.MergeCommit
 import project.Project
 import services.dataCollectors.modifiedLinesCollector.SourceModifiedLinesCollector
+import services.dataCollectors.modifiedLinesCollector.diffTools.MethodDiffTools
 import services.dataCollectors.modifiedLinesCollector.exporters.CsvModifiedLinesExporter
 import services.dataCollectors.modifiedLinesCollector.exporters.JsonModifiedLinesExporter
 import services.dataCollectors.modifiedLinesCollector.exporters.ModifiedLinesExporter
@@ -23,7 +24,7 @@ import services.outputProcessors.GenerateSootInputFilesOutputProcessor
  * (GenerateSootInputFilesFromJsonOutputProcessor) or else from the csv (GenerateSootInputFilesOutputProcessor)
  *
  * usage: ./gradlew run -DmainClass="services.dataCollectors.modifiedLinesCollector.sourceScenarios.Main"
- *          --args="(-i <data_base.json> | -p <scenario folder> [-n project]) [-o output] [-e json,csv]"
+ *          --args="(-i <data_base.json> | -p <scenario folder> [-n project]) [-o output] [-e json,csv] [-d diffj|gumtree]"
  */
 class Main {
 
@@ -38,21 +39,23 @@ class Main {
         cli.p(longOpt: 'path', args: 1, 'Folder of a single scenario, with jars/ and source/ (e.g. [Syntetic-Mergesdataset/Cli/Cli_1](https://github.com/ToniMaciel/Syntetic-Mergesdataset/tree/dataset-update/Cli/Cli_1))')
         cli.n(longOpt: 'name', args: 1, 'Project name of the scenario given by --path (default: the name of its parent folder)')
         cli.o(longOpt: 'output', args: 1, 'Output folder (default: output, the one read by services.outputProcessors.soot.Main)')
+        cli.d(longOpt: 'diff-tool', args: 1, "Method diff tool that finds the modified methods: ${MethodDiffTools.NAMES.join(', ')} (default: ${MethodDiffTools.DEFAULT})")
         cli.e(longOpt: 'exporters', args: 1, "Comma separated exporters of the results: ${EXPORTERS.keySet().join(',')} (default: all)")
         cli.h(longOpt: 'help', 'Show this help')
         def options = cli.parse(args)
         if (!options) {
             return
         }
+        String diffTool = options.d ?: MethodDiffTools.DEFAULT
         List<String> exporters = options.e ? (options.e as String).split(',')*.trim() : EXPORTERS.keySet() as List
-        if (options.h || !options.i == !options.p || !EXPORTERS.keySet().containsAll(exporters)) {
+        if (options.h || !options.i == !options.p || !EXPORTERS.keySet().containsAll(exporters) || !MethodDiffTools.NAMES.contains(diffTool)) {
             cli.usage()
             return
         }
 
         String outputPath = options.o ?: 'output'
         exporters.each { new File(outputPath, "data/results-with-build-information.${it}").delete() }
-        def collector = new SourceModifiedLinesCollector(exporters.collect { EXPORTERS[it](outputPath) }, outputPath)
+        def collector = new SourceModifiedLinesCollector(exporters.collect { EXPORTERS[it](outputPath) }, outputPath, diffTool)
 
         if (options.p) {
             File folder = new File(options.p as String).absoluteFile

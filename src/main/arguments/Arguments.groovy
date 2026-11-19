@@ -21,6 +21,7 @@ class Arguments {
     private String syntacticSeparators
     private String fileExtension
     private Level logLevel
+    private String diffTool
 
     Arguments() { // set the default values for all parameters
         randomSeed = 1
@@ -166,5 +167,13 @@ class Arguments {
     void setLogLevel(Level logLevel) {
         this.logLevel = logLevel
         Configurator.setRootLevel(logLevel)
+    }
+
+    String getDiffTool() {
+        return diffTool
+    }
+
+    void setDiffTool(String diffTool) {
+        this.diffTool = diffTool
     }
 }

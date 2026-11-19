@@ -36,13 +36,6 @@ java {
 	}
 }
 
-// the method diff tool (MethodDiffTools), e.g. ./gradlew run -Dminingframework.diffTool=diffj
-tasks.withType(JavaForkOptions).configureEach {
-	if (System.getProperty('miningframework.diffTool')) {
-		systemProperty 'miningframework.diffTool', System.getProperty('miningframework.diffTool')
-	}
-}
-
 test {
 	useJUnitPlatform()
 	filter {
@@ -61,11 +54,10 @@ dependencies {
 	implementation 'org.apache.logging.log4j:log4j-api:2.23.1'
 	implementation 'org.apache.logging.log4j:log4j-core:2.23.1'
 	implementation 'org.json:json:20210307'
-	// call graph for entrypoint strategies
 	implementation 'org.soot-oss:soot:4.5.0'
-	// GumTree, the default method diff tool (MethodDiffTools)
 	implementation 'com.github.gumtreediff:core:3.0.0'
 	implementation 'com.github.gumtreediff:gen.jdt:3.0.0'
+	implementation 'org.eclipse.jdt:org.eclipse.jdt.core:3.26.0'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'

@@ -1,14 +1,20 @@
 package unit
 
+import app.MiningFramework
+import arguments.Arguments
 import org.junit.Test
 import services.dataCollectors.modifiedLinesCollector.ModifiedMethod
 import services.dataCollectors.modifiedLinesCollector.ModifiedMethodsHelper
+import services.dataCollectors.modifiedLinesCollector.diffTools.DiffJDiffTool
+import services.dataCollectors.modifiedLinesCollector.diffTools.GumTreeDiffTool
+import services.dataCollectors.modifiedLinesCollector.diffTools.MethodDiffTools
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 
 /**
  * The methods (and fields and initializer blocks) that ModifiedMethodsHelper finds changed from a base to a target
- * Java file, with the default method diff tool (MethodDiffTools), and the type and the number of their modified lines
+ * Java file, with the GumTree method diff tool (GumTreeDiffTool), and the type and the number of their modified lines
  * as the textual diff (diff) gives them. The first tests are changes diffj already reports; the ones after
  * "diffj misses" are changes found in the miningframework experiments that diffj does not report.
  */
@@ -24,7 +30,7 @@ class ModifiedMethodsDiffToolTest {
         baseFile.text = base
         targetFile.text = target
 
-        Set<ModifiedMethod> methods = new ModifiedMethodsHelper().getModifiedMethods(baseFile, targetFile)
+        Set<ModifiedMethod> methods = new ModifiedMethodsHelper(new GumTreeDiffTool()).getModifiedMethods(baseFile, targetFile)
         folder.deleteDir()
         return methods.collectEntries { method ->
             [(method.getSignature()): method.getModifiedLines().collect { "${it.getType()} ${it.getNumber()}".toString() }.sort()]
@@ -255,5 +261,19 @@ public class C {
 }
 '''
         assertEquals(['m()': ['Changed 7']], modifiedMethods(base, base.replace('println(0)', 'println(1)')))
+    }
+
+    // the --diff-tool option of the miningframework (arguments.ArgsParser) chooses the tool of the collectors
+    @Test
+    void diffToolOptionChoosesTheToolOfTheCollectors() {
+        Arguments previous = MiningFramework.arguments
+        try {
+            MiningFramework.arguments = new Arguments(diffTool: 'gumtree')
+            assertTrue(MethodDiffTools.create() instanceof GumTreeDiffTool)
+            MiningFramework.arguments = new Arguments()
+            assertTrue(MethodDiffTools.create() instanceof DiffJDiffTool)
+        } finally {
+            MiningFramework.arguments = previous
+        }
     }
 }

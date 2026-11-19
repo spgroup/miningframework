@@ -2,6 +2,7 @@ package services.outputProcessors.soot.arguments
 
 import groovy.cli.commons.CliBuilder
 import groovy.cli.commons.OptionAccessor
+import services.outputProcessors.soot.methodResolvers.MethodResolvers
 
 class ArgsParser {
 
@@ -40,6 +41,7 @@ class ArgsParser {
         this.cli.cg(longOpt: 'callgraph', args: 1, argName: 'algorithm', "Call graph algorithm [CHA, RTA, VTA, SPARK]")
         this.cli.o(longOpt: 'output', args: 1, argName: 'output', "Output folder with the dataset (default: output)")
         this.cli.s(longOpt: 'strategies', args: 1, argName: 'strategies', "Run once per entrypoint strategy, from the JSON: comma separated MOP, MM, MMM, LCA, or all (default: no entrypoints, from the CSV)")
+        this.cli.mr(longOpt: 'method-resolver', args: 1, argName: 'resolver', "Finds the methods of the modified lines, with --strategies: ${MethodResolvers.NAMES.join(', ')} (default: ${MethodResolvers.DEFAULT})")
         this.cli.i(longOpt: 'input', args: 1, argName: 'json', "Modified lines JSON read with --strategies (default: [output]/data/results-with-build-information.json)")
     }
 
@@ -136,6 +138,12 @@ class ArgsParser {
         }
         if (this.options.o) {
             args.setOutputPath(this.options.o)
+        }
+        if (this.options.mr) {
+            if (!MethodResolvers.NAMES.contains(this.options.mr)) {
+                throw new IllegalArgumentException("Invalid method resolver: ${options.mr}")
+            }
+            args.setMethodResolver(this.options.mr)
         }
     }
 }

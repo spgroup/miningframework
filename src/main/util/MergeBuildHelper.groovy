@@ -2,19 +2,17 @@ package util
 
 class MergeBuildHelper {
 
-    static File getMergeBuild(String outputPath, String projectName, String mergeCommitSHA) {
-        return new File(outputPath, "files/${projectName}/${mergeCommitSHA}/original-without-dependencies/merge/build.jar")
+    static File getMergeBuildFolder(String outputPath, String projectName, String mergeCommitSHA) {
+        return new File(outputPath, "files/${projectName}/${mergeCommitSHA}/original-without-dependencies/merge")
     }
 
-    static boolean saveMergeBuild(List<File> generatedJars, File mergeBuild) {
-        File projectJar = generatedJars.sort(false) { it.name }.find { File jar ->
-            jar.name.endsWith('.jar') && !(jar.name =~ /-(sources|javadoc|tests|plain)\.jar$|^(gradle|maven)-wrapper\.jar$/)
-        }
-        if (projectJar == null) {
-            return false
-        }
-        mergeBuild.parentFile.mkdirs()
-        mergeBuild.bytes = projectJar.bytes
-        return true
+    static boolean hasMergeBuild(File mergeBuildFolder) {
+        return mergeBuildFolder.listFiles()?.any { it.name.endsWith('.jar') } ?: false
+    }
+
+    static boolean saveMergeBuild(List<File> jars, File mergeBuildFolder) {
+        mergeBuildFolder.mkdirs()
+        jars.findAll { it.name.endsWith('.jar') }.each { new File(mergeBuildFolder, it.name).bytes = it.bytes }
+        return hasMergeBuild(mergeBuildFolder)
     }
 }

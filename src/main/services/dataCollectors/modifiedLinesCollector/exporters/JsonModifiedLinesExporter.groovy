@@ -42,6 +42,6 @@ class JsonModifiedLinesExporter implements ModifiedLinesExporter {
     }
 
     private boolean hasBuild(Project project, MergeCommit mergeCommit) {
-        return MergeBuildHelper.getMergeBuild(outputPath, project.getName(), mergeCommit.getSHA()).exists()
+        return MergeBuildHelper.hasMergeBuild(MergeBuildHelper.getMergeBuildFolder(outputPath, project.getName(), mergeCommit.getSHA()))
     }
 }

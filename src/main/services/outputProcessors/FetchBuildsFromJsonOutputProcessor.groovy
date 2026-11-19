@@ -17,7 +17,7 @@ import static app.MiningFramework.arguments
  * LocalMergeBuildCollector builds it instead.
  *
  * @requires: the access key and [outputPath]/data/results-with-build-information.json
- * @provides: the merge build of each scenario (original-without-dependencies/merge/build.jar) and its hasBuild (json)
+ * @provides: the jars of the merge build of each scenario (original-without-dependencies/merge/*.jar) and its hasBuild (json)
  * and has_build (csv) updated
  */
 class FetchBuildsFromJsonOutputProcessor implements OutputProcessor {
@@ -54,13 +54,13 @@ class FetchBuildsFromJsonOutputProcessor implements OutputProcessor {
     }
 
     private static void fetchMergeBuild(Map scenario, Map<String, List> releasesOfEachProject) {
-        File mergeBuild = MergeBuildHelper.getMergeBuild(arguments.getOutputPath(), scenario.project as String, scenario.commits.merge as String)
+        File mergeFolder = MergeBuildHelper.getMergeBuildFolder(arguments.getOutputPath(), scenario.project as String, scenario.commits.merge as String)
         def mergeRelease = findMergeRelease(scenario, releasesOfEachProject)
         if (mergeRelease != null) {
-            downloadMergeBuild(mergeRelease, mergeBuild)
+            downloadMergeBuild(mergeRelease, mergeFolder)
         }
 
-        scenario.hasBuild = mergeBuild.exists()
+        scenario.hasBuild = MergeBuildHelper.hasMergeBuild(mergeFolder)
         println "${scenario.project} - merge commit ${scenario.commits.merge} ${scenario.hasBuild ? 'build fetched' : 'has no build'}"
     }
 
@@ -69,12 +69,13 @@ class FetchBuildsFromJsonOutputProcessor implements OutputProcessor {
         return releases.find { release -> release.name == "fetchjar-${scenario.commits.merge}" && release.assets }
     }
 
-    private static void downloadMergeBuild(Object mergeRelease, File mergeBuild) {
+    // every jar of the build, with its name, as scripts/fetch_jars.py: Scenario.getClassPath picks the one of the scenario
+    private static void downloadMergeBuild(Object mergeRelease, File mergeFolder) {
         File downloadFolder = File.createTempDir()
         try {
             File compressedJars = downloadReleaseFile(mergeRelease, downloadFolder)
             extractTarGz(compressedJars)
-            MergeBuildHelper.saveMergeBuild(downloadFolder.listFiles() as List<File>, mergeBuild)
+            MergeBuildHelper.saveMergeBuild(downloadFolder.listFiles() as List<File>, mergeFolder)
         } finally {
             downloadFolder.deleteDir()
         }

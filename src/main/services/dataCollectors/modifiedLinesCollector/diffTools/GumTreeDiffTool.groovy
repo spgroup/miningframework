@@ -15,194 +15,243 @@ import services.dataCollectors.modifiedLinesCollector.ModifiedMethod
 import util.ProcessRunner
 
 /**
- * GumTree (AST diff of Java with the Eclipse JDT parser) as the method diff tool.
+ * Finds the modified methods with GumTree, which compares the syntax trees of two Java files.
  *
- * The textual diff (diff) gives the modified lines. A hunk of the textual diff counts when GumTree changed code in one
- * of its lines (so changes only in comments or in formatting do not count, as in diffj), and each of its lines goes to
- * the method, field or initializer block that contains it: in the target, or in the ancestor for removed lines. The
- * names are the ones diffj gives, e.g. "m(String, int)", "TABLE", "static block"; a change in an anonymous class goes
- * to the method that creates it.
+ * How it works:
+ *   1. GumTree lists the changes in the trees; we keep the lines of code they touch.
+ *   2. The textual diff (diff) lists the modified lines in blocks ("hunks").
+ *   3. A hunk counts only if GumTree changed code in it, so changes only in comments or spaces are ignored.
+ *   4. Each line of a hunk goes to the method, field or initializer block that contains it.
+ *
+ * The line numbers come from diff, so they match the ones ModifiedMethodsHelper reads from diff.
+ * The names are the ones diffj gives: "m(String, int)", "TABLE", "static block".
  */
 class GumTreeDiffTool implements MethodDiffTool {
 
-    private static final List<String> DECLARATIONS = ['MethodDeclaration', 'FieldDeclaration', 'Initializer']
-    private static final List<String> TYPES = ['TypeDeclaration', 'EnumDeclaration', 'AnnotationTypeDeclaration', 'RecordDeclaration']
-    private static final List<String> ANONYMOUS_TYPES = ['AnonymousClassDeclaration', 'EnumConstantDeclaration']
+    private static final List<String> DECLARATION_TYPES = ['MethodDeclaration', 'FieldDeclaration', 'Initializer']
+    private static final List<String> NAMED_CLASS_TYPES = ['TypeDeclaration', 'EnumDeclaration', 'AnnotationTypeDeclaration', 'RecordDeclaration']
+    private static final List<String> ANONYMOUS_CLASS_TYPES = ['AnonymousClassDeclaration', 'EnumConstantDeclaration']
 
-    Map<String, int[]> getModifiedMethodsLines(File ancestorFile, File targetFile) {
-        Map<String, Set<Integer>> lines = [:]
-        // lines of the target first: the matcher keeps one line per content (ModifiedLine.equals), so a statement
-        // moved within the method stays as the line where it is in the target, not as the one it was removed from
-        List<DeclarationLine> changes = modifiedLines(ancestorFile, targetFile)
-                .sort { a, b -> a.inTarget != b.inTarget ? (a.inTarget ? -1 : 1) : a.line <=> b.line }
-        for (DeclarationLine change : changes) {
-            lines.computeIfAbsent(change.signature) { new LinkedHashSet<>() }.add(change.line)
+    Map<String, int[]> getModifiedMethodsLines(File baseFile, File targetFile) {
+        List<ModifiedLine> modifiedLines = findModifiedLines(baseFile, targetFile)
+
+        // lines of the target first: if a statement moved inside a method, the line where it is now wins over
+        // the line it was removed from (ModifiedMethodsHelper keeps one line per content)
+        modifiedLines.sort { a, b -> a.inTarget != b.inTarget ? (a.inTarget ? -1 : 1) : a.line <=> b.line }
+
+        Map<String, Set<Integer>> linesByDeclaration = [:]
+        for (ModifiedLine modifiedLine : modifiedLines) {
+            linesByDeclaration.computeIfAbsent(modifiedLine.declarationName) { new LinkedHashSet<>() }.add(modifiedLine.line)
         }
-        return lines.collectEntries { signature, numbers -> [(signature): numbers as int[]] }
+        return linesByDeclaration.collectEntries { name, lines -> [(name): lines as int[]] }
     }
 
-    List<ModifiedMethod> getAllModifiedMethods(File ancestorFile, File targetFile) {
+    List<ModifiedMethod> getAllModifiedMethods(File baseFile, File targetFile) {
         Set<String> signatures = new LinkedHashSet<>()
-        for (DeclarationLine change : modifiedLines(ancestorFile, targetFile)) {
-            if (change.inTarget && change.source.isMethod(change.declaration)) {
-                signatures.add(change.source.fullSignature(change.declaration))
+        for (ModifiedLine modifiedLine : findModifiedLines(baseFile, targetFile)) {
+            if (modifiedLine.inTarget && modifiedLine.file.isMethod(modifiedLine.declaration)) {
+                signatures.add(modifiedLine.file.signatureWithClass(modifiedLine.declaration))
             }
         }
         return signatures.collect { new ModifiedMethod(it) }
     }
 
-    // A modified line, as diff numbers it, and the declaration that contains it
-    private static class DeclarationLine {
+    // A modified line (numbered as diff numbers it) and the declaration that contains it
+    private static class ModifiedLine {
         int line
-        Source source
+        JavaFile file
         Tree declaration
-        String signature
+        String declarationName
         boolean inTarget
     }
 
-    private List<DeclarationLine> modifiedLines(File ancestorFile, File targetFile) {
-        Source ancestor = new Source(ancestorFile)
-        Source target = new Source(targetFile)
-        MappingStore mappings = Matchers.getInstance().getMatcher().match(ancestor.root, target.root)
-        EditScript actions = new SimplifiedChawatheScriptGenerator().computeActions(mappings)
+    private static List<ModifiedLine> findModifiedLines(File baseFile, File targetFile) {
+        JavaFile base = new JavaFile(baseFile)
+        JavaFile target = new JavaFile(targetFile)
+        MappingStore mappings = Matchers.getInstance().getMatcher().match(base.root, target.root)
+        CodeLines changedCode = findLinesChangedByGumTree(base, target, mappings)
 
-        // the lines where GumTree changed code, in the ancestor and in the target
-        Set<Integer> ancestorLines = new HashSet<>()
-        Set<Integer> targetLines = new HashSet<>()
-        for (Action action : actions) {
-            Tree node = action.getNode()
-            if (inJavadoc(node)) {
+        List<ModifiedLine> modifiedLines = []
+        for (Hunk hunk : runTextualDiff(baseFile, targetFile)) {
+            boolean hunkChangesCode = hunk.baseLines.any { changedCode.base.contains(it) } ||
+                    hunk.targetLines.any { changedCode.target.contains(it) }
+            if (!hunkChangesCode) {
                 continue
             }
-            if (action instanceof Insert || action instanceof TreeInsert) {
-                targetLines.addAll(target.lines(node))
-            } else {
-                ancestorLines.addAll(ancestor.lines(node))
-                if (action instanceof Update || action instanceof Move) {
-                    Tree targetNode = mappings.getDstForSrc(node)
-                    if (targetNode != null) {
-                        targetLines.addAll(target.lines(targetNode))
-                    }
-                    if (action instanceof Move && targetNode != null && mappings.getDstForSrc(node.getParent()).is(targetNode.getParent())) {
-                        // a reordering: diff may show it as a sibling that left and came back (e.g. swapped statements),
-                        // so the siblings between the old and the new position also changed
-                        int from = Math.min(node.positionInParent(), targetNode.positionInParent())
-                        int to = Math.max(node.positionInParent(), targetNode.positionInParent())
-                        siblingsBetween(node.getParent(), from, to).each { ancestorLines.addAll(ancestor.lines(it)) }
-                        siblingsBetween(targetNode.getParent(), from, to).each { targetLines.addAll(target.lines(it)) }
-                    }
+
+            if (hunk.isRemoval()) {
+                // diff numbers removed lines by the target line after which they were removed
+                ModifiedLine removed = createModifiedLine(hunk.targetPosition, base, hunk.baseLines.first(), base, mappings)
+                if (removed != null) {
+                    modifiedLines.add(removed)
                 }
             }
-        }
 
-        List<DeclarationLine> result = []
-        // adds the line to the declaration that contains sourceLine in the source, if there is one
-        Closure<Boolean> addLine = { int line, Source source, int sourceLine ->
-            Tree declaration = source.declarationAt(sourceLine)
-            if (declaration == null) {
-                return false
-            }
-            String signature = source.signature(declaration, sourceLine)
-            // as diffj, a method of the target keeps the name it has in the ancestor (e.g. after a parameter is added),
-            // so that the same method has the same name in the diffs of left, right and merge against the base
-            Tree ancestorMethod = source.is(target) && source.isMethodOrConstructor(declaration) ? mappings.getSrcForDst(declaration) : null
-            if (ancestorMethod != null) {
-                signature = ancestor.signature(ancestorMethod, -1)
-            }
-            result.add(new DeclarationLine(line: line, source: source, declaration: declaration, signature: signature, inTarget: source.is(target)))
-            return true
-        }
-
-        for (Hunk hunk : textualDiff(ancestorFile, targetFile)) {
-            boolean changesCode = hunk.ancestorLines.any { ancestorLines.contains(it) } || hunk.targetLines.any { targetLines.contains(it) }
-            if (!changesCode) {
-                continue
-            }
-            if (hunk.targetLines.isEmpty()) {
-                // removed lines: diff numbers them by the target line after which they were removed
-                addLine(hunk.targetPosition, ancestor, hunk.ancestorLines.first())
-            }
             for (int line : hunk.targetLines) {
-                if (!addLine(line, target, line) && !hunk.ancestorLines.isEmpty()) {
-                    addLine(line, ancestor, hunk.ancestorLines.first())
+                ModifiedLine modifiedLine = createModifiedLine(line, target, line, base, mappings)
+                // a line outside any declaration of the target: try the declaration of the base
+                if (modifiedLine == null && !hunk.baseLines.isEmpty()) {
+                    modifiedLine = createModifiedLine(line, base, hunk.baseLines.first(), base, mappings)
+                }
+                if (modifiedLine != null) {
+                    modifiedLines.add(modifiedLine)
                 }
             }
         }
-        return result
+        return modifiedLines
     }
 
-    private static List<Tree> siblingsBetween(Tree parent, int from, int to) {
+    /*
+     * Finds the declaration that contains lineInFile in file and returns the modified line, or null when the line
+     * is outside any declaration.
+     */
+    private static ModifiedLine createModifiedLine(int line, JavaFile file, int lineInFile, JavaFile base, MappingStore mappings) {
+        Tree declaration = file.findDeclarationContaining(lineInFile)
+        if (declaration == null) {
+            return null
+        }
+        String name = file.diffjName(declaration, lineInFile)
+
+        // a method of the target keeps the name it has in the base (e.g. after a parameter is added),
+        // so that left, right and merge name the same method alike
+        boolean inTarget = !file.is(base)
+        if (inTarget && JavaFile.isMethodOrConstructor(declaration)) {
+            Tree baseMethod = mappings.getSrcForDst(declaration)
+            if (baseMethod != null) {
+                name = base.diffjName(baseMethod, -1)
+            }
+        }
+        return new ModifiedLine(line: line, file: file, declaration: declaration, declarationName: name, inTarget: inTarget)
+    }
+
+    // The lines of code changed by GumTree, in the base and in the target
+    private static class CodeLines {
+        Set<Integer> base = new HashSet<>()
+        Set<Integer> target = new HashSet<>()
+    }
+
+    private static CodeLines findLinesChangedByGumTree(JavaFile base, JavaFile target, MappingStore mappings) {
+        EditScript edits = new SimplifiedChawatheScriptGenerator().computeActions(mappings)
+        CodeLines changed = new CodeLines()
+
+        for (Action edit : edits) {
+            Tree node = edit.getNode()
+            if (isInJavadoc(node)) {
+                continue
+            }
+
+            // an inserted node only exists in the target
+            if (edit instanceof Insert || edit instanceof TreeInsert) {
+                changed.target.addAll(target.linesOf(node))
+                continue
+            }
+
+            // a deleted, updated or moved node is in the base
+            changed.base.addAll(base.linesOf(node))
+            if (!(edit instanceof Update || edit instanceof Move)) {
+                continue
+            }
+
+            // an updated or moved node is also in the target
+            Tree targetNode = mappings.getDstForSrc(node)
+            if (targetNode == null) {
+                continue
+            }
+            changed.target.addAll(target.linesOf(targetNode))
+
+            // a statement that moved inside the same block: diff may show the statements in between as changed
+            // (e.g. two swapped statements), so they count as changed too
+            boolean movedInsideTheSameParent = edit instanceof Move && mappings.getDstForSrc(node.getParent())?.is(targetNode.getParent())
+            if (movedInsideTheSameParent) {
+                int first = Math.min(node.positionInParent(), targetNode.positionInParent())
+                int last = Math.max(node.positionInParent(), targetNode.positionInParent())
+                childrenBetween(node.getParent(), first, last).each { changed.base.addAll(base.linesOf(it)) }
+                childrenBetween(targetNode.getParent(), first, last).each { changed.target.addAll(target.linesOf(it)) }
+            }
+        }
+        return changed
+    }
+
+    private static List<Tree> childrenBetween(Tree parent, int first, int last) {
         List<Tree> children = parent.getChildren()
-        return children.subList(Math.min(from, children.size()), Math.min(to + 1, children.size()))
+        return children.subList(Math.min(first, children.size()), Math.min(last + 1, children.size()))
     }
 
-    private static boolean inJavadoc(Tree node) {
+    private static boolean isInJavadoc(Tree node) {
         return node.getType().name == 'Javadoc' || node.getParents().any { it.getType().name == 'Javadoc' }
     }
 
-    // A hunk of the normal diff output, e.g. "3,4c3" or "5d4"
+    // A block of the output of diff, e.g. "3,4c3" (lines 3 and 4 of the base changed into line 3 of the target)
     private static class Hunk {
-        List<Integer> ancestorLines
+        List<Integer> baseLines
         List<Integer> targetLines
         int targetPosition
+
+        boolean isRemoval() {
+            return targetLines.isEmpty()
+        }
     }
 
-    private static List<Hunk> textualDiff(File ancestorFile, File targetFile) {
-        Process diff = ProcessRunner.runProcess('.', 'diff', ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
-        List<String> output = diff.getInputStream().readLines()
+    private static List<Hunk> runTextualDiff(File baseFile, File targetFile) {
+        Process diff = ProcessRunner.runProcess('.', 'diff', baseFile.getAbsolutePath(), targetFile.getAbsolutePath())
         List<Hunk> hunks = []
-        for (String line : output) {
-            def header = line =~ /^(\d+)(?:,(\d+))?([acd])(\d+)(?:,(\d+))?$/
+        for (String outputLine : diff.getInputStream().readLines()) {
+            // e.g. "3,4c3": base lines 3 to 4, the type (a = added, c = changed, d = deleted), target line 3
+            def header = outputLine =~ /^(\d+)(?:,(\d+))?([acd])(\d+)(?:,(\d+))?$/
             if (!header.matches()) {
                 continue
             }
-            int ancestorStart = header.group(1) as int
-            int ancestorEnd = (header.group(2) ?: header.group(1)) as int
+            int baseStart = header.group(1) as int
+            int baseEnd = (header.group(2) ?: header.group(1)) as int
+            String type = header.group(3)
             int targetStart = header.group(4) as int
             int targetEnd = (header.group(5) ?: header.group(4)) as int
-            String type = header.group(3)
+
             hunks << new Hunk(
-                    ancestorLines: type == 'a' ? [] : (ancestorStart..ancestorEnd).toList(),
+                    baseLines: type == 'a' ? [] : (baseStart..baseEnd).toList(),
                     targetLines: type == 'd' ? [] : (targetStart..targetEnd).toList(),
                     targetPosition: targetStart)
         }
         return hunks
     }
 
-    // A Java file parsed by GumTree, with the line of each position
-    private static class Source {
+    // A Java file parsed by GumTree, which knows the line of each node
+    private static class JavaFile {
         final Tree root
         final String text
-        final List<Integer> lineStarts = [0]
+        final List<Integer> lineStartPositions = [0]
 
-        Source(File file) {
+        JavaFile(File file) {
             text = file.getText('UTF-8')
             for (int i = 0; i < text.length(); i++) {
                 if (text.charAt(i) == '\n' as char) {
-                    lineStarts << i + 1
+                    lineStartPositions << i + 1
                 }
             }
             root = new JdtTreeGenerator().generateFrom().string(text).getRoot()
         }
 
-        int line(int position) {
-            int index = Collections.binarySearch(lineStarts, position)
+        int lineOf(int position) {
+            int index = Collections.binarySearch(lineStartPositions, position)
             return index >= 0 ? index + 1 : -index - 1
         }
 
-        List<Integer> lines(Tree node) {
-            return (line(node.getPos())..line(Math.max(node.getPos(), node.getEndPos() - 1))).toList()
+        List<Integer> linesOf(Tree node) {
+            int lastPosition = Math.max(node.getPos(), node.getEndPos() - 1)
+            return (lineOf(node.getPos())..lineOf(lastPosition)).toList()
         }
 
-        String text(Tree node) {
+        String textOf(Tree node) {
             return text.substring(node.getPos(), node.getEndPos())
         }
 
-        // the innermost method, field or initializer block of a named type with the line
-        Tree declarationAt(int line) {
+        // The smallest method, field or initializer block with the line, outside anonymous classes
+        // (a change in an anonymous class goes to the method that creates it, as in diffj)
+        Tree findDeclarationContaining(int line) {
             Tree found = null
             for (Tree node : root.preOrder()) {
-                if (DECLARATIONS.contains(node.getType().name) && !inAnonymousType(node) && lines(node).contains(line)) {
+                boolean isDeclaration = DECLARATION_TYPES.contains(node.getType().name)
+                if (isDeclaration && !isInAnonymousClass(node) && linesOf(node).contains(line)) {
                     if (found == null || node.getLength() < found.getLength()) {
                         found = node
                     }
@@ -211,53 +260,60 @@ class GumTreeDiffTool implements MethodDiffTool {
             return found
         }
 
-        private static boolean inAnonymousType(Tree declaration) {
-            Tree type = declaration.getParents().find { TYPES.contains(it.getType().name) || ANONYMOUS_TYPES.contains(it.getType().name) }
-            return type != null && ANONYMOUS_TYPES.contains(type.getType().name)
-        }
-
-        boolean isMethod(Tree declaration) {
-            return isMethodOrConstructor(declaration) && returnType(declaration) != null
+        private static boolean isInAnonymousClass(Tree declaration) {
+            Tree enclosingClass = declaration.getParents().find {
+                NAMED_CLASS_TYPES.contains(it.getType().name) || ANONYMOUS_CLASS_TYPES.contains(it.getType().name)
+            }
+            return enclosingClass != null && ANONYMOUS_CLASS_TYPES.contains(enclosingClass.getType().name)
         }
 
         static boolean isMethodOrConstructor(Tree declaration) {
             return declaration.getType().name == 'MethodDeclaration'
         }
 
-        // as diffj: "m(String, int)", the field name, or "static block"
-        String signature(Tree declaration, int line) {
+        boolean isMethod(Tree declaration) {
+            return isMethodOrConstructor(declaration) && returnTypeOf(declaration) != null
+        }
+
+        // The name diffj gives: "m(String, int)" for a method, the name of a field, "static block" for a block
+        String diffjName(Tree declaration, int line) {
             switch (declaration.getType().name) {
                 case 'FieldDeclaration':
-                    List<Tree> fragments = declaration.getChildren().findAll { it.getType().name == 'VariableDeclarationFragment' }
-                    Tree fragment = fragments.find { lines(it).contains(line) } ?: fragments.first()
-                    return name(fragment)
+                    // in "int a = 0, b = 2;" the field is the one on the line
+                    List<Tree> fields = declaration.getChildren().findAll { it.getType().name == 'VariableDeclarationFragment' }
+                    Tree field = fields.find { linesOf(it).contains(line) } ?: fields.first()
+                    return nameOf(field)
                 case 'Initializer':
                     return 'static block'
                 default:
-                    String parameters = declaration.getChildren()
-                            .findAll { it.getType().name == 'SingleVariableDeclaration' }
-                            // the first type below the parameter: for varargs (int... xs) GumTree nests it, and diffj names it int
-                            .collect { parameter -> typeText(parameter.preOrder().find { it != parameter && isType(it) }) }
-                            .join(', ')
-                    return "${name(declaration)}(${parameters})"
+                    List<Tree> parameters = declaration.getChildren().findAll { it.getType().name == 'SingleVariableDeclaration' }
+                    return "${nameOf(declaration)}(${parameters.collect { parameterTypeOf(it) }.join(', ')})"
             }
         }
 
-        // as diffj --changed-methods-only: "<a.C$Inner: void m(int)>", or "<a.C: <T> m(int)>" for a generic method
-        String fullSignature(Tree method) {
-            String types = method.getParents().findAll { TYPES.contains(it.getType().name) }.reverse().collect { name(it) }.join('$')
-            List<Tree> typeParameters = method.getChildren().findAll { it.getType().name == 'TypeParameter' }
-            String prefix = typeParameters ? "<${typeParameters.collect { typeText(it) }.join(', ')}>" : typeText(returnType(method))
-            return "<${types}: ${prefix} ${signature(method, -1)}>"
+        // The type of a parameter without spaces: for "int... xs" GumTree nests the type, and diffj names it "int"
+        private String parameterTypeOf(Tree parameter) {
+            Tree type = parameter.preOrder().find { it != parameter && isType(it) }
+            return textWithoutSpaces(type)
         }
 
-        private Tree returnType(Tree method) {
-            Tree methodName = method.getChildren().find { it.getType().name == 'SimpleName' }
+        // As diffj --changed-methods-only: "<a.C$Inner: void m(int)>", or "<a.C: <T> m(int)>" for a generic method
+        String signatureWithClass(Tree method) {
+            List<Tree> classes = method.getParents().findAll { NAMED_CLASS_TYPES.contains(it.getType().name) }
+            String className = classes.reverse().collect { nameOf(it) }.join('$')
+            List<Tree> typeParameters = method.getChildren().findAll { it.getType().name == 'TypeParameter' }
+            String returnType = typeParameters ? "<${typeParameters.collect { textWithoutSpaces(it) }.join(', ')}>" : textWithoutSpaces(returnTypeOf(method))
+            return "<${className}: ${returnType} ${diffjName(method, -1)}>"
+        }
+
+        // The type before the method name; a constructor has none
+        private Tree returnTypeOf(Tree method) {
             List<Tree> children = method.getChildren()
+            Tree methodName = children.find { it.getType().name == 'SimpleName' }
             return children.subList(0, children.indexOf(methodName)).find { isType(it) }
         }
 
-        private static String name(Tree node) {
+        private static String nameOf(Tree node) {
             return node.getChildren().find { it.getType().name == 'SimpleName' }.getLabel()
         }
 
@@ -265,8 +321,8 @@ class GumTreeDiffTool implements MethodDiffTool {
             return node.getType().name.endsWith('Type')
         }
 
-        private String typeText(Tree type) {
-            return text(type).replaceAll(/\s+/, '')
+        private String textWithoutSpaces(Tree node) {
+            return textOf(node).replaceAll(/\s+/, '')
         }
     }
 }

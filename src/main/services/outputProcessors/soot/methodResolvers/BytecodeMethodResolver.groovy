@@ -1,4 +1,4 @@
-package services.outputProcessors.soot
+package services.outputProcessors.soot.methodResolvers
 
 import soot.Body
 import soot.G
@@ -11,20 +11,15 @@ import util.JavaApiClassPath
 
 /**
  * Resolves modified lines to the Soot signatures of the methods of the build that contain them, which
- * conflict-static-analysis takes as entrypoints (e.g. "<a.C: void process(a.Node,java.util.List)>"). It finds them as
- * conflict-static-analysis finds the methods of its source and sink lines (AbstractMergeConflictDefinition.loadStatements):
- * the methods of the class, or of its outer class, with a statement in one of the lines.
- *
- * Lines without statements (e.g. comments, braces, a condition javac removes, as "if (true)") have no method.
+ * conflict-static-analysis takes as entrypoints (e.g. "<a.C: void process(a.Node,java.util.List)>").
+ * It only reads the build, not the source.
  */
-class LinesToSootMethodResolver {
+class BytecodeMethodResolver implements MethodResolver {
 
     /**
-     * @param buildJarPath the build of the merge scenario
-     * @param definitions the modified lines of each class, e.g. {"a.C": [10, 12]}, in the numbering of the merge
      * @return the Soot signatures of the methods with a statement in a modified line
      */
-    static Set<String> resolve(String buildJarPath, Map<String, List<Integer>> definitions) {
+    Set<String> resolve(String buildJarPath, String sourceDirectory, Map<String, List<Integer>> definitions) {
         configureSoot(buildJarPath)
 
         Set<String> signatures = new TreeSet<>()

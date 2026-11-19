@@ -64,6 +64,7 @@ Options:
  -o,--output <output>                    Output folder with the dataset (default: output)
  -s,--strategies <strategies>            Run once per entrypoint strategy, from the JSON: comma separated MOP, MM, MMM, LCA, or all (default: no entrypoints, from the CSV)
  -i,--input <json>                       Modified lines JSON read with --strategies (default: [output]/data/results-with-build-information.json)
+ -mr,--method-resolver <resolver>        Finds the methods of the modified lines, with --strategies: bytecode, source (default: bytecode)
 ```
 
 For example: 
@@ -76,40 +77,30 @@ For example:
 
 ## Analyze with entrypoint strategies
 
-By default the analyses get no entrypoints (each analysis then chooses its own). With `--strategies`, they run once per
-entrypoint strategy, which chooses the entrypoints of each scenario from the methods modified by left and by right:
+With `--strategies`, each merge scenario is analysed once per strategy, with the entrypoints it chooses from the
+methods modified by left and by right:
 
-| Acronym | Strategy (`entrypointStrategies`) | Entrypoints |
-|---|---|---|
-| MOP | MainOrPublicMethodsEntrypointStrategy | main methods, or else the public ones |
-| MM | ModifiedMethodsEntrypointStrategy | the methods modified by left or by right |
-| MMM | MutuallyModifiedMethodsEntrypointStrategy | the methods modified by both left and right |
-| LCA | LowestCommonAncestorEntrypointStrategy | the lowest common ancestors (callers, never the modified method itself), in the call graph, of each pair of methods modified by left and by right |
+| Acronym | Entrypoints |
+|---|---|
+| MOP | main methods, or else the public ones |
+| MM | methods modified by left or by right |
+| MMM | methods modified by both |
+| LCA | lowest common callers, in the call graph, of each pair of methods modified by left and by right |
 
-1. Build the dataset in the output folder, with the modified lines JSON, the builds, the soot input files and a copy of
-   the `source/` and `jars/` folders of each scenario. For the synthetic merges dataset, run at the miningframework root:
-   `./gradlew run -DmainClass="services.dataCollectors.modifiedLinesCollector.sourceScenarios.Main" --args="-i ../Syntetic-Mergesdataset/data_base.json -o output"`
-2. Run the analyses with the strategies, e.g. all of them or a pair:
+Run the strategies (`all` or a list):
 ```
-./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s all -icf -ioa -idfp -pdg"
-./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s MM,LCA -o output -ioa"
+./gradlew run -DmainClass="services.outputProcessors.soot.Main" --args="-s MM,LCA -ioa -o output"
 ```
-3. Each merge scenario is analysed once per strategy, as a whole: the lines files of the scenario,
-   `output/files/[project]/[merge commit]/left-right-lines.csv` and `right-left-lines.csv`, have the lines modified in
-   all its methods, so the analyses also find conflicts between a method modified by left and another one modified by
-   right. The results will be written in `output/data/soot-results-[strategy].csv`, one line per merge scenario
-   (`project;merge commit;[analyses];Time`), and the methods modified by each side and the entrypoints in
-   `output/data/entrypoints-[strategy].csv` (`project;merge commit;left modified methods;right modified methods;entrypoints`).
-   A scenario without entrypoints is not analysed: its analyses are `no-entrypoints`.
 
-The merge scenarios (`MergeScenario`) are read from the JSON, with their entrypoints, by `ScenarioReader.readJson`, as
-`ScenarioReader.read` reads the scenarios of each method from the CSV.
+Outputs, in `output/data/`:
+- `soot-results-[strategy].csv`: `project;merge commit;[analyses];Time`. A scenario without entrypoints is not analysed
+  (`no-entrypoints`).
+- `entrypoints-[strategy].csv`: `project;merge commit;left modified methods;right modified methods;entrypoints`.
 
-The entrypoints go to conflict-static-analysis in a file, `output/files/[project]/[merge commit]/entrypoints.txt` (one
-per line, `-entrypoints @[file]`), as the public methods of a build without a main method are too many for the command
-line. The soot-analysis jar must support it (`convertStringEntrypointsToList` in conflict-static-analysis `Main`).
+The modified methods come from a method resolver (`-mr`, `--method-resolver`):
+- `bytecode` (default): methods of the build with a statement in a modified line. Deleted lines and lines without
+  bytecode (e.g. `if (true)`) give no method.
+- `source`: methods of `source/merge` that contain a modified line (Eclipse JDT).
 
-The methods modified by left and by right are the methods of the build with a statement in a line modified by each, as
-conflict-static-analysis finds the methods of its source and sink lines, by
-[LinesToSootMethodResolver](./LinesToSootMethodResolver.groovy). Deleted lines, which are not in the merge, and lines
-without statements (e.g. a condition javac removes, as `if (true)`) give no method.
+The entrypoints go to conflict-static-analysis as `-entrypoints @[scenario]/entrypoints.txt`, so its jar must support
+it (`convertStringEntrypointsToList`).

@@ -5,6 +5,7 @@ import exception.InvalidArgsException
 import services.outputProcessors.soot.arguments.ArgsParser
 import services.outputProcessors.soot.arguments.Arguments
 import services.outputProcessors.soot.entrypointStrategies.*
+import services.outputProcessors.soot.methodResolvers.MethodResolvers
 import util.ProcessRunner
 
 class Main {
@@ -53,8 +54,9 @@ class Main {
                     String input = appArguments.getInput() ?: "${outputPath}/data/results-with-build-information.json"
                     println "Entrypoint strategies: ${strategies.join(', ')}"
                     println "Modified lines JSON: ${new File(input).absolutePath}"
+                    println "Method resolver: ${appArguments.getMethodResolver()}"
                     for (String strategy : strategies) {
-                        runStrategy(strategy, input, sootRunner, outputPath)
+                        runStrategy(strategy, input, sootRunner, outputPath, appArguments.getMethodResolver())
                     }
                 } else {
                     sootRunner.executeAnalyses(outputPath)
@@ -96,14 +98,14 @@ class Main {
      * A scenario without entrypoints is not analysed: its analyses are "no-entrypoints".
      * @provides: [outputPath]/data/soot-results-[strategy].csv, as soot-results.csv, and [outputPath]/data/entrypoints-[strategy].csv
      */
-    private static void runStrategy(String strategy, String input, RunSootAnalysisOutputProcessor sootRunner, String outputPath) {
+    private static void runStrategy(String strategy, String input, RunSootAnalysisOutputProcessor sootRunner, String outputPath, String methodResolver) {
         File resultsFile = sootRunner.createOutputFile(outputPath, "soot-results-${strategy}.csv", "project;merge commit")
         File entrypointsFile = new File(outputPath, "data/entrypoints-${strategy}.csv")
         entrypointsFile.text = "project;merge commit;left modified methods;right modified methods;entrypoints\n"
         String notExecuted = getNotExecutedColumns(sootRunner)
 
         println "=== Strategy ${strategy}: choosing the entrypoints of each merge scenario ==="
-        List<MergeScenario> scenarios = ScenarioReader.readJson(outputPath, input, STRATEGIES[strategy])
+        List<MergeScenario> scenarios = ScenarioReader.readJson(outputPath, input, STRATEGIES[strategy], MethodResolvers.create(methodResolver))
         int withoutEntrypoints = scenarios.count { it.getEntrypoints() == "[]" }
         println "=== Strategy ${strategy}: analysing ${scenarios.size() - withoutEntrypoints} of ${scenarios.size()} merge scenarios (${withoutEntrypoints} without entrypoints) ==="
 

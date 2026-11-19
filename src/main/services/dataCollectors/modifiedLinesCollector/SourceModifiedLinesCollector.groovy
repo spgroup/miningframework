@@ -16,8 +16,8 @@ import services.dataCollectors.modifiedLinesCollector.diffTools.MethodDiffTools
  *
  * @requires: that the project path is a folder with source/{base,left,right,merge}/ holding the modified .java files
  * at the same relative paths and jars/merge.jar (the build); the dependencies of the method diff tool (MethodDiffTools) and diff installed
- * @provides: the modified lines to the exporters, and the merge jar as the build of the scenario at
- * [outputPath]/files/[project]/[merge commit]/original-without-dependencies/merge/build.jar, with a copy of the
+ * @provides: the modified lines to the exporters, and the merge jar, with its name, as the build of the scenario at
+ * [outputPath]/files/[project]/[merge commit]/original-without-dependencies/merge/ (MergeBuildHelper), with a copy of the
  * source/ and jars/ folders of the scenario beside it
  */
 class SourceModifiedLinesCollector implements DataCollector {
@@ -26,10 +26,11 @@ class SourceModifiedLinesCollector implements DataCollector {
     private final String outputPath
     private final ModifiedMethodsHelper modifiedMethodsHelper
 
-    SourceModifiedLinesCollector(List<ModifiedLinesExporter> exporters, String outputPath, String dependenciesPath = 'dependencies') {
+    SourceModifiedLinesCollector(List<ModifiedLinesExporter> exporters, String outputPath, String diffTool = MethodDiffTools.DEFAULT,
+                                 String dependenciesPath = 'dependencies') {
         this.exporters = exporters
         this.outputPath = outputPath
-        this.modifiedMethodsHelper = new ModifiedMethodsHelper(MethodDiffTools.create(dependenciesPath))
+        this.modifiedMethodsHelper = new ModifiedMethodsHelper(MethodDiffTools.create(dependenciesPath, diffTool))
     }
 
     void collectData(Project project, MergeCommit mergeCommit) {
@@ -57,9 +58,8 @@ class SourceModifiedLinesCollector implements DataCollector {
         }
 
         File scenarioFolder = new File(outputPath, "files/${project.getName()}/${mergeCommit.getSHA()}")
-        File build = MergeBuildHelper.getMergeBuild(outputPath, project.getName(), mergeCommit.getSHA())
-        build.parentFile.mkdirs()
-        build.bytes = new File(project.getPath(), 'jars/merge.jar').bytes
+        MergeBuildHelper.saveMergeBuild([new File(project.getPath(), 'jars/merge.jar')],
+                MergeBuildHelper.getMergeBuildFolder(outputPath, project.getName(), mergeCommit.getSHA()))
 
         // the scenario as the dataset has it, to use it again later
         FileUtils.copyDirectory(new File(project.getPath(), 'source'), new File(scenarioFolder, 'source'))

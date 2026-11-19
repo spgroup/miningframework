@@ -1,9 +1,0 @@
-digraph LowestCommonAncestor {
-  "<Text: void countDupWhiteSpace()>" [label="Text.countDupWhiteSpace()", color=blue];
-  "<Text: void countDupWords()>" [label="Text.countDupWords()", color=magenta];
-  "<Text: void generateReport()>" [label="Text.generateReport()", color=yellow];
-  "<Text: void main(java.lang.String[])>" [label="Text.main(java.lang.String[])", color=black];
-  "<Text: void generateReport()>" -> "<Text: void countDupWhiteSpace()>";
-  "<Text: void generateReport()>" -> "<Text: void countDupWords()>";
-  "<Text: void main(java.lang.String[])>" -> "<Text: void generateReport()>";
-}

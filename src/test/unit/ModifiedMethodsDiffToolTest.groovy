@@ -182,6 +182,34 @@ public class C {
         assertEquals([:], modifiedMethods(base, base.replace('// zero', '// nothing')))
     }
 
+    @Test
+    void onlyCommentOfTheNextMethodChanged() {
+        // diff puts both lines in one hunk (3,4c3,4), but GumTree changed code only in a()
+        String base = '''\
+public class C {
+    int x, y;
+    void a() { x = 1; }
+    void b() { y = 2; } // old
+}
+'''
+        String target = base.replace('x = 1', 'x = 3').replace('// old', '// new')
+        assertEquals(['a()': ['Changed 3']], modifiedMethods(base, target))
+    }
+
+    @Test
+    void codeOnlyDeletedFromTheNextMethod() {
+        // GumTree has the deleted argument only in the base, and b() is still modified
+        String base = '''\
+public class C {
+    void a() { f(1); }
+    void b() { f(2, 3); }
+    void f(int... xs) { }
+}
+'''
+        String target = base.replace('f(1)', 'f(4)').replace('f(2, 3)', 'f(2)')
+        assertEquals(['a()', 'b()'] as Set, modifiedMethods(base, target).keySet())
+    }
+
     // diffj misses
 
     @Test

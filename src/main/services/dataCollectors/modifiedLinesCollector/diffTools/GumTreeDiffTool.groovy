@@ -82,7 +82,7 @@ class GumTreeDiffTool implements MethodDiffTool {
             if (hunk.isRemoval()) {
                 // diff numbers removed lines by the target line after which they were removed
                 ModifiedLine removed = createModifiedLine(hunk.targetPosition, base, hunk.baseLines.first(), base, mappings)
-                if (removed != null) {
+                if (removed != null && isChangedByGumTree(removed, base, changedCode, mappings)) {
                     modifiedLines.add(removed)
                 }
             }
@@ -93,12 +93,33 @@ class GumTreeDiffTool implements MethodDiffTool {
                 if (modifiedLine == null && !hunk.baseLines.isEmpty()) {
                     modifiedLine = createModifiedLine(line, base, hunk.baseLines.first(), base, mappings)
                 }
-                if (modifiedLine != null) {
+                if (modifiedLine != null && isChangedByGumTree(modifiedLine, base, changedCode, mappings)) {
                     modifiedLines.add(modifiedLine)
                 }
             }
         }
         return modifiedLines
+    }
+
+    /*
+     * Whether GumTree changed code in the declaration of the line. A hunk with a change of code may also have lines
+     * of a neighbouring declaration where only comments or spaces changed (e.g. a() changed and only the comment
+     * of b(), on the next line), and that declaration is not modified.
+     */
+    private static boolean isChangedByGumTree(ModifiedLine modifiedLine, JavaFile base, CodeLines changedCode, MappingStore mappings) {
+        if (!modifiedLine.inTarget) {
+            return hasChangedLine(base, modifiedLine.declaration, changedCode.base)
+        }
+        if (hasChangedLine(modifiedLine.file, modifiedLine.declaration, changedCode.target)) {
+            return true
+        }
+        // code only deleted from the declaration: GumTree has it in the base
+        Tree baseDeclaration = mappings.getSrcForDst(modifiedLine.declaration)
+        return baseDeclaration != null && hasChangedLine(base, baseDeclaration, changedCode.base)
+    }
+
+    private static boolean hasChangedLine(JavaFile file, Tree declaration, Set<Integer> changedLines) {
+        return file.linesOf(declaration).any { changedLines.contains(it) }
     }
 
     /*

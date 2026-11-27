@@ -106,6 +106,31 @@ public class C {
     }
 
     @Test
+    void changedFieldIsTheOneChangedOnTheLine() {
+        // in "int a = 0, b = 2;" both fields are on the line: a change of b only goes to b, one of both to both
+        String base = '''\
+public class C {
+    int a = 0, b = 2;
+}
+'''
+        assertEquals(['b': ['Changed 2']], modifiedMethods(base, base.replace('b = 2', 'b = 3')))
+        assertEquals(['a': ['Changed 2'], 'b': ['Changed 2']], modifiedMethods(base, base.replace('a = 0, b = 2', 'a = 1, b = 3')))
+    }
+
+    @Test
+    void fieldWithItsInitializerRemovedOrSharedTypeChanged() {
+        String base = '''\
+public class C {
+    int a = 0, b = 2;
+}
+'''
+        // only deleted code: GumTree has it in the base
+        assertEquals(['b': ['Changed 2']], modifiedMethods(base, base.replace(', b = 2', ', b')))
+        // the type of both: the first field, as before
+        assertEquals(['a'] as Set, modifiedMethods(base, base.replace('int a', 'long a')).keySet())
+    }
+
+    @Test
     void anonymousAndInnerClasses() {
         // a change in an anonymous class belongs to the method that creates it; one in an inner class, to its method
         String base = '''\

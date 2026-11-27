@@ -106,6 +106,31 @@ public class C {
     }
 
     @Test
+    void changedFieldIsTheOneChangedOnTheLine() {
+        // in "int a = 0, b = 2;" both fields are on the line: a change of b only goes to b, one of both to both
+        String base = '''\
+public class C {
+    int a = 0, b = 2;
+}
+'''
+        assertEquals(['b': ['Changed 2']], modifiedMethods(base, base.replace('b = 2', 'b = 3')))
+        assertEquals(['a': ['Changed 2'], 'b': ['Changed 2']], modifiedMethods(base, base.replace('a = 0, b = 2', 'a = 1, b = 3')))
+    }
+
+    @Test
+    void fieldWithItsInitializerRemovedOrSharedTypeChanged() {
+        String base = '''\
+public class C {
+    int a = 0, b = 2;
+}
+'''
+        // only deleted code: GumTree has it in the base
+        assertEquals(['b': ['Changed 2']], modifiedMethods(base, base.replace(', b = 2', ', b')))
+        // the type of both: the first field, as before
+        assertEquals(['a'] as Set, modifiedMethods(base, base.replace('int a', 'long a')).keySet())
+    }
+
+    @Test
     void anonymousAndInnerClasses() {
         // a change in an anonymous class belongs to the method that creates it; one in an inner class, to its method
         String base = '''\
@@ -180,6 +205,34 @@ public class C {
 }
 '''
         assertEquals([:], modifiedMethods(base, base.replace('// zero', '// nothing')))
+    }
+
+    @Test
+    void onlyCommentOfTheNextMethodChanged() {
+        // diff puts both lines in one hunk (3,4c3,4), but GumTree changed code only in a()
+        String base = '''\
+public class C {
+    int x, y;
+    void a() { x = 1; }
+    void b() { y = 2; } // old
+}
+'''
+        String target = base.replace('x = 1', 'x = 3').replace('// old', '// new')
+        assertEquals(['a()': ['Changed 3']], modifiedMethods(base, target))
+    }
+
+    @Test
+    void codeOnlyDeletedFromTheNextMethod() {
+        // GumTree has the deleted argument only in the base, and b() is still modified
+        String base = '''\
+public class C {
+    void a() { f(1); }
+    void b() { f(2, 3); }
+    void f(int... xs) { }
+}
+'''
+        String target = base.replace('f(1)', 'f(4)').replace('f(2, 3)', 'f(2)')
+        assertEquals(['a()', 'b()'] as Set, modifiedMethods(base, target).keySet())
     }
 
     // diffj misses

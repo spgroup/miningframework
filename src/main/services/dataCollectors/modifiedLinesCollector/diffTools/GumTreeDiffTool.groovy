@@ -81,53 +81,92 @@ class GumTreeDiffTool implements MethodDiffTool {
 
             if (hunk.isRemoval()) {
                 // diff numbers removed lines by the target line after which they were removed
-                ModifiedLine removed = createModifiedLine(hunk.targetPosition, base, hunk.baseLines.first(), base, mappings)
-                if (removed != null) {
-                    modifiedLines.add(removed)
-                }
+                List<ModifiedLine> removed = createModifiedLines(hunk.targetPosition, base, hunk.baseLines.first(), base, mappings, changedCode)
+                modifiedLines.addAll(removed.findAll { isChangedByGumTree(it, base, changedCode, mappings) })
             }
 
             for (int line : hunk.targetLines) {
-                ModifiedLine modifiedLine = createModifiedLine(line, target, line, base, mappings)
+                List<ModifiedLine> lines = createModifiedLines(line, target, line, base, mappings, changedCode)
                 // a line outside any declaration of the target: try the declaration of the base
-                if (modifiedLine == null && !hunk.baseLines.isEmpty()) {
-                    modifiedLine = createModifiedLine(line, base, hunk.baseLines.first(), base, mappings)
+                if (lines.isEmpty() && !hunk.baseLines.isEmpty()) {
+                    lines = createModifiedLines(line, base, hunk.baseLines.first(), base, mappings, changedCode)
                 }
-                if (modifiedLine != null) {
-                    modifiedLines.add(modifiedLine)
-                }
+                modifiedLines.addAll(lines.findAll { isChangedByGumTree(it, base, changedCode, mappings) })
             }
         }
         return modifiedLines
     }
 
     /*
-     * Finds the declaration that contains lineInFile in file and returns the modified line, or null when the line
-     * is outside any declaration.
+     * Whether GumTree changed code in the declaration of the line. A hunk with a change of code may also have lines
+     * of a neighbouring declaration where only comments or spaces changed (e.g. a() changed and only the comment
+     * of b(), on the next line), and that declaration is not modified.
      */
-    private static ModifiedLine createModifiedLine(int line, JavaFile file, int lineInFile, JavaFile base, MappingStore mappings) {
+    private static boolean isChangedByGumTree(ModifiedLine modifiedLine, JavaFile base, CodeLines changedCode, MappingStore mappings) {
+        if (!modifiedLine.inTarget) {
+            return hasChangedLine(base, modifiedLine.declaration, changedCode.base)
+        }
+        if (hasChangedLine(modifiedLine.file, modifiedLine.declaration, changedCode.target)) {
+            return true
+        }
+        // code only deleted from the declaration: GumTree has it in the base
+        Tree baseDeclaration = mappings.getSrcForDst(modifiedLine.declaration)
+        return baseDeclaration != null && hasChangedLine(base, baseDeclaration, changedCode.base)
+    }
+
+    private static boolean hasChangedLine(JavaFile file, Tree declaration, Set<Integer> changedLines) {
+        return file.linesOf(declaration).any { changedLines.contains(it) }
+    }
+
+    /*
+     * Finds the declaration that contains lineInFile in file and returns the modified line, or none when the line
+     * is outside any declaration. A line of a field declaration goes to each field of the line that GumTree changed
+     * (in "int a = 0, b = 2;" a change of b only goes to b).
+     */
+    private static List<ModifiedLine> createModifiedLines(int line, JavaFile file, int lineInFile, JavaFile base,
+                                                          MappingStore mappings, CodeLines changedCode) {
         Tree declaration = file.findDeclarationContaining(lineInFile)
         if (declaration == null) {
-            return null
+            return []
         }
-        String name = file.diffjName(declaration, lineInFile)
+        boolean inTarget = !file.is(base)
 
+        if (JavaFile.isField(declaration)) {
+            List<Tree> fields = file.fieldsOnLine(declaration, lineInFile)
+            List<Tree> changedFields = fields.findAll { field ->
+                containsChangedNode(field, inTarget ? changedCode.targetNodes : changedCode.baseNodes) ||
+                        (inTarget && containsChangedNode(mappings.getSrcForDst(field), changedCode.baseNodes))
+            }
+            // no field changed by itself (e.g. the type, which they share): the first one of the line
+            List<Tree> named = changedFields ?: [fields.first()]
+            return named.collect {
+                new ModifiedLine(line: line, file: file, declaration: declaration, declarationName: JavaFile.nameOf(it), inTarget: inTarget)
+            }
+        }
+
+        String name = file.diffjName(declaration, lineInFile)
         // a method of the target keeps the name it has in the base (e.g. after a parameter is added),
         // so that left, right and merge name the same method alike
-        boolean inTarget = !file.is(base)
         if (inTarget && JavaFile.isMethodOrConstructor(declaration)) {
             Tree baseMethod = mappings.getSrcForDst(declaration)
             if (baseMethod != null) {
                 name = base.diffjName(baseMethod, -1)
             }
         }
-        return new ModifiedLine(line: line, file: file, declaration: declaration, declarationName: name, inTarget: inTarget)
+        return [new ModifiedLine(line: line, file: file, declaration: declaration, declarationName: name, inTarget: inTarget)]
     }
 
-    // The lines of code changed by GumTree, in the base and in the target
+    // Whether a node changed by GumTree is the node or is inside it
+    private static boolean containsChangedNode(Tree node, Set<Tree> changedNodes) {
+        return node != null && changedNodes.any { it.is(node) || it.getParents().any { parent -> parent.is(node) } }
+    }
+
+    // The lines of code and the nodes changed by GumTree, in the base and in the target
     private static class CodeLines {
         Set<Integer> base = new HashSet<>()
         Set<Integer> target = new HashSet<>()
+        Set<Tree> baseNodes = Collections.newSetFromMap(new IdentityHashMap<Tree, Boolean>())
+        Set<Tree> targetNodes = Collections.newSetFromMap(new IdentityHashMap<Tree, Boolean>())
     }
 
     private static CodeLines findLinesChangedByGumTree(JavaFile base, JavaFile target, MappingStore mappings) {
@@ -143,11 +182,13 @@ class GumTreeDiffTool implements MethodDiffTool {
             // an inserted node only exists in the target
             if (edit instanceof Insert || edit instanceof TreeInsert) {
                 changed.target.addAll(target.linesOf(node))
+                changed.targetNodes.add(node)
                 continue
             }
 
             // a deleted, updated or moved node is in the base
             changed.base.addAll(base.linesOf(node))
+            changed.baseNodes.add(node)
             if (!(edit instanceof Update || edit instanceof Move)) {
                 continue
             }
@@ -158,6 +199,7 @@ class GumTreeDiffTool implements MethodDiffTool {
                 continue
             }
             changed.target.addAll(target.linesOf(targetNode))
+            changed.targetNodes.add(targetNode)
 
             // a statement that moved inside the same block: diff may show the statements in between as changed
             // (e.g. two swapped statements), so they count as changed too
@@ -267,6 +309,17 @@ class GumTreeDiffTool implements MethodDiffTool {
             return enclosingClass != null && ANONYMOUS_CLASS_TYPES.contains(enclosingClass.getType().name)
         }
 
+        static boolean isField(Tree declaration) {
+            return declaration.getType().name == 'FieldDeclaration'
+        }
+
+        // The fields of a declaration on the line ("int a = 0, b = 2;" has a and b), or all of them when none is
+        // (e.g. the line of the type, in a declaration over many lines)
+        List<Tree> fieldsOnLine(Tree declaration, int line) {
+            List<Tree> fields = declaration.getChildren().findAll { it.getType().name == 'VariableDeclarationFragment' }
+            return fields.findAll { linesOf(it).contains(line) } ?: fields
+        }
+
         static boolean isMethodOrConstructor(Tree declaration) {
             return declaration.getType().name == 'MethodDeclaration'
         }
@@ -279,10 +332,8 @@ class GumTreeDiffTool implements MethodDiffTool {
         String diffjName(Tree declaration, int line) {
             switch (declaration.getType().name) {
                 case 'FieldDeclaration':
-                    // in "int a = 0, b = 2;" the field is the one on the line
-                    List<Tree> fields = declaration.getChildren().findAll { it.getType().name == 'VariableDeclarationFragment' }
-                    Tree field = fields.find { linesOf(it).contains(line) } ?: fields.first()
-                    return nameOf(field)
+                    // the first field of the line (createModifiedLines chooses the changed ones)
+                    return nameOf(fieldsOnLine(declaration, line).first())
                 case 'Initializer':
                     return 'static block'
                 default:
@@ -313,7 +364,7 @@ class GumTreeDiffTool implements MethodDiffTool {
             return children.subList(0, children.indexOf(methodName)).find { isType(it) }
         }
 
-        private static String nameOf(Tree node) {
+        static String nameOf(Tree node) {
             return node.getChildren().find { it.getType().name == 'SimpleName' }.getLabel()
         }
 

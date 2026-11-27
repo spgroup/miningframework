@@ -43,6 +43,8 @@ class ScenarioReader {
     static List<MergeScenario> readJson(String outputPath, String jsonPath, EntrypointStrategy strategy, MethodResolver resolver = MethodResolvers.create()) {
         List<MergeScenario> result = new ArrayList<MergeScenario>()
         List<Map> merges = new JsonSlurper().parse(new File(jsonPath))
+        int withoutBuild = 0
+        int classNotFound = 0
 
         for (int i = 0; i < merges.size(); i++) {
             Map merge = merges[i]
@@ -53,8 +55,19 @@ class ScenarioReader {
             if (methods.isEmpty()) {
                 continue
             }
-            // the same jar as read and the analysis: the one of merge/ that has the class (Scenario.getClassPath)
-            String buildJar = new Scenario(merge.project, methods[0].className, null, commitSHA, scenarioDirectory, merge.hasBuild, null).getClassPath()
+            if (!merge.hasBuild) {
+                println "[${i + 1}/${merges.size()}] ${merge.project} ${commitSHA}: skipped, no build${merge.containsKey('hasBuild') ? '' : ' (no hasBuild in the JSON)'}"
+                withoutBuild++
+                continue
+            }
+            String buildJar
+            try {
+                buildJar = new Scenario(merge.project, methods[0].className, null, commitSHA, scenarioDirectory, merge.hasBuild, null).getClassPath()
+            } catch (ClassNotFoundInJarException e) {
+                println "[${i + 1}/${merges.size()}] ${merge.project} ${commitSHA}: skipped, ${e.message}"
+                classNotFound++
+                continue
+            }
 
             Set<String> leftMethods = resolver.resolve(buildJar, mergeSource, getModifiedLinesByClass(methods, "leftModifications"))
             Set<String> rightMethods = resolver.resolve(buildJar, mergeSource, getModifiedLinesByClass(methods, "rightModifications"))
@@ -63,6 +76,9 @@ class ScenarioReader {
             println "[${i + 1}/${merges.size()}] ${merge.project} ${commitSHA}: methods modified by left ${leftMethods.size()}, by right ${rightMethods.size()} -> ${entrypointsList.size()} entrypoints"
 
             result.add(new MergeScenario(merge.project, methods[0].className, commitSHA, scenarioDirectory, merge.hasBuild, entrypoints, leftMethods, rightMethods))
+        }
+        if (withoutBuild > 0 || classNotFound > 0) {
+            println "Skipped ${withoutBuild} merge scenarios without a build and ${classNotFound} whose class is in no jar of the build"
         }
         return result
     }

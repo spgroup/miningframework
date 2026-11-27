@@ -118,24 +118,49 @@ class SourceMethodResolver implements MethodResolver {
         return []
     }
 
+    /*
+     * The methods that run the values of the fields of the line: in "int a, b = compute();" both fields are on the
+     * line, and b runs code. The fields of a declaration share its modifiers, so all of them run in the same methods.
+     */
     private static List<String> methodsThatInitializeField(FieldDeclaration declaration, CompilationUnit code, int line) {
-        // in "int a = 0, b = 2;" the field is the first one that ends on or after the line
-        List<VariableDeclarationFragment> fields = declaration.fragments()
-        VariableDeclarationFragment field = fields.find { code.getLineNumber(it.getStartPosition() + it.getLength() - 1) >= line }
-        if (field?.getInitializer() == null) {
-            return [] // a field without value has no code
+        List<VariableDeclarationFragment> fields = fieldsOfLine(declaration, code, line)
+        List<IVariableBinding> fieldsThatRunCode = fields.findAll { it.getInitializer() != null }.collect { it.resolveBinding() }.findAll {
+            it != null && !isConstant(it) // a field without value has no code, and javac inlines the value of a constant
         }
-        IVariableBinding binding = field.resolveBinding()
-        if (binding == null) {
+        if (fieldsThatRunCode.isEmpty()) {
             return []
         }
+        return isStatic(fieldsThatRunCode.first()) ? staticInitializerOf(declaration.getParent()) : constructorsThatInitializeFields(declaration.getParent())
+    }
 
-        boolean isStatic = Modifier.isStatic(binding.getModifiers()) || binding.getDeclaringClass()?.isInterface()
-        boolean isConstant = isStatic && Modifier.isFinal(binding.getModifiers()) && binding.getConstantValue() != null
-        if (isConstant) {
-            return [] // javac inlines the value and generates no code
+    /*
+     * The fields that are on the line ("int a = 0, b = 2;" has a and b); all of them on a line before the first one
+     * (e.g. the type, in a declaration over many lines); else the first one that ends after the line (e.g. a line
+     * with only a comment between two fields)
+     */
+    private static List<VariableDeclarationFragment> fieldsOfLine(FieldDeclaration declaration, CompilationUnit code, int line) {
+        List<VariableDeclarationFragment> fields = declaration.fragments()
+        if (line < code.getLineNumber(fields.first().getStartPosition())) {
+            return fields
         }
-        return isStatic ? staticInitializerOf(declaration.getParent()) : constructorsThatInitializeFields(declaration.getParent())
+        List<VariableDeclarationFragment> onTheLine = fields.findAll { code.getLineNumber(it.getStartPosition()) <= line && line <= lastLineOf(it, code) }
+        if (!onTheLine.isEmpty()) {
+            return onTheLine
+        }
+        VariableDeclarationFragment next = fields.find { lastLineOf(it, code) >= line }
+        return next == null ? [] : [next]
+    }
+
+    private static int lastLineOf(ASTNode node, CompilationUnit code) {
+        return code.getLineNumber(node.getStartPosition() + node.getLength() - 1)
+    }
+
+    private static boolean isStatic(IVariableBinding field) {
+        return Modifier.isStatic(field.getModifiers()) || field.getDeclaringClass()?.isInterface()
+    }
+
+    private static boolean isConstant(IVariableBinding field) {
+        return isStatic(field) && Modifier.isFinal(field.getModifiers()) && field.getConstantValue() != null
     }
 
     // e.g. "<a.C: void process(b.Node,int)>", or null when JDT cannot resolve a type

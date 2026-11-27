@@ -6,24 +6,30 @@ import project.Project
 import services.dataCollectors.modifiedLinesCollector.MergeMethodModifications
 import util.MergeBuildHelper
 
+import java.nio.charset.StandardCharsets
+
 /**
  * @provides: a [outputPath]/data/results-with-build-information.json file with the same information as
  * CsvModifiedLinesExporter, but with one object per merge scenario holding all its modified methods
  */
 class JsonModifiedLinesExporter implements ModifiedLinesExporter {
 
+    private static final String END = '\n]'
+    private static final String INDENT = '    ' // as JsonOutput.prettyPrint indents the elements of a list
+
     private final String outputPath
     private final File file
-    private final List<Map> scenarios = []
+    private boolean empty = true
 
     JsonModifiedLinesExporter(String outputPath) {
         this.outputPath = outputPath
         file = new File(outputPath, 'data/results-with-build-information.json')
         file.parentFile.mkdirs()
+        file.setText('[' + END, 'UTF-8')
     }
 
     synchronized void export(Project project, MergeCommit mergeCommit, List<MergeMethodModifications> methods) {
-        scenarios << [
+        Map scenario = [
                 project        : project.getName(),
                 commits        : [merge: mergeCommit.getSHA(), left: mergeCommit.getLeftSHA(),
                                   right: mergeCommit.getRightSHA(), base: mergeCommit.getAncestorSHA()],
@@ -37,8 +43,26 @@ class JsonModifiedLinesExporter implements ModifiedLinesExporter {
                      rightDeletions    : it.rightDeletedLines as List]
                 },
         ]
-        // rewritten at each scenario, so the file is always a valid list
-        file.text = JsonOutput.prettyPrint(JsonOutput.toJson(scenarios))
+        append(scenario)
+    }
+
+    /*
+     * Writes the scenario over the "]" that closes the list and closes it again, so the file is always a valid list
+     * and each export writes only its scenario. The text is the one of JsonOutput.prettyPrint of the whole list.
+     */
+    private void append(Map scenario) {
+        String element = JsonOutput.prettyPrint(JsonOutput.toJson(scenario)).readLines().collect { INDENT + it }.join('\n')
+        String text = (empty ? '\n' : ',\n') + element + END
+
+        RandomAccessFile output = new RandomAccessFile(file, 'rw')
+        try {
+            long position = output.length() - END.length()
+            output.seek(position)
+            output.write(text.getBytes(StandardCharsets.UTF_8))
+        } finally {
+            output.close()
+        }
+        empty = false
     }
 
     private boolean hasBuild(Project project, MergeCommit mergeCommit) {

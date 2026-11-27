@@ -66,16 +66,18 @@ class BytecodeMethodResolver implements MethodResolver {
 
     /*
      * It returns a class name in the definitions set or
-     * return null. It also searches in the outer class of
-     * aClass.
+     * return null. It also searches the outer classes of
+     * aClass, from the innermost one: the outer class of an anonymous
+     * or local class is the one that encloses it (e.g. Outer$Inner for
+     * Outer$Inner$1), and the definitions have the class of the file (Outer).
      */
     private static String retriveClassNameInDefinitions(SootClass aClass, Map<String, List<Integer>> definitions) {
-        if (definitions.containsKey(aClass.getName())) {
-            return aClass.getName()
-        }
-        SootClass outerClass = retrieveOuterClass(aClass)
-        if (outerClass != null && definitions.containsKey(outerClass.getName())) {
-            return outerClass.getName()
+        SootClass currentClass = aClass
+        while (currentClass != null) {
+            if (definitions.containsKey(currentClass.getName())) {
+                return currentClass.getName()
+            }
+            currentClass = retrieveOuterClass(currentClass)
         }
         return null
     }

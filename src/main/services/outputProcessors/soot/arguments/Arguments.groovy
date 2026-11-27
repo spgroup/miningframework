@@ -1,5 +1,7 @@
 package services.outputProcessors.soot.arguments
 
+import services.outputProcessors.soot.methodResolvers.MethodResolvers
+
 class Arguments {
     private boolean isHelp
     private boolean allanalysis
@@ -24,9 +26,14 @@ class Arguments {
     private long depthLimit
     private boolean printDepthSVFA
     private String callgraph
+    private String input
+    private String outputPath
+    private List<String> strategies
+    private String methodResolver
     private boolean partialResultsOnTimeout
 
     Arguments() { // set the default values for all parameters
+        outputPath = "output"
         isHelp = false
         allanalysis = true
         dfIntra = false
@@ -50,6 +57,7 @@ class Arguments {
         printDepthSVFA = false
         depthLimit = 5
         callgraph = "SPARK"
+        methodResolver = MethodResolvers.DEFAULT
         partialResultsOnTimeout = false
     }
 
@@ -237,6 +245,33 @@ class Arguments {
         this.callgraph = callgraph
     }
 
+    String getInput() {
+        return input
+    }
+    void setInput(String input) {
+        this.input = input
+    }
+
+    String getOutputPath() {
+        return outputPath
+    }
+    void setOutputPath(String outputPath) {
+        this.outputPath = outputPath
+    }
+
+    List<String> getStrategies() {
+        return strategies
+    }
+    void setStrategies(List<String> strategies) {
+        this.strategies = strategies
+    }
+
+    String getMethodResolver() {
+        return methodResolver
+    }
+    void setMethodResolver(String methodResolver) {
+        this.methodResolver = methodResolver
+    }
     boolean isPartialResultsOnTimeout() {
         return partialResultsOnTimeout
     }

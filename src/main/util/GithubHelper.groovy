@@ -7,6 +7,7 @@ class GithubHelper {
 
     public final String URL = "https://github.com"
     public final String API_URL = "https://api.github.com"
+    static final int RELEASES_PER_PAGE = 100 // the most the API returns in a page
     private String accessKey;
 
     GithubHelper (String accessKey) {
@@ -59,7 +60,7 @@ class GithubHelper {
                 throw new GithubHelperException("Http request returned an error " + httpConnection.getResponseMessage())
             }
         }
-        return result.workflow_runs
+        return result ? result.workflow_runs : null
     }
 
     Object fork (Project project) {
@@ -81,15 +82,34 @@ class GithubHelper {
         return result
     }
 
-    Object getRepositoryReleases(Project project) {
+    /**
+     * Every release of the repository: the API lists them in pages (30 by default), so it reads 100 at a time until
+     * a page that is not full, as scripts/fetch_jars.py did
+     */
+    List getRepositoryReleases(Project project) {
         String url = getRepoApiUrl(project) + "/releases"
-        HttpURLConnection connection = HttpHelper.requestToApi(url, HttpHelper.METHOD_GET, this.accessKey);
+        List releases = []
+        for (int page = 1; ; page++) {
+            List releasesOfPage = getRepositoryReleasesPage(url, page)
+            releases.addAll(releasesOfPage)
+            if (releasesOfPage.size() < RELEASES_PER_PAGE) {
+                return releases
+            }
+        }
+    }
+
+    protected List getRepositoryReleasesPage(String url, int page) {
+        HttpURLConnection connection = HttpHelper.requestToApi("${url}?per_page=${RELEASES_PER_PAGE}&page=${page}", HttpHelper.METHOD_GET, this.accessKey)
 
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new GithubHelperException("Http request returned an error ${connection.getResponseMessage()}")
         }
 
-        return HttpHelper.responseToJSON(connection.getInputStream())
+        return HttpHelper.responseToJSON(connection.getInputStream()) as List
+    }
+
+    Project getFork(Project project) {
+        return new Project(project.getName(), "${URL}/${getUser().login}/${project.getOwnerAndName()[1]}")
     }
 
     private getRepoApiUrl(Project project) {

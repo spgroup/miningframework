@@ -83,45 +83,50 @@ class RunSootAnalysisOutputProcessor implements OutputProcessor {
 
         File resultsWithBuildsFile = new File(outputPath + RESULTS_FILE_PATH)
         if (resultsWithBuildsFile.exists()) {
+            executeAnalyses(ScenarioReader.read(outputPath, RESULTS_FILE_PATH), sootResultsFile)
+        }
+    }
 
-            List<Scenario> sootScenarios = ScenarioReader.read(outputPath, RESULTS_FILE_PATH);
+    void executeAnalyses(List<Scenario> sootScenarios, File sootResultsFile) {
+        for (scenario in sootScenarios) {
+            if (scenario.getHasBuild()) {
+                long start = System.currentTimeMillis();
+                println "Running soot scenario ${scenario.toString()}"
+                List<String> results = [];
 
-            for (scenario in sootScenarios) {
-                if (scenario.getHasBuild()) {
-                    long start = System.currentTimeMillis();
-                    println "Running soot scenario ${scenario.toString()}"
-                    List<String> results = [];
+                for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
+                    String algorithmResult = algorithm.run(scenario);
 
-                    for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
-                        String algorithmResult = algorithm.run(scenario);
-
-                        results.add(algorithmResult)
-                    }
-                    long end = System.currentTimeMillis();
-
-                    NumberFormat formatter = new DecimalFormat("#0.00000");
-                    results.add(formatter.format((end - start) / 1000d))
-                    sootResultsFile << "${scenario.toString()};${results.join(";")}\n"
+                    results.add(algorithmResult)
                 }
+                long end = System.currentTimeMillis();
+
+                NumberFormat formatter = new DecimalFormat("#0.00000");
+                results.add(formatter.format((end - start) / 1000d))
+                sootResultsFile << "${scenario.toString()};${results.join(";")}\n"
             }
         }
     }
 
-    private File createOutputFile(String outputPath) {
-        File sootResultsFile = new File(outputPath + "/data/soot-results.csv")
+    List<ConflictDetectionAlgorithm> getDetectionAlgorithms() {
+        return detectionAlgorithms as List
+    }
+
+    File createOutputFile(String outputPath, String fileName = "soot-results.csv", String keyColumns = "project;class;method;merge commit") {
+        File sootResultsFile = new File(outputPath + "/data/" + fileName)
 
         if (sootResultsFile.exists()) {
             sootResultsFile.delete()
         }
 
 //        sootResultsFile << sootWrapper.getSootAnalysisVersionDisclaimer();
-        sootResultsFile << buildCsvHeader();
+        sootResultsFile << buildCsvHeader(keyColumns);
 
         return sootResultsFile
     }
 
-    private String buildCsvHeader () {
-        StringBuilder resultStringBuilder = new StringBuilder("project;class;method;merge commit");
+    private String buildCsvHeader (String keyColumns) {
+        StringBuilder resultStringBuilder = new StringBuilder(keyColumns);
 
         for (ConflictDetectionAlgorithm algorithm : detectionAlgorithms) {
             resultStringBuilder.append(";${algorithm.generateHeaderName()}");

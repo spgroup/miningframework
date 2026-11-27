@@ -67,7 +67,6 @@ class Main {
                     sootRunner.executeAnalyses(outputPath)
                 }
              
-                sootRunner.executeAnalyses(outputPath)
 
                 if (appArguments.isReport()) {
                     reportResults(outputPath)
